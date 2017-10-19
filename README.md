@@ -41,3 +41,12 @@ outputs:
  \end{align}
 ```
 
+This can be useful for lazy people, like me, who don't want to type out equations. 
+But if you use Jupyter, it can also be useful to get a more clear view of your equations. 
+Latex can be rendered using: 
+```
+display("text/latex", latexify(f))
+```
+I find this to be more readable than the ODE definition, and I'm therefore more likely to spot errors.
+
+
