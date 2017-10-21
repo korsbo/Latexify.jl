@@ -1,15 +1,49 @@
 """
-    latexify(ex::Expr)
+    latexify(arg)
 
-Takes an expression `ex` and returns a string formatted for a LaTex equation.
+Generate LaTeX equations from `arg`.
 
-Currently, `ex` may only contain the operators + - * / and ^.
-It will also not convert special characters, symbols or sub/superscripts to
-anything that LaTex can actually understand.
+Parses expressions, ParameterizedFunctions, SymEngine.Base and arrays thereof.
+Returns a string formatted for LaTeX.
 
-julia> latexify(:(x/(y+x)))
+# Examples
+
+## using expressions
+```jldoctest
+julia> expr = :(x/(y+x))
+julia> latexify(expr)
 "\\frac{x}{y + x}"
+```
+
+```jldoctest
+julia> expr = parse("x/(y+x)")
+julia> latexify(expr)
+"\\frac{x}{y + x}"
+```
+
+## using ParameterizedFunctions
+```jldoctest
+julia> using DifferentialEquations
+julia> f = @ode_def feedback begin
+         dx = y/c_1 - x
+         dy = x^c_2 - y
+       end c_1=>1.0 c_2=>1.0
+julia> latexify(f)
+"\\begin{align}\n\\frac{dx}{dt} =&  \\frac{y}{c_1} - x \\\\ \n\\frac{dy}{dt} =&  x^{c_2} - y \\\\ \n\\end{align}\n"
+```
+
+## using SymEngine
+```jldoctest
+julia> using SymEngine
+julia> @vars x y
+julia> symExpr = x + x + x*y*y
+julia> latexify(symExpr)
+"2 \\cdot x + x \\cdot y^{2}"
+```
 """
+function latexify end
+
+
 function latexify(inputex::Expr)
     function recurseexp!(ex)
         prevOp = Vector{Symbol}(length(ex.args))
@@ -26,32 +60,18 @@ function latexify(inputex::Expr)
     recurseexp!(ex)
 end
 
-"""
-    latexify(arr::AbstractArray)
 
-Recursively iterates latexify over an array of Expressions (or Arrays thereof).
-Returns an array of strings which are formatted for LaTeX equations.
-"""
 latexify(arr::AbstractArray) = [latexify(i) for i in arr]
+latexify(i::Number) = string(i)
 
 
-"""
-    latexify(x::SymEngine.Basic)
-
-Return a LaTeX formatted string from a symbolic expression.
-"""
 function latexify(x::SymEngine.Basic)
     str = string(x)
     ex = parse(str)
     latexify(ex)
 end
 
-"""
-    latexify(ode::AbstractParameterizedFunction)
 
-Generate a string containing a LaTeX align environment showing the ODE.
-This is meant to be printed, rather than displayed.
-"""
 function latexify(ode::DiffEqBase.AbstractParameterizedFunction)
     str = "\\begin{align}\n"
     for i in 1:length(ode.syms)
@@ -60,7 +80,5 @@ function latexify(ode::DiffEqBase.AbstractParameterizedFunction)
         lstr = latexify(ode.funcs[i])
         str = "$str $lstr \\\\ \n"
     end
-    str = "$str \\end{align}\n"
+    str = "$str\\end{align}\n"
 end
-
-latexify(i::Number) = string(i)
