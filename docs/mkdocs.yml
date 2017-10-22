@@ -2,11 +2,12 @@
 #   http://www.mkdocs.org/user-guide/configuration/
 
 site_name:        Latexify.jl
-#repo_url:         https://github.com/USER_NAME/PACKAGE_NAME.jl
-#site_description: Description...
-#site_author:      USER_NAME
+repo_url:         https://github.com/korsbo/Latexify.jl
+site_description: Documentation for Latexify.jl
+site_author:      Niklas Korsbo
 
 theme: readthedocs
+#theme: biojulia
 
 extra_css:
   - assets/Documenter.css
@@ -20,8 +21,15 @@ markdown_extensions:
   - tables
   - fenced_code
   - mdx_math
+  - codehilite
 
 docs_dir: 'build'
 
 pages:
-  - Home: index.md
+- Introduction: index.md
+- Tutorial:
+  - Title 1: tutorials/latexify.md
+  - Title 2: tutorials/latexarray.md
+- Another Section:
+  - Title 1: functions/latexify.md
+  - Title 2: functions/latexarray.md

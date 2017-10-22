@@ -3,24 +3,28 @@
 Documentation for Latexify.jl
 
 
+## Tutorials
+
 ```@contents
+Pages = [
+    "tutorials/latexify.md",
+    "tutorials/latexarray.md"
+    ]
+Depth = 2
 ```
+
 
 ## Functions
+```@contents
+Pages = [
+    "functions/latexify.md",
+    "functions/latexarray.md"
+    ]
+Depth = 2
+```
 
 
-```@meta
-DocTestSetup = quote
-using Latexify
-end
-```
-```@docs
-latexify
-latexarray
-```
-```@meta
-DocTestSetup = nothing
-```
+
 
 ## Index
 ```@index
