@@ -3,11 +3,12 @@
 
 site_name:        Latexify.jl
 repo_url:         https://github.com/korsbo/Latexify.jl
+site_url:         https://korsbo.github.io/Latexify.jl/
 site_description: Documentation for Latexify.jl
 site_author:      Niklas Korsbo
 
-theme: readthedocs
-#theme: biojulia
+#theme: readthedocs
+theme: biojulia
 
 extra_css:
   - assets/Documenter.css
@@ -28,8 +29,8 @@ docs_dir: 'build'
 pages:
 - Introduction: index.md
 - Tutorial:
-  - Title 1: tutorials/latexify.md
-  - Title 2: tutorials/latexarray.md
-- Another Section:
-  - Title 1: functions/latexify.md
-  - Title 2: functions/latexarray.md
+  - Latexify a julia expression: tutorials/latexify.md
+  - Latexify a ParameterizedFunction: tutorials/latexarray.md
+- Functions:
+  - latexify: functions/latexify.md
+  - latexarray: functions/latexarray.md

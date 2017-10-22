@@ -3,6 +3,8 @@ using Latexify
 
 makedocs(
     modules = [Latexify],
+    format = :html,
+    sitename = "Latexify.jl",
     doctest = true
 )
 
