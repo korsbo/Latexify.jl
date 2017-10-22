@@ -2,6 +2,14 @@
 """
     latexarray{T}(arr::AbstractArray{T, 2})
 Create a LaTeX array environment using [`latexify`](@ref).
+
+# Examples
+```
+arr = [1 2; 3 4]
+latexarray(arr)
+# output
+"\\begin{equation}\n\\left[\n\\begin{array}{cc}\n1 & 2\\\\ \n3 & 4\\\\ \n\\end{array}\n\\right]\n\\end{equation}\n"
+```
 """
 function latexarray{T}(arr::AbstractArray{T, 2}; adjustment::Symbol=:c)
     (rows, columns) = size(arr)

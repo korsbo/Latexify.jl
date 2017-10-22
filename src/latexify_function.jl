@@ -1,4 +1,4 @@
-"""
+doc"""
     latexify(arg)
 
 Generate LaTeX equations from `arg`.
@@ -10,34 +10,46 @@ Returns a string formatted for LaTeX.
 
 ## using expressions
 ```jldoctest
-julia> expr = :(x/(y+x))
-julia> latexify(expr)
+expr = :(x/(y+x))
+latexify(expr)
+
+# output
+
 "\\frac{x}{y + x}"
 ```
 
 ```jldoctest
-julia> expr = parse("x/(y+x)")
-julia> latexify(expr)
+expr = parse("x/(y+x)")
+latexify(expr)
+
+# output
+
 "\\frac{x}{y + x}"
 ```
 
 ## using ParameterizedFunctions
 ```jldoctest
-julia> using DifferentialEquations
-julia> f = @ode_def feedback begin
+using DifferentialEquations
+f = @ode_def feedback begin
          dx = y/c_1 - x
          dy = x^c_2 - y
        end c_1=>1.0 c_2=>1.0
-julia> latexify(f)
+latexify(f)
+
+# output
+
 "\\begin{align}\n\\frac{dx}{dt} =&  \\frac{y}{c_1} - x \\\\ \n\\frac{dy}{dt} =&  x^{c_2} - y \\\\ \n\\end{align}\n"
 ```
 
 ## using SymEngine
 ```jldoctest
-julia> using SymEngine
-julia> @vars x y
-julia> symExpr = x + x + x*y*y
-julia> latexify(symExpr)
+using SymEngine
+@vars x y
+symExpr = x + x + x*y*y
+latexify(symExpr)
+
+# output
+
 "2 \\cdot x + x \\cdot y^{2}"
 ```
 """
