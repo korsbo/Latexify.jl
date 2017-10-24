@@ -75,6 +75,8 @@ end
 
 latexify(arr::AbstractArray) = [latexify(i) for i in arr]
 latexify(i::Number) = string(i)
+latexify(i::Symbol) = string(i)
+latexify(i::String) = i
 
 
 function latexify(x::SymEngine.Basic)
