@@ -3,14 +3,21 @@
 [![Build Status](https://travis-ci.org/korsbo/Latexify.jl.svg?branch=master)](https://travis-ci.org/korsbo/Latexify.jl)
 
 # Latexify.jl
-This is a package for generating LaTeX maths from either julia expressions or ParameterizedFunctions.
+This is a package for generating LaTeX maths from julia objects.
 
+This package utilises Julias [homoiconicity](https://en.wikipedia.org/wiki/Homoiconicity) to convert expressions to LaTeX-formatted strings.
 This is done using the function latexify.
-latexify has methods for handling expressions, arrays of expressions, or ParameterizedFunctions.
+latexify has methods for generating latex strings from a range of different julia objects, including:
 
+- Expressions,
+- Strings,
+- Symbolic expressions from SymEngine.jl,
+- ParameterizedFunctions from DifferentialEquations.jl
 
-### use with Expr
-```
+as well as arrays of any supported types.
+
+### Example
+```julia
 using Latexify
 
 ex = :(x/(y+x)^2)
@@ -18,15 +25,24 @@ latexstring = latexify(ex)
 print(latexstring)
 ```
 results in:
-```
+```LaTeX
 \frac{x}{(y+x)^{2}}
 ```
+
+## Functions for generating complete latex environments.
+
+The function latexify generates a LaTeX-formatted string, but not a complete LaTeX environment.
+To do this, there are some additional functions named after the LaTeX environment they create.
+
+Currently these functions are:
+- latexalign
+- latexarray
 
 ### use with ParameterizedFunctions
 ParameterizedFunctions is a part of the DifferentialEquations.jl suite.
 The ability to latexify an ODE is pretty much what lured me to create this package.
 
-```
+```julia
 using DifferentialEquations
 using Latexify
 
@@ -35,20 +51,39 @@ f = @ode_def positiveFeedback begin
     dy = x/(k_2+x) - y
 end v=>1.0 n=>1.0 k=>1.0 k_2=>1.0
 
-print( latexify(f) )
+print( latexalign(f) )
 ```
 outputs:
-```
+```LaTeX
 \begin{align}
 \frac{dx}{dt} =&  \frac{v \cdot y^{n}}{k^{n} + y^{n}} - x \\
 \frac{dy}{dt} =&  \frac{x}{k_2 + x} - y \\
- \end{align}
+\end{align}
 ```
 
 This can be useful for lazy people, like me, who don't want to type out equations.
 But if you use Jupyter, it can also be useful to get a more clear view of your equations.
 Latex can be rendered using:
-```
-display("text/latex", latexify(f))
+```julia
+display("text/latex", latexalign(f))
 ```
 I find this to be more readable than the ODE definition, and I'm therefore more likely to spot errors.
+
+## Installation
+This package is not yet registered with METADATA.jl, but to install it you can run
+
+```julia
+Pkg.clone("https://github.com/korsbo/Latexify.jl")
+```
+
+You can access the functions by
+```julia
+using Latexify
+```
+
+## Further information
+For further information see the [docs](https://korsbo.github.io/Latexify.jl/latest).
+
+## Contributing
+I would be happy to receive feedback, suggestions, and help with improving this package.
+Please feel free to open an issue.
