@@ -38,7 +38,9 @@ latexify(f)
 
 # output
 
-"\\begin{align}\n\\frac{dx}{dt} =&  \\frac{y}{c_1} - x \\\\ \n\\frac{dy}{dt} =&  x^{c_2} - y \\\\ \n\\end{align}\n"
+2-element Array{String,1}:
+ "dx/dt = \\frac{y}{c_{1}} - x"
+ "dy/dt = x^{c_{2}} - y"
 ```
 
 ## using SymEngine
@@ -88,12 +90,7 @@ end
 
 
 function latexify(ode::DiffEqBase.AbstractParameterizedFunction)
-    str = "\\begin{align}\n"
-    for i in 1:length(ode.syms)
-        var = ode.syms[i]
-        str = "$str\\frac{d$var}{dt} =& "
-        lstr = latexify(ode.funcs[i])
-        str = "$str $lstr \\\\ \n"
-    end
-    str = "$str\\end{align}\n"
+    lhs = ["d$x/dt = " for x in ode.syms]
+    rhs = latexify(ode.funcs)
+    return lhs .* rhs
 end
