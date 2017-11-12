@@ -77,6 +77,7 @@ latexify(arr::AbstractArray) = [latexify(i) for i in arr]
 latexify(i::Number) = string(i)
 latexify(i::Symbol) = convertSubscript(i)
 latexify(i::String) = latexify(parse(i))
+latexify(i::Rational) = latexify(:($(i.num)/$(i.den)))
 
 
 function latexify(x::SymEngine.Basic)
