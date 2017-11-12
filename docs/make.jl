@@ -5,7 +5,7 @@ makedocs(
     modules = [Latexify],
     format = :html,
     sitename = "Latexify.jl",
-    doctest = true
+    doctest = false
 )
 
 deploydocs(

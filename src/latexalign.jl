@@ -1,6 +1,6 @@
-"""
+doc"""
     latexalign()
-Generate a LaTeX align environment from an input.
+Generate a ``LaTeX`` align environment from an input.
 
 # Examples
 ## use with arrays
@@ -15,7 +15,7 @@ latexalign(lhs, rhs)
 ```
 
 ## use with ParameterizedFunction
-```jldoctest
+```julia
 using DifferentialEquations
 ode = @ode_def foldChangeDetection begin
     dm = r_m * (i - m)
@@ -28,7 +28,6 @@ latexalign(ode)
 
 "\\begin{align}\n\\frac{dm}{dt} =& r_{m} \\cdot (i - m) \\\\ \n\\frac{dy}{dt} =& r_{y} \\cdot (\\frac{p_{y} \\cdot i}{m} - y) \\\\ \n\\end{align}\n"
 ```
-
 """
 function latexalign end
 

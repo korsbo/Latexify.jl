@@ -28,8 +28,8 @@ latexify(expr)
 ```
 
 ## using ParameterizedFunctions
-```jldoctest
-using DifferentialEquations
+```julia
+using DifferentialEquations;
 f = @ode_def feedback begin
          dx = y/c_1 - x
          dy = x^c_2 - y

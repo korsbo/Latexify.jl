@@ -18,7 +18,9 @@ Depth = 2
 ```@contents
 Pages = [
     "functions/latexify.md",
-    "functions/latexarray.md"
+    "functions/latexalign.md",
+    "functions/latexarray.md",
+    "functions/latexoperation.md"
     ]
 Depth = 2
 ```

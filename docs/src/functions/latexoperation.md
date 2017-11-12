@@ -1,5 +1,6 @@
+# latexoperation()
 
-# latexarray()
+This function is not exported.
 
 ```@meta
 DocTestSetup = quote
@@ -9,7 +10,7 @@ end
 ```
 
 ```@docs
-latexarray
+Latexify.latexoperation
 ```
 
 ```@meta

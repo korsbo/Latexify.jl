@@ -1,5 +1,5 @@
 
-# latexarray()
+# latexify()
 
 ```@meta
 DocTestSetup = quote
@@ -9,7 +9,7 @@ end
 ```
 
 ```@docs
-latexarray
+latexalign
 ```
 
 ```@meta
