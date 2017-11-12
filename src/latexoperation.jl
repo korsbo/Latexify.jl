@@ -57,12 +57,6 @@ function convertSubscript!(ex::Expr)
     for i in 2:length(ex.args)
         arg = ex.args[i]
         if arg isa Symbol
-            #if contains(string(arg), "_")
-                #subscriptList = split(string(arg), "_")
-                #subscript = join(subscriptList[2:end], "\\_")
-                #result = "$(subscriptList[1])_{$subscript}"
-                #ex.args[i] = result
-            #end
             ex.args[i] = convertSubscript(arg)
         end
     end
