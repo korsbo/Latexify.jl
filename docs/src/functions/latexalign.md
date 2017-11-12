@@ -1,5 +1,5 @@
 
-# latexify()
+# latexalign()
 
 ```@meta
 DocTestSetup = quote
