@@ -20,7 +20,7 @@ function latexarray{T}(arr::AbstractArray{T, 2}; adjustment::Symbol=:c)
     isa(arr, Matrix{String}) || (arr = latexify(arr))
     for i=1:rows, j=1:columns
         str *= arr[i,j]
-        j==rows ? (str *= "\\\\ \n") : (str *= " & ")
+        j==columns ? (str *= "\\\\ \n") : (str *= " & ")
     end
 
     str *= "\\end{array}\n"
