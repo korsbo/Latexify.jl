@@ -26,13 +26,24 @@ markdown_extensions:
 
 docs_dir: 'build'
 
+#pages:
+#- Introduction: index.md
+#- Tutorial:
+#  - Latexify a julia expression: tutorials/latexify.md
+#  - Latexify a ParameterizedFunction: tutorials/latexarray.md
+#- Functions:
+#  - latexify: functions/latexify.md
+#  - latexalign: functions/latexalign.md
+#  - latexarray: functions/latexarray.md
+#  - latexoperation: functions/latexoperation.md
+
 pages:
-- Introduction: index.md
+- Introduction: index.html
 - Tutorial:
-  - Latexify a julia expression: tutorials/latexify.md
-  - Latexify a ParameterizedFunction: tutorials/latexarray.md
+  - Latexify a julia expression: tutorials/latexify.html
+  - Latexify a ParameterizedFunction: tutorials/latexarray.html
 - Functions:
-  - latexify: functions/latexify.md
-  - latexalign: functions/latexalign.md
-  - latexarray: functions/latexarray.md
-  - latexoperation: functions/latexoperation.md
+  - latexify: functions/latexify.html
+  - latexalign: functions/latexalign.html
+  - latexarray: functions/latexarray.html
+  - latexoperation: functions/latexoperation.html
