@@ -1,6 +1,102 @@
 var documenterSearchIndex = {"docs": [
 
 {
+    "location": "index.html#",
+    "page": "Latexify.jl",
+    "title": "Latexify.jl",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "index.html#Latexify.jl-1",
+    "page": "Latexify.jl",
+    "title": "Latexify.jl",
+    "category": "section",
+    "text": "Documentation for Latexify.jl"
+},
+
+{
+    "location": "index.html#Tutorials-1",
+    "page": "Latexify.jl",
+    "title": "Tutorials",
+    "category": "section",
+    "text": "Pages = [\n    \"tutorials/latexify.md\",\n    \"tutorials/latexarray.md\"\n    ]\nDepth = 2"
+},
+
+{
+    "location": "index.html#Functions-1",
+    "page": "Latexify.jl",
+    "title": "Functions",
+    "category": "section",
+    "text": "Pages = [\n    \"functions/latexify.md\",\n    \"functions/latexalign.md\",\n    \"functions/latexarray.md\",\n    \"functions/latexoperation.md\"\n    ]\nDepth = 2"
+},
+
+{
+    "location": "index.html#Index-1",
+    "page": "Latexify.jl",
+    "title": "Index",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "tutorials/latexify.html#",
+    "page": "latexify",
+    "title": "latexify",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "tutorials/latexify.html#latexify-1",
+    "page": "latexify",
+    "title": "latexify",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "tutorials/latexarray.html#",
+    "page": "latexarray",
+    "title": "latexarray",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "tutorials/latexarray.html#latexarray-1",
+    "page": "latexarray",
+    "title": "latexarray",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "functions/latexify.html#",
+    "page": "latexify()",
+    "title": "latexify()",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "functions/latexify.html#Latexify.latexify",
+    "page": "latexify()",
+    "title": "Latexify.latexify",
+    "category": "Function",
+    "text": "latexify(arg)\n\nGenerate LaTeX equations from arg.\n\nParses expressions, ParameterizedFunctions, SymEngine.Base and arrays thereof. Returns a string formatted for LaTeX.\n\nExamples\n\nusing expressions\n\nexpr = :(x/(y+x))\nlatexify(expr)\n\n# output\n\n\"\\\\frac{x}{y + x}\"\n\nexpr = parse(\"x/(y+x)\")\nlatexify(expr)\n\n# output\n\n\"\\\\frac{x}{y + x}\"\n\nusing ParameterizedFunctions\n\nusing DifferentialEquations;\nf = @ode_def feedback begin\n         dx = y/c_1 - x\n         dy = x^c_2 - y\n       end c_1=>1.0 c_2=>1.0\nlatexify(f)\n\n# output\n\n2-element Array{String,1}:\n \"dx/dt = \\\\frac{y}{c_{1}} - x\"\n \"dy/dt = x^{c_{2}} - y\"\n\nusing SymEngine\n\nusing SymEngine\n@vars x y\nsymExpr = x + x + x*y*y\nlatexify(symExpr)\n\n# output\n\n\"2 \\\\cdot x + x \\\\cdot y^{2}\"\n\n\n\n"
+},
+
+{
+    "location": "functions/latexify.html#latexify()-1",
+    "page": "latexify()",
+    "title": "latexify()",
+    "category": "section",
+    "text": "DocTestSetup = quote\nusing Latexify\nendlatexifyDocTestSetup = nothing"
+},
+
+{
     "location": "functions/latexalign.html#",
     "page": "latexalign()",
     "title": "latexalign()",
@@ -49,30 +145,6 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "functions/latexify.html#",
-    "page": "latexify()",
-    "title": "latexify()",
-    "category": "page",
-    "text": ""
-},
-
-{
-    "location": "functions/latexify.html#Latexify.latexify",
-    "page": "latexify()",
-    "title": "Latexify.latexify",
-    "category": "Function",
-    "text": "latexify(arg)\n\nGenerate LaTeX equations from arg.\n\nParses expressions, ParameterizedFunctions, SymEngine.Base and arrays thereof. Returns a string formatted for LaTeX.\n\nExamples\n\nusing expressions\n\nexpr = :(x/(y+x))\nlatexify(expr)\n\n# output\n\n\"\\\\frac{x}{y + x}\"\n\nexpr = parse(\"x/(y+x)\")\nlatexify(expr)\n\n# output\n\n\"\\\\frac{x}{y + x}\"\n\nusing ParameterizedFunctions\n\nusing DifferentialEquations;\nf = @ode_def feedback begin\n         dx = y/c_1 - x\n         dy = x^c_2 - y\n       end c_1=>1.0 c_2=>1.0\nlatexify(f)\n\n# output\n\n2-element Array{String,1}:\n \"dx/dt = \\\\frac{y}{c_{1}} - x\"\n \"dy/dt = x^{c_{2}} - y\"\n\nusing SymEngine\n\nusing SymEngine\n@vars x y\nsymExpr = x + x + x*y*y\nlatexify(symExpr)\n\n# output\n\n\"2 \\\\cdot x + x \\\\cdot y^{2}\"\n\n\n\n"
-},
-
-{
-    "location": "functions/latexify.html#latexify()-1",
-    "page": "latexify()",
-    "title": "latexify()",
-    "category": "section",
-    "text": "DocTestSetup = quote\nusing Latexify\nendlatexifyDocTestSetup = nothing"
-},
-
-{
     "location": "functions/latexoperation.html#",
     "page": "latexoperation()",
     "title": "latexoperation()",
@@ -94,78 +166,6 @@ var documenterSearchIndex = {"docs": [
     "title": "latexoperation()",
     "category": "section",
     "text": "This function is not exported.DocTestSetup = quote\nusing Latexify\nusing DifferentialEquations\nendLatexify.latexoperationDocTestSetup = nothing"
-},
-
-{
-    "location": "index.html#",
-    "page": "Latexify.jl",
-    "title": "Latexify.jl",
-    "category": "page",
-    "text": ""
-},
-
-{
-    "location": "index.html#Latexify.jl-1",
-    "page": "Latexify.jl",
-    "title": "Latexify.jl",
-    "category": "section",
-    "text": "Documentation for Latexify.jl"
-},
-
-{
-    "location": "index.html#Tutorials-1",
-    "page": "Latexify.jl",
-    "title": "Tutorials",
-    "category": "section",
-    "text": "Pages = [\n    \"tutorials/latexify.md\",\n    \"tutorials/latexarray.md\"\n    ]\nDepth = 2"
-},
-
-{
-    "location": "index.html#Functions-1",
-    "page": "Latexify.jl",
-    "title": "Functions",
-    "category": "section",
-    "text": "Pages = [\n    \"functions/latexify.md\",\n    \"functions/latexalign.md\",\n    \"functions/latexarray.md\",\n    \"functions/latexoperation.md\"\n    ]\nDepth = 2"
-},
-
-{
-    "location": "index.html#Index-1",
-    "page": "Latexify.jl",
-    "title": "Index",
-    "category": "section",
-    "text": ""
-},
-
-{
-    "location": "tutorials/latexarray.html#",
-    "page": "latexarray",
-    "title": "latexarray",
-    "category": "page",
-    "text": ""
-},
-
-{
-    "location": "tutorials/latexarray.html#latexarray-1",
-    "page": "latexarray",
-    "title": "latexarray",
-    "category": "section",
-    "text": ""
-},
-
-{
-    "location": "tutorials/latexify.html#",
-    "page": "latexify",
-    "title": "latexify",
-    "category": "page",
-    "text": ""
-},
-
-{
-    "location": "tutorials/latexify.html#latexify-1",
-    "page": "latexify",
-    "title": "latexify",
-    "category": "section",
-    "text": ""
 },
 
 ]}
