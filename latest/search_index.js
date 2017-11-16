@@ -13,7 +13,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Latexify.jl",
     "title": "Latexify.jl",
     "category": "section",
-    "text": "Latexify.jl is a package which supplies functions for producing LaTeX formatted strings from Julia objects.This package allows, among other things, for converting a Julia expression to a LaTeX formatted equation.Correct grouping parentheses, curly-brackets, what information goes where inside a \\frac{}{}"
+    "text": "Latexify.jl is a package which supplies functions for producing LaTeX formatted strings from Julia objects.This package allows, among other things, for converting a Julia expression to a LaTeX formatted equation."
 },
 
 {
@@ -37,7 +37,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Latexify.jl",
     "title": "Extended functionality",
     "category": "section",
-    "text": "With the above example we can understand how an expression is converted to a LaTeX formatted string (unless my pedagogical skills are worse than I fear).So, anything which can be converted to a Julia expression of the Expr type can be latexified. Luckily, since Julia needs to convert your code to expressions before they it can be evaluated, Julia is already great at doing this."
+    "text": "With the above example we can understand how an expression is converted to a LaTeX formatted string (unless my pedagogical skills are worse than I fear).So, anything which can be converted to a Julia expression of the Expr type can be latexified. Luckily, since Julia needs to convert your code to expressions before it can be evaluated, Julia is already great at doing this.There are already some methods for converting other types to expressions and passing them to the core method, for example:latexify(str::String) = latexify(parse(str))but if you find yourself wanting to parse some other type, it is often easy to overload the latexify function."
+},
+
+{
+    "location": "index.html#Latexifying-Arrays-1",
+    "page": "Latexify.jl",
+    "title": "Latexifying Arrays",
+    "category": "section",
+    "text": "Also, if you pass an array to latexify, it will recursively try to convert the elements of that array to LaTeX formatted strings.julia> arr = [:(x-y/(k_10+z)), \"x*y*z/3\"]\njulia> latexArr = latexify(arr)\njulia> println.(latexArr)\n\nx - \\frac{y}{k_{10} + z}\n\\frac{x \\cdot y \\cdot z}{3}julia> arr = [:(x-y/(k_10+z)), \"x*y*z/3\"]\njulia> latexArr = latexify(arr)\njulia> latexArr\n\n2-element Array{String,1}:\n \"x - \\\\frac{y}{k_{10} + z}\"     \n \"\\\\frac{x \\\\cdot y \\\\cdot z}{3}\"\n\njulia> println.(latexArr)\n\nx - \\frac{y}{k_{10} + z}\n\\frac{x \\cdot y \\cdot z}{3}"
 },
 
 {
