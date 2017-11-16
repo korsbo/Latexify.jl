@@ -33,4 +33,6 @@ pages:
   - Latexify a ParameterizedFunction: tutorials/latexarray.md
 - Functions:
   - latexify: functions/latexify.md
+  - latexalign: functions/latexalign.md
   - latexarray: functions/latexarray.md
+  - latexoperation: functions/latexoperation.md
