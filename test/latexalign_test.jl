@@ -12,4 +12,5 @@ push!(test_results, latexalign(["d$x/dt" for x in f.syms], f.funcs) == "\\begin{
 push!(test_results, latexalign(f) == "\\begin{align}\n\\frac{dx}{dt} =& \\frac{y}{c_{1}} - x \\\\ \n\\frac{dy}{dt} =& x^{c_{2}} - y \\\\ \n\\end{align}\n")
 push!(test_results, latexalign(f, field=:symfuncs) == "\\begin{align}\n\\frac{dx}{dt} =& - x + \\frac{y}{c_{1}} \\\\ \n\\frac{dy}{dt} =& - y + x^{c_{2}} \\\\ \n\\end{align}\n")
 
+println("latexalign_test successes: \n", test_results)
 all(test_results)

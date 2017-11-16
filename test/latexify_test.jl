@@ -32,4 +32,5 @@ f = @ode_def feedback begin
 end c_1=>1.0 c_2=>1.0
 push!(test_results, latexify(f) == ["dx/dt = \\frac{y}{c_{1}} - x", "dy/dt = x^{c_{2}} - y"])
 
+println("latexify_test successes: \n", test_results)
 all(test_results)
