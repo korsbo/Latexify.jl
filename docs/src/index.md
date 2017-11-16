@@ -6,12 +6,6 @@ Latexify.jl is a package which supplies functions for producing ``\LaTeX`` forma
 This package allows, among other things, for converting a Julia expression to a ``\LaTeX`` formatted equation.
 
 
-
-
-Correct grouping
-parentheses, curly-brackets, what information goes where inside a \\frac{}{}
-
-
 ## Inner workings
 
 This package contains a large number of methods, but two of these are of special importance.
@@ -122,7 +116,43 @@ x + \frac{y}{z}
 
 ## Extended functionality
 
+
 With the above example we can understand how an expression is converted to a ``\LaTeX`` formatted string (unless my pedagogical skills are worse than I fear).
 
 So, anything which can be converted to a Julia expression of the Expr type can be latexified.
-Luckily, since Julia needs to convert your code to expressions before they it can be evaluated, Julia is already great at doing this.
+Luckily, since Julia needs to convert your code to expressions before it can be evaluated, Julia is already great at doing this.
+
+There are already some methods for converting other types to expressions and passing them to the core method, for example:
+```julia
+latexify(str::String) = latexify(parse(str))
+```
+but if you find yourself wanting to parse some other type, it is often easy to overload the `latexify` function.
+
+
+## Latexifying Arrays
+Also, if you pass an array to `latexify`, it will recursively try to convert the elements of that array to ``\LaTeX`` formatted strings.
+
+
+```julia-repl
+julia> arr = [:(x-y/(k_10+z)), "x*y*z/3"]
+julia> latexArr = latexify(arr)
+julia> println.(latexArr)
+
+x - \frac{y}{k_{10} + z}
+\frac{x \cdot y \cdot z}{3}
+```
+
+```julia-repl
+julia> arr = [:(x-y/(k_10+z)), "x*y*z/3"]
+julia> latexArr = latexify(arr)
+julia> latexArr
+
+2-element Array{String,1}:
+ "x - \\frac{y}{k_{10} + z}"     
+ "\\frac{x \\cdot y \\cdot z}{3}"
+
+julia> println.(latexArr)
+
+x - \frac{y}{k_{10} + z}
+\frac{x \cdot y \cdot z}{3}
+```
