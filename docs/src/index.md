@@ -2,8 +2,21 @@
 
 Latexify.jl is a package which supplies functions for producing ``\LaTeX`` formatted strings from Julia objects.
 
-
 This package allows, among other things, for converting a Julia expression to a ``\LaTeX`` formatted equation.
+
+## At a glance
+
+This package provides a few functions of potential interest:
+
+### `latexify(x)`
+takes a Julia object `x` and returns a ``\LaTeX`` formatted string. This works for `x` of many types, including expressions, which returns ``\LaTeX`` code for an equation.
+
+```julia
+julia> ex = :(x-y/z)
+julia> latexify(ex)
+"x - \\frac{y}{z}"
+```
+
 
 
 ## Inner workings
@@ -136,23 +149,12 @@ Also, if you pass an array to `latexify`, it will recursively try to convert the
 ```julia-repl
 julia> arr = [:(x-y/(k_10+z)), "x*y*z/3"]
 julia> latexArr = latexify(arr)
-julia> println.(latexArr)
-
-x - \frac{y}{k_{10} + z}
-\frac{x \cdot y \cdot z}{3}
-```
-
-```julia-repl
-julia> arr = [:(x-y/(k_10+z)), "x*y*z/3"]
-julia> latexArr = latexify(arr)
 julia> latexArr
-
 2-element Array{String,1}:
  "x - \\frac{y}{k_{10} + z}"     
  "\\frac{x \\cdot y \\cdot z}{3}"
 
 julia> println.(latexArr)
-
 x - \frac{y}{k_{10} + z}
 \frac{x \cdot y \cdot z}{3}
 ```
