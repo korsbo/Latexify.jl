@@ -40,7 +40,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
     end
 
     op == :log10 && return "\\log_{10}\\left( $(args[2]) \\right)"
-    op == :log && return "\\log\\left( $(args[2]) \\right)"
+    op == :log2 && return "\\log_{2}\\left( $(args[2]) \\right)"
     op == :sqrt && return "\\$op{$(args[2])}"
 
     #if op in [:log, :sin, :asin, :cos, :acos :tan, :atan]
