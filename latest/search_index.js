@@ -13,31 +13,31 @@ var documenterSearchIndex = {"docs": [
     "page": "Latexify.jl",
     "title": "Latexify.jl",
     "category": "section",
-    "text": "Documentation for Latexify.jl"
+    "text": "Latexify.jl is a package which supplies functions for producing LaTeX formatted strings from Julia objects.This package allows, among other things, for converting a Julia expression to a LaTeX formatted equation.Correct grouping parentheses, curly-brackets, what information goes where inside a \\frac{}{}"
 },
 
 {
-    "location": "index.html#Tutorials-1",
+    "location": "index.html#Inner-workings-1",
     "page": "Latexify.jl",
-    "title": "Tutorials",
+    "title": "Inner workings",
     "category": "section",
-    "text": "Pages = [\n    \"tutorials/latexify.md\",\n    \"tutorials/latexarray.md\"\n    ]\nDepth = 2"
+    "text": "This package contains a large number of methods, but two of these are of special importance. These are:latexify(ex::Expr)andlatexoperation(ex::Expr, prevOp::AbstractArray)Almost all other functions or methods eventually lead to these two.latexify(ex::Expr) utilises Julias homoiconicity to infer the correct latexification of an expression by recursing through the expression tree. Whenever it hits the end of a recursion it passes the last expression to latexoperation(). By the nature of this recursion, this expression is one which only contains symbols or strings."
 },
 
 {
-    "location": "index.html#Functions-1",
+    "location": "index.html#Explanation-by-example-1",
     "page": "Latexify.jl",
-    "title": "Functions",
+    "title": "Explanation by example",
     "category": "section",
-    "text": "Pages = [\n    \"functions/latexify.md\",\n    \"functions/latexalign.md\",\n    \"functions/latexarray.md\",\n    \"functions/latexoperation.md\"\n    ]\nDepth = 2"
+    "text": "Let's define a variable of the expression type:julia> ex = :(x + y/z)This expression has a field which contains the first operation which must be done, along with the objects that this operation will operate on:julia> ex.args\n\n3-element Array{Any,1}:\n :+      \n :x      \n :(y / z)The first two element are both Symbols, while the third one is an expression:julia> typeof.(ex.args)\n\n3-element Array{DataType,1}:\n Symbol\n Symbol\n ExprSince at least one of these elements is an expression, the next step of the recursive algorithm is to dive into that expression:julia> newEX = ex.args[3]\njulia> newEx.args\n\n3-element Array{Any,1}:\n :/\n :y\n :zSince none of these arguments is another expression, newEx will be passed to latexoperation(). This function checks which mathematical operation is being done and converts newEx to an appropriately formatted string. In this case, that string will be \"\\\\frac{y}{z}\" (and yes, a double slash is needed).newEx is now a string (despite its name):julia> newEx\n\n\"\\\\frac{y}{z}\"The recursive latexify() pulls this value back to the original expression ex, such that:julia> ex.args\n\n3-element Array{Any,1}:\n :+      \n :x      \n :\"\\\\frac{y}{z}\"Now, since this expression does not consist of any further expressions, it is passed to latexoperation(). The operator is now \"+\", and it should be applied on the second and third element of the expression, resulting in:\"x + \\\\frac{y}{z}\"using the print function you get:julia> print(latexify(ex))\n\n\"x + \\frac{y}{z}\"or, if you are using jupyter or anything which can render LaTeX, you can do:julia> display(\"text/latex\", latexify(ex))which displays a nicely rendered equation:x + fracyz"
 },
 
 {
-    "location": "index.html#Index-1",
+    "location": "index.html#Extended-functionality-1",
     "page": "Latexify.jl",
-    "title": "Index",
+    "title": "Extended functionality",
     "category": "section",
-    "text": ""
+    "text": "With the above example we can understand how an expression is converted to a LaTeX formatted string (unless my pedagogical skills are worse than I fear).So, anything which can be converted to a Julia expression of the Expr type can be latexified. Luckily, since Julia needs to convert your code to expressions before they it can be evaluated, Julia is already great at doing this."
 },
 
 {
