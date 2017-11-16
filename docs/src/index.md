@@ -17,6 +17,23 @@ julia> latexify(ex)
 "x - \\frac{y}{z}"
 ```
 
+Among the supported types are:
+- Expressions,
+- Strings,
+- Numbers (including rational and complex),
+- Symbols,
+- Symbolic expressions from SymEngine.jl.
+
+It can also take arrays, which it recurses and latexifies the elements, returning an array of latex strings.
+
+## `latexalign(x)`
+
+While `latexify` does not provide a ``\LaTeX`` environment surrounding the resulting string, `latexalign` does.
+As the name implies, it creates an `align` environment.
+
+
+
+
 
 
 ## Inner workings
@@ -113,13 +130,7 @@ julia> print(latexify(ex))
 "x + \frac{y}{z}"
 ```
 
-or, if you are using jupyter or anything which can render ``\LaTeX``, you can do:
-
-
-```julia-repl
-julia> display("text/latex", latexify(ex))
-```
-which displays a nicely rendered equation:
+which in a ``\LaTeX`` maths environment renders as:
 
 ```math
 x + \frac{y}{z}
@@ -148,13 +159,12 @@ Also, if you pass an array to `latexify`, it will recursively try to convert the
 
 ```julia-repl
 julia> arr = [:(x-y/(k_10+z)), "x*y*z/3"]
-julia> latexArr = latexify(arr)
-julia> latexArr
+julia> latexify(arr)
 2-element Array{String,1}:
  "x - \\frac{y}{k_{10} + z}"     
  "\\frac{x \\cdot y \\cdot z}{3}"
 
-julia> println.(latexArr)
+julia> println.(latexify(arr))
 x - \frac{y}{k_{10} + z}
 \frac{x \cdot y \cdot z}{3}
 ```
