@@ -7,8 +7,8 @@ site_url:         https://korsbo.github.io/Latexify.jl/
 site_description: Documentation for Latexify.jl
 site_author:      Niklas Korsbo
 
-#theme: readthedocs
-theme: biojulia
+theme: readthedocs
+#theme: biojulia
 
 extra_css:
   - assets/Documenter.css
