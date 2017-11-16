@@ -12,6 +12,7 @@ latexify has methods for generating latex strings from a range of different juli
 
 - Expressions,
 - Strings,
+- Numbers (including rationals and complex),
 - Symbolic expressions from SymEngine.jl,
 - ParameterizedFunctions from DifferentialEquations.jl
 

@@ -80,6 +80,7 @@ latexify(i::Number) = string(i)
 latexify(i::Symbol) = convertSubscript(i)
 latexify(i::String) = latexify(parse(i))
 latexify(i::Rational) = latexify(:($(i.num)/$(i.den)))
+latexify(z::Complex) = "$(z.re)$(z.im < 0 ? "" : "+" )$(z.im)\\textit{i}"
 
 
 function latexify(x::SymEngine.Basic)
