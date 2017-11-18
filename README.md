@@ -41,7 +41,7 @@ Currently these functions are:
 - latexarray
 
 ### use with ParameterizedFunctions
-ParameterizedFunctions is a part of the DifferentialEquations.jl suite.
+ParameterizedFunctions is a part of the [DifferentialEquations.jl](http://docs.juliadiffeq.org/stable/index.html) suite.
 The ability to latexify an ODE is pretty much what lured me to create this package.
 
 ```julia

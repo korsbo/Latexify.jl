@@ -40,5 +40,5 @@ This function does not surround the resulting string in any ``\LaTeX`` environme
 ### `latexalign()`
 Latexifies input and surrounds it with an align environment. Useful for systems of equations and such fun stuff.
 
-### `latexarray(x)`
-Latexifies a 1 or 2D array and generates a corresponding ``\LaTeX`` array. 
+### `latexarray()`
+Latexifies a 1 or 2D array and generates a corresponding ``\LaTeX`` array.
