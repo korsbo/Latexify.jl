@@ -81,7 +81,7 @@ latexify(i::Symbol) = convertSubscript(i)
 latexify(i::String) = latexify(parse(i))
 latexify(i::Rational) = latexify( i.den == 1 ? i.num : :($(i.num)/$(i.den)))
 latexify(z::Complex) = "$(z.re)$(z.im < 0 ? "" : "+" )$(z.im)\\textit{i}"
-
+latexify(i::DataFrames.DataArrays.NAtype) = "\\textrm{NA}"
 
 function latexify(x::SymEngine.Basic)
     str = string(x)

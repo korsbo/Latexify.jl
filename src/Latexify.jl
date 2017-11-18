@@ -1,6 +1,6 @@
 __precompile__()
 module Latexify
-import DiffEqBase, SymEngine
+import DiffEqBase, SymEngine, DataFrames
 export latexify, latexarray, latexalign
 
 include("latexify_function.jl")
