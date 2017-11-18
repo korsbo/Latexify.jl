@@ -33,6 +33,30 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "index.html#latexify(x)-1",
+    "page": "Latexify.jl",
+    "title": "latexify(x)",
+    "category": "section",
+    "text": "Latexifies an object x and returns a LaTeX formatted string. If the input is an array, latexify recurses it and latexifies its elements.This function does not surround the resulting string in any LaTeX environments."
+},
+
+{
+    "location": "index.html#latexalign()-1",
+    "page": "Latexify.jl",
+    "title": "latexalign()",
+    "category": "section",
+    "text": "Latexifies input and surrounds it with an align environment. Useful for systems of equations and such fun stuff."
+},
+
+{
+    "location": "index.html#latexarray(x)-1",
+    "page": "Latexify.jl",
+    "title": "latexarray(x)",
+    "category": "section",
+    "text": "Latexifies a 1 or 2D array and generates a corresponding LaTeX array. "
+},
+
+{
     "location": "tutorials/latexify.html#",
     "page": "latexify",
     "title": "latexify",
