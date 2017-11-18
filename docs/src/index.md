@@ -1,215 +1,31 @@
 # Latexify.jl
 
-Latexify.jl is a package which supplies functions for producing ``\LaTeX`` formatted strings from Julia objects.
+Latexify.jl is a package which supplies functions for producing ``\LaTeX`` formatted strings from Julia objects. Among the supported input types are Julia Expressions, which gets converted to properly formatted ``\LaTeX`` maths.
 
-This package allows, among other things, for converting a Julia expression to a ``\LaTeX`` formatted equation.
+## Supported objects
+This package supplies functionality for latexifying objects of the following types:
 
-## At a glance
-
-This package provides a few functions of potential interest:
-
-### `latexify(x)`
-takes a Julia object `x` and returns a ``\LaTeX`` formatted string. This works for `x` of many types, including expressions, which returns ``\LaTeX`` code for an equation.
-
-```julia
-julia> ex = :(x-y/z)
-julia> latexify(ex)
-"x - \\frac{y}{z}"
-```
-
-Among the supported types are:
 - Expressions,
 - Strings,
 - Numbers (including rational and complex),
+- DataFrames' NA type,
 - Symbols,
 - Symbolic expressions from SymEngine.jl.
 
-It can also take arrays, which it recurses and latexifies the elements, returning an array of latex strings.
+Along with any shape of array which contains elements of the above types.
 
-## `latexalign(x)`
-
-While `latexify` does not provide a ``\LaTeX`` environment surrounding the resulting string, `latexalign` does.
-As the name implies, it creates an `align` environment.
-
-
-```julia
-lhs = ["dx/dt", "dy/dt"]
-rhs = ["y^2 - x", "x/y - y"]
-print(latexalign(lhs, rhs))
-```
-outputs:
-
-```maths
-\begin{align}
-\frac{dx}{dt} =& y^{2} - x \\
-\frac{dy}{dt} =& \frac{x}{y} - y \\
-\end{align}
-```
-
-In Jupyter, this can be rendered by:
-```julia
-display("text/latex", latexalign(lhs, rhs))
-```
-
-\begin{align\*}
-\frac{dx}{dt} =& y^{2} - x \\\\
-\frac{dy}{dt} =& \frac{x}{y} - y \\\\
-\end{align\*}
-
-
-#### Using DifferentialEquations.jl
-
-The motivation for creating this function was mainly to be able to render ODEs.
-In my own work, I tend to use [DifferentialEquations.jl](http://docs.juliadiffeq.org/stable/index.html) to define ODEs as [ParameterizedFunctions](http://docs.juliadiffeq.org/stable/analysis/parameterized_functions.html#Function-Definition-Macros-1).
-Therefore, I found it useful to create a method which simply takes the ParameterizedFunction as input:
-
-```julia
-using DifferentialEquations
-ode = @ode_def positiveFeedback begin
-    dx = y/(k_y + y) - x
-    dy = x^n_x/(k_x^n_x + x^n_x) - y
-end k_y=>1.0 k_x=>1.0 n_x=>1
-
-print(latexalign(ode))
-```
-This generates ``\LaTeX`` code that renders as:
-
-\begin{align}
-\frac{dx}{dt} =& \frac{y}{k_{y} + y} - x \\\\
-\frac{dy}{dt} =& \frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y \\\\
-\end{align}
-
-
-
-## Inner workings
-
-This package contains a large number of methods, but two of these are of special importance.
-These are:
-
-- `latexify(ex::Expr)`
-
-and
-
-- `latexoperation(ex::Expr, prevOp::AbstractArray)`
-
-Almost all other functions or methods eventually lead to these two.
-
-`latexify(ex::Expr)` utilises Julias homoiconicity to infer the correct latexification of an expression by recursing through the expression tree. Whenever it hits the end of a recursion it passes the last expression to `latexoperation()`.
-By the nature of this recursion, this expression is one which only contains symbols or strings.
-
-### Explanation by example
-
-Let's define a variable of the expression type:
+Example:
 ```julia-repl
-julia> ex = :(x + y/z)
+julia> str = "x/(2*k_1+x^2)"
+julia> print(latexify(str))
+
+\frac{x}{2 \cdot k_{1} + x^{2}}
 ```
 
-This expression has a field which contains the first operation which must be done, along with the objects that this operation will operate on:
-```julia-repl
-julia> ex.args
+which renders as
 
-3-element Array{Any,1}:
- :+      
- :x      
- :(y / z)
-```
+\begin{equation\*}
+\frac{x}{2 \cdot k_{1} + x^{2}}
+\end{equation\*}
 
-The first two element are both Symbols, while the third one is an expression:
-```julia-repl
-julia> typeof.(ex.args)
-
-3-element Array{DataType,1}:
- Symbol
- Symbol
- Expr
-```
-
-Since at least one of these elements is an expression, the next step of the recursive algorithm is to dive into that expression:
-
-```julia-repl
-julia> newEX = ex.args[3]
-julia> newEx.args
-
-3-element Array{Any,1}:
- :/
- :y
- :z
-```
-
-Since none of these arguments is another expression, `newEx` will be passed to `latexoperation()`.
-This function checks which mathematical operation is being done and converts newEx to an appropriately formatted string.
-In this case, that string will be "\\\\frac{y}{z}" (and yes, a double slash is needed).
-
-`newEx` is now a string (despite its name):
-
-
-```julia
-julia> newEx
-
-"\\frac{y}{z}"
-```
-
-The recursive `latexify()` pulls this value back to the original expression `ex`, such that:
-
-```julia-repl
-julia> ex.args
-
-3-element Array{Any,1}:
- :+      
- :x      
- :"\\frac{y}{z}"
-```
-
-Now, since this expression does not consist of any further expressions, it is passed to `latexoperation()`.
-The operator is now "+", and it should be applied on the second and third element of the expression, resulting in:
-
-```julia
-"x + \\frac{y}{z}"
-```
-
-using the print function you get:
-
-```julia-repl
-julia> print(latexify(ex))
-
-"x + \frac{y}{z}"
-```
-
-which in a ``\LaTeX`` maths environment renders as:
-
-```math
-x + \frac{y}{z}
-```
-
-
-
-## Extended functionality
-
-
-With the above example we can understand how an expression is converted to a ``\LaTeX`` formatted string (unless my pedagogical skills are worse than I fear).
-
-So, anything which can be converted to a Julia expression of the Expr type can be latexified.
-Luckily, since Julia needs to convert your code to expressions before it can be evaluated, Julia is already great at doing this.
-
-There are already some methods for converting other types to expressions and passing them to the core method, for example:
-```julia
-latexify(str::String) = latexify(parse(str))
-```
-but if you find yourself wanting to parse some other type, it is often easy to overload the `latexify` function.
-
-
-## Latexifying Arrays
-Also, if you pass an array to `latexify`, it will recursively try to convert the elements of that array to ``\LaTeX`` formatted strings.
-
-
-```julia-repl
-julia> arr = [:(x-y/(k_10+z)), "x*y*z/3"]
-julia> latexify(arr)
-2-element Array{String,1}:
- "x - \\frac{y}{k_{10} + z}"     
- "\\frac{x \\cdot y \\cdot z}{3}"
-
-julia> println.(latexify(arr))
-x - \frac{y}{k_{10} + z}
-\frac{x \cdot y \cdot z}{3}
-```
+## Functions

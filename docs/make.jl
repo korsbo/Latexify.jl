@@ -7,9 +7,12 @@ makedocs(
     sitename = "Latexify.jl",
     pages = [
         "index.md",
-        "Demos" => [
+        "At a glance" => [
             "tutorials/latexify.md",
-            "tutorials/latexarray.md"
+            "tutorials/latexalign.md",
+            "tutorials/latexarray.md",
+            "tutorials/rendering_latex.md",
+            "tutorials/inner_workings.md"
         ],
         "Functions" => [
             "functions/latexify.md",
