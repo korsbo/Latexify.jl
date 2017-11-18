@@ -1,4 +1,5 @@
 using Latexify
+using DifferentialEquations
 test_results = []
 
 str = "2*x^2 - y/c_2"
@@ -20,12 +21,9 @@ push!(test_results, latexify(:(log10(x))) == "\\log_{10}\\left( x \\right)")
 push!(test_results, latexify(:(sin(x))) ==  "\\sin\\left( x \\right)")
 push!(test_results, latexify("x = 4*y") == "x = 4 \\cdot y")
 push!(test_results, latexify(:(sqrt(x))) == "\\sqrt{x}")
-
-
-
+push!(test_results, latexify(complex(1,-1)) == "1-1\\textit{i}")
 push!(test_results, latexify(1//2) == "\\frac{1}{2}")
 
-using DifferentialEquations
 f = @ode_def feedback begin
     dx = y/c_1 - x
     dy = x^c_2 - y
