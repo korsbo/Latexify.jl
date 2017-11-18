@@ -17,7 +17,7 @@ function latexarray{T}(arr::AbstractArray{T, 2}; adjustment::Symbol=:c)
     str *= "\\left[\n"
     str *= "\\begin{array}{" * "$(adjustment)"^columns * "}\n"
 
-    isa(arr, Matrix{String}) || (arr = latexify(arr))
+    T == String || (arr = latexify(arr))
     for i=1:rows, j=1:columns
         str *= arr[i,j]
         j==columns ? (str *= "\\\\ \n") : (str *= " & ")
@@ -30,15 +30,14 @@ end
 
 function latexarray{T}(arr::AbstractArray{T, 1}; adjustment::Symbol=:c)
     rows = length(arr)
-    columns = (1)
     str = "\\begin{equation}\n"
     str *= "\\left[\n"
-    str *= "\\begin{array}{" * "$(adjustment)"^columns * "}\n"
+    str *= "\\begin{array}{" * "$(adjustment)" * "}\n"
 
-    isa(arr, Matrix{String}) || (arr = latexify(arr))
-    for i=1:rows, j=1:columns
-        str *= arr[i,j]
-        j==columns ? (str *= "\\\\ \n") : (str *= " & ")
+    T == String || (arr = latexify(arr))
+    for i=1:rows
+        str *= arr[i]
+        str *= "\\\\ \n"
     end
 
     str *= "\\end{array}\n"
