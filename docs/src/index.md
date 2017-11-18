@@ -29,3 +29,16 @@ which renders as
 \end{equation\*}
 
 ## Functions
+
+### `latexify(x)`
+
+Latexifies an object `x` and returns a ``\LaTeX`` formatted string.
+If the input is an array, `latexify` recurses it and latexifies its elements.
+
+This function does not surround the resulting string in any ``\LaTeX`` environments.
+
+### `latexalign()`
+Latexifies input and surrounds it with an align environment. Useful for systems of equations and such fun stuff.
+
+### `latexarray(x)`
+Latexifies a 1 or 2D array and generates a corresponding ``\LaTeX`` array. 

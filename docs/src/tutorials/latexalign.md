@@ -30,7 +30,7 @@ display("text/latex", latexalign(lhs, rhs))
 \end{align\*}
 
 
-#### Using DifferentialEquations.jl
+## Using DifferentialEquations.jl
 
 The motivation for creating this function was mainly to be able to render ODEs.
 In my own work, I tend to use [DifferentialEquations.jl](http://docs.juliadiffeq.org/stable/index.html) to define ODEs as [ParameterizedFunctions](http://docs.juliadiffeq.org/stable/analysis/parameterized_functions.html#Function-Definition-Macros-1).
