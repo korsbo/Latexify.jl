@@ -49,11 +49,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "index.html#latexarray(x)-1",
+    "location": "index.html#latexarray()-1",
     "page": "Latexify.jl",
-    "title": "latexarray(x)",
+    "title": "latexarray()",
     "category": "section",
-    "text": "Latexifies a 1 or 2D array and generates a corresponding LaTeX array. "
+    "text": "Latexifies a 1 or 2D array and generates a corresponding LaTeX array."
 },
 
 {
