@@ -73,10 +73,10 @@ display("text/latex", latexalign(f))
 I find this to be more readable than the ODE definition, and I'm therefore more likely to spot errors.
 
 ## Installation
-This package is not yet registered with METADATA.jl, but to install it you can run
+This package is registered with METADATA.jl, so to install it you can just run
 
 ```julia
-Pkg.clone("https://github.com/korsbo/Latexify.jl")
+Pkg.add("Latexify")
 ```
 
 You can access the functions by
