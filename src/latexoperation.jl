@@ -17,7 +17,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
         str=""
         for i in 2:length(args)
             arg = args[i]
-            prevOp[i] in [:+, :-]  && (arg = "($arg)")
+            prevOp[i] in [:+, :-]  && (arg = "\\left( $arg \\right)")
             str = string(str, arg)
             i != length(args) && (str *= " \\cdot ")
         end
@@ -33,7 +33,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
         return str
     elseif op == :^
         #isa(args[2], String) && (args[2]="($(args[2]))")
-        prevOp[2] != :none  && (args[2]="($(args[2]))")
+        prevOp[2] != :none  && (args[2]="\\left( $(args[2]) \\right)")
         return "$(args[2])^{$(args[3])}"
     elseif ex.head == :(=) && length(args) == 2
         return "$(args[1]) = $(args[2])"
