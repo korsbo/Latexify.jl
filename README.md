@@ -1,7 +1,9 @@
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://korsbo.github.io/Latexify.jl/stable)
 [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://korsbo.github.io/Latexify.jl/latest)
 [![Build Status](https://travis-ci.org/korsbo/Latexify.jl.svg?branch=master)](https://travis-ci.org/korsbo/Latexify.jl)
 [![Build status](https://ci.appveyor.com/api/projects/status/f72vlmuvlpux7x6p?svg=true)](https://ci.appveyor.com/project/korsbo/latexify-jl)
 [![codecov](https://codecov.io/gh/korsbo/Latexify.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/korsbo/Latexify.jl)
+[![Coverage Status](https://coveralls.io/repos/github/korsbo/Latexify.jl/badge.svg)](https://coveralls.io/github/korsbo/Latexify.jl)
 
 # Latexify.jl
 This is a package for generating LaTeX maths from julia objects.
@@ -72,10 +74,10 @@ display("text/latex", latexalign(f))
 I find this to be more readable than the ODE definition, and I'm therefore more likely to spot errors.
 
 ## Installation
-This package is not yet registered with METADATA.jl, but to install it you can run
+This package is registered with METADATA.jl, so to install it you can just run
 
 ```julia
-Pkg.clone("https://github.com/korsbo/Latexify.jl")
+Pkg.add("Latexify")
 ```
 
 You can access the functions by
