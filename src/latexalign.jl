@@ -35,16 +35,16 @@ function latexalign{T}(arr::AbstractArray{T,2})
     (rows, columns) = size(arr)
     size(arr,2) != 2 && error("Wrong dimensions of array in latexalign")
     str = "\\begin{align}\n"
-    isa(arr, Matrix{String}) || (arr = latexify(arr))
+    isa(arr, Matrix{String}) || (arr = latexraw(arr))
     for i in 1:rows
         str *= "$(arr[i,1]) =& $(arr[i,2]) \\\\ \n"
     end
     str *= "\\end{align}\n"
-    return str
+    return LaTeXString(str)
 end
 
 function latexalign(lhs::AbstractArray, rhs::AbstractArray)
-    return latexalign(latexify(hcat(lhs, rhs)))
+    return latexalign(latexraw(hcat(lhs, rhs)))
 end
 
 function latexalign(ode::DiffEqBase.AbstractParameterizedFunction; field::Symbol=:funcs)

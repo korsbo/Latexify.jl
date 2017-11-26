@@ -1,12 +1,14 @@
 #!/usr/bin/env julia
 
 #Start Test Script
-using Latexify
+using Latexify, LaTeXStrings
 using Base.Test
 
 # Run tests
 
 tic()
+println("Test latexraw function")
+@time @test include("latexraw_test.jl")
 println("Test latexify function")
 @time @test include("latexify_test.jl")
 println("Test latexalign function")
