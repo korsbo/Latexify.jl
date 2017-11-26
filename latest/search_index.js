@@ -33,11 +33,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "index.html#latexraw(x)-1",
+    "page": "Latexify.jl",
+    "title": "latexraw(x)",
+    "category": "section",
+    "text": "Latexifies an object x and returns a LaTeX formatted string. If the input is an array, latexraw recurses it and latexifies its elements.This function does not surround the resulting string in any LaTeX environments."
+},
+
+{
     "location": "index.html#latexify(x)-1",
     "page": "Latexify.jl",
     "title": "latexify(x)",
     "category": "section",
-    "text": "Latexifies an object x and returns a LaTeX formatted string. If the input is an array, latexify recurses it and latexifies its elements.This function does not surround the resulting string in any LaTeX environments."
+    "text": "Passes x to latexraw, but converts the output to a LaTeXString and surrounds it with a simple $$ environment."
 },
 
 {
@@ -69,7 +77,7 @@ var documenterSearchIndex = {"docs": [
     "page": "latexify",
     "title": "latexify",
     "category": "section",
-    "text": "takes a Julia object x and returns a LaTeX formatted string. This works for x of many types, including expressions, which returns LaTeX code for an equation.julia> ex = :(x-y/z)\njulia> latexify(ex)\nL\"$x - \\frac{y}{z}$\"In Jupyter or Hydrogen this automatically renders as:x - fracyzAmong the supported types are:Expressions,\nStrings,\nNumbers (including rational and complex),\nSymbols,\nSymbolic expressions from SymEngine.jl.\nParameterizedFunctions.It can also take arrays, which it recurses and latexifies the elements, returning an array of latex strings."
+    "text": "takes a Julia object x and returns a LaTeX formatted string. It also surrounds the output in a simple $$ environment. This works for x of many types, including expressions, which returns LaTeX code for an equation.julia> ex = :(x-y/z)\njulia> latexify(ex)\nL\"$x - \\frac{y}{z}$\"In Jupyter or Hydrogen this automatically renders as:x - fracyzAmong the supported types are:Expressions,\nStrings,\nNumbers (including rational and complex),\nSymbols,\nSymbolic expressions from SymEngine.jl.\nParameterizedFunctions.It can also take arrays, which it recurses and latexifies the elements, returning an array of latex strings."
 },
 
 {
@@ -85,7 +93,7 @@ var documenterSearchIndex = {"docs": [
     "page": "latexalign",
     "title": "latexalign",
     "category": "section",
-    "text": "While latexify does not provide a LaTeX environment surrounding the resulting string, latexalign does. As the name implies, it creates an align environment.lhs = [\"dx/dt\", \"dy/dt\"]\nrhs = [\"y^2 - x\", \"x/y - y\"]\nprint(latexalign(lhs, rhs))outputs:\\begin{align}\n\\frac{dx}{dt} =& y^{2} - x \\\\\n\\frac{dy}{dt} =& \\frac{x}{y} - y \\\\\n\\end{align}In Jupyter, this can be rendered by:display(\"text/latex\", latexalign(lhs, rhs))\\begin{align*} \\frac{dx}{dt} =& y^{2} - x \\\\\n\\frac{dy}{dt} =& \\frac{x}{y} - y \\\\\n\\end{align*}"
+    "text": "This function converts its input to LaTeX align environments. One way of using the function is to pass it two vectors, one which holds the left-hand-side of the equations and the other which holds the right. For example:lhs = [\"dx/dt\", \"dy/dt\"]\nrhs = [\"y^2 - x\", \"x/y - y\"]\nprint(latexalign(lhs, rhs))outputs:\\begin{align}\n\\frac{dx}{dt} =& y^{2} - x \\\\\n\\frac{dy}{dt} =& \\frac{x}{y} - y \\\\\n\\end{align}In Jupyter, this can be rendered by:display( latexalign(lhs, rhs))\\begin{align*} \\frac{dx}{dt} =& y^{2} - x \\\\\n\\frac{dy}{dt} =& \\frac{x}{y} - y \\\\\n\\end{align*}"
 },
 
 {
@@ -141,7 +149,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Inner workings",
     "title": "Inner workings",
     "category": "section",
-    "text": "This package contains a large number of methods, but two of these are of special importance. These are:latexify(ex::Expr)andlatexoperation(ex::Expr, prevOp::AbstractArray)Almost all other functions or methods eventually lead to these two.latexify(ex::Expr) utilises Julias homoiconicity to infer the correct latexification of an expression by recursing through the expression tree. Whenever it hits the end of a recursion it passes the last expression to latexoperation(). By the nature of this recursion, this expression is one which only contains symbols or strings."
+    "text": "This package contains a large number of methods, but two of these are of special importance. These are:latexraw(ex::Expr)andlatexoperation(ex::Expr, prevOp::AbstractArray)These two methods are involved with all conversions to LaTeX equations. latexraw(ex::Expr) utilises Julias homoiconicity to infer the correct latexification of an expression by recursing through the expression tree. Whenever it hits the end of a recursion it passes the last expression to latexoperation(). By the nature of this recursion, this expression is one which only contains symbols or strings."
 },
 
 {
@@ -149,7 +157,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Inner workings",
     "title": "Explanation by example",
     "category": "section",
-    "text": "Let's define a variable of the expression type:julia> ex = :(x + y/z)This expression has a field which contains the first operation which must be done, along with the objects that this operation will operate on:julia> ex.args\n\n3-element Array{Any,1}:\n :+      \n :x      \n :(y / z)The first two element are both Symbols, while the third one is an expression:julia> typeof.(ex.args)\n\n3-element Array{DataType,1}:\n Symbol\n Symbol\n ExprSince at least one of these elements is an expression, the next step of the recursive algorithm is to dive into that expression:julia> newEX = ex.args[3]\njulia> newEx.args\n\n3-element Array{Any,1}:\n :/\n :y\n :zSince none of these arguments is another expression, newEx will be passed to latexoperation(). This function checks which mathematical operation is being done and converts newEx to an appropriately formatted string. In this case, that string will be \"\\\\frac{y}{z}\" (and yes, a double slash is needed).newEx is now a string (despite its name):julia> newEx\n\n\"\\\\frac{y}{z}\"The recursive latexify() pulls this value back to the original expression ex, such that:julia> ex.args\n\n3-element Array{Any,1}:\n :+      \n :x      \n :\"\\\\frac{y}{z}\"Now, since this expression does not consist of any further expressions, it is passed to latexoperation(). The operator is now \"+\", and it should be applied on the second and third element of the expression, resulting in:\"x + \\\\frac{y}{z}\"using the print function you get:julia> print(latexify(ex))\n\n\"x + \\frac{y}{z}\"which in a LaTeX maths environment renders as:x + fracyz"
+    "text": "Let's define a variable of the expression type:julia> ex = :(x + y/z)This expression has a field which contains the first operation which must be done, along with the objects that this operation will operate on:julia> ex.args\n\n3-element Array{Any,1}:\n :+      \n :x      \n :(y / z)The first two element are both Symbols, while the third one is an expression:julia> typeof.(ex.args)\n\n3-element Array{DataType,1}:\n Symbol\n Symbol\n ExprSince at least one of these elements is an expression, the next step of the recursive algorithm is to dive into that expression:julia> newEX = ex.args[3]\njulia> newEx.args\n\n3-element Array{Any,1}:\n :/\n :y\n :zSince none of these arguments is another expression, newEx will be passed to latexoperation(). This function checks which mathematical operation is being done and converts newEx to an appropriately formatted string. In this case, that string will be \"\\\\frac{y}{z}\" (and yes, a double slash is needed).newEx is now a string (despite its name):julia> newEx\n\n\"\\\\frac{y}{z}\"The recursive latexraw() pulls this value back to the original expression ex, such that:julia> ex.args\n\n3-element Array{Any,1}:\n :+      \n :x      \n :\"\\\\frac{y}{z}\"Now, since this expression does not consist of any further expressions, it is passed to latexoperation(). The operator is now \"+\", and it should be applied on the second and third element of the expression, resulting in:\"x + \\\\frac{y}{z}\"using the print function you get:julia> print(latexraw(ex))\n\n\"x + \\frac{y}{z}\"which in a LaTeX maths environment renders as:x + fracyz"
 },
 
 {
@@ -157,7 +165,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Inner workings",
     "title": "Extended functionality",
     "category": "section",
-    "text": "With the above example we can understand how an expression is converted to a LaTeX formatted string (unless my pedagogical skills are worse than I fear).So, anything which can be converted to a Julia expression of the Expr type can be latexified. Luckily, since Julia needs to convert your code to expressions before it can be evaluated, Julia is already great at doing this.There are already some methods for converting other types to expressions and passing them to the core method, for example:latexify(str::String) = latexify(parse(str))but if you find yourself wanting to parse some other type, it is often easy to overload the latexify function."
+    "text": "With the above example we can understand how an expression is converted to a LaTeX formatted string (unless my pedagogical skills are worse than I fear).So, anything which can be converted to a Julia expression of the Expr type can be latexified. Luckily, since Julia needs to convert your code to expressions before it can be evaluated, Julia is already great at doing this.There are already some methods for converting other types to expressions and passing them to the core method, for example:latexraw(str::String) = latexraw(parse(str))but if you find yourself wanting to parse some other type, it is often easy to overload the latexraw function."
 },
 
 {
@@ -165,7 +173,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Inner workings",
     "title": "Latexifying Arrays",
     "category": "section",
-    "text": "Also, if you pass an array to latexify, it will recursively try to convert the elements of that array to LaTeX formatted strings.julia> arr = [:(x-y/(k_10+z)), \"x*y*z/3\"]\njulia> latexify(arr)\n2-element Array{String,1}:\n \"x - \\\\frac{y}{k_{10} + z}\"     \n \"\\\\frac{x \\\\cdot y \\\\cdot z}{3}\"\n\njulia> println.(latexify(arr))\nx - \\frac{y}{k_{10} + z}\n\\frac{x \\cdot y \\cdot z}{3}"
+    "text": "Also, if you pass an array to latexraw, it will recursively try to convert the elements of that array to LaTeX formatted strings.julia> arr = [:(x-y/(k_10+z)), \"x*y*z/3\"]\njulia> latexraw(arr)\n2-element Array{String,1}:\n \"x - \\\\frac{y}{k_{10} + z}\"     \n \"\\\\frac{x \\\\cdot y \\\\cdot z}{3}\"\n\njulia> println.(latexraw(arr))\nx - \\frac{y}{k_{10} + z}\n\\frac{x \\cdot y \\cdot z}{3}"
 },
 
 {
@@ -190,14 +198,6 @@ var documenterSearchIndex = {"docs": [
     "title": "latexalign",
     "category": "page",
     "text": ""
-},
-
-{
-    "location": "functions/latexalign.html#Latexify.latexalign",
-    "page": "latexalign",
-    "title": "Latexify.latexalign",
-    "category": "Function",
-    "text": "latexalign()\n\nGenerate a LaTeX align environment from an input.\n\nExamples\n\nuse with arrays\n\nlhs = [:(dx/dt), :(dy/dt), :(dz/dt)]\nrhs = [:(y-x), :(x*z-y), :(-z)]\nlatexalign(lhs, rhs)\n\n# output\n\n\"\\\\begin{align}\\n\\\\frac{dx}{dt} =& y - x \\\\\\\\ \\n\\\\frac{dy}{dt} =& x \\\\cdot z - y \\\\\\\\ \\n\\\\frac{dz}{dt} =& - z \\\\\\\\ \\n\\\\end{align}\\n\"\n\nuse with ParameterizedFunction\n\nusing DifferentialEquations\node = @ode_def foldChangeDetection begin\n    dm = r_m * (i - m)\n    dy = r_y * (p_y * i/m - y)\nend i=>1.0 r_m=>1.0 r_y=>1.0 p_y=>1.0\n\nlatexalign(ode)\n\n# output\n\n\"\\\\begin{align}\\n\\\\frac{dm}{dt} =& r_{m} \\\\cdot (i - m) \\\\\\\\ \\n\\\\frac{dy}{dt} =& r_{y} \\\\cdot (\\\\frac{p_{y} \\\\cdot i}{m} - y) \\\\\\\\ \\n\\\\end{align}\\n\"\n\n\n\n"
 },
 
 {
