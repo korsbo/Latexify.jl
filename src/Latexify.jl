@@ -5,8 +5,9 @@ import Missings: Missing
 using LaTeXStrings
 export latexify, latexarray, latexalign, latexraw
 
-include("latexify_function.jl")
+include("latexraw.jl")
 include("latexoperation.jl")
+include("latexify_function.jl")
 include("latexarray.jl")
 include("latexalign.jl")
 end
