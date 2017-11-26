@@ -1,6 +1,6 @@
 
 using Latexify
-using DifferentialEquations
+using ParameterizedFunctions
 test_results = []
 
 str = "2*x^2 - y/c_2"

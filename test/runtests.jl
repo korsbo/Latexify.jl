@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 
 #Start Test Script
-using Latexify, LaTeXStrings
+using Latexify, LaTeXStrings, ParameterizedFunctions
 using Base.Test
 
 # Run tests

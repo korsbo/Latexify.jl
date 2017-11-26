@@ -1,5 +1,5 @@
 using Latexify
-using DifferentialEquations
+using ParameterizedFunctions
 
 f = @ode_def feedback begin
     dx = y/c_1 - x
