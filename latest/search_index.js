@@ -177,14 +177,6 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "functions/latexify.html#Latexify.latexify",
-    "page": "latexify",
-    "title": "Latexify.latexify",
-    "category": "Function",
-    "text": "latexify(arg)\n\nGenerate LaTeX equations from arg.\n\nParses expressions, ParameterizedFunctions, SymEngine.Base and arrays thereof. Returns a string formatted for LaTeX.\n\nExamples\n\nusing expressions\n\nexpr = :(x/(y+x))\nlatexify(expr)\n\n# output\n\n\"\\\\frac{x}{y + x}\"\n\nexpr = parse(\"x/(y+x)\")\nlatexify(expr)\n\n# output\n\n\"\\\\frac{x}{y + x}\"\n\nusing ParameterizedFunctions\n\nusing DifferentialEquations;\nf = @ode_def feedback begin\n         dx = y/c_1 - x\n         dy = x^c_2 - y\n       end c_1=>1.0 c_2=>1.0\nlatexify(f)\n\n# output\n\n2-element Array{String,1}:\n \"dx/dt = \\\\frac{y}{c_{1}} - x\"\n \"dy/dt = x^{c_{2}} - y\"\n\nusing SymEngine\n\nusing SymEngine\n@vars x y\nsymExpr = x + x + x*y*y\nlatexify(symExpr)\n\n# output\n\n\"2 \\\\cdot x + x \\\\cdot y^{2}\"\n\n\n\n"
-},
-
-{
     "location": "functions/latexify.html#latexify-1",
     "page": "latexify",
     "title": "latexify",
@@ -229,7 +221,7 @@ var documenterSearchIndex = {"docs": [
     "page": "latexarray",
     "title": "Latexify.latexarray",
     "category": "Function",
-    "text": "latexarray{T}(arr::AbstractArray{T, 2})\n\nCreate a LaTeX array environment using latexify.\n\nExamples\n\narr = [1 2; 3 4]\nlatexarray(arr)\n# output\n\"\\begin{equation}\n\\left[\n\\begin{array}{cc}\n1 & 2\\\\ \n3 & 4\\\\ \n\\end{array}\n\\right]\n\\end{equation}\n\"\n\n\n\n"
+    "text": "latexarray{T}(arr::AbstractArray{T, 2})\n\nCreate a LaTeX array environment using latexraw.\n\nExamples\n\narr = [1 2; 3 4]\nlatexarray(arr)\n# output\n\"\\begin{equation}\n\\left[\n\\begin{array}{cc}\n1 & 2\\\\ \n3 & 4\\\\ \n\\end{array}\n\\right]\n\\end{equation}\n\"\n\n\n\n"
 },
 
 {
