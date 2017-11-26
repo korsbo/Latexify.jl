@@ -29,7 +29,7 @@ f = @ode_def feedback begin
     dx = y/c_1 - x
     dy = x^c_2 - y
 end c_1=>1.0 c_2=>1.0
-push!(test_results, latexraw(f) == ["dx/dt = \\frac{y}{c_{1}} - x", "dy/dt = x^{c_{2}} - y"])
+push!(test_results, latexraw(f) == ["\\frac{dx}{dt} = \\frac{y}{c_{1}} - x", "\\frac{dy}{dt} = x^{c_{2}} - y"])
 
 println("latexraw_test successes: \n", test_results)
 all(test_results)

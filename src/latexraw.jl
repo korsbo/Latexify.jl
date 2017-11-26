@@ -93,7 +93,7 @@ end
 
 
 function latexraw(ode::DiffEqBase.AbstractParameterizedFunction)
-    lhs = ["d$x/dt = " for x in ode.syms]
+    lhs = ["\\frac{d$x}{dt} = " for x in ode.syms]
     rhs = latexraw(ode.funcs)
     return lhs .* rhs
 end
