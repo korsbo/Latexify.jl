@@ -11,7 +11,7 @@ makedocs(
             "tutorials/latexify.md",
             "tutorials/latexalign.md",
             "tutorials/latexarray.md",
-            "tutorials/rendering_latex.md",
+            "tutorials/parameterizedfunctions.md",
             "tutorials/inner_workings.md"
         ],
         "Functions" => [
