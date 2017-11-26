@@ -69,7 +69,7 @@ var documenterSearchIndex = {"docs": [
     "page": "latexify",
     "title": "latexify",
     "category": "section",
-    "text": "takes a Julia object x and returns a LaTeX formatted string. This works for x of many types, including expressions, which returns LaTeX code for an equation.julia> ex = :(x-y/z)\njulia> latexify(ex)\n\"x - \\\\frac{y}{z}\"Among the supported types are:Expressions,\nStrings,\nNumbers (including rational and complex),\nDataFrames' NA type,\nSymbols,\nSymbolic expressions from SymEngine.jl.It can also take arrays, which it recurses and latexifies the elements, returning an array of latex strings."
+    "text": "takes a Julia object x and returns a LaTeX formatted string. This works for x of many types, including expressions, which returns LaTeX code for an equation.julia> ex = :(x-y/z)\njulia> latexify(ex)\nL\"$x - \\frac{y}{z}$\"In Jupyter or Hydrogen this automatically renders as:x - fracyzAmong the supported types are:Expressions,\nStrings,\nNumbers (including rational and complex),\nSymbols,\nSymbolic expressions from SymEngine.jl.\nParameterizedFunctions.It can also take arrays, which it recurses and latexifies the elements, returning an array of latex strings."
 },
 
 {
@@ -113,19 +113,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "tutorials/rendering_latex.html#",
-    "page": "A note on rendering LaTeX",
-    "title": "A note on rendering LaTeX",
+    "location": "tutorials/parameterizedfunctions.html#",
+    "page": "Use with ParameterizedFunctions",
+    "title": "Use with ParameterizedFunctions",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "tutorials/rendering_latex.html#A-note-on-rendering-\\LaTeX-1",
-    "page": "A note on rendering LaTeX",
-    "title": "A note on rendering LaTeX",
+    "location": "tutorials/parameterizedfunctions.html#Use-with-ParameterizedFunctions-1",
+    "page": "Use with ParameterizedFunctions",
+    "title": "Use with ParameterizedFunctions",
     "category": "section",
-    "text": "Using the print function on a latexified object prints text which is suitable for copy-pasting into a LaTeX document.However, it is often also useful to be able to render the equation inside the document that one is using to develop code. The Julia REPL does not support this, but IJulia does. So, inside a Jupyter document (or if you are running Atom with Hydrogen), you can render LaTeX usingdisplay(\"text/latex\", x)where x is a latex-formatted string.This requires x to specify a LaTeX environment. latexalign and latexarray already does this, but if you want to render the result of latexify you must supply an environment (for example \"\\$ $x \\$\")."
+    "text": "In the latexalign tutorial I mentioned that one can use latexalign directly on a ParameterizedFunction. Here, I make a somewhat more convoluted and hard-to-read example (you'll soon se why):using Latexify\nusing DifferentialEquations\node = @ode_def positiveFeedback begin\n    dx = y*y*y/(k_y_x + y) - x - x\n    dy = x^n_x/(k_x^n_x + x^n_x) - y\nend k_y=>1.0 k_x=>1.0 n_x=>1\n\nlatexalign(ode)\nprint(latexalign(ode))This generates LaTeX code that renders as:\\begin{align} \\frac{dx}{dt} =& \\frac{y \\cdot y \\cdot y}{k_{y_x} + y} - x - x \\\\\n\\frac{dy}{dt} =& \\frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y \\\\\n\\end{align}This is pretty nice, but there are a few parts of the equation which could be reduced. Using a keyword argument, you can utilise the SymEngine.jl to reduce the expression before printing.latexalign(ode, field=:symfuncs)\\begin{align} \\frac{dx}{dt} =& -2 \\cdot x + \\frac{y^{3}}{k_{y_x} + y} \\\\\n\\frac{dy}{dt} =& - y + \\frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} \\\\\n\\end{align}ParameterizedFunctions symbolically calculates the jacobian, inverse jacobian, hessian, and all kinds of goodness. Since they are available as arrays of symbolic expressions, which are latexifyable, you can render pretty much all of them.latexarray(ode.symjac)\\begin{equation} \\left[ \\begin{array}{cc} -2 & \\frac{3 \\cdot y^{2}}{k_{y_x} + y} - \\frac{y^{3}}{\\left( k_{y_x} + y \\right)^{2}}\\\\\n\\frac{x^{-1 + n_{x}} \\cdot n_{x}}{k_{x}^{n_{x}} + x^{n_{x}}} - \\frac{x^{-1 + 2 \\cdot n_{x}} \\cdot n_{x}}{\\left( k_{x}^{n_{x}} + x^{n_{x}} \\right)^{2}} & -1\\\\\n\\end{array} \\right] \\end{equation}Pretty neat huh? And if you learn how to use latexify, latexalign, latexraw and latexarray you can really format the output in pretty much any way you want."
 },
 
 {
