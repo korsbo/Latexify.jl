@@ -9,8 +9,7 @@
 This is a package for generating LaTeX maths from julia objects.
 
 This package utilises Julias [homoiconicity](https://en.wikipedia.org/wiki/Homoiconicity) to convert expressions to LaTeX-formatted strings.
-This is done using the function latexify.
-latexify has methods for generating latex strings from a range of different julia objects, including:
+This package supplies functionalities for converting a range of different Julia objects, including:
 
 - Expressions,
 - Strings,
@@ -20,27 +19,31 @@ latexify has methods for generating latex strings from a range of different juli
 
 as well as arrays of any supported types.
 
-### Example
-```julia
-using Latexify
+Latexify.jl supplies a few functions:
+- `latexraw`, a function that all other eventually uses. This latexifies objects and returns a string which does not contain a surrounding `\LaTeX` environment.
+- `latexify`, calls `latexraw` but converts the output to a LaTeXString which is automatically rendered in Jupyter or Hydrogen, and which surrounds the output string with $$.
+- 'latexalign', generates a latex align environment.
+- 'latexarray', generates a latex array.
 
-ex = :(x/(y+x)^2)
-latexstring = latexify(ex)
-print(latexstring)
+### Examples
+#### latexifying expressions
+```julia
+julia> using Latexify
+julia> ex = :(x/(y+x)^2)
+julia> latexstring = latexify(ex)
+julia> print(latexstring)
 ```
 results in:
 ```LaTeX
 \frac{x}{(y+x)^{2}}
 ```
 
-## Functions for generating complete latex environments.
-
-The function latexify generates a LaTeX-formatted string, but not a complete LaTeX environment.
-To do this, there are some additional functions named after the LaTeX environment they create.
-
-Currently these functions are:
-- latexalign
-- latexarray
+#### latexifying strings
+```julia-repl
+julia> using Latexify
+julia> print(latexraw("x+y/(b-2)^2"))
+x + \frac{y}{\left( b - 2 \right)^{2}}
+```
 
 ### use with ParameterizedFunctions
 ParameterizedFunctions is a part of the [DifferentialEquations.jl](http://docs.juliadiffeq.org/stable/index.html) suite.
@@ -66,12 +69,9 @@ outputs:
 ```
 
 This can be useful for lazy people, like me, who don't want to type out equations.
-But if you use Jupyter, it can also be useful to get a more clear view of your equations.
-Latex can be rendered using:
-```julia
-display("text/latex", latexalign(f))
-```
-I find this to be more readable than the ODE definition, and I'm therefore more likely to spot errors.
+But if you use Jupyter (or Atom with Hydrogen), it can also be useful to get a more clear view of your equations.
+By using a string type supplied by [LaTeXStrings.jl](https://github.com/stevengj/LaTeXStrings.jl) the output of all functions except `latexraw` is automatically rendered. I cannot demonstrate this in the README, since github markdown does not support rendering, but for some examples you can see the [docs](https://korsbo.github.io/Latexify.jl/stable).
+
 
 ## Installation
 This package is registered with METADATA.jl, so to install it you can just run
@@ -86,7 +86,7 @@ using Latexify
 ```
 
 ## Further information
-For further information see the [docs](https://korsbo.github.io/Latexify.jl/latest).
+For further information see the [docs](https://korsbo.github.io/Latexify.jl/stable).
 
 ## Contributing
 I would be happy to receive feedback, suggestions, and help with improving this package.

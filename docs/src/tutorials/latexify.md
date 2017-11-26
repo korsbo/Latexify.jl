@@ -1,5 +1,8 @@
 # `latexify`
-takes a Julia object `x` and returns a ``\LaTeX`` formatted string. This works for `x` of many types, including expressions, which returns ``\LaTeX`` code for an equation.
+takes a Julia object `x` and returns a ``\LaTeX`` formatted string.
+It also surrounds the output in a simple \$\$ environment.
+This works for `x` of many types, including expressions, which returns ``\LaTeX`` code for an equation.
+
 
 ```julia-repl
 julia> ex = :(x-y/z)

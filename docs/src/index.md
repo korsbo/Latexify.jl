@@ -30,12 +30,15 @@ which renders as
 
 ## Functions
 
-### `latexify(x)`
+### `latexraw(x)`
 
 Latexifies an object `x` and returns a ``\LaTeX`` formatted string.
-If the input is an array, `latexify` recurses it and latexifies its elements.
+If the input is an array, `latexraw` recurses it and latexifies its elements.
 
 This function does not surround the resulting string in any ``\LaTeX`` environments.
+
+### `latexify(x)`
+Passes `x` to `latexraw`, but converts the output to a LaTeXString and surrounds it with a simple \$\$ environment.
 
 ### `latexalign()`
 Latexifies input and surrounds it with an align environment. Useful for systems of equations and such fun stuff.

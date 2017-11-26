@@ -1,4 +1,4 @@
-# latexoperation
+# `latexoperation`
 
 This function is not exported.
 

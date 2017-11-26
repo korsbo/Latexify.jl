@@ -1,5 +1,4 @@
-
-# latexarray
+# `latexarray`
 
 ```@meta
 DocTestSetup = quote

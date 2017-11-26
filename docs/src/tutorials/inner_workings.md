@@ -3,15 +3,15 @@
 This package contains a large number of methods, but two of these are of special importance.
 These are:
 
-- `latexify(ex::Expr)`
+- `latexraw(ex::Expr)`
 
 and
 
 - `latexoperation(ex::Expr, prevOp::AbstractArray)`
 
-Almost all other functions or methods eventually lead to these two.
+These two methods are involved with all conversions to ``\LaTeX`` equations. 
 
-`latexify(ex::Expr)` utilises Julias homoiconicity to infer the correct latexification of an expression by recursing through the expression tree. Whenever it hits the end of a recursion it passes the last expression to `latexoperation()`.
+`latexraw(ex::Expr)` utilises Julias homoiconicity to infer the correct latexification of an expression by recursing through the expression tree. Whenever it hits the end of a recursion it passes the last expression to `latexoperation()`.
 By the nature of this recursion, this expression is one which only contains symbols or strings.
 
 ## Explanation by example
@@ -66,7 +66,7 @@ julia> newEx
 "\\frac{y}{z}"
 ```
 
-The recursive `latexify()` pulls this value back to the original expression `ex`, such that:
+The recursive `latexraw()` pulls this value back to the original expression `ex`, such that:
 
 ```julia-repl
 julia> ex.args
@@ -87,7 +87,7 @@ The operator is now "+", and it should be applied on the second and third elemen
 using the print function you get:
 
 ```julia-repl
-julia> print(latexify(ex))
+julia> print(latexraw(ex))
 
 "x + \frac{y}{z}"
 ```
@@ -110,23 +110,23 @@ Luckily, since Julia needs to convert your code to expressions before it can be 
 
 There are already some methods for converting other types to expressions and passing them to the core method, for example:
 ```julia
-latexify(str::String) = latexify(parse(str))
+latexraw(str::String) = latexraw(parse(str))
 ```
-but if you find yourself wanting to parse some other type, it is often easy to overload the `latexify` function.
+but if you find yourself wanting to parse some other type, it is often easy to overload the `latexraw` function.
 
 
 ## Latexifying Arrays
-Also, if you pass an array to `latexify`, it will recursively try to convert the elements of that array to ``\LaTeX`` formatted strings.
+Also, if you pass an array to `latexraw`, it will recursively try to convert the elements of that array to ``\LaTeX`` formatted strings.
 
 
 ```julia-repl
 julia> arr = [:(x-y/(k_10+z)), "x*y*z/3"]
-julia> latexify(arr)
+julia> latexraw(arr)
 2-element Array{String,1}:
  "x - \\frac{y}{k_{10} + z}"     
  "\\frac{x \\cdot y \\cdot z}{3}"
 
-julia> println.(latexify(arr))
+julia> println.(latexraw(arr))
 x - \frac{y}{k_{10} + z}
 \frac{x \cdot y \cdot z}{3}
 ```

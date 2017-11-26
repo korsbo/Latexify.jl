@@ -1,8 +1,8 @@
 
 # `latexalign`
 
-While `latexify` does not provide a ``\LaTeX`` environment surrounding the resulting string, `latexalign` does.
-As the name implies, it creates an `align` environment.
+This function converts its input to ``\LaTeX`` align environments.
+One way of using the function is to pass it two vectors, one which holds the left-hand-side of the equations and the other which holds the right. For example:
 
 
 ```julia
@@ -21,7 +21,7 @@ outputs:
 
 In Jupyter, this can be rendered by:
 ```julia
-display("text/latex", latexalign(lhs, rhs))
+display( latexalign(lhs, rhs))
 ```
 
 \begin{align\*}
