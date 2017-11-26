@@ -1,5 +1,5 @@
 doc"""
-    latexify(arg)
+    latexraw(arg)
 
 Generate LaTeX equations from `arg`.
 
@@ -11,7 +11,7 @@ Returns a string formatted for LaTeX.
 ## using expressions
 ```jldoctest
 expr = :(x/(y+x))
-latexify(expr)
+latexraw(expr)
 
 # output
 
@@ -20,7 +20,7 @@ latexify(expr)
 
 ```jldoctest
 expr = parse("x/(y+x)")
-latexify(expr)
+latexraw(expr)
 
 # output
 
@@ -34,7 +34,7 @@ f = @ode_def feedback begin
          dx = y/c_1 - x
          dy = x^c_2 - y
        end c_1=>1.0 c_2=>1.0
-latexify(f)
+latexraw(f)
 
 # output
 
@@ -48,17 +48,17 @@ latexify(f)
 using SymEngine
 @vars x y
 symExpr = x + x + x*y*y
-latexify(symExpr)
+latexraw(symExpr)
 
 # output
 
 "2 \\cdot x + x \\cdot y^{2}"
 ```
 """
-function latexify end
+function latexraw end
 
 
-function latexify(inputex::Expr)
+function latexraw(inputex::Expr)
     function recurseexp!(ex)
         prevOp = Vector{Symbol}(length(ex.args))
         fill!(prevOp, :none)
@@ -75,23 +75,30 @@ function latexify(inputex::Expr)
 end
 
 
-latexify(arr::AbstractArray) = [latexify(i) for i in arr]
-latexify(i::Number) = string(i)
-latexify(i::Symbol) = convertSubscript(i)
-latexify(i::String) = latexify(parse(i))
-latexify(i::Rational) = latexify( i.den == 1 ? i.num : :($(i.num)/$(i.den)))
-latexify(z::Complex) = "$(z.re)$(z.im < 0 ? "" : "+" )$(z.im)\\textit{i}"
-latexify(i::DataFrames.DataArrays.NAtype) = "\\textrm{NA}"
+latexraw(arr::AbstractArray) = [latexraw(i) for i in arr]
+latexraw(i::Number) = string(i)
+latexraw(i::Symbol) = convertSubscript(i)
+latexraw(i::String) = latexraw(parse(i))
+latexraw(i::Rational) = latexraw( i.den == 1 ? i.num : :($(i.num)/$(i.den)))
+latexraw(z::Complex) = "$(z.re)$(z.im < 0 ? "" : "+" )$(z.im)\\textit{i}"
+#latexraw(i::DataFrames.DataArrays.NAtype) = "\\textrm{NA}"
+latexraw(i::Missing) = "\\textrm{NA}"
+latexraw(str::LaTeXStrings.LaTeXString) = str
 
-function latexify(x::SymEngine.Basic)
+function latexraw(x::SymEngine.Basic)
     str = string(x)
     ex = parse(str)
-    latexify(ex)
+    latexraw(ex)
 end
 
 
-function latexify(ode::DiffEqBase.AbstractParameterizedFunction)
+function latexraw(ode::DiffEqBase.AbstractParameterizedFunction)
     lhs = ["d$x/dt = " for x in ode.syms]
-    rhs = latexify(ode.funcs)
+    rhs = latexraw(ode.funcs)
     return lhs .* rhs
 end
+
+
+
+latexify(x) = latexstring( latexraw(x) )
+latexify(x::AbstractArray) = [ latexify(i) for i in x]

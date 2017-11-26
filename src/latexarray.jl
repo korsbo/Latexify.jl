@@ -1,7 +1,7 @@
 
 """
     latexarray{T}(arr::AbstractArray{T, 2})
-Create a LaTeX array environment using [`latexify`](@ref).
+Create a LaTeX array environment using [`latexraw`](@ref).
 
 # Examples
 ```
@@ -17,7 +17,7 @@ function latexarray{T}(arr::AbstractArray{T, 2}; adjustment::Symbol=:c)
     str *= "\\left[\n"
     str *= "\\begin{array}{" * "$(adjustment)"^columns * "}\n"
 
-    T == String || (arr = latexify(arr))
+    T == LaTeXStrings.LaTeXString || (arr = latexraw(arr))
     for i=1:rows, j=1:columns
         str *= arr[i,j]
         j==columns ? (str *= "\\\\ \n") : (str *= " & ")
@@ -26,6 +26,7 @@ function latexarray{T}(arr::AbstractArray{T, 2}; adjustment::Symbol=:c)
     str *= "\\end{array}\n"
     str *= "\\right]\n"
     str *= "\\end{equation}\n"
+    return LaTeXString(str)
 end
 
 function latexarray{T}(arr::AbstractArray{T, 1}; adjustment::Symbol=:c)
@@ -34,7 +35,7 @@ function latexarray{T}(arr::AbstractArray{T, 1}; adjustment::Symbol=:c)
     str *= "\\left[\n"
     str *= "\\begin{array}{" * "$(adjustment)" * "}\n"
 
-    T == String || (arr = latexify(arr))
+    T == LaTeXStrings.LaTeXString || (arr = latexraw(arr))
     for i=1:rows
         str *= arr[i]
         str *= "\\\\ \n"
@@ -43,4 +44,5 @@ function latexarray{T}(arr::AbstractArray{T, 1}; adjustment::Symbol=:c)
     str *= "\\end{array}\n"
     str *= "\\right]\n"
     str *= "\\end{equation}\n"
+    return LaTeXString(str)
 end
