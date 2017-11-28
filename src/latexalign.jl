@@ -40,7 +40,9 @@ function latexalign{T}(arr::AbstractArray{T,2})
         str *= "$(arr[i,1]) =& $(arr[i,2]) \\\\ \n"
     end
     str *= "\\end{align}\n"
-    return LaTeXString(str)
+    latexstr = LaTeXString(str)
+    COPY_TO_CLIPBOARD && clipboard(latexstr)
+    return latexstr
 end
 
 function latexalign(lhs::AbstractArray, rhs::AbstractArray)
