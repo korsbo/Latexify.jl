@@ -31,7 +31,7 @@ function latexarray{T}(arr::AbstractArray{T, 2}; adjustment::Symbol=:c)
     return latexstr
 end
 
-function latexarray{T}(arr::AbstractArray{T, 1}; adjustment::Symbol=:c)
+function latexarray{T}(arr::AbstractArray{T, 1}; adjustment::Symbol=:c, transpose=false)
     rows = length(arr)
     str = "\\begin{equation}\n"
     str *= "\\left[\n"
@@ -40,8 +40,9 @@ function latexarray{T}(arr::AbstractArray{T, 1}; adjustment::Symbol=:c)
     T == LaTeXStrings.LaTeXString || (arr = latexraw(arr))
     for i=1:rows
         str *= arr[i]
-        str *= "\\\\ \n"
+        transpose ?  i != rows && (str *= " & ") : (str *= "\\\\ \n")
     end
+    transpose && (str *= " \n")
 
     str *= "\\end{array}\n"
     str *= "\\right]\n"
