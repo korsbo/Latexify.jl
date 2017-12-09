@@ -65,6 +65,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "index.html#Automatic-copying-to-clipboard-1",
+    "page": "Latexify.jl",
+    "title": "Automatic copying to clipboard",
+    "category": "section",
+    "text": "The strings that you would see when using print on any of the above functions can be automatically copied to the clipboard if you so specify. Since I do not wish to mess with your clipboard without you knowing it, this feature must be activated by you.To do so, run'''julia Latexify.copy_to_clipboard(true) '''To once again disable the feature, pass false to the same function.The copying to the clipboard will now occur at every call to a Latexify.jl function, regardless of how you chose to display the output."
+},
+
+{
     "location": "tutorials/latexify.html#",
     "page": "latexify",
     "title": "latexify",
