@@ -53,9 +53,9 @@ Since I do not wish to mess with your clipboard without you knowing it, this fea
 
 To do so, run
 
-'''julia
+```julia
 Latexify.copy_to_clipboard(true)
-'''
+```
 
 To once again disable the feature, pass `false` to the same function.
 
