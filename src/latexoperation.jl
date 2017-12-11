@@ -43,12 +43,13 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
     op == :log2 && return "\\log_{2}\\left( $(args[2]) \\right)"
     op == :sqrt && return "\\$op{$(args[2])}"
     op == :abs && return "\\left\\|$(args[2])\\right\\|"
+    op == :exp && return "e^{$(args[2])}"
 
     #if op in [:log, :sin, :asin, :cos, :acos :tan, :atan]
     length(args) == 2 &&  return "\\$op\\left( $(args[2]) \\right)"
 
-    ## if we have reaced this far without a return, then error.
-    error("latexoperation does not know what to do with one of the
+    ## if we have reached this far without a return, then error.
+    error("Latexify.jl's latexoperation does not know what to do with one of the
                 operators in your expression.")
     return ""
 end
