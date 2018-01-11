@@ -253,7 +253,7 @@ var documenterSearchIndex = {"docs": [
     "page": "latexoperation",
     "title": "Latexify.latexoperation",
     "category": "Function",
-    "text": "latexoperation(ex::Expr, prevOp::AbstractArray)\n\nTranslate a simple operation given by ex to LaTeX maths syntax. This uses the information about the previous operations to deside if a parenthesis is needed.\n\n\n\n"
+    "text": "latexoperation(ex::Expr, prevOp::AbstractArray)\n\nTranslate a simple operation given by ex to LaTeX maths syntax. This uses the information about the previous operations to decide if a parenthesis is needed.\n\n\n\n"
 },
 
 {
