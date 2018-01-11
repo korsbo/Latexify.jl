@@ -31,13 +31,12 @@ latexalign(ode)
 """
 function latexalign end
 
-function latexalign{T}(arr::AbstractArray{T,2})
+function latexalign(arr::AbstractMatrix; separator=" =& ")
     (rows, columns) = size(arr)
-    size(arr,2) != 2 && error("Wrong dimensions of array in latexalign")
+    arr = latexraw(arr)
     str = "\\begin{align}\n"
-    isa(arr, Matrix{String}) || (arr = latexraw(arr))
     for i in 1:rows
-        str *= "$(arr[i,1]) =& $(arr[i,2]) \\\\ \n"
+        str *= join(arr[i,:], separator) * " \\\\ \n"
     end
     str *= "\\end{align}\n"
     latexstr = LaTeXString(str)
@@ -46,11 +45,41 @@ function latexalign{T}(arr::AbstractArray{T,2})
 end
 
 function latexalign(lhs::AbstractArray, rhs::AbstractArray)
-    return latexalign(latexraw(hcat(lhs, rhs)))
+    return latexalign(hcat(lhs, rhs))
 end
 
 function latexalign(ode::DiffEqBase.AbstractParameterizedFunction; field::Symbol=:funcs)
     lhs = [parse("d$x/dt") for x in ode.syms]
     rhs = getfield(ode, field)
     return latexalign(lhs, rhs)
+end
+
+function latexalign(nested::AbstractVector{AbstractVector})
+    return latexalign(hcat(nested...))
+end
+
+function latexalign(odearray::AbstractVector{T}; field::Symbol=:funcs) where T<:DiffEqBase.AbstractParameterizedFunction
+    a = []
+    maxrows = maximum(length.(getfield.(odearray, :syms)))
+
+    blank = LaTeXString("")
+    for ode in odearray
+        nr_eq = length(ode.syms)
+
+        lhs = [parse("d$x/dt") for x in ode.syms]
+        rhs = getfield(ode, field)
+        first_separator = fill(LaTeXString(" &= "), nr_eq)
+        second_separator = fill(LaTeXString(" & "), nr_eq)
+        if nr_eq < maxrows
+            ### This breaks type-safety, but I don't think that it will be a bottle neck for anyone.
+            lhs = [lhs; fill(blank, maxrows - nr_eq)]
+            rhs = [rhs; fill(blank, maxrows - nr_eq)]
+            first_separator = [first_separator; fill(LaTeXString(" & "), maxrows-nr_eq)]
+            second_separator = [second_separator; fill(LaTeXString(" & "), maxrows-nr_eq)]
+        end
+
+        append!(a, [lhs, first_separator, rhs, second_separator])
+    end
+    a = hcat(a...)
+    return latexalign(a; separator=" ")
 end

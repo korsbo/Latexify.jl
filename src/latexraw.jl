@@ -71,7 +71,7 @@ function latexraw(inputex::Expr)
         return latexoperation(ex, prevOp)
     end
     ex = deepcopy(inputex)
-    recurseexp!(ex)
+    LaTeXString(recurseexp!(ex))
 end
 
 

@@ -3,7 +3,7 @@
     latexoperation(ex::Expr, prevOp::AbstractArray)
 
 Translate a simple operation given by `ex` to LaTeX maths syntax.
-This uses the information about the previous operations to deside if
+This uses the information about the previous operations to decide if
 a parenthesis is needed.
 
 """
@@ -54,9 +54,11 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
     return ""
 end
 
+latexoperation(sym::Symbol, prevOp::AbstractArray) = "$sym"
+
 
 function convertSubscript!(ex::Expr)
-    for i in 2:length(ex.args)
+    for i in 1:length(ex.args)
         arg = ex.args[i]
         if arg isa Symbol
             ex.args[i] = convertSubscript(arg)
