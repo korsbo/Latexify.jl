@@ -58,6 +58,13 @@ function latexalign(nested::AbstractVector{AbstractVector})
     return latexalign(hcat(nested...))
 end
 
+function latexalign(vec::AbstractVector)
+    lvec = latexraw(vec)
+    lmat = hcat(split.(lvec, " = ")...)
+    larr = [lmat[i,:] for i in 1:size(lmat, 1)]
+    return latexalign( larr... )
+end
+
 function latexalign(odearray::AbstractVector{T}; field::Symbol=:funcs) where T<:DiffEqBase.AbstractParameterizedFunction
     a = []
     maxrows = maximum(length.(getfield.(odearray, :syms)))

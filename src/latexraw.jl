@@ -80,6 +80,7 @@ latexraw(i::Number) = string(i)
 latexraw(i::Symbol) = convertSubscript(i)
 latexraw(i::String) = latexraw(parse(i))
 latexraw(i::SubString) = latexraw(parse(i))
+latexraw(i::SubString{LaTeXStrings.LaTeXString}) = i
 latexraw(i::Rational) = latexraw( i.den == 1 ? i.num : :($(i.num)/$(i.den)))
 latexraw(z::Complex) = "$(z.re)$(z.im < 0 ? "" : "+" )$(z.im)\\textit{i}"
 #latexraw(i::DataFrames.DataArrays.NAtype) = "\\textrm{NA}"
