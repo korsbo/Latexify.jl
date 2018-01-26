@@ -48,9 +48,14 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
     #if op in [:log, :sin, :asin, :cos, :acos :tan, :atan]
     length(args) == 2 &&  return "\\$op\\left( $(args[2]) \\right)"
 
+    if ex.head == :ref
+        argstring = join(args[2:end], ", ")
+        return "\\mathrm{$op}\\left[$argstring\\right]"
+    end
+
     ## if we have reached this far without a return, then error.
     error("Latexify.jl's latexoperation does not know what to do with one of the
-                operators in your expression.")
+                operators in your expression ($op).")
     return ""
 end
 
