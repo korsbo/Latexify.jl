@@ -45,13 +45,13 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
     op == :abs && return "\\left\\|$(args[2])\\right\\|"
     op == :exp && return "e^{$(args[2])}"
 
-    #if op in [:log, :sin, :asin, :cos, :acos :tan, :atan]
-    length(args) == 2 &&  return "\\$op\\left( $(args[2]) \\right)"
 
     if ex.head == :ref
         argstring = join(args[2:end], ", ")
         return "\\mathrm{$op}\\left[$argstring\\right]"
     end
+
+    length(args) == 2 &&  return "\\$op\\left( $(args[2]) \\right)"
 
     ## if we have reached this far without a return, then error.
     error("Latexify.jl's latexoperation does not know what to do with one of the
