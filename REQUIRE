@@ -1,5 +1,5 @@
 julia 0.6
-DiffEqBase v2.4.0
+DiffEqBase 2.4.0
 SymEngine 0.2.0
 Missings 0.2.2
-LaTeXStrings v0.3.0
+LaTeXStrings 0.3.0
