@@ -60,7 +60,9 @@ end
 
 function latexalign(vec::AbstractVector)
     lvec = latexraw(vec)
+    ## turn the array into a matrix
     lmat = hcat(split.(lvec, " = ")...)
+    ## turn the matrix ito arrays of left-hand-side, right-hand-side.
     larr = [lmat[i,:] for i in 1:size(lmat, 1)]
     return latexalign( larr... )
 end
