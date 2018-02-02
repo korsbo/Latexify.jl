@@ -4,13 +4,13 @@ using ParameterizedFunctions
 f = @ode_def feedback begin
     dx = y/c_1 - x
     dy = x^c_2 - y
-end c_1=>1.0 c_2=>1.0
+end c_1 c_2
 
 g = @ode_def test2 begin
     dx = p_x - d_x*x - d_x_y*y*x
     dy = p_y - d_y*y
     dz = p_z
-end p_x=>1.0 d_x=>1.0 d_x_y=>1. p_y=>2.0 d_y=>1.0 p_z=>1.
+end p_x d_x d_x_y p_y d_y p_z
 
 test_results = []
 
