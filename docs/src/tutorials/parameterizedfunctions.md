@@ -9,7 +9,7 @@ using DifferentialEquations
 ode = @ode_def positiveFeedback begin
     dx = y*y*y/(k_y_x + y) - x - x
     dy = x^n_x/(k_x^n_x + x^n_x) - y
-end k_y=>1.0 k_x=>1.0 n_x=>1
+end k_y k_x n_x
 
 latexalign(ode)
 print(latexalign(ode))
