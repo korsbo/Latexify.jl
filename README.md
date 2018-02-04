@@ -59,7 +59,7 @@ using Latexify
 f = @ode_def positiveFeedback begin
     dx = v*y^n/(k^n+y^n) - x
     dy = x/(k_2+x) - y
-end v=>1.0 n=>1.0 k=>1.0 k_2=>1.0
+end v n k k_2
 
 print( latexalign(f) )
 ```
