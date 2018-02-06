@@ -4,30 +4,38 @@ Generate a ``LaTeX`` align environment from an input.
 
 # Examples
 ## use with arrays
-```jldoctest
+
+```julia
 lhs = [:(dx/dt), :(dy/dt), :(dz/dt)]
 rhs = [:(y-x), :(x*z-y), :(-z)]
 latexalign(lhs, rhs)
-
-# output
-
-"\\begin{align}\n\\frac{dx}{dt} =& y - x \\\\ \n\\frac{dy}{dt} =& x \\cdot z - y \\\\ \n\\frac{dz}{dt} =& - z \\\\ \n\\end{align}\n"
 ```
 
+\begin{align}
+\frac{dx}{dt} =& y - x \\\\
+\frac{dy}{dt} =& x \cdot z - y \\\\
+\frac{dz}{dt} =& - z \\\\
+\end{align}
+
 ## use with ParameterizedFunction
+
 ```julia
 using DifferentialEquations
 ode = @ode_def foldChangeDetection begin
     dm = r_m * (i - m)
     dy = r_y * (p_y * i/m - y)
-end i=>1.0 r_m=>1.0 r_y=>1.0 p_y=>1.0
+end i r_m r_y p_y
 
 latexalign(ode)
-
-# output
-
-"\\begin{align}\n\\frac{dm}{dt} =& r_{m} \\cdot (i - m) \\\\ \n\\frac{dy}{dt} =& r_{y} \\cdot (\\frac{p_{y} \\cdot i}{m} - y) \\\\ \n\\end{align}\n"
 ```
+
+
+\begin{align}
+\frac{dm}{dt} =& r_{m} \cdot \left( i - m \right) \\\\
+\frac{dy}{dt} =& r_{y} \cdot \left( \frac{p_{y} \cdot i}{m} - y \right) \\\\
+\end{align}
+
+
 """
 function latexalign end
 
