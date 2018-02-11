@@ -33,6 +33,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "index.html#latexify(x)-1",
+    "page": "Latexify.jl",
+    "title": "latexify(x)",
+    "category": "section",
+    "text": "Latexifies x and returns it in a suitable latex environment. Inputs which are not containers are converted into inline equations $$, container types (AbstractArray) are converted to arrays, and ParameterizedFunctions are converted to align environments."
+},
+
+{
     "location": "index.html#latexraw(x)-1",
     "page": "Latexify.jl",
     "title": "latexraw(x)",
@@ -41,9 +49,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "index.html#latexify(x)-1",
+    "location": "index.html#latexinline(x)-1",
     "page": "Latexify.jl",
-    "title": "latexify(x)",
+    "title": "latexinline(x)",
     "category": "section",
     "text": "Passes x to latexraw, but converts the output to a LaTeXString and surrounds it with a simple $$ environment."
 },
@@ -74,18 +82,18 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "tutorials/latexify.html#",
-    "page": "latexify",
-    "title": "latexify",
+    "page": "latexinline",
+    "title": "latexinline",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "tutorials/latexify.html#latexify-1",
-    "page": "latexify",
-    "title": "latexify",
+    "location": "tutorials/latexify.html#latexinline-1",
+    "page": "latexinline",
+    "title": "latexinline",
     "category": "section",
-    "text": "takes a Julia object x and returns a LaTeX formatted string. It also surrounds the output in a simple $$ environment. This works for x of many types, including expressions, which returns LaTeX code for an equation.julia> ex = :(x-y/z)\njulia> latexify(ex)\nL\"$x - \\frac{y}{z}$\"In Jupyter or Hydrogen this automatically renders as:x - fracyzAmong the supported types are:Expressions,\nStrings,\nNumbers (including rational and complex),\nSymbols,\nSymbolic expressions from SymEngine.jl.\nParameterizedFunctions.It can also take arrays, which it recurses and latexifies the elements, returning an array of latex strings."
+    "text": "takes a Julia object x and returns a LaTeX formatted string. It also surrounds the output in a simple $$ environment. This works for x of many types, including expressions, which returns LaTeX code for an equation.julia> ex = :(x-y/z)\njulia> latexinline(ex)\nL\"$x - \\frac{y}{z}$\"In Jupyter or Hydrogen this automatically renders as:x - fracyzAmong the supported types are:Expressions,\nStrings,\nNumbers (including rational and complex),\nSymbols,\nSymbolic expressions from SymEngine.jl.\nParameterizedFunctions.It can also take arrays, which it recurses and latexifies the elements, returning an array of latex strings."
 },
 
 {
@@ -109,7 +117,7 @@ var documenterSearchIndex = {"docs": [
     "page": "latexalign",
     "title": "Using DifferentialEquations.jl",
     "category": "section",
-    "text": "The motivation for creating this function was mainly to be able to render ODEs. In my own work, I tend to use DifferentialEquations.jl to define ODEs as ParameterizedFunctions. Therefore, I found it useful to create a method which simply takes the ParameterizedFunction as input:using DifferentialEquations\node = @ode_def positiveFeedback begin\n    dx = y/(k_y + y) - x\n    dy = x^n_x/(k_x^n_x + x^n_x) - y\nend k_y=>1.0 k_x=>1.0 n_x=>1\n\nprint(latexalign(ode))This generates LaTeX code that renders as:\\begin{align} \\frac{dx}{dt} =& \\frac{y}{k_{y} + y} - x \\\\\n\\frac{dy}{dt} =& \\frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y \\\\\n\\end{align}"
+    "text": "The motivation for creating this function was mainly to be able to render ODEs. In my own work, I tend to use DifferentialEquations.jl to define ODEs as ParameterizedFunctions. Therefore, I found it useful to create a method which simply takes the ParameterizedFunction as input:using Latexify\nusing DifferentialEquations\node = @ode_def positiveFeedback begin\n    dx = y/(k_y + y) - x\n    dy = x^n_x/(k_x^n_x + x^n_x) - y\nend k_y k_x n_x\n\nlatexalign(ode)\\begin{align} \\frac{dx}{dt} =& \\frac{y}{k_{y} + y} - x \\\\\n\\frac{dy}{dt} =& \\frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y \\\\\n\\end{align}A vector of ParameterizedFunctions will be rendered side-by-side:ode2 = @ode_def negativeFeedback begin\n    dx = y/(k_y + y) - x\n    dy = k_x^n_x/(k_x^n_x + x^n_x) - y\nend k_y k_x n_x\n\nlatexalign([ode, ode2])\\begin{align} \\frac{dx}{dt}  &=  \\frac{y}{k_{y} + y} - x  &  \\frac{dx}{dt}  &=  \\frac{y}{k_{y} + y} - x  &  \\\n\\frac{dy}{dt}  &=  \\frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &  \\frac{dy}{dt}  &=  \\frac{k_{x}^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &  \\\n\\end{align}"
 },
 
 {
@@ -125,7 +133,7 @@ var documenterSearchIndex = {"docs": [
     "page": "latexarray",
     "title": "latexarray",
     "category": "section",
-    "text": "This functions takes a 1 or 2D array and spits out a latex array environment. For example:julia> arr = eye(Int,3)\njulia> print(latexarray(arr))\n\n\\begin{equation}\n\\left[\n\\begin{array}{ccc}\n1 & 0 & 0\\\\\n0 & 1 & 0\\\\\n0 & 0 & 1\\\\\n\\end{array}\n\\right]\n\\end{equation}which renders as:\\begin{equation} \\left[ \\begin{array}{ccc} 1 & 0 & 0\\\\\n0 & 1 & 0\\\\\n0 & 0 & 1\\\\\n\\end{array} \\right] \\end{equation}latexify() is called for each element of the input, individually. It therefore does not matter if the input array is of a mixed type.arr = [1.0, 2-3im, 3//4, :(x/(k_1+x)), \"e^(-k_b*t)\"]\nprint(latexarray(arr))renders as:\\begin{equation} \\left[ \\begin{array}{c} 1.0\\\\\n2-3\\textit{i}\\\\\n\\frac{3}{4}\\\\\n\\frac{x}{k_{1} + x}\\\\\ne^{- k_{b} \\cdot t}\\\\\n\\end{array} \\right] \\end{equation}"
+    "text": "This functions takes a 1 or 2D array and spits out a latex array environment. For example:julia> arr = eye(Int,3)\njulia> print(latexarray(arr))\n\n\\begin{equation}\n\\left[\n\\begin{array}{ccc}\n1 & 0 & 0\\\\\n0 & 1 & 0\\\\\n0 & 0 & 1\\\\\n\\end{array}\n\\right]\n\\end{equation}which renders as:\\begin{equation} \\left[ \\begin{array}{ccc} 1 & 0 & 0\\\\\n0 & 1 & 0\\\\\n0 & 0 & 1\\\\\n\\end{array} \\right] \\end{equation}latexraw() is called for each element of the input, individually. It therefore does not matter if the input array is of a mixed type.arr = [1.0, 2-3im, 3//4, :(x/(k_1+x)), \"e^(-k_b*t)\"]\nlatexarray(arr)renders as:\\begin{equation} \\left[ \\begin{array}{c} 1.0\\\\\n2-3\\textit{i}\\\\\n\\frac{3}{4}\\\\\n\\frac{x}{k_{1} + x}\\\\\ne^{- k_{b} \\cdot t}\\\\\n\\end{array} \\right] \\end{equation}"
 },
 
 {
