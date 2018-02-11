@@ -34,4 +34,4 @@ function latexarray(arr::AbstractMatrix; adjustment::Symbol=:c, transpose=false)
 end
 
 
-latexarray(vec::AbstractVector; kwargs...) = latexarray(hcat(vec); kwargs...)
+latexarray(vec::AbstractVector; kwargs...) = latexarray(hcat(vec...); kwargs...)
