@@ -1,7 +1,6 @@
 using Latexify
 using ParameterizedFunctions
 using LaTeXStrings
-copy_to_clipboard(true)
 
 f = @ode_def feedback begin
     dx = y/c_1 - x
