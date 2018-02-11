@@ -42,7 +42,7 @@ push!(test_results, latexraw("x = 4*y") == "x = 4 \\cdot y")
 push!(test_results, latexraw(:(sqrt(x))) == "\\sqrt{x}")
 push!(test_results, latexraw(complex(1,-1)) == "1-1\\textit{i}")
 push!(test_results, latexraw(1//2) == "\\frac{1}{2}")
-push!(test_results, latexraw(Missing())) == "\\textrm{NA}"
+push!(test_results, latexraw(Missing()) == "\\textrm{NA}")
 
 f = @ode_def feedback begin
     dx = y/c_1 - x
