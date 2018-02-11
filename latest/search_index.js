@@ -193,6 +193,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "functions/latexify.html#Latexify.latexify",
+    "page": "latexify",
+    "title": "Latexify.latexify",
+    "category": "Function",
+    "text": "latexify(::AbstractArray)\n\nReturn a latex array.\n\n\n\nlatexify( nested vector )\n\nIf the vector can be converted to a matrix, return a latex array. Otherwise, convert all non-container elements to inline latex equations.\n\n\n\n"
+},
+
+{
     "location": "functions/latexify.html#latexify-1",
     "page": "latexify",
     "title": "latexify",
@@ -229,7 +237,7 @@ var documenterSearchIndex = {"docs": [
     "page": "latexarray",
     "title": "Latexify.latexarray",
     "category": "Function",
-    "text": "latexarray{T}(arr::AbstractArray{T, 2})\n\nCreate a LaTeX array environment using latexraw.\n\nExamples\n\narr = [1 2; 3 4]\nlatexarray(arr)\n# output\n\"\\begin{equation}\n\\left[\n\\begin{array}{cc}\n1 & 2\\\\ \n3 & 4\\\\ \n\\end{array}\n\\right]\n\\end{equation}\n\"\n\n\n\n"
+    "text": "latexarray{T}(arr::AbstractArray{T, 2})\n\nCreate a LaTeX array environment using latexraw.\n\nExamples\n\narr = [1 2; 3 4]\nlatexarray(arr)\n\nbeginequation\nleft\nbeginarraycc\n1  2 \n3  4 \nendarray\nright\nendequation\n\n\n\n\n"
 },
 
 {
