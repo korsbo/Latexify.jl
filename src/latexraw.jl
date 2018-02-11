@@ -84,18 +84,24 @@ latexraw(i::SubString{LaTeXStrings.LaTeXString}) = i
 latexraw(i::Rational) = latexraw( i.den == 1 ? i.num : :($(i.num)/$(i.den)))
 latexraw(z::Complex) = "$(z.re)$(z.im < 0 ? "" : "+" )$(z.im)\\textit{i}"
 #latexraw(i::DataFrames.DataArrays.NAtype) = "\\textrm{NA}"
-latexraw(i::Missing) = "\\textrm{NA}"
 latexraw(str::LaTeXStrings.LaTeXString) = str
 
-function latexraw(x::SymEngine.Basic)
-    str = string(x)
-    ex = parse(str)
-    latexraw(ex)
+@require Missings latexraw(i::Missings.Missing) = "\\textrm{NA}"
+
+
+@require SymEngine begin
+    function latexraw(x::SymEngine.Basic)
+        str = string(x)
+        ex = parse(str)
+        latexraw(ex)
+    end
 end
 
 
-function latexraw(ode::DiffEqBase.AbstractParameterizedFunction)
-    lhs = ["\\frac{d$x}{dt} = " for x in ode.syms]
-    rhs = latexraw(ode.funcs)
-    return lhs .* rhs
+@require DiffEqBase begin
+    function latexraw(ode::DiffEqBase.AbstractParameterizedFunction)
+        lhs = ["\\frac{d$x}{dt} = " for x in ode.syms]
+        rhs = latexraw(ode.funcs)
+        return lhs .* rhs
+    end
 end

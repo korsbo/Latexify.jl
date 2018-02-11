@@ -4,10 +4,11 @@
 Create a LaTeX array environment using [`latexraw`](@ref).
 
 # Examples
-```
+```julia
 arr = [1 2; 3 4]
 latexarray(arr)
-# output
+```
+```math
 "\\begin{equation}\n\\left[\n\\begin{array}{cc}\n1 & 2\\\\ \n3 & 4\\\\ \n\\end{array}\n\\right]\n\\end{equation}\n"
 ```
 """

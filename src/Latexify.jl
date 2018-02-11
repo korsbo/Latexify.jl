@@ -1,8 +1,8 @@
 __precompile__()
 module Latexify
-import DiffEqBase, SymEngine
-import Missings: Missing
+using Requires
 using LaTeXStrings
+
 export latexify, latexarray, latexalign, latexraw, copy_to_clipboard
 
 COPY_TO_CLIPBOARD = false
