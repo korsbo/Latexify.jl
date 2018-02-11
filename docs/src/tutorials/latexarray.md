@@ -31,12 +31,12 @@ which renders as:
 \end{equation}
 
 
-`latexify()` is called for each element of the input, individually.
+`latexraw()` is called for each element of the input, individually.
 It therefore does not matter if the input array is of a mixed type.
 
 ```julia
 arr = [1.0, 2-3im, 3//4, :(x/(k_1+x)), "e^(-k_b*t)"]
-print(latexarray(arr))
+latexarray(arr)
 ```
 renders as:
 

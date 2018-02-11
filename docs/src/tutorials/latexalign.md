@@ -37,17 +37,34 @@ In my own work, I tend to use [DifferentialEquations.jl](http://docs.juliadiffeq
 Therefore, I found it useful to create a method which simply takes the ParameterizedFunction as input:
 
 ```julia
+using Latexify
 using DifferentialEquations
 ode = @ode_def positiveFeedback begin
     dx = y/(k_y + y) - x
     dy = x^n_x/(k_x^n_x + x^n_x) - y
-end k_y=>1.0 k_x=>1.0 n_x=>1
+end k_y k_x n_x
 
-print(latexalign(ode))
+latexalign(ode)
 ```
-This generates ``\LaTeX`` code that renders as:
 
 \begin{align}
 \frac{dx}{dt} =& \frac{y}{k_{y} + y} - x \\\\
 \frac{dy}{dt} =& \frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y \\\\
+\end{align}
+
+
+A vector of ParameterizedFunctions will be rendered side-by-side:
+
+```julia
+ode2 = @ode_def negativeFeedback begin
+    dx = y/(k_y + y) - x
+    dy = k_x^n_x/(k_x^n_x + x^n_x) - y
+end k_y k_x n_x
+
+latexalign([ode, ode2])
+```
+
+\begin{align}
+\frac{dx}{dt}  &=  \frac{y}{k_{y} + y} - x  &  \frac{dx}{dt}  &=  \frac{y}{k_{y} + y} - x  &  \\
+\frac{dy}{dt}  &=  \frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &  \frac{dy}{dt}  &=  \frac{k_{x}^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &  \\
 \end{align}

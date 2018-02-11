@@ -30,14 +30,18 @@ which renders as
 
 ## Functions
 
-### `latexraw(x)`
+### `latexify(x)`
+Latexifies `x` and returns it in a suitable latex environment.
+Inputs which are not containers are converted into inline equations `$$`, container types (AbstractArray) are converted to arrays, and ParameterizedFunctions are converted to align environments.
 
+
+### `latexraw(x)`
 Latexifies an object `x` and returns a ``\LaTeX`` formatted string.
 If the input is an array, `latexraw` recurses it and latexifies its elements.
 
 This function does not surround the resulting string in any ``\LaTeX`` environments.
 
-### `latexify(x)`
+### `latexinline(x)`
 Passes `x` to `latexraw`, but converts the output to a LaTeXString and surrounds it with a simple \$\$ environment.
 
 ### `latexalign()`

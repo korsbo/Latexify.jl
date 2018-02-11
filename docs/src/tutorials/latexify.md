@@ -1,4 +1,4 @@
-# `latexify`
+# `latexinline`
 takes a Julia object `x` and returns a ``\LaTeX`` formatted string.
 It also surrounds the output in a simple \$\$ environment.
 This works for `x` of many types, including expressions, which returns ``\LaTeX`` code for an equation.
@@ -6,7 +6,7 @@ This works for `x` of many types, including expressions, which returns ``\LaTeX`
 
 ```julia-repl
 julia> ex = :(x-y/z)
-julia> latexify(ex)
+julia> latexinline(ex)
 L"$x - \frac{y}{z}$"
 ```
 In Jupyter or Hydrogen this automatically renders as:
