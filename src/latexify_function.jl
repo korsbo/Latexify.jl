@@ -28,6 +28,13 @@ function latexify(x::AbstractArray{T}; kwargs...) where T <: AbstractArray
     end
 end
 
+"""
+    latexify(lhs::AbstractVector, rhs::AbstractVector)
+
+return a latex align environment with lhs = rhs. 
+"""
+latexify(lhs::AbstractVector, rhs::AbstractVector) = latexalign(lhs, rhs)
+
 @require DiffEqBase begin
 """
     latexify(ode::AbstractParameterizedFunction)
