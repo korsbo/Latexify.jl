@@ -68,20 +68,22 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
         return "\\mathrm{$op}\\left[$argstring\\right]"
     end
 
-    length(args) == 2 && return if op in (# Greek letters
-                                          :alpha, :beta, :gamma, :delta, :epsilon, :zeta, :eta, :theta,
-                                          :iota, :kappa, :lambda, :mu, :nu, :xi, :pi, :rho, :sigma, :tau,
-                                          :upsilon, :phi, :chi, :psi, :omega,
-                                          :Gamma, :Delta, :Theta, :Lambda, :Xi, :Pi, :Sigma, :Upsilon,
-                                          :Phi, :Psi, :Omega,
-                                          # trigonometric functions
-                                          :sin, :cos, :tan, :cot, :sec, :csc, :sinh, :cosh, :tanh, :coth,
-                                          # log
-                                          :log)
-                                    "\\$op\\left( $(args[2]) \\right)"
-                                else
-                                    "$op\\left( $(args[2]) \\right)"
-                                end
+
+    ## operations which are called the same in Julia and LaTeX
+    op_list = (# Greek letters
+        :alpha, :beta, :gamma, :delta, :epsilon, :zeta, :eta, :theta,
+        :iota, :kappa, :lambda, :mu, :nu, :xi, :pi, :rho, :sigma, :tau,
+        :upsilon, :phi, :chi, :psi, :omega,
+        :Gamma, :Delta, :Theta, :Lambda, :Xi, :Pi, :Sigma, :Upsilon,
+        :Phi, :Psi, :Omega,
+        # trigonometric functions
+        :sin, :cos, :tan, :cot, :sec, :csc, :sinh, :cosh, :tanh, :coth,
+        # log
+        :log)
+
+    op in op_list && length(args) == 1 && return "\\$op"
+    op in op_list && length(args) == 2 && return "\\$op\\left( $(args[2]) \\right)"
+    op in op_list && length(args) > 2 && return "\\$op\\left( $(join(args[2:end], ", ")) \\right)"
 
 
     if ex.head == :call
