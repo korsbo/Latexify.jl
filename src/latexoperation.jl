@@ -84,6 +84,9 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
                                 end
 
 
+    if ex.head == :call
+        return "\\mathrm{$op}\\left( $(join(args[2:end], ", ")) \\right)"
+    end
     ## if we have reached this far without a return, then error.
     error("Latexify.jl's latexoperation does not know what to do with one of the
                 operators in your expression ($op).")
