@@ -57,9 +57,9 @@ param = [3.4,5.2,1e-2]
 latexify(ode.params, param)
 ```
 \begin{align}
-k_{y} =& 3.4 \\
-k_{x} =& 5.2 \\
-n_{x} =& 0.01 \\
+k_{y} =& 3.4 \\\\
+k_{x} =& 5.2 \\\\
+n_{x} =& 0.01 \\\\
 \end{align}
 
 or
@@ -70,8 +70,8 @@ latexarray( hcat(ode.params, param); transpose=true)
 \begin{equation}
 \left[
 \begin{array}{ccc}
-k_{y} & k_{x} & n_{x}\\
-3.4 & 5.2 & 0.01\\
+k_{y} & k_{x} & n_{x}\\\\
+3.4 & 5.2 & 0.01\\\\
 \end{array}
 \right]
 \end{equation}

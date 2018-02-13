@@ -65,6 +65,6 @@ latexalign([ode, ode2])
 ```
 
 \begin{align}
-\frac{dx}{dt}  &=  \frac{y}{k_{y} + y} - x  &  \frac{dx}{dt}  &=  \frac{y}{k_{y} + y} - x  &  \\
-\frac{dy}{dt}  &=  \frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &  \frac{dy}{dt}  &=  \frac{k_{x}^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &  \\
+\frac{dx}{dt}  &=  \frac{y}{k_{y} + y} - x  &  \frac{dx}{dt}  &=  \frac{y}{k_{y} + y} - x  &  \\\\
+\frac{dy}{dt}  &=  \frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &  \frac{dy}{dt}  &=  \frac{k_{x}^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &  \\\\
 \end{align}
