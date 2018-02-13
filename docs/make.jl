@@ -12,6 +12,7 @@ makedocs(
             "tutorials/latexalign.md",
             "tutorials/latexarray.md",
             "tutorials/parameterizedfunctions.md",
+            "tutorials/DiffEqBiological.md",
             "tutorials/inner_workings.md"
         ],
         "Functions" => [
