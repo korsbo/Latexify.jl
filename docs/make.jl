@@ -11,6 +11,7 @@ makedocs(
             "tutorials/latexify.md",
             "tutorials/latexalign.md",
             "tutorials/latexarray.md",
+            "tutorials/latextabular.md",
             "tutorials/parameterizedfunctions.md",
             "tutorials/DiffEqBiological.md",
             "tutorials/inner_workings.md"
