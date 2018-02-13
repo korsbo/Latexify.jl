@@ -6,15 +6,15 @@ Here, I make a somewhat more convoluted and hard-to-read example (you'll soon se
 ```julia
 using Latexify
 using DifferentialEquations
+copy_to_clipboard(true)
+
 ode = @ode_def positiveFeedback begin
     dx = y*y*y/(k_y_x + y) - x - x
     dy = x^n_x/(k_x^n_x + x^n_x) - y
 end k_y k_x n_x
 
 latexalign(ode)
-print(latexalign(ode))
 ```
-This generates ``\LaTeX`` code that renders as:
 
 \begin{align}
 \frac{dx}{dt} =& \frac{y \cdot y \cdot y}{k_{y\_x} + y} - x - x \\\\
@@ -47,5 +47,34 @@ latexarray(ode.symjac)
 \end{array}
 \right]
 \end{equation}
+
+
+
+Another thing that I have found useful is to display the parameters of these functions. The parameters are usually in a vector, and if it is somewhat long, then it can be annoying to try to figure out which element belongs to which parameter. There are several ways to solve this. Here are two:
+```julia
+## lets say that we have some parameters
+param = [3.4,5.2,1e-2]
+latexify(ode.params, param)
+```
+\begin{align}
+k_{y} =& 3.4 \\
+k_{x} =& 5.2 \\
+n_{x} =& 0.01 \\
+\end{align}
+
+or
+
+```julia
+latexarray( hcat(ode.params, param); transpose=true)
+```
+\begin{equation}
+\left[
+\begin{array}{ccc}
+k_{y} & k_{x} & n_{x}\\
+3.4 & 5.2 & 0.01\\
+\end{array}
+\right]
+\end{equation}
+
 
 Pretty neat huh? And if you learn how to use `latexify`, `latexalign`, `latexraw` and `latexarray` you can really format the output in pretty much any way you want.

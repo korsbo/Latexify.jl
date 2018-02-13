@@ -9,6 +9,7 @@ makedocs(
         "index.md",
         "At a glance" => [
             "tutorials/latexify.md",
+            "tutorials/latexinline.md",
             "tutorials/latexalign.md",
             "tutorials/latexarray.md",
             "tutorials/latextabular.md",

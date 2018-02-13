@@ -8,7 +8,7 @@ This package supplies functionality for latexifying objects of the following typ
 - Expressions,
 - Strings,
 - Numbers (including rational and complex),
-- DataFrames' NA type,
+- Missings' Missing type,
 - Symbols,
 - Symbolic expressions from SymEngine.jl.
 

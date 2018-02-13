@@ -1,24 +1,48 @@
-# `latexinline`
-takes a Julia object `x` and returns a ``\LaTeX`` formatted string.
-It also surrounds the output in a simple \$\$ environment.
-This works for `x` of many types, including expressions, which returns ``\LaTeX`` code for an equation.
+# `latexify`
+
+This is a wrapper of some of the other `latexXXX` functions. It tries to infer a suitable output mode for the given input. If the environment you are using supports the MIME type "text/latex", then the output will be rendered nicely.
 
 
-```julia-repl
-julia> ex = :(x-y/z)
-julia> latexinline(ex)
-L"$x - \frac{y}{z}$"
+```julia
+using Latexify
+copy_to_clipboard(true)
+
+ex = :(x/y)
+latexify(ex)
+
 ```
-In Jupyter or Hydrogen this automatically renders as:
+$\frac{x}{y}$
 
-$x - \frac{y}{z}$
+If you `print` the output rather than `display`, then you will enforce the print-out of a string which is ready for some copy-pasting into your LaTeX document.
 
-Among the supported types are:
-- Expressions,
-- Strings,
-- Numbers (including rational and complex),
-- Symbols,
-- Symbolic expressions from SymEngine.jl.
-- ParameterizedFunctions.
+```julia
+println(latexify(ex))
 
-It can also take arrays, which it recurses and latexifies the elements, returning an array of latex strings.
+## or the equivalent:
+latexify(ex) |> println
+```
+```math
+$\frac{x}{y}$
+```
+
+A matrix, or a single vector, is turned into an array.
+```julia
+M = signif.(rand(3,4), 2)
+
+latexify(M)
+```
+
+\begin{equation}
+\left[
+\begin{array}{cccc}
+0.85 & 0.99 & 0.85 & 0.5\\
+0.59 & 0.061 & 0.77 & 0.48\\
+0.7 & 0.17 & 0.7 & 0.82\\
+\end{array}
+\right]
+\end{equation}
+
+You can transpose the output using the keyword argument `transpose=true`.
+
+
+If you input a ParameterizedFunction or a ReactionNetwork from the DifferentialEquations.jl suite `latexify` will return an align environment. For more on this, have a look on their respective sections.
