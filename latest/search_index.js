@@ -205,7 +205,7 @@ var documenterSearchIndex = {"docs": [
     "page": "latexify",
     "title": "Latexify.latexify",
     "category": "Function",
-    "text": "latexify(::AbstractArray)\n\nReturn a latex array.\n\n\n\nlatexify( nested vector )\n\nIf the vector can be converted to a matrix, return a latex array. Otherwise, convert all non-container elements to inline latex equations.\n\n\n\nlatexify(lhs::AbstractVector, rhs::AbstractVector)\n\nreturn a latex align environment with lhs = rhs. \n\n\n\n"
+    "text": "latexify(::AbstractArray)\n\nReturn a latex array.\n\n\n\nlatexify( nested vector )\n\nIf the vector can be converted to a matrix, return a latex array. Otherwise, convert all non-container elements to inline latex equations.\n\n\n\nlatexify(lhs::AbstractVector, rhs::AbstractVector)\n\nreturn a latex align environment with lhs = rhs.\n\n\n\n"
 },
 
 {
