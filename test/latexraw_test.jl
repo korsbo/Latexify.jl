@@ -37,7 +37,7 @@ push!(test_results, latexraw(:(asech(x))) ==  "\\mathrm{arcsech}\\left( x \\righ
 push!(test_results, latexraw(:(acsc(x))) ==  "\\mathrm{arccsc}\\left( x \\right)")
 push!(test_results, latexraw(:(csch(x))) ==  "\\mathrm{csch}\\left( x \\right)")
 push!(test_results, latexraw(:(acsch(x))) ==  "\\mathrm{arccsch}\\left( x \\right)")
-push!(test_results, latexraw(:(f(x))) ==  "f\\left( x \\right)")
+push!(test_results, latexraw(:(f(x))) ==  "\\mathrm{f}\\left( x \\right)")
 push!(test_results, latexraw("x = 4*y") == "x = 4 \\cdot y")
 push!(test_results, latexraw(:(sqrt(x))) == "\\sqrt{x}")
 push!(test_results, latexraw(complex(1,-1)) == "1-1\\textit{i}")

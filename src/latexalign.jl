@@ -114,4 +114,35 @@ end
         a = hcat(a...)
         return latexalign(a; separator=" ")
     end
+
+    """
+        latexalign(r::AbstractReactionNetwork; noise=false, symbolic=true)
+
+    Generate an align environment from a reaction network.
+
+    ### kwargs
+    - noise::Bool - output the noise function?
+    - symbolic::Bool - use symbolic calculation to reduce the expression?
+    """
+    function latexalign(r::DiffEqBase.AbstractReactionNetwork; noise=false, symbolic=true)
+        lhs = ["d$x/dt" for x in r.syms]
+        if !noise
+            symbolic ? (rhs = r.f_symfuncs) : (rhs = r.f_func)
+        else
+            vec = r.g_func
+            M = reshape(vec, :, length(r.syms))
+            M = permutedims(M, [2,1])
+            expr_arr = parse.([join(M[i,:], " + ") for i in 1:size(M,1)])
+
+            if symbolic
+                rhs = [SymEngine.Basic(ex) for ex in expr_arr]
+            else
+                for i in 1:length(expr_arr)
+                    filter!(x -> x != 0, expr_arr[i].args)
+                end
+                rhs = expr_arr
+            end
+        end
+        return latexalign(lhs, rhs)
+    end
 end
