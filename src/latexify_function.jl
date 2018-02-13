@@ -41,21 +41,26 @@ latexify(lhs::AbstractVector, rhs::AbstractVector) = latexalign(lhs, rhs)
 
 Display an ODE defined by @ode_def as a latex align.
 """
-latexify(ode::DiffEqBase.AbstractParameterizedFunction; kwargs...) = latexalign(ode; kwargs...)
+    latexify(ode::DiffEqBase.AbstractParameterizedFunction; kwargs...) = latexalign(ode; kwargs...)
 
 """
     latexify(::AbstractArray{ParameterizedFunction})
 
 Display ODEs defined by @ode_def side-by-side in a latex align.
 """
-function latexify(x::AbstractArray{T}) where T <: DiffEqBase.AbstractParameterizedFunction
-    latexalign(x)
-end
+    function latexify(x::AbstractArray{T}) where T <: DiffEqBase.AbstractParameterizedFunction
+        latexalign(x)
+    end
+
 
 """
-    latexify(::AbstractReactionNetwork)
+    latexify(r::AbstractReactionNetwork; noise=false, symbolic=true)
 
-Display an ODE defined by @reaction_network as a latex align.
+Generate an align environment from a reaction network.
+
+### kwargs
+- noise::Bool - output the noise function?
+- symbolic::Bool - use symbolic calculation to reduce the expression?
 """
-latexify(r::DiffEqBase.AbstractReactionNetwork) = latexalign(r)
+    latexify(r::DiffEqBase.AbstractReactionNetwork; kwargs...) = latexalign(r; kwargs...)
 end
