@@ -20,10 +20,24 @@ This package supplies functionalities for converting a range of different Julia 
 as well as arrays of any supported types.
 
 Latexify.jl supplies a few functions:
+- `latexify`, takes any of the supported input and outputs a suitable latex environment.
+
 - `latexraw`, a function that all other eventually uses. This latexifies objects and returns a string which does not contain a surrounding `\LaTeX` environment.
-- `latexify`, calls `latexraw` but converts the output to a LaTeXString which is automatically rendered in Jupyter or Hydrogen, and which surrounds the output string with \$ \$.
+
+- `latexinline`, latexifies the input and surrounds it with a `$$` environment. If the input
+ is of a container type, it will recursively latexify its elements.
+
+- `latexinline`, calls `latexraw` but converts the output to a LaTeXString which is automatically rendered in Jupyter or Hydrogen, and which surrounds the output string with \$ \$. If the input is some AbstractArray, then latexinline will operate recursively on the
+elements and return a copy.
+
 - `latexalign`, generates a latex align environment.
+
 - `latexarray`, generates a latex array.
+
+- `latextabular`, generates a latex tabular.
+
+- `copy_to_clipboard(::Bool)`, toggle automatical copying of the resulting LaTeX code to the clipboard (default is false).
+
 
 ### Examples
 #### latexifying expressions
@@ -43,7 +57,7 @@ $\frac{x}{(y+x)^{2}}$
 using Latexify
 print(latexraw("x+y/(b-2)^2"))
 ```
-outputs: 
+outputs:
 ```LaTeX
 x + \frac{y}{\left( b - 2 \right)^{2}}
 ```
@@ -73,14 +87,14 @@ outputs:
 
 This can be useful for lazy people, like me, who don't want to type out equations.
 But if you use Jupyter (or Atom with Hydrogen), it can also be useful to get a more clear view of your equations.
-Since the package uses a string type supplied by [LaTeXStrings.jl](https://github.com/stevengj/LaTeXStrings.jl) the output of all functions except `latexraw` is automatically rendered. 
-This can also be enforced by 
+Since the package uses a string type supplied by [LaTeXStrings.jl](https://github.com/stevengj/LaTeXStrings.jl) the output of all functions except `latexraw` is automatically rendered.
 
 ```julia
-display(latexify(f))
+latexify(f)
 ```
+![positiveFeedback](/assets/ode_positive_feedback.png)
 
-I cannot demonstrate this in the README, since github markdown does not support rendering, but for some examples you can see the [docs](https://korsbo.github.io/Latexify.jl/stable).
+For more examples you can see the [docs](https://korsbo.github.io/Latexify.jl/stable).
 
 
 ## Installation
