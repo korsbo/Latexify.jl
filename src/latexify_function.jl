@@ -10,7 +10,7 @@ end
 
 Return a latex array.
 """
-latexify(x::AbstractArray) = latexarray(x)
+latexify(x::AbstractArray; kwargs...) = latexarray(x; kwargs...)
 
 
 """
