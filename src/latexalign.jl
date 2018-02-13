@@ -114,4 +114,6 @@ end
         a = hcat(a...)
         return latexalign(a; separator=" ")
     end
+
+    latexalign(r::DiffEqBase.AbstractReactionNetwork) = latexalign(["d$x/dt" for x in r.syms], r.f_symfuncs)
 end
