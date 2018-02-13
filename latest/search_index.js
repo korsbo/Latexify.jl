@@ -137,6 +137,22 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "tutorials/latextabular.html#",
+    "page": "latextabular",
+    "title": "latextabular",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "tutorials/latextabular.html#latextabular-1",
+    "page": "latextabular",
+    "title": "latextabular",
+    "category": "section",
+    "text": "using Latexify\ncopy_to_clipboard(true)\narr = [\"x/y\" :(y^n); 1.0 :(alpha(x))]\nlatextabular(arr) |> printlnoutputs:\\begin{tabular}{cc}\n$\\frac{x}{y}$ & $y^{n}$\\\\\n$1.0$ & $\\alpha\\left( x \\right)$\\\\\n\\end{tabular}Unfortunately, this does not render nicely in Markdown. But you get the point.latextabular takes two keywords, one for changing the adjustment of the columns (centered by default), and one for transposing the whole thing.latextabular(arr; adjustment=:l, transpose=true) |> println\\begin{tabular}{ll}\n$\\frac{x}{y}$ & $1.0$\\\\\n$y^{n}$ & $\\alpha\\left( x \\right)$\\\\\n\\end{tabular}"
+},
+
+{
     "location": "tutorials/parameterizedfunctions.html#",
     "page": "Use with ParameterizedFunctions",
     "title": "Use with ParameterizedFunctions",
@@ -165,7 +181,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Use with @reaction_network from DiffEqBiological.jl.",
     "title": "Use with @reaction_network from DiffEqBiological.jl.",
     "category": "section",
-    "text": "Latexify.jl has methods for dealing with AbstractReactionNetworks. For more information regarding this DSL, turn to its docs. The latexify end of things are pretty simple: feed a reaction network to the latexify or latexalign functions (they do the same thing in this case) and let them do their magic.using DifferentialEquations\nusing Latexify\ncopy_to_clipboard(true)\n\n@reaction_func hill2(x, v, k) = v*x^2/(k^2 + x^2)\nrn = @reaction_network MyRnType begin\n  hill2(y, v_x, k_x), 0 --> x\n  p_y, 0 --> y\n  (d_x, d_y), (x, y) --> 0\n  (r_b, r_u), x ↔ y\nend v_x k_x p_y d_x d_y r_b r_u\n\nlatexify(rn)$\\begin{align} \\frac{dx}{dt} =& - x \\cdot d_{x} - x \\cdot r_{b} + y \\cdot r_{u} + \\frac{y^{2} \\cdot v_{x}}{k_{x}^{2} + y^{2}} \\\n\\frac{dy}{dt} =& p_{y} + x \\cdot r_{b} - y \\cdot d_{y} - y \\cdot r_{u} \\\n\\end{align} $The method has a keyword for choosing between outputting the ODE or the noise term. While it is not obvious from the latexify output, the noise in the reaction network is correlated.latexify(rn; noise=true)$\\begin{align} \\frac{dx}{dt} =& - \\sqrt{x \\cdot d_{x}} - \\sqrt{x \\cdot r_{b}} + \\sqrt{y \\cdot r_{u}} + \\sqrt{\\frac{y^{2} \\cdot v_{x}}{k_{x}^{2} + y^{2}}} \\\n\\frac{dy}{dt} =& \\sqrt{p_{y}} + \\sqrt{x \\cdot r_{b}} - \\sqrt{y \\cdot d_{y}} - \\sqrt{y \\cdot r_{u}} \\\n\\end{align} $SymEngine will be used by default to clean up the expressions. A disadvantage of this is that the order of the terms and the operations within the terms becomes unpredictable. You can therefore turn this symbolic magic off. The result has some ugly issues with + -1, but the option is there, and here is how to use it:  latexify(rn; symbolic=false)$\\begin{align} \\frac{dx}{dt} =& \\frac{v_{x} \\cdot y^{2}}{k_{x}^{2} + y^{2}} + -1 \\cdot d_{x} \\cdot x + -1 \\cdot r_{b} \\cdot x + r_{u} \\cdot y \\\n\\frac{dy}{dt} =& p_{y} + -1 \\cdot d_{y} \\cdot y + r_{b} \\cdot x + -1 \\cdot r_{u} \\cdot y \\\n\\end{align} $latexify(rn; noise=true, symbolic=false)$\\begin{align} \\frac{dx}{dt} =& \\sqrt{\\frac{v_{x} \\cdot y^{2}}{k_{x}^{2} + y^{2}}} + - \\sqrt{d_{x} \\cdot x} + - \\sqrt{r_{b} \\cdot x} + \\sqrt{r_{u} \\cdot y} \\\n\\frac{dy}{dt} =& \\sqrt{p_{y}} + - \\sqrt{d_{y} \\cdot y} + \\sqrt{r_{b} \\cdot x} + - \\sqrt{r_{u} \\cdot y} \\\n\\end{align} $"
+    "text": "Latexify.jl has methods for dealing with AbstractReactionNetworks. For more information regarding this DSL, turn to its docs. The latexify end of things are pretty simple: feed a reaction network to the latexify or latexalign functions (they do the same thing in this case) and let them do their magic.using DifferentialEquations\nusing Latexify\ncopy_to_clipboard(true)\n\n@reaction_func hill2(x, v, k) = v*x^2/(k^2 + x^2)\nrn = @reaction_network MyRnType begin\n  hill2(y, v_x, k_x), 0 --> x\n  p_y, 0 --> y\n  (d_x, d_y), (x, y) --> 0\n  (r_b, r_u), x ↔ y\nend v_x k_x p_y d_x d_y r_b r_u\n\nlatexify(rn)\\begin{align} \\frac{dx}{dt} =& - x \\cdot d_{x} - x \\cdot r_{b} + y \\cdot r_{u} + \\frac{y^{2} \\cdot v_{x}}{k_{x}^{2} + y^{2}} \\\n\\frac{dy}{dt} =& p_{y} + x \\cdot r_{b} - y \\cdot d_{y} - y \\cdot r_{u} \\\n\\end{align}The method has a keyword for choosing between outputting the ODE or the noise term. While it is not obvious from the latexify output, the noise in the reaction network is correlated.latexify(rn; noise=true)\\begin{align} \\frac{dx}{dt} =& - \\sqrt{x \\cdot d_{x}} - \\sqrt{x \\cdot r_{b}} + \\sqrt{y \\cdot r_{u}} + \\sqrt{\\frac{y^{2} \\cdot v_{x}}{k_{x}^{2} + y^{2}}} \\\n\\frac{dy}{dt} =& \\sqrt{p_{y}} + \\sqrt{x \\cdot r_{b}} - \\sqrt{y \\cdot d_{y}} - \\sqrt{y \\cdot r_{u}} \\\n\\end{align}SymEngine will be used by default to clean up the expressions. A disadvantage of this is that the order of the terms and the operations within the terms becomes unpredictable. You can therefore turn this symbolic magic off. The result has some ugly issues with + -1, but the option is there, and here is how to use it:  latexify(rn; symbolic=false)\\begin{align} \\frac{dx}{dt} =& \\frac{v_{x} \\cdot y^{2}}{k_{x}^{2} + y^{2}} + -1 \\cdot d_{x} \\cdot x + -1 \\cdot r_{b} \\cdot x + r_{u} \\cdot y \\\n\\frac{dy}{dt} =& p_{y} + -1 \\cdot d_{y} \\cdot y + r_{b} \\cdot x + -1 \\cdot r_{u} \\cdot y \\\n\\end{align}latexify(rn; noise=true, symbolic=false)\\begin{align} \\frac{dx}{dt} =& \\sqrt{\\frac{v_{x} \\cdot y^{2}}{k_{x}^{2} + y^{2}}} + - \\sqrt{d_{x} \\cdot x} + - \\sqrt{r_{b} \\cdot x} + \\sqrt{r_{u} \\cdot y} \\\n\\frac{dy}{dt} =& \\sqrt{p_{y}} + - \\sqrt{d_{y} \\cdot y} + \\sqrt{r_{b} \\cdot x} + - \\sqrt{r_{u} \\cdot y} \\\n\\end{align}"
 },
 
 {
