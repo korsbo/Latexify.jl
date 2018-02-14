@@ -25,9 +25,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "index.html#Functions-1",
+    "location": "index.html#Functions,-at-a-glance-1",
     "page": "Latexify.jl",
-    "title": "Functions",
+    "title": "Functions, at a glance",
     "category": "section",
     "text": ""
 },
@@ -70,6 +70,14 @@ var documenterSearchIndex = {"docs": [
     "title": "latexarray()",
     "category": "section",
     "text": "Latexifies a 1 or 2D array and generates a corresponding LaTeX array."
+},
+
+{
+    "location": "index.html#latextabular()-1",
+    "page": "Latexify.jl",
+    "title": "latextabular()",
+    "category": "section",
+    "text": "Latexifies the elements of a 1 or 2D array and puts them in a tabular environment."
 },
 
 {
@@ -133,7 +141,7 @@ var documenterSearchIndex = {"docs": [
     "page": "latexalign",
     "title": "Using DifferentialEquations.jl",
     "category": "section",
-    "text": "The motivation for creating this function was mainly to be able to render ODEs. In my own work, I tend to use DifferentialEquations.jl to define ODEs as ParameterizedFunctions. Therefore, I found it useful to create a method which simply takes the ParameterizedFunction as input:using Latexify\nusing DifferentialEquations\node = @ode_def positiveFeedback begin\n    dx = y/(k_y + y) - x\n    dy = x^n_x/(k_x^n_x + x^n_x) - y\nend k_y k_x n_x\n\nlatexalign(ode)\\begin{align} \\frac{dx}{dt} =& \\frac{y}{k_{y} + y} - x \\\\\n\\frac{dy}{dt} =& \\frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y \\\\\n\\end{align}A vector of ParameterizedFunctions will be rendered side-by-side:ode2 = @ode_def negativeFeedback begin\n    dx = y/(k_y + y) - x\n    dy = k_x^n_x/(k_x^n_x + x^n_x) - y\nend k_y k_x n_x\n\nlatexalign([ode, ode2])\\begin{align} \\frac{dx}{dt}  &=  \\frac{y}{k_{y} + y} - x  &  \\frac{dx}{dt}  &=  \\frac{y}{k_{y} + y} - x  &  \\\\\n\\frac{dy}{dt}  &=  \\frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &  \\frac{dy}{dt}  &=  \\frac{k_{x}^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &  \\\\\n\\end{align}"
+    "text": "The motivation for creating this function was mainly to be able to render ODEs. In my own work, I tend to use DifferentialEquations.jl to define ODEs as ParameterizedFunctions. Therefore, I found it useful to create a method which simply takes the ParameterizedFunction as input:using Latexify\nusing DifferentialEquations\node = @ode_def positiveFeedback begin\n    dx = y/(k_y + y) - x\n    dy = x^n_x/(k_x^n_x + x^n_x) - y\nend k_y k_x n_x\n\nlatexalign(ode)\\begin{align} \\frac{dx}{dt} =& \\frac{y}{k_{y} + y} - x \\\\\n\\frac{dy}{dt} =& \\frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y \\\\\n\\end{align}"
 },
 
 {
@@ -181,7 +189,31 @@ var documenterSearchIndex = {"docs": [
     "page": "Use with ParameterizedFunctions",
     "title": "Use with ParameterizedFunctions",
     "category": "section",
-    "text": "In the latexalign tutorial I mentioned that one can use latexalign directly on a ParameterizedFunction. Here, I make a somewhat more convoluted and hard-to-read example (you'll soon se why):using Latexify\nusing DifferentialEquations\ncopy_to_clipboard(true)\n\node = @ode_def positiveFeedback begin\n    dx = y*y*y/(k_y_x + y) - x - x\n    dy = x^n_x/(k_x^n_x + x^n_x) - y\nend k_y k_x n_x\n\nlatexalign(ode)\\begin{align} \\frac{dx}{dt} =& \\frac{y \\cdot y \\cdot y}{k_{y_x} + y} - x - x \\\\\n\\frac{dy}{dt} =& \\frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y \\\\\n\\end{align}This is pretty nice, but there are a few parts of the equation which could be reduced. Using a keyword argument, you can utilise the SymEngine.jl to reduce the expression before printing.latexalign(ode, field=:symfuncs)\\begin{align} \\frac{dx}{dt} =& -2 \\cdot x + \\frac{y^{3}}{k_{y_x} + y} \\\\\n\\frac{dy}{dt} =& - y + \\frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} \\\\\n\\end{align}ParameterizedFunctions symbolically calculates the jacobian, inverse jacobian, hessian, and all kinds of goodness. Since they are available as arrays of symbolic expressions, which are latexifyable, you can render pretty much all of them.latexarray(ode.symjac)\\begin{equation} \\left[ \\begin{array}{cc} -2 & \\frac{3 \\cdot y^{2}}{k_{y_x} + y} - \\frac{y^{3}}{\\left( k_{y_x} + y \\right)^{2}}\\\\\n\\frac{x^{-1 + n_{x}} \\cdot n_{x}}{k_{x}^{n_{x}} + x^{n_{x}}} - \\frac{x^{-1 + 2 \\cdot n_{x}} \\cdot n_{x}}{\\left( k_{x}^{n_{x}} + x^{n_{x}} \\right)^{2}} & -1\\\\\n\\end{array} \\right] \\end{equation}Another thing that I have found useful is to display the parameters of these functions. The parameters are usually in a vector, and if it is somewhat long, then it can be annoying to try to figure out which element belongs to which parameter. There are several ways to solve this. Here are two:## lets say that we have some parameters\nparam = [3.4,5.2,1e-2]\nlatexify(ode.params, param)\\begin{align} k_{y} =& 3.4 \\\\\nk_{x} =& 5.2 \\\\\nn_{x} =& 0.01 \\\\\n\\end{align}orlatexarray( hcat(ode.params, param); transpose=true)\\begin{equation} \\left[ \\begin{array}{ccc} k_{y} & k_{x} & n_{x}\\\\\n3.4 & 5.2 & 0.01\\\\\n\\end{array} \\right] \\end{equation}Pretty neat huh? And if you learn how to use latexify, latexalign, latexraw and latexarray you can really format the output in pretty much any way you want."
+    "text": "In the latexalign tutorial I mentioned that one can use latexalign directly on a ParameterizedFunction. Here, I make a somewhat more convoluted and hard-to-read example (you'll soon se why):using Latexify\nusing DifferentialEquations\ncopy_to_clipboard(true)\n\node = @ode_def positiveFeedback begin\n    dx = y*y*y/(k_y_x + y) - x - x\n    dy = x^n_x/(k_x^n_x + x^n_x) - y\nend k_y k_x n_x\n\nlatexalign(ode)\\begin{align} \\frac{dx}{dt} =& \\frac{y \\cdot y \\cdot y}{k_{y_x} + y} - x - x \\\\\n\\frac{dy}{dt} =& \\frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y \\\\\n\\end{align}This is pretty nice, but there are a few parts of the equation which could be reduced. Using a keyword argument, you can utilise the SymEngine.jl to reduce the expression before printing.latexalign(ode, field=:symfuncs)\\begin{align} \\frac{dx}{dt} =& -2 \\cdot x + \\frac{y^{3}}{k_{y_x} + y} \\\\\n\\frac{dy}{dt} =& - y + \\frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} \\\\\n\\end{align}"
+},
+
+{
+    "location": "tutorials/parameterizedfunctions.html#Side-by-side-rendering-of-multiple-system.-1",
+    "page": "Use with ParameterizedFunctions",
+    "title": "Side-by-side rendering of multiple system.",
+    "category": "section",
+    "text": "A vector of ParameterizedFunctions will be rendered side-by-side:ode2 = @ode_def negativeFeedback begin\n    dx = y/(k_y + y) - x\n    dy = k_x^n_x/(k_x^n_x + x^n_x) - y\nend k_y k_x n_x\n\nlatexalign([ode, ode2])\\begin{align} \\frac{dx}{dt}  &=  \\frac{y}{k_{y} + y} - x  &  \\frac{dx}{dt}  &=  \\frac{y}{k_{y} + y} - x  &  \\\\\n\\frac{dy}{dt}  &=  \\frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &  \\frac{dy}{dt}  &=  \\frac{k_{x}^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &  \\\\\n\\end{align}"
+},
+
+{
+    "location": "tutorials/parameterizedfunctions.html#Visualise-your-parameters.-1",
+    "page": "Use with ParameterizedFunctions",
+    "title": "Visualise your parameters.",
+    "category": "section",
+    "text": "Another thing that I have found useful is to display the parameters of these functions. The parameters are usually in a vector, and if it is somewhat long, then it can be annoying to try to figure out which element belongs to which parameter. There are several ways to solve this. Here are two:## lets say that we have some parameters\nparam = [3.4,5.2,1e-2]\nlatexify(ode.params, param)\\begin{align} k_{y} =& 3.4 \\\\\nk_{x} =& 5.2 \\\\\nn_{x} =& 0.01 \\\\\n\\end{align}orlatexarray([ode.params, param]; transpose=true)\\begin{equation} \\left[ \\begin{array}{ccc} k_{y} & k_{x} & n_{x}\\\\\n3.4 & 5.2 & 0.01\\\\\n\\end{array} \\right] \\end{equation}"
+},
+
+{
+    "location": "tutorials/parameterizedfunctions.html#Get-the-jacobian,-hessian,-etc.-1",
+    "page": "Use with ParameterizedFunctions",
+    "title": "Get the jacobian, hessian, etc.",
+    "category": "section",
+    "text": "ParameterizedFunctions symbolically calculates the jacobian, inverse jacobian, hessian, and all kinds of goodness. Since they are available as arrays of symbolic expressions, which are latexifyable, you can render pretty much all of them.latexarray(ode.symjac)\\begin{equation} \\left[ \\begin{array}{cc} -2 & \\frac{3 \\cdot y^{2}}{k_{y_x} + y} - \\frac{y^{3}}{\\left( k_{y_x} + y \\right)^{2}}\\\\\n\\frac{x^{-1 + n_{x}} \\cdot n_{x}}{k_{x}^{n_{x}} + x^{n_{x}}} - \\frac{x^{-1 + 2 \\cdot n_{x}} \\cdot n_{x}}{\\left( k_{x}^{n_{x}} + x^{n_{x}} \\right)^{2}} & -1\\\\\n\\end{array} \\right] \\end{equation}Pretty neat huh? And if you learn how to use latexify, latexalign, latexraw and latexarray you can really format the output in pretty much any way you want."
 },
 
 {
@@ -197,7 +229,23 @@ var documenterSearchIndex = {"docs": [
     "page": "Use with @reaction_network from DiffEqBiological.jl.",
     "title": "Use with @reaction_network from DiffEqBiological.jl.",
     "category": "section",
-    "text": "Latexify.jl has methods for dealing with AbstractReactionNetworks. For more information regarding this DSL, turn to its docs. The latexify end of things are pretty simple: feed a reaction network to the latexify or latexalign functions (they do the same thing in this case) and let them do their magic.using DifferentialEquations\nusing Latexify\ncopy_to_clipboard(true)\n\n@reaction_func hill2(x, v, k) = v*x^2/(k^2 + x^2)\n\nrn = @reaction_network MyRnType begin\n  hill2(y, v_x, k_x), 0 --> x\n  p_y, 0 --> y\n  (d_x, d_y), (x, y) --> 0\n  (r_b, r_u), x ↔ y\nend v_x k_x p_y d_x d_y r_b r_u\n\nlatexify(rn)\\begin{align} \\frac{dx}{dt} =& - x \\cdot d_{x} - x \\cdot r_{b} + y \\cdot r_{u} + \\frac{y^{2} \\cdot v_{x}}{k_{x}^{2} + y^{2}} \\\\\n\\frac{dy}{dt} =& p_{y} + x \\cdot r_{b} - y \\cdot d_{y} - y \\cdot r_{u} \\\\\n\\end{align}The method has a keyword for choosing between outputting the ODE or the noise term. While it is not obvious from the latexify output, the noise in the reaction network is correlated.latexify(rn; noise=true)\\begin{align} \\frac{dx}{dt} =& - \\sqrt{x \\cdot d_{x}} - \\sqrt{x \\cdot r_{b}} + \\sqrt{y \\cdot r_{u}} + \\sqrt{\\frac{y^{2} \\cdot v_{x}}{k_{x}^{2} + y^{2}}} \\\\\n\\frac{dy}{dt} =& \\sqrt{p_{y}} + \\sqrt{x \\cdot r_{b}} - \\sqrt{y \\cdot d_{y}} - \\sqrt{y \\cdot r_{u}} \\\\\n\\end{align}SymEngine will be used by default to clean up the expressions. A disadvantage of this is that the order of the terms and the operations within the terms becomes unpredictable. You can therefore turn this symbolic magic off. The result has some ugly issues with + -1, but the option is there, and here is how to use it:  latexify(rn; symbolic=false)\\begin{align} \\frac{dx}{dt} =& \\frac{v_{x} \\cdot y^{2}}{k_{x}^{2} + y^{2}} + -1 \\cdot d_{x} \\cdot x + -1 \\cdot r_{b} \\cdot x + r_{u} \\cdot y \\\\\n\\frac{dy}{dt} =& p_{y} + -1 \\cdot d_{y} \\cdot y + r_{b} \\cdot x + -1 \\cdot r_{u} \\cdot y \\\\\n\\end{align}latexify(rn; noise=true, symbolic=false)\\begin{align} \\frac{dx}{dt} =& \\sqrt{\\frac{v_{x} \\cdot y^{2}}{k_{x}^{2} + y^{2}}} + - \\sqrt{d_{x} \\cdot x} + - \\sqrt{r_{b} \\cdot x} + \\sqrt{r_{u} \\cdot y} \\\\\n\\frac{dy}{dt} =& \\sqrt{p_{y}} + - \\sqrt{d_{y} \\cdot y} + \\sqrt{r_{b} \\cdot x} + - \\sqrt{r_{u} \\cdot y} \\\\\n\\end{align}"
+    "text": "Latexify.jl has methods for dealing with AbstractReactionNetworks. For more information regarding this DSL, turn to its docs. The latexify end of things are pretty simple: feed a reaction network to the latexify or latexalign functions (they do the same thing in this case) and let them do their magic.using DifferentialEquations\nusing Latexify\ncopy_to_clipboard(true)\n\n@reaction_func hill2(x, v, k) = v*x^2/(k^2 + x^2)\n\nrn = @reaction_network MyRnType begin\n  hill2(y, v_x, k_x), 0 --> x\n  p_y, 0 --> y\n  (d_x, d_y), (x, y) --> 0\n  (r_b, r_u), x ↔ y\nend v_x k_x p_y d_x d_y r_b r_u\n\nlatexify(rn)\\begin{align} \\frac{dx}{dt} =& - x \\cdot d_{x} - x \\cdot r_{b} + y \\cdot r_{u} + \\frac{y^{2} \\cdot v_{x}}{k_{x}^{2} + y^{2}} \\\\\n\\frac{dy}{dt} =& p_{y} + x \\cdot r_{b} - y \\cdot d_{y} - y \\cdot r_{u} \\\\\n\\end{align}The method has a keyword for choosing between outputting the ODE or the noise term. While it is not obvious from the latexify output, the noise in the reaction network is correlated.latexify(rn; noise=true)\\begin{align} \\frac{dx}{dt} =& - \\sqrt{x \\cdot d_{x}} - \\sqrt{x \\cdot r_{b}} + \\sqrt{y \\cdot r_{u}} + \\sqrt{\\frac{y^{2} \\cdot v_{x}}{k_{x}^{2} + y^{2}}} \\\\\n\\frac{dy}{dt} =& \\sqrt{p_{y}} + \\sqrt{x \\cdot r_{b}} - \\sqrt{y \\cdot d_{y}} - \\sqrt{y \\cdot r_{u}} \\\\\n\\end{align}"
+},
+
+{
+    "location": "tutorials/DiffEqBiological.html#Turning-off-the-SymEngine-magic-1",
+    "page": "Use with @reaction_network from DiffEqBiological.jl.",
+    "title": "Turning off the SymEngine magic",
+    "category": "section",
+    "text": "SymEngine will be used by default to clean up the expressions. A disadvantage of this is that the order of the terms and the operations within the terms becomes unpredictable. You can therefore turn this symbolic magic off. The result has some ugly issues with + -1, but the option is there, and here is how to use it:  latexify(rn; symbolic=false)\\begin{align} \\frac{dx}{dt} =& \\frac{v_{x} \\cdot y^{2}}{k_{x}^{2} + y^{2}} + -1 \\cdot d_{x} \\cdot x + -1 \\cdot r_{b} \\cdot x + r_{u} \\cdot y \\\\\n\\frac{dy}{dt} =& p_{y} + -1 \\cdot d_{y} \\cdot y + r_{b} \\cdot x + -1 \\cdot r_{u} \\cdot y \\\\\n\\end{align}latexify(rn; noise=true, symbolic=false)\\begin{align} \\frac{dx}{dt} =& \\sqrt{\\frac{v_{x} \\cdot y^{2}}{k_{x}^{2} + y^{2}}} + - \\sqrt{d_{x} \\cdot x} + - \\sqrt{r_{b} \\cdot x} + \\sqrt{r_{u} \\cdot y} \\\\\n\\frac{dy}{dt} =& \\sqrt{p_{y}} + - \\sqrt{d_{y} \\cdot y} + \\sqrt{r_{b} \\cdot x} + - \\sqrt{r_{u} \\cdot y} \\\\\n\\end{align}"
+},
+
+{
+    "location": "tutorials/DiffEqBiological.html#Getting-the-jacobian.-1",
+    "page": "Use with @reaction_network from DiffEqBiological.jl.",
+    "title": "Getting the jacobian.",
+    "category": "section",
+    "text": "The ReactionNetwork type has a field for a symbolically calculated jacobian. This can be rendered by:latexarray(rn.symjac)\\begin{equation} \\left[ \\begin{array}{cc} - d_{x} - r_{b} & r_{u} + \\frac{2 \\cdot y \\cdot v_{x}}{k_{x}^{2} + y^{2}} - \\frac{2 \\cdot y^{3} \\cdot v_{x}}{\\left( k_{x}^{2} + y^{2} \\right)^{2}}\\\\\nr_{b} & - d_{y} - r_{u}\\\\\n\\end{array} \\right] \\end{equation}The DiffEqBiological package is currently undergoing development, but when the reaction network type gets extended with invers Jacobians, Hessians, etc, latexarray will be able to latexify them."
 },
 
 {
