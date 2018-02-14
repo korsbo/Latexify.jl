@@ -169,6 +169,46 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "tutorials/inner_workings.html#",
+    "page": "Inner workings",
+    "title": "Inner workings",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "tutorials/inner_workings.html#Inner-workings-1",
+    "page": "Inner workings",
+    "title": "Inner workings",
+    "category": "section",
+    "text": "This package contains a large number of methods, but two of these are of special importance. These are:latexraw(ex::Expr)andlatexoperation(ex::Expr, prevOp::AbstractArray)These two methods are involved with all conversions to LaTeX equations. latexraw(ex::Expr) utilises Julias homoiconicity to infer the correct latexification of an expression by recursing through the expression tree. Whenever it hits the end of a recursion it passes the last expression to latexoperation(). By the nature of this recursion, this expression is one which only contains symbols or strings."
+},
+
+{
+    "location": "tutorials/inner_workings.html#Explanation-by-example-1",
+    "page": "Inner workings",
+    "title": "Explanation by example",
+    "category": "section",
+    "text": "Let's define a variable of the expression type:julia> ex = :(x + y/z)This expression has a field which contains the first operation which must be done, along with the objects that this operation will operate on:julia> ex.args\n\n3-element Array{Any,1}:\n :+      \n :x      \n :(y / z)The first two element are both Symbols, while the third one is an expression:julia> typeof.(ex.args)\n\n3-element Array{DataType,1}:\n Symbol\n Symbol\n ExprSince at least one of these elements is an expression, the next step of the recursive algorithm is to dive into that expression:julia> newEX = ex.args[3]\njulia> newEx.args\n\n3-element Array{Any,1}:\n :/\n :y\n :zSince none of these arguments is another expression, newEx will be passed to latexoperation(). This function checks which mathematical operation is being done and converts newEx to an appropriately formatted string. In this case, that string will be \"\\\\frac{y}{z}\" (and yes, a double slash is needed).newEx is now a string (despite its name):julia> newEx\n\n\"\\\\frac{y}{z}\"The recursive latexraw() pulls this value back to the original expression ex, such that:julia> ex.args\n\n3-element Array{Any,1}:\n :+      \n :x      \n :\"\\\\frac{y}{z}\"Now, since this expression does not consist of any further expressions, it is passed to latexoperation(). The operator is now \"+\", and it should be applied on the second and third element of the expression, resulting in:\"x + \\\\frac{y}{z}\"using the print function you get:julia> print(latexraw(ex))\n\n\"x + \\frac{y}{z}\"which in a LaTeX maths environment renders as:x + fracyz"
+},
+
+{
+    "location": "tutorials/inner_workings.html#Extended-functionality-1",
+    "page": "Inner workings",
+    "title": "Extended functionality",
+    "category": "section",
+    "text": "With the above example we can understand how an expression is converted to a LaTeX formatted string (unless my pedagogical skills are worse than I fear).So, anything which can be converted to a Julia expression of the Expr type can be latexified. Luckily, since Julia needs to convert your code to expressions before it can be evaluated, Julia is already great at doing this.There are already some methods for converting other types to expressions and passing them to the core method, for example:latexraw(str::String) = latexraw(parse(str))but if you find yourself wanting to parse some other type, it is often easy to overload the latexraw function."
+},
+
+{
+    "location": "tutorials/inner_workings.html#Latexifying-Arrays-1",
+    "page": "Inner workings",
+    "title": "Latexifying Arrays",
+    "category": "section",
+    "text": "Also, if you pass an array to latexraw, it will recursively try to convert the elements of that array to LaTeX formatted strings.julia> arr = [:(x-y/(k_10+z)), \"x*y*z/3\"]\njulia> latexraw(arr)\n2-element Array{String,1}:\n \"x - \\\\frac{y}{k_{10} + z}\"     \n \"\\\\frac{x \\\\cdot y \\\\cdot z}{3}\"\n\njulia> println.(latexraw(arr))\nx - \\frac{y}{k_{10} + z}\n\\frac{x \\cdot y \\cdot z}{3}"
+},
+
+{
     "location": "tutorials/parameterizedfunctions.html#",
     "page": "Use with ParameterizedFunctions",
     "title": "Use with ParameterizedFunctions",
@@ -238,94 +278,6 @@ var documenterSearchIndex = {"docs": [
     "title": "Latexifying Arrays",
     "category": "section",
     "text": "Also, if you pass an array to latexraw, it will recursively try to convert the elements of that array to LaTeX formatted strings.julia> arr = [:(x-y/(k_10+z)), \"x*y*z/3\"]\njulia> latexraw(arr)\n2-element Array{String,1}:\n \"x - \\\\frac{y}{k_{10} + z}\"     \n \"\\\\frac{x \\\\cdot y \\\\cdot z}{3}\"\n\njulia> println.(latexraw(arr))\nx - \\frac{y}{k_{10} + z}\n\\frac{x \\cdot y \\cdot z}{3}"
-},
-
-{
-    "location": "functions/latexify.html#",
-    "page": "latexify",
-    "title": "latexify",
-    "category": "page",
-    "text": ""
-},
-
-{
-    "location": "functions/latexify.html#Latexify.latexify",
-    "page": "latexify",
-    "title": "Latexify.latexify",
-    "category": "Function",
-    "text": "latexify(::AbstractArray)\n\nReturn a latex array.\n\n\n\nlatexify( nested vector )\n\nIf the vector can be converted to a matrix, return a latex array. Otherwise, convert all non-container elements to inline latex equations.\n\n\n\nlatexify(lhs::AbstractVector, rhs::AbstractVector)\n\nreturn a latex align environment with lhs = rhs.\n\n\n\n"
-},
-
-{
-    "location": "functions/latexify.html#latexify-1",
-    "page": "latexify",
-    "title": "latexify",
-    "category": "section",
-    "text": "DocTestSetup = quote\nusing Latexify\nendlatexifyDocTestSetup = nothing"
-},
-
-{
-    "location": "functions/latexalign.html#",
-    "page": "latexalign",
-    "title": "latexalign",
-    "category": "page",
-    "text": ""
-},
-
-{
-    "location": "functions/latexalign.html#latexalign-1",
-    "page": "latexalign",
-    "title": "latexalign",
-    "category": "section",
-    "text": "DocTestSetup = quote\nusing Latexify\nusing DifferentialEquations\nendlatexalignDocTestSetup = nothing"
-},
-
-{
-    "location": "functions/latexarray.html#",
-    "page": "latexarray",
-    "title": "latexarray",
-    "category": "page",
-    "text": ""
-},
-
-{
-    "location": "functions/latexarray.html#Latexify.latexarray",
-    "page": "latexarray",
-    "title": "Latexify.latexarray",
-    "category": "Function",
-    "text": "latexarray{T}(arr::AbstractArray{T, 2})\n\nCreate a LaTeX array environment using latexraw.\n\nExamples\n\narr = [1 2; 3 4]\nlatexarray(arr)\n\nbeginequation\nleft\nbeginarraycc\n1  2 \n3  4 \nendarray\nright\nendequation\n\n\n\n\n"
-},
-
-{
-    "location": "functions/latexarray.html#latexarray-1",
-    "page": "latexarray",
-    "title": "latexarray",
-    "category": "section",
-    "text": "DocTestSetup = quote\nusing Latexify\nusing DifferentialEquations\nendlatexarrayDocTestSetup = nothing"
-},
-
-{
-    "location": "functions/latexoperation.html#",
-    "page": "latexoperation",
-    "title": "latexoperation",
-    "category": "page",
-    "text": ""
-},
-
-{
-    "location": "functions/latexoperation.html#Latexify.latexoperation",
-    "page": "latexoperation",
-    "title": "Latexify.latexoperation",
-    "category": "Function",
-    "text": "latexoperation(ex::Expr, prevOp::AbstractArray)\n\nTranslate a simple operation given by ex to LaTeX maths syntax. This uses the information about the previous operations to decide if a parenthesis is needed.\n\n\n\n"
-},
-
-{
-    "location": "functions/latexoperation.html#latexoperation-1",
-    "page": "latexoperation",
-    "title": "latexoperation",
-    "category": "section",
-    "text": "This function is not exported.DocTestSetup = quote\nusing Latexify\nusing DifferentialEquations\nendLatexify.latexoperationDocTestSetup = nothing"
 },
 
 ]}
