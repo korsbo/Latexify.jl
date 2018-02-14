@@ -21,7 +21,7 @@ println(latexify(ex))
 ## or the equivalent:
 latexify(ex) |> println
 ```
-```math
+```LaTeX
 $\frac{x}{y}$
 ```
 
@@ -45,4 +45,14 @@ latexify(M)
 You can transpose the output using the keyword argument `transpose=true`.
 
 
-If you input a ParameterizedFunction or a ReactionNetwork from the DifferentialEquations.jl suite `latexify` will return an align environment. For more on this, have a look on their respective sections.
+If you give two vectors as an argument, they will be displayed as the left-hand-side and right-hand-side of an align environment:
+```julia
+latexify(["x/y", :z], Any[2.3, 1//2])
+```
+\begin{align}
+\frac{x}{y} =& 2.3 \\\\
+z =& \frac{1}{2} \\\\
+\end{align}
+
+
+If you input a ParameterizedFunction or a ReactionNetwork from the DifferentialEquations.jl you will also get an align environment. For more on this, have a look on their respective sections.
