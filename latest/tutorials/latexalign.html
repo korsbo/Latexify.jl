@@ -15,11 +15,4 @@ end k_y k_x n_x
 
 latexalign(ode)</code></pre><p>\begin{align} \frac{dx}{dt} =&amp; \frac{y}{k_{y} + y} - x \\
 \frac{dy}{dt} =&amp; \frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y \\
-\end{align}</p><p>A vector of ParameterizedFunctions will be rendered side-by-side:</p><pre><code class="language-julia">ode2 = @ode_def negativeFeedback begin
-    dx = y/(k_y + y) - x
-    dy = k_x^n_x/(k_x^n_x + x^n_x) - y
-end k_y k_x n_x
-
-latexalign([ode, ode2])</code></pre><p>\begin{align} \frac{dx}{dt}  &amp;=  \frac{y}{k_{y} + y} - x  &amp;  \frac{dx}{dt}  &amp;=  \frac{y}{k_{y} + y} - x  &amp;  \\
-\frac{dy}{dt}  &amp;=  \frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &amp;  \frac{dy}{dt}  &amp;=  \frac{k_{x}^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &amp;  \\
 \end{align}</p><footer><hr/><a class="previous" href="latexinline.html"><span class="direction">Previous</span><span class="title"><code>latexinline</code></span></a><a class="next" href="latexarray.html"><span class="direction">Next</span><span class="title"><code>latexarray</code></span></a></footer></article></body></html>
