@@ -12,8 +12,7 @@ makedocs(
             "tutorials/latexinline.md",
             "tutorials/latexalign.md",
             "tutorials/latexarray.md",
-            "tutorials/latextabular.md",
-            "tutorials/inner_workings.md"
+            "tutorials/latextabular.md"
         ],
         "Use with other packages" => [
             "tutorials/parameterizedfunctions.md",
