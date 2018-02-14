@@ -63,7 +63,7 @@ latexarray(rn.symjac)
 \begin{equation}
 \left[
 \begin{array}{cc}
-- d_{x} - r_{b} & r_{u} + \frac{2 \cdot y \cdot v_{x}}{k_{x}^{2} + y^{2}} - \frac{2 \cdot y^{3} \cdot v_{x}}{\left( k_{x}^{2} + y^{2} \right)^{2}}\\\\
+\- d_{x} - r_{b} & r_{u} + \frac{2 \cdot y \cdot v_{x}}{k_{x}^{2} + y^{2}} - \frac{2 \cdot y^{3} \cdot v_{x}}{\left( k_{x}^{2} + y^{2} \right)^{2}}\\\\
 r_{b} & - d_{y} - r_{u}\\\\
 \end{array}
 \right]
