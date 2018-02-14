@@ -33,6 +33,9 @@ latexify(rn; noise=true)
 \frac{dy}{dt} =& \sqrt{p_{y}} + \sqrt{x \cdot r_{b}} - \sqrt{y \cdot d_{y}} - \sqrt{y \cdot r_{u}} \\\\
 \end{align}
 
+
+### Turning off the SymEngine magic
+
 SymEngine will be used by default to clean up the expressions. A disadvantage of this is that the order of the terms and the operations within the terms becomes unpredictable. You can therefore turn this symbolic magic off. The result has some ugly issues with $+ -1$, but the option is there, and here is how to use it:  
 ```julia
 latexify(rn; symbolic=false)
@@ -49,3 +52,22 @@ latexify(rn; noise=true, symbolic=false)
 \frac{dx}{dt} =& \sqrt{\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}} + - \sqrt{d_{x} \cdot x} + - \sqrt{r_{b} \cdot x} + \sqrt{r_{u} \cdot y} \\\\
 \frac{dy}{dt} =& \sqrt{p_{y}} + - \sqrt{d_{y} \cdot y} + \sqrt{r_{b} \cdot x} + - \sqrt{r_{u} \cdot y} \\\\
 \end{align}
+
+### Getting the jacobian.
+
+The ReactionNetwork type has a field for a symbolically calculated jacobian. This can be rendered by:
+
+```julia
+latexarray(rn.symjac)
+```
+\begin{equation}
+\left[
+\begin{array}{cc}
+- d_{x} - r_{b} & r_{u} + \frac{2 \cdot y \cdot v_{x}}{k_{x}^{2} + y^{2}} - \frac{2 \cdot y^{3} \cdot v_{x}}{\left( k_{x}^{2} + y^{2} \right)^{2}}\\\\
+r_{b} & - d_{y} - r_{u}\\\\
+\end{array}
+\right]
+\end{equation}
+
+
+The DiffEqBiological package is currently undergoing development, but when the reaction network type gets extended with invers Jacobians, Hessians, etc, latexarray will be able to latexify them.

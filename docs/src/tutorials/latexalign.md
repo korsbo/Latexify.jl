@@ -51,20 +51,3 @@ latexalign(ode)
 \frac{dx}{dt} =& \frac{y}{k_{y} + y} - x \\\\
 \frac{dy}{dt} =& \frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y \\\\
 \end{align}
-
-
-A vector of ParameterizedFunctions will be rendered side-by-side:
-
-```julia
-ode2 = @ode_def negativeFeedback begin
-    dx = y/(k_y + y) - x
-    dy = k_x^n_x/(k_x^n_x + x^n_x) - y
-end k_y k_x n_x
-
-latexalign([ode, ode2])
-```
-
-\begin{align}
-\frac{dx}{dt}  &=  \frac{y}{k_{y} + y} - x  &  \frac{dx}{dt}  &=  \frac{y}{k_{y} + y} - x  &  \\\\
-\frac{dy}{dt}  &=  \frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &  \frac{dy}{dt}  &=  \frac{k_{x}^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &  \\\\
-\end{align}

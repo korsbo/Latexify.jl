@@ -32,23 +32,26 @@ latexalign(ode, field=:symfuncs)
 \frac{dy}{dt} =& - y + \frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} \\\\
 \end{align}
 
+### Side-by-side rendering of multiple system.
 
-
-ParameterizedFunctions symbolically calculates the jacobian, inverse jacobian, hessian, and all kinds of goodness. Since they are available as arrays of symbolic expressions, which are latexifyable, you can render pretty much all of them.
+A vector of ParameterizedFunctions will be rendered side-by-side:
 
 ```julia
-latexarray(ode.symjac)
+ode2 = @ode_def negativeFeedback begin
+    dx = y/(k_y + y) - x
+    dy = k_x^n_x/(k_x^n_x + x^n_x) - y
+end k_y k_x n_x
+
+latexalign([ode, ode2])
 ```
-\begin{equation}
-\left[
-\begin{array}{cc}
--2 & \frac{3 \cdot y^{2}}{k_{y\_x} + y} - \frac{y^{3}}{\left( k_{y\_x} + y \right)^{2}}\\\\
-\frac{x^{-1 + n_{x}} \cdot n_{x}}{k_{x}^{n_{x}} + x^{n_{x}}} - \frac{x^{-1 + 2 \cdot n_{x}} \cdot n_{x}}{\left( k_{x}^{n_{x}} + x^{n_{x}} \right)^{2}} & -1\\\\
-\end{array}
-\right]
-\end{equation}
+
+\begin{align}
+\frac{dx}{dt}  &=  \frac{y}{k_{y} + y} - x  &  \frac{dx}{dt}  &=  \frac{y}{k_{y} + y} - x  &  \\\\
+\frac{dy}{dt}  &=  \frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &  \frac{dy}{dt}  &=  \frac{k_{x}^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &  \\\\
+\end{align}
 
 
+### Visualise your parameters.
 
 Another thing that I have found useful is to display the parameters of these functions. The parameters are usually in a vector, and if it is somewhat long, then it can be annoying to try to figure out which element belongs to which parameter. There are several ways to solve this. Here are two:
 ```julia
@@ -65,7 +68,7 @@ n_{x} =& 0.01 \\\\
 or
 
 ```julia
-latexarray( hcat(ode.params, param); transpose=true)
+latexarray([ode.params, param]; transpose=true)
 ```
 \begin{equation}
 \left[
@@ -75,6 +78,24 @@ k_{y} & k_{x} & n_{x}\\\\
 \end{array}
 \right]
 \end{equation}
+
+### Get the jacobian, hessian, etc.
+
+ParameterizedFunctions symbolically calculates the jacobian, inverse jacobian, hessian, and all kinds of goodness. Since they are available as arrays of symbolic expressions, which are latexifyable, you can render pretty much all of them.
+
+```julia
+latexarray(ode.symjac)
+```
+\begin{equation}
+\left[
+\begin{array}{cc}
+-2 & \frac{3 \cdot y^{2}}{k_{y\_x} + y} - \frac{y^{3}}{\left( k_{y\_x} + y \right)^{2}}\\\\
+\frac{x^{-1 + n_{x}} \cdot n_{x}}{k_{x}^{n_{x}} + x^{n_{x}}} - \frac{x^{-1 + 2 \cdot n_{x}} \cdot n_{x}}{\left( k_{x}^{n_{x}} + x^{n_{x}} \right)^{2}} & -1\\\\
+\end{array}
+\right]
+\end{equation}
+
+
 
 
 Pretty neat huh? And if you learn how to use `latexify`, `latexalign`, `latexraw` and `latexarray` you can really format the output in pretty much any way you want.

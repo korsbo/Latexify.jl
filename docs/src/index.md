@@ -28,7 +28,7 @@ which renders as
 \frac{x}{2 \cdot k_{1} + x^{2}}
 \end{equation\*}
 
-## Functions
+## Functions, at a glance
 
 ### `latexify(x)`
 Latexifies `x` and returns it in a suitable latex environment.
@@ -49,6 +49,9 @@ Latexifies input and surrounds it with an align environment. Useful for systems 
 
 ### `latexarray()`
 Latexifies a 1 or 2D array and generates a corresponding ``\LaTeX`` array.
+
+### `latextabular()`
+Latexifies the elements of a 1 or 2D array and puts them in a tabular environment.
 
 
 ## Automatic copying to clipboard
