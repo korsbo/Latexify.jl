@@ -2,6 +2,7 @@ __precompile__()
 module Latexify
 using Requires
 using LaTeXStrings
+using Base.Markdown
 
 export latexify, latexarray, latexalign, latexraw, latexinline, latextabular, copy_to_clipboard
 
@@ -17,4 +18,5 @@ include("latexarray.jl")
 include("latexalign.jl")
 include("latexinline.jl")
 include("latextabular.jl")
+include("mdtable.jl")
 end
