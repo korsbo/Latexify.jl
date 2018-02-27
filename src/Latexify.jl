@@ -4,7 +4,7 @@ using Requires
 using LaTeXStrings
 using Base.Markdown
 
-export latexify, latexarray, latexalign, latexraw, latexinline, latextabular, copy_to_clipboard
+export latexify, latexarray, latexalign, latexraw, latexinline, latextabular, copy_to_clipboard, mdtable
 
 COPY_TO_CLIPBOARD = false
 function copy_to_clipboard(x::Bool)
