@@ -77,6 +77,7 @@ end
 
 latexraw(arr::AbstractArray) = [latexraw(i) for i in arr]
 latexraw(i::Number) = string(i)
+latexraw(i::Void) = "" 
 latexraw(i::Symbol) = convertSubscript(i)
 latexraw(i::String) = latexraw(parse(i))
 latexraw(i::SubString) = latexraw(parse(i))
