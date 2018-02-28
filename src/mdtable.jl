@@ -1,20 +1,10 @@
-
-
-
-function mdtable(header::AbstractVector, M::AbstractMatrix; kwargs...)
-    @assert length(header) == size(M, 1) "The length of the header does not match the shape of the input matrix."
-    return mdtable(hcat(header, M); kwargs...)
-end
-
-mdtable(M::AbstractArray; head=error("Header kwarg has no default."), kwargs...) = mdtable(head, M; kwargs...)
-
-mdtable(vec::AbstractVector; kwargs...) = mdtable(hcat(vec); kwargs...)
-
-mdtable(vecs::AbstractVector...; kwargs...) = mdtable(hcat(vecs...); kwargs...)
-
-function mdtable(M::AbstractMatrix; math::Bool=true, head=[], side=[])
-    math && (M = latexinline(M))
-    isempty(head) || (M = vcat(hcat(head...), M))
+function mdtable(M::AbstractMatrix; latex::Bool=true, head=[], side=[], transpose=false)
+    transpose && (M = permutedims(M, [2,1]))
+    latex && (M = latexinline(M))
+    if !isempty(head)
+        M = vcat(hcat(head...), M)
+        @assert length(head) == size(M, 2) "The length of the head does not match the shape of the input matrix."
+    end
     if !isempty(side)
         length(side) == size(M, 1) - 1 && (side = ["."; side]) ## why is empty not allowed?
         @assert length(side) == size(M, 1) "The length of the side does not match the shape of the input matrix."
@@ -26,5 +16,9 @@ function mdtable(M::AbstractMatrix; math::Bool=true, head=[], side=[])
     for i in 2:size(M,1)
         t *= "| " * join(M[i,:], " | ") * " |\n"
     end
-    return Markdown.parse(t)
+    t = Markdown.parse(t)
+    COPY_TO_CLIPBOARD && clipboard(t)
+    return t
 end
+
+mdtable(v::AbstractArray...; kwargs...) = mdtable(hcat(v...); kwargs...)
