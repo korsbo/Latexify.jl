@@ -79,3 +79,4 @@ function mdtable(M::AbstractMatrix; latex::Bool=true, head=[], side=[], transpos
 end
 
 mdtable(v::AbstractArray...; kwargs...) = mdtable(hcat(v...); kwargs...)
+mdtable(d::Associative; kwargs...) = mdtable(collect(keys(d)), collect(values(d)); kwargs...)
