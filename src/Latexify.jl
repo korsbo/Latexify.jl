@@ -4,7 +4,7 @@ using Requires
 using LaTeXStrings
 using Base.Markdown
 
-export latexify, latexarray, latexalign, latexraw, latexinline, latextabular, copy_to_clipboard, mdtable
+export latexify, latexarray, latexalign, latexraw, latexinline, latextabular, copy_to_clipboard, mdtable, md
 
 COPY_TO_CLIPBOARD = false
 function copy_to_clipboard(x::Bool)
@@ -18,5 +18,7 @@ include("latexarray.jl")
 include("latexalign.jl")
 include("latexinline.jl")
 include("latextabular.jl")
+
+include("md.jl")
 include("mdtable.jl")
 end
