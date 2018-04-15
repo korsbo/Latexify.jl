@@ -1,66 +1,52 @@
-function latexify(x)
-    latexstr = latexstring( latexraw(x) )
-    COPY_TO_CLIPBOARD && clipboard(latexstr)
-    return latexstr
+function latexify(args...; env::Symbol=:auto, kwargs...)
+    latex_function = infer_output(env, args...)
+
+    result = latex_function(args...; kwargs...)
+    COPY_TO_CLIPBOARD && clipboard(result)
+    return result
 end
 
 
-"""
-    latexify(::AbstractArray)
+function infer_output(env, args...)
+    if env != :auto
+        funcname = Symbol("latex$env")
+        isdefined(funcname) || error("The environment $env is not defined.")
+        return eval(:($funcname))
+    end
 
-Return a latex array.
+    latex_function = get_latex_function(args...)
+
+    return latex_function
+end
+
 """
-latexify(x::AbstractArray; kwargs...) = latexarray(x; kwargs...)
+    get_latex_function(args...)
+
+Use overloading to determine which latex environment to output.
+
+This determines the default behaviour of `latexify()` for different inputs.
+"""
+get_latex_function(args...) = latexinline
+get_latex_function(args::AbstractArray...) = latexarray
 
 
-"""
-    latexify( nested vector )
-
-If the vector can be converted to a matrix, return a latex array.
-Otherwise, convert all non-container elements to inline latex equations.
-"""
-function latexify(x::AbstractArray{T}; kwargs...) where T <: AbstractArray
+function get_latex_function(x::AbstractArray{T}) where T <: AbstractArray
     try
         x = hcat(x...)
-        return latexarray(x; kwargs...)
+        return latexarray
     catch
-        return latexinline(x)
+        return latexinline
     end
 end
 
-"""
-    latexify(lhs::AbstractVector, rhs::AbstractVector)
+get_latex_function(lhs::AbstractVector, rhs::AbstractVector) = latexalign
 
-return a latex align environment with lhs = rhs.
-"""
-latexify(lhs::AbstractVector, rhs::AbstractVector) = latexalign(lhs, rhs)
 
 @require DiffEqBase begin
-"""
-    latexify(ode::AbstractParameterizedFunction)
+    get_latex_function(ode::DiffEqBase.AbstractParameterizedFunction) = latexalign
+    get_latex_function(r::DiffEqBase.AbstractReactionNetwork; kwargs...) = latexalign
 
-Display an ODE defined by @ode_def as a latex align.
-"""
-    latexify(ode::DiffEqBase.AbstractParameterizedFunction; kwargs...) = latexalign(ode; kwargs...)
-
-"""
-    latexify(::AbstractArray{ParameterizedFunction})
-
-Display ODEs defined by @ode_def side-by-side in a latex align.
-"""
-    function latexify(x::AbstractArray{T}) where T <: DiffEqBase.AbstractParameterizedFunction
-        latexalign(x)
+    function get_latex_function(x::AbstractArray{T}) where T <: DiffEqBase.AbstractParameterizedFunction
+        return latexalign
     end
-
-
-"""
-    latexify(r::AbstractReactionNetwork; noise=false, symbolic=true)
-
-Generate an align environment from a reaction network.
-
-### kwargs
-- noise::Bool - output the noise function?
-- symbolic::Bool - use symbolic calculation to reduce the expression?
-"""
-    latexify(r::DiffEqBase.AbstractReactionNetwork; kwargs...) = latexalign(r; kwargs...)
 end
