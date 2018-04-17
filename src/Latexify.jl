@@ -29,4 +29,5 @@ include("latextabular.jl")
 
 include("md.jl")
 include("mdtable.jl")
+include("mdtext.jl")
 end
