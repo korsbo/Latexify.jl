@@ -19,3 +19,4 @@ end
 
 
 latextabular(vec::AbstractVector; kwargs...) = latextabular(hcat(vec...); kwargs...)
+latextabular(vectors::AbstractVector...; kwargs...) = latextabular(hcat(vectors...); kwargs...)

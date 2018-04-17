@@ -2,16 +2,22 @@ function latexify(args...; env::Symbol=:auto, kwargs...)
     latex_function = infer_output(env, args...)
 
     result = latex_function(args...; kwargs...)
+
     COPY_TO_CLIPBOARD && clipboard(result)
+    AUTO_DISPLAY && display(result)
     return result
 end
 
 
 function infer_output(env, args...)
     if env != :auto
-        funcname = Symbol("latex$env")
-        isdefined(funcname) || error("The environment $env is not defined.")
-        return eval(:($funcname))
+        env == :inline && return latexinline
+        env == :tabular && return latextabular
+        env == :table && return latextabular
+        env == :raw && return latexraw
+        env == :array && return latexarray
+
+        error("The environment $env is not defined.")
     end
 
     latex_function = get_latex_function(args...)
