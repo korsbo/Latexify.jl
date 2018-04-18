@@ -9,9 +9,6 @@ function md(args...; env=:auto, kwargs...)
     return m
 end
 
-# md(v::AbstractArray...; kwargs...) = mdtable(v...; kwargs...)
-# md(d::Associative; kwargs...) = mdtable(d; kwargs...)
-
 
 function infer_md_output(env, args...)
     if env != :auto

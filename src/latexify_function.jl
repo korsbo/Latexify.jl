@@ -34,6 +34,7 @@ This determines the default behaviour of `latexify()` for different inputs.
 """
 get_latex_function(args...) = latexinline
 get_latex_function(args::AbstractArray...) = latexarray
+get_latex_function(args::Associative) = latexarray
 
 
 function get_latex_function(x::AbstractArray{T}) where T <: AbstractArray
