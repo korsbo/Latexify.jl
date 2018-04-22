@@ -16,6 +16,7 @@ function infer_output(env, args...)
         env == :table && return latextabular
         env == :raw && return latexraw
         env == :array && return latexarray
+        env == :align && return latexalign
 
         error("The environment $env is not defined.")
     end
@@ -51,7 +52,7 @@ get_latex_function(lhs::AbstractVector, rhs::AbstractVector) = latexalign
 
 @require DiffEqBase begin
     get_latex_function(ode::DiffEqBase.AbstractParameterizedFunction) = latexalign
-    get_latex_function(r::DiffEqBase.AbstractReactionNetwork; kwargs...) = latexalign
+    get_latex_function(r::DiffEqBase.AbstractReactionNetwork) = latexalign
 
     function get_latex_function(x::AbstractArray{T}) where T <: DiffEqBase.AbstractParameterizedFunction
         return latexalign
