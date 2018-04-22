@@ -18,6 +18,7 @@ function infer_md_output(env, args...)
         env == :text && return mdtext
         env == :align && return mdalign
         env == :array && return mdarray
+        env == :inline && return latexinline
         error("The MD environment $env is not defined.")
     end
 
