@@ -9,11 +9,15 @@ function md(args...; env=:auto, kwargs...)
     return m
 end
 
+mdalign(args...; kwargs...) = latexalign(args...; md=true, kwargs...)
+mdarray(args...; kwargs...) = latexarray(args...; md=true, kwargs...)
 
 function infer_md_output(env, args...)
     if env != :auto
         env == :table && return mdtable
         env == :text && return mdtext
+        env == :align && return mdalign
+        env == :array && return mdarray
         error("The MD environment $env is not defined.")
     end
 
@@ -32,3 +36,11 @@ This determines the default behaviour of `md()` for different inputs.
 get_md_function(args...) = mdtext
 get_md_function(args::AbstractArray...) = mdtable
 get_md_function(args::Associative) = mdtable
+
+@require DiffEqBase begin
+    get_md_function(args::DiffEqBase.AbstractParameterizedFunction) = mdalign
+    get_md_function(args::DiffEqBase.AbstractReactionNetwork) = mdalign
+    function get_md_function(x::AbstractArray{T}) where T <: DiffEqBase.AbstractParameterizedFunction
+        return mdalign
+    end
+end
