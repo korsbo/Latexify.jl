@@ -42,7 +42,7 @@ function latexalign end
 
 function latexalign(arr::AbstractMatrix; separator=" =& ", md=false, starred=false)
     (rows, columns) = size(arr)
-    eol = md ? "\\\\\\\\ \n" : "\\\\ \n"
+    eol = md ? " \\\\\\\\ \n" : " \\\\ \n"
     arr = latexraw(arr)
 
     str = "\\begin{align$(starred ? "*" : "")}\n"
