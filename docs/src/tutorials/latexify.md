@@ -55,4 +55,4 @@ z =& \frac{1}{2} \\\\
 \end{align}
 
 
-If you input a ParameterizedFunction or a ReactionNetwork from the DifferentialEquations.jl you will also get an align environment. For more on this, have a look on their respective sections.
+If you input a ParameterizedFunction or a ReactionNetwork from DifferentialEquations.jl you will also get an align environment. For more on this, have a look on their respective sections.

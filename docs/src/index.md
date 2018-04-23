@@ -10,9 +10,11 @@ This package supplies functionality for latexifying objects of the following typ
 - Numbers (including rational and complex),
 - Missings' Missing type,
 - Symbols,
-- Symbolic expressions from SymEngine.jl.
+- Symbolic expressions from SymEngine.jl,
+- Any shape of array containing a mix of any of the above types,
+- ParameterizedFunctions from DifferentialEquations.jl,
+- ReactionNetworks from DifferentialEquations.jl
 
-Along with any shape of array which contains elements of the above types.
 
 Example:
 ```julia-repl
@@ -27,6 +29,19 @@ which renders as
 \begin{equation\*}
 \frac{x}{2 \cdot k_{1} + x^{2}}
 \end{equation\*}
+
+## Supported output
+
+Latexify has support for generating a range of different LaTeX environments. The main function of the package, `latexify()`, tries to infer what environment you need. However, you can override this by passing the keyword argument `env = `. The following environments are available:
+
+
+| environment | `env= ` |
+| ------ | ---- | --- |
+| no env | `:raw` | Latexifies an object and returns a ``\LaTeX`` formatted string. If the input is an array it will be recursed and all its elements latexified. This function does not surround the resulting string in any ``\LaTeX`` environments.
+| Inline | `:inline` | latexify the input and surround it with $$ for inline rendering. |
+| Align | `:align` | Latexifies input and surrounds it with an align environment. Useful for systems of equations and such fun stuff. |
+| Array | `:array` |
+
 
 ## Functions, at a glance
 
