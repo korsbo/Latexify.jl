@@ -58,6 +58,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
     op == :acsc && return "\\mathrm{arccsc}\\left( $(args[2]) \\right)"
     op == :csch && return "\\mathrm{csch}\\left( $(args[2]) \\right)"
     op == :acsch && return "\\mathrm{arccsch}\\left( $(args[2]) \\right)"
+    op == :gamma && return "\\Gamma\\left( $(args[2]) \\right)"
     op == :sqrt && return "\\$op{$(args[2])}"
     op == :abs && return "\\left\\|$(args[2])\\right\\|"
     op == :exp && return "e^{$(args[2])}"
