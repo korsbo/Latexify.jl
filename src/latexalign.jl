@@ -80,9 +80,13 @@ end
 
 
 @require DiffEqBase begin
-    function latexalign(ode::DiffEqBase.AbstractParameterizedFunction; field::Symbol=:funcs, kwargs...)
+    function latexalign(ode::DiffEqBase.AbstractParameterizedFunction; field::Symbol=:funcs, bracket=false, kwargs...)
         lhs = [parse("d$x/dt") for x in ode.syms]
         rhs = getfield(ode, field)
+        if bracket
+            rhs = add_brackets(rhs, ode.syms)
+            lhs = [:(d[$x]/dt) for x in ode.syms]
+        end
         return latexalign(lhs, rhs; kwargs...)
     end
 
@@ -125,9 +129,10 @@ end
     ### kwargs
     - noise::Bool - output the noise function?
     - symbolic::Bool - use symbolic calculation to reduce the expression?
+    - bracket::Bool - Surround the variables with square brackets to denote concentrations.
     """
-    function latexalign(r::DiffEqBase.AbstractReactionNetwork; noise=false, symbolic=true, kwargs...)
-        lhs = ["d$x/dt" for x in r.syms]
+    function latexalign(r::DiffEqBase.AbstractReactionNetwork; bracket=false, noise=false, symbolic=true, kwargs...)
+        lhs = [parse("d$x/dt") for x in r.syms]
         if !noise
             symbolic ? (rhs = r.f_symfuncs) : (rhs = r.f_func)
         else
@@ -145,6 +150,23 @@ end
                 rhs = expr_arr
             end
         end
+        if bracket
+            rhs = add_brackets(rhs, r.syms)
+            lhs = [:(d[$x]/dt) for x in r.syms]
+        end
         return latexalign(lhs, rhs; kwargs...)
     end
+end
+
+
+
+add_brackets(arr::AbstractArray, vars) = [add_brackets(element, vars) for element in arr]
+
+@require SymEngine begin
+    add_brackets(syms::SymEngine.Basic, vars) = add_brackets(parse("$syms"), vars)
+end
+
+function add_brackets(ex::Expr, vars)
+    ex = postwalk(x -> x in vars ? "\\left[ $x \\right]" : x, ex)
+    return ex
 end
