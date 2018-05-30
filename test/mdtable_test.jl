@@ -4,7 +4,6 @@ M = vcat(hcat(arr...), hcat(arr...))
 head = ["col$i" for i in 1:size(M, 2)]
 side = ["row$i" for i in 1:size(M, 1)]
 
-@testset "mdtable()" begin
 
 @test mdtable(arr) == Markdown.md"
 | $\frac{x}{y - 1}$ |
@@ -93,5 +92,3 @@ side = ["row$i" for i in 1:size(M, 1)]
 | col4 |           $x - y$ |           $x - y$ |
 | col5 |            $symb$ |            $symb$ |
 "
-
-end

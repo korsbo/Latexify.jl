@@ -1,10 +1,47 @@
 
 
-function md(s::String)
-    m = Markdown.parse(s)
+function md(args...; env=:auto, kwargs...)
+    md_function = infer_md_output(env, args...)
+
+    m = md_function(args...; kwargs...)
     COPY_TO_CLIPBOARD && clipboard(m)
+    AUTO_DISPLAY && display(m)
     return m
 end
 
-md(v::AbstractArray...; kwargs...) = mdtable(v...; kwargs...)
-md(d::Associative; kwargs...) = mdtable(d; kwargs...)
+mdalign(args...; kwargs...) = latexalign(args...; md=true, kwargs...)
+mdarray(args...; kwargs...) = latexarray(args...; md=true, kwargs...)
+
+function infer_md_output(env, args...)
+    if env != :auto
+        env == :table && return mdtable
+        env == :text && return mdtext
+        env == :align && return mdalign
+        env == :array && return mdarray
+        env == :inline && return latexinline
+        error("The MD environment $env is not defined.")
+    end
+
+    md_function = get_md_function(args...)
+
+    return md_function
+end
+
+"""
+    get_md_function(args...)
+
+Use overloading to determine what MD output to generate.
+
+This determines the default behaviour of `md()` for different inputs.
+"""
+get_md_function(args...) = mdtext
+get_md_function(args::AbstractArray...) = mdtable
+get_md_function(args::Associative) = mdtable
+
+@require DiffEqBase begin
+    get_md_function(args::DiffEqBase.AbstractParameterizedFunction) = mdalign
+    get_md_function(args::DiffEqBase.AbstractReactionNetwork) = mdalign
+    function get_md_function(x::AbstractArray{T}) where T <: DiffEqBase.AbstractParameterizedFunction
+        return mdalign
+    end
+end

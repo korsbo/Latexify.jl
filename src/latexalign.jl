@@ -40,48 +40,54 @@ julia> latexalign(ode)
 """
 function latexalign end
 
-function latexalign(arr::AbstractMatrix; separator=" =& ")
+function latexalign(arr::AbstractMatrix; separator=" =& ", md=false, starred=false)
     (rows, columns) = size(arr)
+    eol = md ? " \\\\\\\\ \n" : " \\\\ \n"
     arr = latexraw(arr)
-    str = "\\begin{align}\n"
+
+    str = "\\begin{align$(starred ? "*" : "")}\n"
     for i in 1:rows
-        str *= join(arr[i,:], separator) * " \\\\ \n"
+        str *= join(arr[i,:], separator) * eol
     end
-    str *= "\\end{align}\n"
+    str *= "\\end{align$(starred ? "*" : "")}\n"
     latexstr = LaTeXString(str)
     COPY_TO_CLIPBOARD && clipboard(latexstr)
     return latexstr
 end
 
-function latexalign(lhs::AbstractArray, rhs::AbstractArray)
-    return latexalign(hcat(lhs, rhs))
+function latexalign(lhs::AbstractArray, rhs::AbstractArray; kwargs...)
+    return latexalign(hcat(lhs, rhs); kwargs...)
 end
 
-function latexalign(nested::AbstractVector{AbstractVector})
-    return latexalign(hcat(nested...))
+function latexalign(nested::AbstractVector{AbstractVector}; kwargs...)
+    return latexalign(hcat(nested...); kwargs...)
 end
 
 """
     latexalign(vec::AbstractVector)
 
-Go through the emlements, split at any = sign, pass on as a matrix.
+Go through the elements, split at any = sign, pass on as a matrix.
 """
-function latexalign(vec::AbstractVector)
+function latexalign(vec::AbstractVector; kwargs...)
     lvec = latexraw(vec)
     ## turn the array into a matrix
     lmat = hcat(split.(lvec, " = ")...)
     ## turn the matrix ito arrays of left-hand-side, right-hand-side.
     larr = [lmat[i,:] for i in 1:size(lmat, 1)]
     length(larr) < 2 && error("Invalid intput to latexalign().")
-    return latexalign( hcat(larr...) )
+    return latexalign( hcat(larr...) ; kwargs...)
 end
 
 
 @require DiffEqBase begin
-    function latexalign(ode::DiffEqBase.AbstractParameterizedFunction; field::Symbol=:funcs)
+    function latexalign(ode::DiffEqBase.AbstractParameterizedFunction; field::Symbol=:funcs, bracket=false, kwargs...)
         lhs = [parse("d$x/dt") for x in ode.syms]
         rhs = getfield(ode, field)
-        return latexalign(lhs, rhs)
+        if bracket
+            rhs = add_brackets(rhs, ode.syms)
+            lhs = [:(d[$x]/dt) for x in ode.syms]
+        end
+        return latexalign(lhs, rhs; kwargs...)
     end
 
     """
@@ -89,7 +95,7 @@ end
 
     Display ODEs side-by-side.
     """
-    function latexalign(odearray::AbstractVector{T}; field::Symbol=:funcs) where T<:DiffEqBase.AbstractParameterizedFunction
+    function latexalign(odearray::AbstractVector{T}; field::Symbol=:funcs, kwargs...) where T<:DiffEqBase.AbstractParameterizedFunction
         a = []
         maxrows = maximum(length.(getfield.(odearray, :syms)))
 
@@ -112,7 +118,7 @@ end
             append!(a, [lhs, first_separator, rhs, second_separator])
         end
         a = hcat(a...)
-        return latexalign(a; separator=" ")
+        return latexalign(a; separator=" ", kwargs...)
     end
 
     """
@@ -123,9 +129,10 @@ end
     ### kwargs
     - noise::Bool - output the noise function?
     - symbolic::Bool - use symbolic calculation to reduce the expression?
+    - bracket::Bool - Surround the variables with square brackets to denote concentrations.
     """
-    function latexalign(r::DiffEqBase.AbstractReactionNetwork; noise=false, symbolic=true)
-        lhs = ["d$x/dt" for x in r.syms]
+    function latexalign(r::DiffEqBase.AbstractReactionNetwork; bracket=false, noise=false, symbolic=true, kwargs...)
+        lhs = [parse("d$x/dt") for x in r.syms]
         if !noise
             symbolic ? (rhs = r.f_symfuncs) : (rhs = r.f_func)
         else
@@ -143,6 +150,23 @@ end
                 rhs = expr_arr
             end
         end
-        return latexalign(lhs, rhs)
+        if bracket
+            rhs = add_brackets(rhs, r.syms)
+            lhs = [:(d[$x]/dt) for x in r.syms]
+        end
+        return latexalign(lhs, rhs; kwargs...)
     end
+end
+
+
+
+add_brackets(arr::AbstractArray, vars) = [add_brackets(element, vars) for element in arr]
+
+@require SymEngine begin
+    add_brackets(syms::SymEngine.Basic, vars) = add_brackets(parse("$syms"), vars)
+end
+
+function add_brackets(ex::Expr, vars)
+    ex = postwalk(x -> x in vars ? "\\left[ $x \\right]" : x, ex)
+    return ex
 end
