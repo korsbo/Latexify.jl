@@ -21,7 +21,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Latexify.jl",
     "title": "Supported objects",
     "category": "section",
-    "text": "This package supplies functionality for latexifying objects of the following types:Expressions,\nStrings,\nNumbers (including rational and complex),\nMissings\' Missing type,\nSymbols,\nSymbolic expressions from SymEngine.jl.Along with any shape of array which contains elements of the above types.Example:julia> str = \"x/(2*k_1+x^2)\"\njulia> print(latexify(str))\n\n\\frac{x}{2 \\cdot k_{1} + x^{2}}which renders as\\begin{equation*} \\frac{x}{2 \\cdot k_{1} + x^{2}} \\end{equation*}"
+    "text": "This package supplies functionality for latexifying objects of the following types:Expressions,\nStrings,\nNumbers (including rational and complex),\nMissings\' Missing type,\nSymbols,\nSymbolic expressions from SymEngine.jl,\nAny shape of array containing a mix of any of the above types,\nParameterizedFunctions from DifferentialEquations.jl,\nReactionNetworks from DifferentialEquations.jlExample:julia> str = \"x/(2*k_1+x^2)\"\njulia> print(latexify(str))\n\n\\frac{x}{2 \\cdot k_{1} + x^{2}}which renders as\\begin{equation*} \\frac{x}{2 \\cdot k_{1} + x^{2}} \\end{equation*}"
+},
+
+{
+    "location": "index.html#Supported-output-1",
+    "page": "Latexify.jl",
+    "title": "Supported output",
+    "category": "section",
+    "text": "Latexify has support for generating a range of different LaTeX environments. The main function of the package, latexify(), tries to infer what environment you need. However, you can override this by passing the keyword argument env =. The following environments are available:| environment | env= | | ––– | –– | –- | | no env | :raw | Latexifies an object and returns a LaTeX formatted string. If the input is an array it will be recursed and all its elements latexified. This function does not surround the resulting string in any LaTeX environments. | Inline | :inline | latexify the input and surround it with $ for inline rendering. | | Align | :align | Latexifies input and surrounds it with an align environment. Useful for systems of equations and such fun stuff. | | Array | :array |"
 },
 
 {
@@ -101,7 +109,7 @@ var documenterSearchIndex = {"docs": [
     "page": "latexify",
     "title": "latexify",
     "category": "section",
-    "text": "This is a wrapper of some of the other latexXXX functions. It tries to infer a suitable output mode for the given input. If the environment you are using supports the MIME type \"text/latex\", then the output will be rendered nicely.using Latexify\ncopy_to_clipboard(true)\n\nex = :(x/y)\nlatexify(ex)\nfracxyIf you print the output rather than display, then you will enforce the print-out of a string which is ready for some copy-pasting into your LaTeX document.println(latexify(ex))\n\n## or the equivalent:\nlatexify(ex) |> println$\\frac{x}{y}$A matrix, or a single vector, is turned into an array.M = signif.(rand(3,4), 2)\n\nlatexify(M)\\begin{equation} \\left[ \\begin{array}{cccc} 0.85 & 0.99 & 0.85 & 0.5\\\\\n0.59 & 0.061 & 0.77 & 0.48\\\\\n0.7 & 0.17 & 0.7 & 0.82\\\\\n\\end{array} \\right] \\end{equation}You can transpose the output using the keyword argument transpose=true.If you give two vectors as an argument, they will be displayed as the left-hand-side and right-hand-side of an align environment:latexify([\"x/y\", :z], Any[2.3, 1//2])\\begin{align} \\frac{x}{y} =& 2.3 \\\\\nz =& \\frac{1}{2} \\\\\n\\end{align}If you input a ParameterizedFunction or a ReactionNetwork from the DifferentialEquations.jl you will also get an align environment. For more on this, have a look on their respective sections."
+    "text": "This is a wrapper of some of the other latexXXX functions. It tries to infer a suitable output mode for the given input. If the environment you are using supports the MIME type \"text/latex\", then the output will be rendered nicely.using Latexify\ncopy_to_clipboard(true)\n\nex = :(x/y)\nlatexify(ex)\nfracxyIf you print the output rather than display, then you will enforce the print-out of a string which is ready for some copy-pasting into your LaTeX document.println(latexify(ex))\n\n## or the equivalent:\nlatexify(ex) |> println$\\frac{x}{y}$A matrix, or a single vector, is turned into an array.M = signif.(rand(3,4), 2)\n\nlatexify(M)\\begin{equation} \\left[ \\begin{array}{cccc} 0.85 & 0.99 & 0.85 & 0.5\\\\\n0.59 & 0.061 & 0.77 & 0.48\\\\\n0.7 & 0.17 & 0.7 & 0.82\\\\\n\\end{array} \\right] \\end{equation}You can transpose the output using the keyword argument transpose=true.If you give two vectors as an argument, they will be displayed as the left-hand-side and right-hand-side of an align environment:latexify([\"x/y\", :z], Any[2.3, 1//2])\\begin{align} \\frac{x}{y} =& 2.3 \\\\\nz =& \\frac{1}{2} \\\\\n\\end{align}If you input a ParameterizedFunction or a ReactionNetwork from DifferentialEquations.jl you will also get an align environment. For more on this, have a look on their respective sections."
 },
 
 {
