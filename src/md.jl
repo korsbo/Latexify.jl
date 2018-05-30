@@ -45,3 +45,7 @@ get_md_function(args::Associative) = mdtable
         return mdalign
     end
 end
+
+@require DataFrames begin
+    get_md_function(args::DataFrames.DataFrame) = mdtable
+end
