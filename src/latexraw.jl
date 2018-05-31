@@ -77,15 +77,23 @@ end
 
 latexraw(arr::AbstractArray) = [latexraw(i) for i in arr]
 latexraw(i::Number) = string(i)
-latexraw(i::Void) = "" 
+latexraw(i::Void) = ""
 latexraw(i::Symbol) = convertSubscript(i)
-latexraw(i::String) = latexraw(parse(i))
 latexraw(i::SubString) = latexraw(parse(i))
 latexraw(i::SubString{LaTeXStrings.LaTeXString}) = i
 latexraw(i::Rational) = latexraw( i.den == 1 ? i.num : :($(i.num)/$(i.den)))
 latexraw(z::Complex) = "$(z.re)$(z.im < 0 ? "" : "+" )$(z.im)\\textit{i}"
 #latexraw(i::DataFrames.DataArrays.NAtype) = "\\textrm{NA}"
 latexraw(str::LaTeXStrings.LaTeXString) = str
+
+function latexraw(i::String)
+    try
+        ex = parse(i)
+        return latexraw(ex)
+    catch ParseError
+        error("Error in Latexify.jl: You are trying to create latex-maths from a string that cannot be parsed as an expression. If you are trying to make a table or an array with plain text, try passing the keyword argument `latex=false`.")
+    end
+end
 
 @require Missings latexraw(i::Missings.Missing) = "\\textrm{NA}"
 
