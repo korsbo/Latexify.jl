@@ -90,6 +90,8 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
     if ex.head == :call
         return "\\mathrm{$op}\\left( $(join(args[2:end], ", ")) \\right)"
     end
+
+    ex.head == Symbol("'") && return "$(args[1])'"
     ## if we have reached this far without a return, then error.
     error("Latexify.jl's latexoperation does not know what to do with one of the
                 operators in your expression ($op).")
