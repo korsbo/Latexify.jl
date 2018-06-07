@@ -27,6 +27,7 @@ include("latexarray.jl")
 include("latexalign.jl")
 include("latexinline.jl")
 include("latextabular.jl")
+include("chemical_arrows.jl")
 
 include("md.jl")
 include("mdtable.jl")
