@@ -12,11 +12,11 @@ end
 function infer_output(env, args...)
     if env != :auto
         env == :inline && return latexinline
-        env == :tabular && return latextabular
-        env == :table && return latextabular
+        env in [:tabular, :table] && return latextabular
         env == :raw && return latexraw
         env == :array && return latexarray
         env == :align && return latexalign
+        env in [:arrows, :chem, :chemical, :arrow] && return chemical_arrows
 
         error("The environment $env is not defined.")
     end

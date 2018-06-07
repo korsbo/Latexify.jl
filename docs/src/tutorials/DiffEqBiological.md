@@ -3,7 +3,7 @@
 Latexify.jl has methods for dealing with AbstractReactionNetworks. For more information regarding this DSL, turn to its [docs](http://docs.juliadiffeq.org/latest/models/biological.html). The latexify end of things are pretty simple: feed a reaction network to the `latexify` or `latexalign` functions (they do the same thing in this case) and let them do their magic.
 
 ```julia
-using DifferentialEquations
+using DiffEqBiological
 using Latexify
 copy_to_clipboard(true)
 
@@ -53,21 +53,22 @@ latexify(rn; noise=true, symbolic=false)
 \frac{dy}{dt} =& \sqrt{p_{y}} + - \sqrt{d_{y} \cdot y} + \sqrt{r_{b} \cdot x} + - \sqrt{r_{u} \cdot y} \\\\
 \end{align}
 
-### Getting the jacobian.
 
-The ReactionNetwork type has a field for a symbolically calculated jacobian. This can be rendered by:
+## Chemical arrow notation
+
+DiffEqBiologicals reaction network is all about chemical arrow notation, so why should we not be able to render arrows?
+
+Use `latexify`'s `env` keyword argument to specify that you want `:chemical` (or the equivalent `:arrow`, `:arrows` or `:chem`).
 
 ```julia
-latexarray(rn.symjac)
+latexify(rn; env=:chemical)
 ```
-\begin{equation}
-\left[
-\begin{array}{cc}
-\- d_{x} - r_{b} & r_{u} + \frac{2 \cdot y \cdot v_{x}}{k_{x}^{2} + y^{2}} - \frac{2 \cdot y^{3} \cdot v_{x}}{\left( k_{x}^{2} + y^{2} \right)^{2}}\\\\
-r_{b} & - d_{y} - r_{u}\\\\
-\end{array}
-\right]
-\end{equation}
+
+$\require{mhchem} \\ \ce{ \varnothing ->[\mathrm{hill2}\left( y, v_{x}, k_{x} \right)] x} \\\ce{ \varnothing ->[p_{y}] y} \\\ce{ x ->[d_{x}] \varnothing} \\\ce{ y ->[d_{y}] \varnothing} \\\ce{ x ->[r_{b}] y} \\\ce{ y ->[r_{u}] x} \\$
 
 
-The DiffEqBiological package is currently undergoing development, but when the reaction network type gets extended with invers Jacobians, Hessians, etc, latexarray will be able to latexify them.
+Usually, we want the latexified output to be rendered directly on our screen. This rendering is usually done by Mathjax. To get the chemical arrow notation to render automatically, I have included a Mathjax command (`\require{mhchem}`) in the output string. If you want to use the output in a real LaTeX document, you can pass the keyword argument `mathjax=false` and this extra command will be omitted.  
+
+Currently, DiffEqBiological's reaction type does not store information about which reactions were bi-directional, so we are only getting unidirectional arrows. However, I have it on good authority that this will be remedied at some point. If this feature is important to you, let us know and we may increase the priority of this issue.
+
+Also, `latexify` does not currently treat $\leftarrow$ and $\Leftarrow$ differently. In DiffEqBiological, $\Leftarrow$ means that mass action is not assumed. It would be easy to fix this, but I do not know how to represent this in LaTeX. If you do, then please open an issue and enlighten us!
