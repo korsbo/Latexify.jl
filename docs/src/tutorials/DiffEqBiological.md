@@ -64,11 +64,35 @@ Use `latexify`'s `env` keyword argument to specify that you want `:chemical` (or
 latexify(rn; env=:chemical)
 ```
 
-$\require{mhchem} \\ \ce{ \varnothing ->[\mathrm{hill2}\left( y, v_{x}, k_{x} \right)] x} \\\ce{ \varnothing ->[p_{y}] y} \\\ce{ x ->[d_{x}] \varnothing} \\\ce{ y ->[d_{y}] \varnothing} \\\ce{ x ->[r_{b}] y} \\\ce{ y ->[r_{u}] x} \\$
+\begin{equation}
+\require{mhchem} \\
+\ce{ \varnothing ->[\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}] x} \\
+\ce{ \varnothing ->[p_{y}] y} \\
+\ce{ x ->[d_{x}] \varnothing} \\
+\ce{ y ->[d_{y}] \varnothing} \\
+\ce{ x ->[r_{b}] y} \\
+\ce{ y ->[r_{u}] x} \\
+\end{equation}
 
 
-Usually, we want the latexified output to be rendered directly on our screen. This rendering is usually done by Mathjax. To get the chemical arrow notation to render automatically, I have included a Mathjax command (`\require{mhchem}`) in the output string. If you want to use the output in a real LaTeX document, you can pass the keyword argument `mathjax=false` and this extra command will be omitted.  
+The default output is meant to be rendered directly on the screen. This rendering is usually done by MathJax. To get the chemical arrow notation to render automatically, I have included a MathJax command (`\require{mhchem}`) in the output string. If you want to use the output in a real LaTeX document, you can pass the keyword argument `mathjax=false` and this extra command will be omitted.  
+
+Another keyword argument that may be of use is `expand=false` (defaults to `true`).
+This determines whether your functions should be expanded or not.
+
+```julia
+latexify(rn; env=:chemical, expand=false)
+```
+\begin{equation}
+\require{mhchem} \\
+\ce{ \varnothing ->[\mathrm{hill2}\left( y, v_{x}, k_{x} \right)] x} \\
+\ce{ \varnothing ->[p_{y}] y} \\
+\ce{ x ->[d_{x}] \varnothing} \\
+\ce{ y ->[d_{y}] \varnothing} \\
+\ce{ x ->[r_{b}] y} \\
+\ce{ y ->[r_{u}] x} \\
+\end{equation}
 
 Currently, DiffEqBiological's reaction type does not store information about which reactions were bi-directional, so we are only getting unidirectional arrows. However, I have it on good authority that this will be remedied at some point. If this feature is important to you, let us know and we may increase the priority of this issue.
 
-Also, `latexify` does not currently treat $\leftarrow$ and $\Leftarrow$ differently. In DiffEqBiological, $\Leftarrow$ means that mass action is not assumed. It would be easy to fix this, but I do not know how to represent this in LaTeX. If you do, then please open an issue and enlighten us!
+Also, `latexify` does not currently treat $\leftarrow$ and $\Leftarrow$ differently. In DiffEqBiological, $\Leftarrow$ means that mass action is not assumed. It would be easy to fix this, but I do not know how to represent this in LaTeX. If you do, then please open an issue and enlighten me!
