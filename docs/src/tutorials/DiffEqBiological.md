@@ -75,7 +75,7 @@ latexify(rn; env=:chemical)
 \end{equation}
 
 
-The default output is meant to be rendered directly on the screen. This rendering is usually done by MathJax. To get the chemical arrow notation to render automatically, I have included a MathJax command (`\require{mhchem}`) in the output string. If you want to use the output in a real LaTeX document, you can pass the keyword argument `mathjax=false` and this extra command will be omitted.  
+The default output is meant to be rendered directly on the screen. This rendering is usually done by MathJax. To get the chemical arrow notation to render automatically, I have included a MathJax command (`\require{mhchem}`) in the output string. If you want to use the output in a real LaTeX document, you can pass the keyword argument `mathjax=false` and this extra command will be omitted. In such case you should also add `\usepackage{mhchem}` to the preamble of your latex document.
 
 Another keyword argument that may be of use is `expand=false` (defaults to `true`).
 This determines whether your functions should be expanded or not.
