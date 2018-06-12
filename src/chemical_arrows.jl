@@ -1,22 +1,31 @@
 
-@require DiffEqBase begin
-    function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork; mathjax=true, kwargs...)
-        result = mathjax ? "\\require{mhchem} \\\\ " : ""
+@require DiffEqBiological begin
+    function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
+            expand = true, mathjax=true, kwargs...)
+
+        str = "\\begin{equation}\n"
+        mathjax && (str *= "\\require{mhchem} \\\\\n")
+
         for r in rn.reactions
-            result *= "\\ce{ "
+            rate = deepcopy(r.rate_org)
+            expand && (rate = DiffEqBiological.recursive_clean!(rate))
+            expand && (rate = DiffEqBiological.recursive_clean!(rate))
+
+            str *= "\\ce{ "
 
             substrates = [p.reactant for p in r.substrates]
             isempty(substrates) && (substrates = ["\\varnothing"])
-            result *= join(substrates, " ")
+            str *= join(substrates, " ")
 
-            result *= " ->"
-            result *= "[" * latexraw(r.rate_org) * "] "
+            str *= " ->"
+            str *= "[" * latexraw(rate) * "] "
 
             products = [p.reactant for p in r.products]
             isempty(products) && (products = ["\\varnothing"])
-            result *= join(products, " ")
-            result *= "} \\\\"
+            str *= join(products, " ")
+            str *= "} \\\\\n"
         end
-        return latexstring(result)
+        str *= "\\end{equation}"
+        return LaTeXString(str)
     end
 end
