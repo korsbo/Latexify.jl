@@ -1,33 +1,54 @@
 
 @require DiffEqBiological begin
     function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
-            expand = true, mathjax=true, md=false, kwargs...)
+            expand = true, md=false, starred=false, kwargs...)
 
-        str = "\\begin{equation}\n"
+        str = starred ? "\\begin{align*}\n" : "\\begin{align}\n"
         eol = md ? "\\\\\\\\\n" : "\\\\\n"
-        mathjax && (str *= "\\require{mhchem} $eol")
 
 
-        for r in rn.reactions
+        backwards_reaction = false
+        for (i, r) in enumerate(rn.reactions)
+            if backwards_reaction
+                backwards_reaction = false
+                continue
+            end
+            ### Expand functions to maths expressions
             rate = deepcopy(r.rate_org)
             expand && (rate = DiffEqBiological.recursive_clean!(rate))
             expand && (rate = DiffEqBiological.recursive_clean!(rate))
 
-            str *= "\\ce{ "
-
-            substrates = [p.reactant for p in r.substrates]
+            ### Generate formatted string of substrates
+            substrates = [latexraw("$(substrate.stoichiometry== 1 ? "" : "$(substrate.stoichiometry) * ") $(substrate.reactant)") for substrate in r.substrates ]
             isempty(substrates) && (substrates = ["\\varnothing"])
-            str *= join(substrates, " ")
+            str *= join(substrates, " + ")
 
-            str *= " ->"
-            str *= "[" * latexraw(rate) * "] "
+            ### Generate reaction arrows
+            if i + 1 <= length(rn.reactions) && r.products == rn.reactions[i+1].substrates
+                ### Bi-directional arrows
+                rate_backwards = deepcopy(rn.reactions[i+1].rate_org)
+                expand && (rate_backwards = DiffEqBiological.recursive_clean!(rate_backwards))
+                expand && (rate_backwards = DiffEqBiological.recursive_clean!(rate_backwards))
+                str *= " &\\xrightleftharpoons"
+                str *= "[" * latexraw(rate_backwards) * "]"
+                str *= "{" * latexraw(rate) * "} "
+                backwards_reaction = true
+            else
+                ### Uni-directional arrows
+                str *= " &\\xrightarrow"
+                str *= "{" * latexraw(rate) * "} "
+            end
 
-            products = [p.reactant for p in r.products]
+            ### Generate formatted string of products
+            products = [latexraw("$(product.stoichiometry== 1 ? "" : "$(product.stoichiometry) * ") $(product.reactant)") for product in r.products ]
             isempty(products) && (products = ["\\varnothing"])
-            str *= join(products, " ")
-            str *= "} $eol"
+            str *= join(products, " + ")
+            str *= "$eol"
         end
-        str *= "\\end{equation}"
-        return LaTeXString(str)
+        str *= starred ? "\\end{align*}\n" : "\\end{align}\n"
+
+        latexstr = LaTeXString(str)
+        COPY_TO_CLIPBOARD && clipboard(latexstr)
+        return latexstr
     end
 end
