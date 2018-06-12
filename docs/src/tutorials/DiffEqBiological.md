@@ -65,13 +65,13 @@ latexify(rn; env=:chemical)
 ```
 
 \begin{equation}
-\require{mhchem} \\
-\ce{ \varnothing ->[\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}] x} \\
-\ce{ \varnothing ->[p_{y}] y} \\
-\ce{ x ->[d_{x}] \varnothing} \\
-\ce{ y ->[d_{y}] \varnothing} \\
-\ce{ x ->[r_{b}] y} \\
-\ce{ y ->[r_{u}] x} \\
+\require{mhchem} \\\\
+\ce{ \varnothing ->[\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}] x} \\\\
+\ce{ \varnothing ->[p_{y}] y} \\\\
+\ce{ x ->[d_{x}] \varnothing} \\\\
+\ce{ y ->[d_{y}] \varnothing} \\\\
+\ce{ x ->[r_{b}] y} \\\\
+\ce{ y ->[r_{u}] x} \\\\
 \end{equation}
 
 
@@ -84,13 +84,13 @@ This determines whether your functions should be expanded or not.
 latexify(rn; env=:chemical, expand=false)
 ```
 \begin{equation}
-\require{mhchem} \\
-\ce{ \varnothing ->[\mathrm{hill2}\left( y, v_{x}, k_{x} \right)] x} \\
-\ce{ \varnothing ->[p_{y}] y} \\
-\ce{ x ->[d_{x}] \varnothing} \\
-\ce{ y ->[d_{y}] \varnothing} \\
-\ce{ x ->[r_{b}] y} \\
-\ce{ y ->[r_{u}] x} \\
+\require{mhchem} \\\\
+\ce{ \varnothing ->[\mathrm{hill2}\left( y, v_{x}, k_{x} \right)] x} \\\\
+\ce{ \varnothing ->[p_{y}] y} \\\\
+\ce{ x ->[d_{x}] \varnothing} \\\\
+\ce{ y ->[d_{y}] \varnothing} \\\\
+\ce{ x ->[r_{b}] y} \\\\
+\ce{ y ->[r_{u}] x} \\\\
 \end{equation}
 
 Currently, DiffEqBiological's reaction type does not store information about which reactions were bi-directional, so we are only getting unidirectional arrows. However, I have it on good authority that this will be remedied at some point. If this feature is important to you, let us know and we may increase the priority of this issue.

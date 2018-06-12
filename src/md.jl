@@ -11,6 +11,7 @@ end
 
 mdalign(args...; kwargs...) = latexalign(args...; md=true, kwargs...)
 mdarray(args...; kwargs...) = latexarray(args...; md=true, kwargs...)
+md_chemical_arrows(args...; kwargs...) = chemical_arrows(args...; md=true, kwargs...)
 
 function infer_md_output(env, args...)
     if env != :auto
@@ -19,6 +20,7 @@ function infer_md_output(env, args...)
         env == :align && return mdalign
         env == :array && return mdarray
         env == :inline && return latexinline
+        env in [:arrows, :chem, :chemical, :arrow] && return md_chemical_arrows
         error("The MD environment $env is not defined.")
     end
 
