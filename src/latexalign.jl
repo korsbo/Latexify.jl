@@ -131,10 +131,10 @@ end
     - symbolic::Bool - use symbolic calculation to reduce the expression?
     - bracket::Bool - Surround the variables with square brackets to denote concentrations.
     """
-    function latexalign(r::DiffEqBase.AbstractReactionNetwork; bracket=false, noise=false, symbolic=true, kwargs...)
+    function latexalign(r::DiffEqBase.AbstractReactionNetwork; bracket=false, noise=false, symbolic=false, kwargs...)
         lhs = [parse("d$x/dt") for x in r.syms]
         if !noise
-            symbolic ? (rhs = r.f_symfuncs) : (rhs = r.f_func)
+            symbolic ? (rhs = r.f_symfuncs) : (rhs = clean_subtractions.(r.f_func))
         else
             vec = r.g_func
             M = reshape(vec, :, length(r.syms))
@@ -171,4 +171,38 @@ add_brackets(s::Any, vars) = return s
 function add_brackets(ex::Expr, vars)
     ex = postwalk(x -> x in vars ? "\\left[ $(convertSubscript(x)) \\right]" : x, ex)
     return ex
+end
+
+"""
+    clean_subtractions(ex::Expr)
+
+Replace additions of negative terms with subtractions.
+
+This is a fairly stupid function which is designed for a specific problem
+with reaction networks. It is neither recursive nor very general.
+
+Return :: cleaned out expression
+"""
+function clean_subtractions(ex::Expr)
+    ex.args[1] != :+ && return ex
+
+    term = ex.args[2]
+
+    ### Sort out the first term
+    if term isa Expr && length(term.args) >= 3 && term.args[1:2] == [:*, -1]
+        result = :(- *($(term.args[3:end]...)))
+    else
+        result = :($term)
+    end
+
+
+    ### Sort out the other terms
+    for term in ex.args[3:end]
+        if length(term.args) >= 3 && term.args[1:2] == [:*, -1]
+            result = :($result - *($(term.args[3:end]...)))
+        else
+            result = :($result + $term)
+        end
+    end
+    return result
 end
