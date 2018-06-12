@@ -166,6 +166,8 @@ add_brackets(arr::AbstractArray, vars) = [add_brackets(element, vars) for elemen
     add_brackets(syms::SymEngine.Basic, vars) = add_brackets(parse("$syms"), vars)
 end
 
+add_brackets(s::Any, vars) = return s
+
 function add_brackets(ex::Expr, vars)
     ex = postwalk(x -> x in vars ? "\\left[ $(convertSubscript(x)) \\right]" : x, ex)
     return ex
