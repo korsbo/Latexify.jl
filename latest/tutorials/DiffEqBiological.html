@@ -20,18 +20,18 @@ latexify(rn)</code></pre><p>\begin{align} \frac{dx}{dt} =&amp; - x \cdot d_{x} -
 \frac{dy}{dt} =&amp; p_{y} + -1 \cdot d_{y} \cdot y + r_{b} \cdot x + -1 \cdot r_{u} \cdot y \\
 \end{align}</p><pre><code class="language-julia">latexify(rn; noise=true, symbolic=false)</code></pre><p>\begin{align} \frac{dx}{dt} =&amp; \sqrt{\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}} + - \sqrt{d_{x} \cdot x} + - \sqrt{r_{b} \cdot x} + \sqrt{r_{u} \cdot y} \\
 \frac{dy}{dt} =&amp; \sqrt{p_{y}} + - \sqrt{d_{y} \cdot y} + \sqrt{r_{b} \cdot x} + - \sqrt{r_{u} \cdot y} \\
-\end{align}</p><h2><a class="nav-anchor" id="Chemical-arrow-notation-1" href="#Chemical-arrow-notation-1">Chemical arrow notation</a></h2><p>DiffEqBiologicals reaction network is all about chemical arrow notation, so why should we not be able to render arrows?</p><p>Use <code>latexify</code>&#39;s <code>env</code> keyword argument to specify that you want <code>:chemical</code> (or the equivalent <code>:arrow</code>, <code>:arrows</code> or <code>:chem</code>).</p><pre><code class="language-julia">latexify(rn; env=:chemical)</code></pre><p>\begin{equation} \require{mhchem} \
-\ce{ \varnothing -&gt;[\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}] x} \
-\ce{ \varnothing -&gt;[p_{y}] y} \
-\ce{ x -&gt;[d_{x}] \varnothing} \
-\ce{ y -&gt;[d_{y}] \varnothing} \
-\ce{ x -&gt;[r_{b}] y} \
-\ce{ y -&gt;[r_{u}] x} \
-\end{equation}</p><p>The default output is meant to be rendered directly on the screen. This rendering is usually done by MathJax. To get the chemical arrow notation to render automatically, I have included a MathJax command (<code>\require{mhchem}</code>) in the output string. If you want to use the output in a real LaTeX document, you can pass the keyword argument <code>mathjax=false</code> and this extra command will be omitted. In such case you should also add <code>\usepackage{mhchem}</code> to the preamble of your latex document.</p><p>Another keyword argument that may be of use is <code>expand=false</code> (defaults to <code>true</code>). This determines whether your functions should be expanded or not.</p><pre><code class="language-julia">latexify(rn; env=:chemical, expand=false)</code></pre><p>\begin{equation} \require{mhchem} \
-\ce{ \varnothing -&gt;[\mathrm{hill2}\left( y, v_{x}, k_{x} \right)] x} \
-\ce{ \varnothing -&gt;[p_{y}] y} \
-\ce{ x -&gt;[d_{x}] \varnothing} \
-\ce{ y -&gt;[d_{y}] \varnothing} \
-\ce{ x -&gt;[r_{b}] y} \
-\ce{ y -&gt;[r_{u}] x} \
+\end{align}</p><h2><a class="nav-anchor" id="Chemical-arrow-notation-1" href="#Chemical-arrow-notation-1">Chemical arrow notation</a></h2><p>DiffEqBiologicals reaction network is all about chemical arrow notation, so why should we not be able to render arrows?</p><p>Use <code>latexify</code>&#39;s <code>env</code> keyword argument to specify that you want <code>:chemical</code> (or the equivalent <code>:arrow</code>, <code>:arrows</code> or <code>:chem</code>).</p><pre><code class="language-julia">latexify(rn; env=:chemical)</code></pre><p>\begin{equation} \require{mhchem} \\
+\ce{ \varnothing -&gt;[\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}] x} \\
+\ce{ \varnothing -&gt;[p_{y}] y} \\
+\ce{ x -&gt;[d_{x}] \varnothing} \\
+\ce{ y -&gt;[d_{y}] \varnothing} \\
+\ce{ x -&gt;[r_{b}] y} \\
+\ce{ y -&gt;[r_{u}] x} \\
+\end{equation}</p><p>The default output is meant to be rendered directly on the screen. This rendering is usually done by MathJax. To get the chemical arrow notation to render automatically, I have included a MathJax command (<code>\require{mhchem}</code>) in the output string. If you want to use the output in a real LaTeX document, you can pass the keyword argument <code>mathjax=false</code> and this extra command will be omitted. In such case you should also add <code>\usepackage{mhchem}</code> to the preamble of your latex document.</p><p>Another keyword argument that may be of use is <code>expand=false</code> (defaults to <code>true</code>). This determines whether your functions should be expanded or not.</p><pre><code class="language-julia">latexify(rn; env=:chemical, expand=false)</code></pre><p>\begin{equation} \require{mhchem} \\
+\ce{ \varnothing -&gt;[\mathrm{hill2}\left( y, v_{x}, k_{x} \right)] x} \\
+\ce{ \varnothing -&gt;[p_{y}] y} \\
+\ce{ x -&gt;[d_{x}] \varnothing} \\
+\ce{ y -&gt;[d_{y}] \varnothing} \\
+\ce{ x -&gt;[r_{b}] y} \\
+\ce{ y -&gt;[r_{u}] x} \\
 \end{equation}</p><p>Currently, DiffEqBiological&#39;s reaction type does not store information about which reactions were bi-directional, so we are only getting unidirectional arrows. However, I have it on good authority that this will be remedied at some point. If this feature is important to you, let us know and we may increase the priority of this issue.</p><p>Also, <code>latexify</code> does not currently treat <span>$\leftarrow$</span> and <span>$\Leftarrow$</span> differently. In DiffEqBiological, <span>$\Leftarrow$</span> means that mass action is not assumed. It would be easy to fix this, but I do not know how to represent this in LaTeX. If you do, then please open an issue and enlighten me!</p><footer><hr/><a class="previous" href="parameterizedfunctions.html"><span class="direction">Previous</span><span class="title">Use with ParameterizedFunctions</span></a><a class="next" href="inner_workings.html"><span class="direction">Next</span><span class="title">Inner workings</span></a></footer></article></body></html>
