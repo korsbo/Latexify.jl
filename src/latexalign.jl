@@ -198,7 +198,7 @@ function clean_subtractions(ex::Expr)
 
     ### Sort out the other terms
     for term in ex.args[3:end]
-        if length(term.args) >= 3 && term.args[1:2] == [:*, -1]
+        if term isa Expr && length(term.args) >= 3 && term.args[1:2] == [:*, -1]
             result = :($result - *($(term.args[3:end]...)))
         else
             result = :($result + $term)
