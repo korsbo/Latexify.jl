@@ -32,3 +32,13 @@ end v_x k_x p_y d_x d_y r_b r_u
 \ce{ x ->[r_{b}] y} \\
 \ce{ y ->[r_{u}] x} \\
 \end{equation}"
+
+@test md(rn; env=:chem) == raw"\begin{equation}
+\require{mhchem} \\\\
+\ce{ \varnothing ->[\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}] x} \\\\
+\ce{ \varnothing ->[p_{y}] y} \\\\
+\ce{ x ->[d_{x}] \varnothing} \\\\
+\ce{ y ->[d_{y}] \varnothing} \\\\
+\ce{ x ->[r_{b}] y} \\\\
+\ce{ y ->[r_{u}] x} \\\\
+\end{equation}"
