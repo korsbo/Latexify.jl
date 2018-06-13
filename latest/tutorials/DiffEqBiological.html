@@ -20,14 +20,16 @@ latexify(rn)</code></pre><p>\begin{align} \frac{dx}{dt} =&amp; - x \cdot d_{x} -
 \frac{dy}{dt} =&amp; p_{y} + -1 \cdot d_{y} \cdot y + r_{b} \cdot x + -1 \cdot r_{u} \cdot y \\
 \end{align}</p><pre><code class="language-julia">latexify(rn; noise=true, symbolic=false)</code></pre><p>\begin{align} \frac{dx}{dt} =&amp; \sqrt{\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}} + - \sqrt{d_{x} \cdot x} + - \sqrt{r_{b} \cdot x} + \sqrt{r_{u} \cdot y} \\
 \frac{dy}{dt} =&amp; \sqrt{p_{y}} + - \sqrt{d_{y} \cdot y} + \sqrt{r_{b} \cdot x} + - \sqrt{r_{u} \cdot y} \\
-\end{align}</p><h2><a class="nav-anchor" id="Chemical-arrow-notation-1" href="#Chemical-arrow-notation-1">Chemical arrow notation</a></h2><p>DiffEqBiologicals reaction network is all about chemical arrow notation, so why should we not be able to render arrows?</p><p>Use <code>latexify</code>&#39;s <code>env</code> keyword argument to specify that you want <code>:chemical</code> (or the equivalent <code>:arrow</code>, <code>:arrows</code> or <code>:chem</code>).</p><pre><code class="language-julia">latexify(rn; env=:chemical)</code></pre><p>\begin{align} \varnothing &amp;\xrightarrow{\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}} x\\
-\varnothing &amp;\xrightarrow{p_{y}} y\\
-x &amp;\xrightarrow{d_{x}} \varnothing\\
-y &amp;\xrightarrow{d_{y}} \varnothing\\
-x &amp;\xrightleftharpoons[r_{u}]{r_{b}} y\\
-\end{align}</p><p>A keyword argument that may be of use is <code>expand=false</code> (defaults to <code>true</code>). This determines whether your functions should be expanded or not.</p><pre><code class="language-julia">latexify(rn; env=:chemical, expand=false)</code></pre><p>\begin{align} \varnothing &amp;\xrightarrow{\mathrm{hill2}\left( y, v_{x}, k_{x} \right)} x\\
-\varnothing &amp;\xrightarrow{p_{y}} y\\
-x &amp;\xrightarrow{d_{x}} \varnothing\\
-y &amp;\xrightarrow{d_{y}} \varnothing\\
-x &amp;\xrightleftharpoons[r_{u}]{r_{b}} y\\
-\end{align}</p><footer><hr/><a class="previous" href="parameterizedfunctions.html"><span class="direction">Previous</span><span class="title">Use with ParameterizedFunctions</span></a><a class="next" href="inner_workings.html"><span class="direction">Next</span><span class="title">Inner workings</span></a></footer></article></body></html>
+\end{align}</p><h2><a class="nav-anchor" id="Chemical-arrow-notation-1" href="#Chemical-arrow-notation-1">Chemical arrow notation</a></h2><p>DiffEqBiologicals reaction network is all about chemical arrow notation, so why should we not be able to render arrows?</p><p>Use <code>latexify</code>&#39;s <code>env</code> keyword argument to specify that you want <code>:chemical</code> (or the equivalent <code>:arrow</code>, <code>:arrows</code> or <code>:chem</code>).</p><pre><code class="language-julia">latexify(rn; env=:chemical)</code></pre><p>\begin{align} \require{mhchem} \ce{ \varnothing &amp;-&gt;[\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}] x}\\
+\ce{ \varnothing &amp;-&gt;[p_{y}] y}\\
+\ce{ x &amp;-&gt;[d_{x}] \varnothing}\\
+\ce{ y &amp;-&gt;[d_{y}] \varnothing}\\
+\ce{ x &amp;&lt;=&gt;[{r_{b}}][{r_{u}}] y}\\
+\end{align}</p><p>The default output is meant to be rendered directly on the screen. This rendering is typically done by MathJax. To get the chemical arrow notation to render automatically, I have included a MathJax command (<code>\require{mhchem}</code>) in the output string. If you want to use the output in a real LaTeX document, you can pass the keyword argument <code>mathjax=false</code> and this extra command will be omitted. In such case you should also add <code>\usepackage{mhchem}</code> to the preamble of your latex document.</p><p>Another keyword argument that may be of use is <code>expand=false</code> (defaults to <code>true</code>). This determines whether your functions should be expanded or not. Also, <code>starred=true</code> will change the outputted latex environment from <code>align</code> to <code>align*</code>. This results in the equations not being numbered.</p><pre><code class="language-julia">latexify(rn; env=:chemical, expand=false, starred=true)</code></pre><div>\[\begin{align*}
+\require{mhchem}
+\ce{ \varnothing &amp;-&gt;[\mathrm{hill2}\left( y, v_{x}, k_{x} \right)] x}\\
+\ce{ \varnothing &amp;-&gt;[p_{y}] y}\\
+\ce{ x &amp;-&gt;[d_{x}] \varnothing}\\
+\ce{ y &amp;-&gt;[d_{y}] \varnothing}\\
+\ce{ x &amp;&lt;=&gt;[{r_{b}}][{r_{u}}] y}\\
+\end{align*}\]</div><footer><hr/><a class="previous" href="parameterizedfunctions.html"><span class="direction">Previous</span><span class="title">Use with ParameterizedFunctions</span></a><a class="next" href="inner_workings.html"><span class="direction">Next</span><span class="title">Inner workings</span></a></footer></article></body></html>
