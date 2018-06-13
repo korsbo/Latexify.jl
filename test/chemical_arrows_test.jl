@@ -12,8 +12,6 @@ rn = @reaction_network MyRnType begin
   (r_b, r_u), x ↔ y
 end v_x k_x p_y d_x d_y r_b r_u
 
-Latexify.@generate_test latexify(rn; env=:chem)
-
 @test latexify(rn; env=:chem) ==
 raw"\begin{align}
 \require{mhchem}
