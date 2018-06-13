@@ -32,4 +32,9 @@ include("chemical_arrows.jl")
 include("md.jl")
 include("mdtable.jl")
 include("mdtext.jl")
+
+macro generate_test(expr)
+    return :(clipboard( "\n@test $($expr) == \nraw\"$($(esc(expr)))\"\n\n"))
+end
+
 end
