@@ -1,10 +1,12 @@
 
 @require DiffEqBiological begin
     function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
-            expand = true, md=false, starred=false, kwargs...)
+            expand = true, md=false, mathjax=true, starred=false, kwargs...)
 
-        str = starred ? "\\begin{align*}\n" : "\\begin{align}\n"
+        str = starred ? "\\begin{align\\*}\n" : "\\begin{align}\n"
         eol = md ? "\\\\\\\\\n" : "\\\\\n"
+
+        mathjax && (str *= "\\require{mhchem}\n")
 
 
         backwards_reaction = false
@@ -13,6 +15,8 @@
                 backwards_reaction = false
                 continue
             end
+            str *= "\\ce{ "
+
             ### Expand functions to maths expressions
             rate = deepcopy(r.rate_org)
             expand && (rate = DiffEqBiological.recursive_clean!(rate))
@@ -21,6 +25,7 @@
             ### Generate formatted string of substrates
             substrates = [latexraw("$(substrate.stoichiometry== 1 ? "" : "$(substrate.stoichiometry) * ") $(substrate.reactant)") for substrate in r.substrates ]
             isempty(substrates) && (substrates = ["\\varnothing"])
+
             str *= join(substrates, " + ")
 
             ### Generate reaction arrows
@@ -29,23 +34,23 @@
                 rate_backwards = deepcopy(rn.reactions[i+1].rate_org)
                 expand && (rate_backwards = DiffEqBiological.recursive_clean!(rate_backwards))
                 expand && (rate_backwards = DiffEqBiological.recursive_clean!(rate_backwards))
-                str *= " &\\xrightleftharpoons"
-                str *= "[" * latexraw(rate_backwards) * "]"
-                str *= "{" * latexraw(rate) * "} "
+                str *= " &<=>"
+                str *= "[{" * latexraw(rate) * "}]"
+                str *= "[{" * latexraw(rate_backwards) * "}] "
                 backwards_reaction = true
             else
                 ### Uni-directional arrows
-                str *= " &\\xrightarrow"
-                str *= "{" * latexraw(rate) * "} "
+                str *= " &->"
+                str *= "[" * latexraw(rate) * "] "
             end
 
             ### Generate formatted string of products
             products = [latexraw("$(product.stoichiometry== 1 ? "" : "$(product.stoichiometry) * ") $(product.reactant)") for product in r.products ]
             isempty(products) && (products = ["\\varnothing"])
             str *= join(products, " + ")
-            str *= "$eol"
+            str *= "}$eol"
         end
-        str *= starred ? "\\end{align*}\n" : "\\end{align}\n"
+        str *= starred ? "\\end{align\\*}\n" : "\\end{align}\n"
 
         latexstr = LaTeXString(str)
         COPY_TO_CLIPBOARD && clipboard(latexstr)
