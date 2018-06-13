@@ -15,40 +15,44 @@ end v_x k_x p_y d_x d_y r_b r_u
 
 @test latexify(rn; env=:chem) ==
 raw"\begin{align}
-\varnothing &\xrightarrow{\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}} x\\
-\varnothing &\xrightarrow{p_{y}} y\\
-x &\xrightarrow{d_{x}} \varnothing\\
-y &\xrightarrow{d_{y}} \varnothing\\
-x &\xrightleftharpoons[r_{u}]{r_{b}} y\\
+\require{mhchem}
+\ce{ \varnothing &->[\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}] x}\\
+\ce{ \varnothing &->[p_{y}] y}\\
+\ce{ x &->[d_{x}] \varnothing}\\
+\ce{ y &->[d_{y}] \varnothing}\\
+\ce{ x &<=>[{r_{b}}][{r_{u}}] y}\\
 \end{align}
 "
 
 @test latexify(rn; env=:chem, expand=false) ==
 raw"\begin{align}
-\varnothing &\xrightarrow{\mathrm{hill2}\left( y, v_{x}, k_{x} \right)} x\\
-\varnothing &\xrightarrow{p_{y}} y\\
-x &\xrightarrow{d_{x}} \varnothing\\
-y &\xrightarrow{d_{y}} \varnothing\\
-x &\xrightleftharpoons[r_{u}]{r_{b}} y\\
+\require{mhchem}
+\ce{ \varnothing &->[\mathrm{hill2}\left( y, v_{x}, k_{x} \right)] x}\\
+\ce{ \varnothing &->[p_{y}] y}\\
+\ce{ x &->[d_{x}] \varnothing}\\
+\ce{ y &->[d_{y}] \varnothing}\\
+\ce{ x &<=>[{r_{b}}][{r_{u}}] y}\\
 \end{align}
 "
 
 @test md(rn; env=:chem) ==
 raw"\begin{align}
-\varnothing &\xrightarrow{\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}} x\\\\
-\varnothing &\xrightarrow{p_{y}} y\\\\
-x &\xrightarrow{d_{x}} \varnothing\\\\
-y &\xrightarrow{d_{y}} \varnothing\\\\
-x &\xrightleftharpoons[r_{u}]{r_{b}} y\\\\
+\require{mhchem}
+\ce{ \varnothing &->[\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}] x}\\\\
+\ce{ \varnothing &->[p_{y}] y}\\\\
+\ce{ x &->[d_{x}] \varnothing}\\\\
+\ce{ y &->[d_{y}] \varnothing}\\\\
+\ce{ x &<=>[{r_{b}}][{r_{u}}] y}\\\\
 \end{align}
 "
 
-@test md(rn; env=:chem, starred=false) ==
-raw"\begin{align}
-\varnothing &\xrightarrow{\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}} x\\\\
-\varnothing &\xrightarrow{p_{y}} y\\\\
-x &\xrightarrow{d_{x}} \varnothing\\\\
-y &\xrightarrow{d_{y}} \varnothing\\\\
-x &\xrightleftharpoons[r_{u}]{r_{b}} y\\\\
-\end{align}
+@test md(rn; env=:chem, starred=true) ==
+raw"\begin{align\*}
+\require{mhchem}
+\ce{ \varnothing &->[\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}] x}\\\\
+\ce{ \varnothing &->[p_{y}] y}\\\\
+\ce{ x &->[d_{x}] \varnothing}\\\\
+\ce{ y &->[d_{y}] \varnothing}\\\\
+\ce{ x &<=>[{r_{b}}][{r_{u}}] y}\\\\
+\end{align\*}
 "
