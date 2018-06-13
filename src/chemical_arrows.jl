@@ -3,7 +3,7 @@
     function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
             expand = true, md=false, mathjax=true, starred=false, kwargs...)
 
-        str = starred ? "\\begin{align\\*}\n" : "\\begin{align}\n"
+        str = starred ? "\\begin{align*}\n" : "\\begin{align}\n"
         eol = md ? "\\\\\\\\\n" : "\\\\\n"
 
         mathjax && (str *= "\\require{mhchem}\n")
@@ -50,7 +50,7 @@
             str *= join(products, " + ")
             str *= "}$eol"
         end
-        str *= starred ? "\\end{align\\*}\n" : "\\end{align}\n"
+        str *= starred ? "\\end{align*}\n" : "\\end{align}\n"
 
         latexstr = LaTeXString(str)
         COPY_TO_CLIPBOARD && clipboard(latexstr)
