@@ -72,7 +72,7 @@ latexify(rn; env=:chemical)
 \ce{ x &<=>[{r_{b}}][{r_{u}}] y}\\\\
 \end{align}
 
-The default output is meant to be rendered directly on the screen. This rendering is typically done by MathJax. To get the chemical arrow notation to render automatically, I have included a MathJax command (\require{mhchem}) in the output string. If you want to use the output in a real LaTeX document, you can pass the keyword argument mathjax=false and this extra command will be omitted. In such case you should also add \usepackage{mhchem} to the preamble of your latex document.
+The default output is meant to be rendered directly on the screen. This rendering is typically done by MathJax. To get the chemical arrow notation to render automatically, I have included a MathJax command (`\require{mhchem}`) in the output string. If you want to use the output in a real LaTeX document, you can pass the keyword argument `mathjax=false` and this extra command will be omitted. In such case you should also add `\usepackage{mhchem}` to the preamble of your latex document.
 
 Another keyword argument that may be of use is `expand=false` (defaults to `true`).
 This determines whether your functions should be expanded or not.
@@ -82,11 +82,13 @@ Also, `starred=true` will change the outputted latex environment from `align` to
 latexify(rn; env=:chemical, expand=false, starred=true)
 ```
 
-\begin{align\*}
+```math
+\begin{align*}
 \require{mhchem}
-\ce{ \varnothing &->[\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}] x}\\\\
-\ce{ \varnothing &->[p_{y}] y}\\\\
-\ce{ x &->[d_{x}] \varnothing}\\\\
-\ce{ y &->[d_{y}] \varnothing}\\\\
-\ce{ x &<=>[{r_{b}}][{r_{u}}] y}\\\\
-\end{align\*}
+\ce{ \varnothing &->[\mathrm{hill2}\left( y, v_{x}, k_{x} \right)] x}\\
+\ce{ \varnothing &->[p_{y}] y}\\
+\ce{ x &->[d_{x}] \varnothing}\\
+\ce{ y &->[d_{y}] \varnothing}\\
+\ce{ x &<=>[{r_{b}}][{r_{u}}] y}\\
+\end{align*}
+```
