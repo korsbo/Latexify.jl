@@ -29,7 +29,7 @@
             str *= join(substrates, " + ")
 
             ### Generate reaction arrows
-            if i + 1 <= length(rn.reactions) && r.products == rn.reactions[i+1].substrates
+            if i + 1 <= length(rn.reactions) && r.products == rn.reactions[i+1].substrates && r.substrates == rn.reactions[i+1].products 
                 ### Bi-directional arrows
                 rate_backwards = deepcopy(rn.reactions[i+1].rate_org)
                 expand && (rate_backwards = DiffEqBiological.recursive_clean!(rate_backwards))

@@ -55,3 +55,21 @@ raw"\begin{align*}
 \ce{ x &<=>[{r_{b}}][{r_{u}}] y}\\\\
 \end{align*}
 "
+
+ode = @reaction_network InducedDegradation begin
+    (d_F, d_Ff, d_R), (F, Ff, R) --> 0 # degradations
+    (p_F, Ff), 0 --> (F, R)  # productions
+    (r_b * i, r_u), F ↔ Ff # bindin/unbinding
+end  i p_F d_F r_b r_u d_Ff d_R
+
+@test md(ode; env=:chem) ==
+raw"\begin{align}
+\require{mhchem}
+\ce{ F &->[d_{F}] \varnothing}\\\\
+\ce{ Ff &->[d_{Ff}] \varnothing}\\\\
+\ce{ R &->[d_{R}] \varnothing}\\\\
+\ce{ \varnothing &->[p_{F}] F}\\\\
+\ce{ \varnothing &->[Ff] R}\\\\
+\ce{ F &<=>[{r_{b} \cdot i}][{r_{u}}] Ff}\\\\
+\end{align}
+"
