@@ -21,26 +21,6 @@ as well as arrays of any supported types.
 
 
 
-Latexify.jl supplies a few functions:
-- `latexify`, takes any of the supported input and outputs a suitable latex environment.
-
-- `latexraw`, a function that all other eventually uses. This latexifies objects and returns a string which does not contain a surrounding `\LaTeX` environment.
-
-- `latexinline`, latexifies the input and surrounds it with a `$$` environment. If the input
- is of a container type, it will recursively latexify its elements.
-
-- `latexinline`, calls `latexraw` but converts the output to a LaTeXString which is automatically rendered in Jupyter or Hydrogen, and which surrounds the output string with \$ \$. If the input is some AbstractArray, then latexinline will operate recursively on the
-elements and return a copy.
-
-- `latexalign`, generates a latex align environment.
-
-- `latexarray`, generates a latex array.
-
-- `latextabular`, generates a latex tabular.
-
-- `copy_to_clipboard(::Bool)`, toggle automatical copying of the resulting LaTeX code to the clipboard (default is false).
-
-
 ### Examples
 #### latexifying expressions
 ```julia
@@ -126,6 +106,10 @@ There are more stuff that you can do, but for that I will refer you to the
 [docs](https://korsbo.github.io/Latexify.jl/stable).
 
 
+## Convenience functions
+
+- `copy_to_clipboard(::Bool)`, toggle automatic copying of the resulting LaTeX code to the clipboard (default is false).
+- `auto_display(::Bool)` toggles automatic display of your output, even if it is not the last command to have run.
 
 
 ## Installation
