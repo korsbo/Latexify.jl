@@ -13,6 +13,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
     args = ex.args
     if op == :/
         return "\\frac{$(args[2])}{$(args[3])}"
+
     elseif op == :*
         str=""
         for i in 2:length(args)
@@ -22,15 +23,31 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
             i != length(args) && (str *= " \\cdot ")
         end
         return str
-    elseif op in [:+, :-]
-        length(args) == 2 && return "$op $(args[2])"
-        str=""
-        for i in 2:length(args)
-            arg = args[i]
-            str = string(str, arg)
-            i != length(ex.args) && (str *= " $op ")
-        end
+
+    elseif op == :+
+        str = join(args[2:end], " + ")
+        str = replace(str, "+  -", "-")
+        str = replace(str, "+ -", "-")
         return str
+
+    elseif op == :-
+        if length(args) == 2
+            if prevOp[2] == :none && string(args[2])[1] == '-'
+                return " + " * string(args[2])[2:end]
+            elseif prevOp[2] == :none && string(args[2])[1] == '+'
+                return " - " * string(args[2])[2:end]
+            elseif prevOp[2] in [:+, :-]
+                return " - \\left( $(args[2]) \\right)"
+            end
+            return " - $(args[2])"
+        end
+        prevOp[3] in [:+, :-] &&  (args[3] = "\\left( $(args[3]) \\right)")
+
+        if prevOp[3] == :none && string(args[3])[1] == '-'
+            return "$(args[2]) + " * string(args[3])[2:end]
+        end
+        return "$(args[2]) - $(args[3])"
+
     elseif op == :^
         #isa(args[2], String) && (args[2]="($(args[2]))")
         prevOp[2] != :none  && (args[2]="\\left( $(args[2]) \\right)")
