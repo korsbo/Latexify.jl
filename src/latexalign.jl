@@ -63,6 +63,10 @@ function latexalign(nested::AbstractVector{AbstractVector}; kwargs...)
     return latexalign(hcat(nested...); kwargs...)
 end
 
+function latexalign(d::Associative; kwargs...)
+    latexalign(collect(keys(d)), collect(values(d)); kwargs...)
+end
+
 """
     latexalign(vec::AbstractVector)
 
