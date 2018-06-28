@@ -16,7 +16,14 @@ end p_x d_x d_x_y p_y d_y p_z
 
 @test latexalign(["d$x/dt" for x in f.syms], f.funcs) == "\\begin{align}\n\\frac{dx}{dt} =& \\frac{y}{c_{1}} - x \\\\\n\\frac{dy}{dt} =& x^{c_{2}} - y \\\\\n\\end{align}\n"
 @test latexalign(f) == "\\begin{align}\n\\frac{dx}{dt} =& \\frac{y}{c_{1}} - x \\\\\n\\frac{dy}{dt} =& x^{c_{2}} - y \\\\\n\\end{align}\n"
-@test latexalign(f, field=:symfuncs) == "\\begin{align}\n\\frac{dx}{dt} =& - x + \\frac{y}{c_{1}} \\\\\n\\frac{dy}{dt} =& - y + x^{c_{2}} \\\\\n\\end{align}\n"
+@test latexalign(f, field=:symfuncs) ==
+raw"\begin{align}
+\frac{dx}{dt} =&  - x + \frac{y}{c_{1}} \\
+\frac{dy}{dt} =&  - y + x^{c_{2}} \\
+\end{align}
+"
+
+
 @test latexalign([f,g]) == "\\begin{align}\n\\frac{dx}{dt}  &=  \\frac{y}{c_{1}} - x  &  \\frac{dx}{dt}  &=  p_{x} - d_{x} \\cdot x - d_{x\\_y} \\cdot y \\cdot x  &  \\\\\n\\frac{dy}{dt}  &=  x^{c_{2}} - y  &  \\frac{dy}{dt}  &=  p_{y} - d_{y} \\cdot y  &  \\\\\n  &    &  \\frac{dz}{dt}  &=  p_{z} \\cdot 1  &  \\\\\n\\end{align}\n"
 
 
@@ -30,14 +37,16 @@ rn = @reaction_network MyRnType begin
   (r_b, r_u), x ↔ y
 end v_x k_x p_y d_x d_y r_b r_u
 
-@test latexalign(rn).s == raw"\begin{align}
+@test latexalign(rn).s == 
+raw"\begin{align}
 \frac{dx}{dt} =& \frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}} - d_{x} \cdot x - r_{b} \cdot x + r_{u} \cdot y \\
 \frac{dy}{dt} =& p_{y} - d_{y} \cdot y + r_{b} \cdot x - r_{u} \cdot y \\
 \end{align}
 "
 
-@test latexalign(rn; symbolic=true).s == raw"\begin{align}
-\frac{dx}{dt} =& - x \cdot d_{x} - x \cdot r_{b} + y \cdot r_{u} + \frac{y^{2} \cdot v_{x}}{k_{x}^{2} + y^{2}} \\
+@test latexalign(rn, symbolic=true) ==
+raw"\begin{align}
+\frac{dx}{dt} =&  - x \cdot d_{x} - x \cdot r_{b} + y \cdot r_{u} + \frac{y^{2} \cdot v_{x}}{k_{x}^{2} + y^{2}} \\
 \frac{dy}{dt} =& p_{y} + x \cdot r_{b} - y \cdot d_{y} - y \cdot r_{u} \\
 \end{align}
 "

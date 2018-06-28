@@ -1,6 +1,7 @@
 
 using Latexify
 using ParameterizedFunctions
+using Base.Test
 
 str = "2*x^2 - y/c_2"
 exp = :(2*x^2 - y/c_2)
@@ -48,3 +49,12 @@ f = @ode_def feedback begin
     dy = x^c_2 - y
 end c_1 c_2
 @test latexraw(f) == ["\\frac{dx}{dt} = \\frac{y}{c_{1}} - x", "\\frac{dy}{dt} = x^{c_{2}} - y"]
+
+
+### Test for correct signs in nested sums/differences.
+@test latexraw("-(-1)") == raw" + 1"
+@test latexraw("1 + (-(2))") == raw"1 - 2"
+@test latexraw("1 + (-2 -3 -4)") == raw"1 -2 - 3 - 4"
+@test latexraw("1 - 2 - (- 3 - 4)") == raw"1 - 2 - \left(  - 3 - 4 \right)"
+@test latexraw("1 - 2 - (- 3 -(2) + 4)") == raw"1 - 2 - \left(  - 3 - 2 + 4 \right)"
+@test latexraw("1 - 2 - (- 3 -(2 - 8) + 4)") == raw"1 - 2 - \left(  - 3 - \left( 2 - 8 \right) + 4 \right)"
