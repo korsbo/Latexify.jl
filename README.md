@@ -17,7 +17,7 @@ Latexify.jl supplies functionalities for converting a range of different Julia o
 - Symbolic expressions from SymEngine.jl,
 - ParameterizedFunctions and ReactionNetworks from DifferentialEquations.jl
 
-as well as arrays of any supported types.
+as well as arrays or dicts of supported types.
 
 
 
@@ -54,7 +54,12 @@ latexify(arr)
 ```
 ![matrix](/assets/demo_matrix.png)
 
-
+```julia
+d = Dict(:X => 10, "dx/dt" => :(e^(-t)), 2//3 => "atan(x)")
+latexify(d)
+latexify(d; transpose=true)
+latexify(d; env=:align)
+```
 
 
 ### Use with DifferentialEquations.jl
