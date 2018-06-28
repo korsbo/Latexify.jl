@@ -9,15 +9,17 @@
 This is a package for generating LaTeX maths from julia objects.
 
 This package utilises Julias [homoiconicity](https://en.wikipedia.org/wiki/Homoiconicity) to convert expressions to LaTeX-formatted strings.
-This package supplies functionalities for converting a range of different Julia objects, including:
+Latexify.jl supplies functionalities for converting a range of different Julia objects, including:
 
 - Expressions,
 - Strings,
 - Numbers (including rationals and complex),
 - Symbolic expressions from SymEngine.jl,
-- ParameterizedFunctions from DifferentialEquations.jl
+- ParameterizedFunctions and ReactionNetworks from DifferentialEquations.jl
 
 as well as arrays of any supported types.
+
+
 
 Latexify.jl supplies a few functions:
 - `latexify`, takes any of the supported input and outputs a suitable latex environment.
@@ -44,15 +46,19 @@ elements and return a copy.
 ```julia
 using Latexify
 ex = :(x/(y+x)^2)
-latexstring = latexify(ex)
-print(latexstring)
+latexify(ex)
 ```
-results in:
+This generates a LaTeXString (from [LaTeXStrings.jl](https://github.com/stevengj/LaTeXStrings.jl)) which, when printed looks like:
 ```LaTeX
-$\frac{x}{(y+x)^{2}}$
+$\frac{x}{\left( y + x \right)^{2}}$
 ```
 
-#### latexifying strings
+And when this LaTeXString is displayed in an environment that supported the tex/latex MIME type (Jupyter notebooks, Jupyterlab and Hydrogen for Atom) it will automatically render as:
+
+![fraction](/assets/demo_fraction.png)
+
+
+#### latexifying other things
 ```julia
 using Latexify
 print(latexraw("x+y/(b-2)^2"))
@@ -62,9 +68,19 @@ outputs:
 x + \frac{y}{\left( b - 2 \right)^{2}}
 ```
 
-### use with ParameterizedFunctions
-ParameterizedFunctions is a part of the [DifferentialEquations.jl](http://docs.juliadiffeq.org/stable/index.html) suite.
-The ability to latexify an ODE is pretty much what lured me to create this package.
+```julia
+arr = ["x/y" 3//7 2+3im; 1 :P_x :(gamma(3))]
+latexify(arr)
+```
+![matrix](/assets/demo_matrix.png)
+
+
+
+
+### Use with DifferentialEquations.jl
+The [DifferentialEquations.jl](http://docs.juliadiffeq.org/stable/index.html) suite has some nifty tools for generating differential equations.
+One of them is [ParameterizedFunctions](https://github.com/JuliaDiffEq/ParameterizedFunctions.jl) which allows you to type in an ODE in something which looks very much like just plain mathematics.
+The ability to latexify such ODEs is pretty much what lured me to create this package.
 
 ```julia
 using DifferentialEquations
@@ -75,26 +91,41 @@ f = @ode_def positiveFeedback begin
     dy = x/(k_2+x) - y
 end v n k k_2
 
-print( latexalign(f) )
-```
-outputs:
-```LaTeX
-\begin{align}
-\frac{dx}{dt} =&  \frac{v \cdot y^{n}}{k^{n} + y^{n}} - x \\
-\frac{dy}{dt} =&  \frac{x}{k_2 + x} - y \\
-\end{align}
-```
-
-This can be useful for lazy people, like me, who don't want to type out equations.
-But if you use Jupyter (or Atom with Hydrogen), it can also be useful to get a more clear view of your equations.
-Since the package uses a string type supplied by [LaTeXStrings.jl](https://github.com/stevengj/LaTeXStrings.jl) the output of all functions except `latexraw` is automatically rendered.
-
-```julia
 latexify(f)
 ```
+outputs:
+
 ![positiveFeedback](/assets/ode_positive_feedback.png)
 
-For more examples you can see the [docs](https://korsbo.github.io/Latexify.jl/stable).
+
+[DiffEqBiological.jl](https://github.com/JuliaDiffEq/DiffEqBiological.jl) provides another cool domain-specific language which allows you to generate equations using a chemical arrow notation.
+
+
+```julia
+using DifferentialEquations
+using Latexify
+
+rn = @reaction_network demoNetwork begin
+  (r_bind, r_unbind), A + B ↔ C
+  Hill(C, v, k, n), 0 --> X
+  d_x, X --> 0
+end r_bind r_unbind v k n d_x
+
+latexify(rn)
+```
+![positiveFeedback](/assets/demo_rn.png)
+
+Or you can output the arrow notation directly to latex:
+
+```julia
+latexify(rn; env=:arrow)
+```
+![positiveFeedback](/assets/demo_rn_arrow.png)
+
+There are more stuff that you can do, but for that I will refer you to the
+[docs](https://korsbo.github.io/Latexify.jl/stable).
+
+
 
 
 ## Installation
@@ -104,14 +135,9 @@ This package is registered with METADATA.jl, so to install it you can just run
 Pkg.add("Latexify")
 ```
 
-You can access the functions by
-```julia
-using Latexify
-```
-
 ## Further information
 For further information see the [docs](https://korsbo.github.io/Latexify.jl/stable).
 
 ## Contributing
 I would be happy to receive feedback, suggestions, and help with improving this package.
-Please feel free to open an issue.
+Please feel free to open an issue or a PR.
