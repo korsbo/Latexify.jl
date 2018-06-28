@@ -43,6 +43,9 @@ array_test = [exp, str]
 @test latexraw(complex(1,-1)) == "1-1\\textit{i}"
 @test latexraw(1//2) == "\\frac{1}{2}"
 @test latexraw(Missing()) == "\\textrm{NA}"
+@test latexraw("x[2]") == raw"\mathrm{x}\left[2\right]"
+@test latexraw("x[2, 3]") == raw"\mathrm{x}\left[2, 3\right]"
+
 
 f = @ode_def feedback begin
     dx = y/c_1 - x
@@ -53,6 +56,10 @@ end c_1 c_2
 
 ### Test for correct signs in nested sums/differences.
 @test latexraw("-(-1)") == raw" + 1"
+@test latexraw("+(-1)") == raw"-1"
+@test latexraw("-(+1)") == raw" - 1"
+@test latexraw("-(1+1)") == raw" - \left( 1 + 1 \right)"
+@test latexraw("1-(-2)") == raw"1 + 2"
 @test latexraw("1 + (-(2))") == raw"1 - 2"
 @test latexraw("1 + (-2 -3 -4)") == raw"1 -2 - 3 - 4"
 @test latexraw("1 - 2 - (- 3 - 4)") == raw"1 - 2 - \left(  - 3 - 4 \right)"
