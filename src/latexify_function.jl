@@ -16,6 +16,8 @@ function infer_output(env, args...)
         env == :raw && return latexraw
         env == :array && return latexarray
         env == :align && return latexalign
+        env == :mdtable && return mdtable
+        env == :mdtext && return mdtext
         env in [:arrows, :chem, :chemical, :arrow] && return chemical_arrows
 
         error("The environment $env is not defined.")
