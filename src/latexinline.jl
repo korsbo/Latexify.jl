@@ -10,8 +10,6 @@ latexinline(x::AbstractArray) = [ latexinline(i) for i in x]
     function latexinline(ode::DiffEqBase.AbstractParameterizedFunction)
         lhs = ["\\frac{d$x}{dt} = " for x in ode.syms]
         rhs = latexraw(ode.funcs)
-        latexstr = latexstring.( lhs .* rhs )
-        COPY_TO_CLIPBOARD && clipboard(latexstr)
-        return latexstr
+        return latexstring.( lhs .* rhs )
     end
 end
