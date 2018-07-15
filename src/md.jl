@@ -9,9 +9,9 @@ function md(args...; env=:auto, kwargs...)
     return m
 end
 
-mdalign(args...; kwargs...) = latexalign(args...; md=true, kwargs...)
-mdarray(args...; kwargs...) = latexarray(args...; md=true, kwargs...)
-md_chemical_arrows(args...; kwargs...) = chemical_arrows(args...; md=true, kwargs...)
+mdalign(args...; kwargs...) = latexalign(args...; kwargs...)
+mdarray(args...; kwargs...) = latexarray(args...; kwargs...)
+md_chemical_arrows(args...; kwargs...) = chemical_arrows(args...; kwargs...)
 
 function infer_md_output(env, args...)
     if env != :auto

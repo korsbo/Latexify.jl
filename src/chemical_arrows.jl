@@ -1,10 +1,10 @@
 
 @require DiffEqBiological begin
     function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
-            expand = true, md=false, mathjax=true, starred=false, kwargs...)
+            expand = true, double_linebreak=false, mathjax=true, starred=false, kwargs...)
 
         str = starred ? "\\begin{align*}\n" : "\\begin{align}\n"
-        eol = md ? "\\\\\\\\\n" : "\\\\\n"
+        eol = double_linebreak ? "\\\\\\\\\n" : "\\\\\n"
 
         mathjax && (str *= "\\require{mhchem}\n")
 
@@ -29,7 +29,7 @@
             str *= join(substrates, " + ")
 
             ### Generate reaction arrows
-            if i + 1 <= length(rn.reactions) && r.products == rn.reactions[i+1].substrates && r.substrates == rn.reactions[i+1].products 
+            if i + 1 <= length(rn.reactions) && r.products == rn.reactions[i+1].substrates && r.substrates == rn.reactions[i+1].products
                 ### Bi-directional arrows
                 rate_backwards = deepcopy(rn.reactions[i+1].rate_org)
                 expand && (rate_backwards = DiffEqBiological.recursive_clean!(rate_backwards))
