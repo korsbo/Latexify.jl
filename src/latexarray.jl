@@ -12,11 +12,11 @@ latexarray(arr)
 "\\begin{equation}\n\\left[\n\\begin{array}{cc}\n1 & 2\\\\ \n3 & 4\\\\ \n\\end{array}\n\\right]\n\\end{equation}\n"
 ```
 """
-function latexarray(arr::AbstractMatrix; adjustment::Symbol=:c, transpose=false, md=false,
+function latexarray(arr::AbstractMatrix; adjustment::Symbol=:c, transpose=false, double_linebreak=false,
     starred=false)
     transpose && (arr = permutedims(arr, [2,1]))
     (rows, columns) = size(arr)
-    eol = md ? " \\\\\\\\ \n" : " \\\\ \n"
+    eol = double_linebreak ? " \\\\\\\\ \n" : " \\\\ \n"
 
     str = "\\begin{equation$(starred ? "*" : "")}\n"
     str *= "\\left[\n"

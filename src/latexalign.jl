@@ -40,9 +40,9 @@ julia> latexalign(ode)
 """
 function latexalign end
 
-function latexalign(arr::AbstractMatrix; separator=" =& ", md=false, starred=false)
+function latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=false, starred=false)
     (rows, columns) = size(arr)
-    eol = md ? " \\\\\\\\\n" : " \\\\\n"
+    eol = double_linebreak ? " \\\\\\\\\n" : " \\\\\n"
     arr = latexraw(arr)
 
     str = "\\begin{align$(starred ? "*" : "")}\n"
