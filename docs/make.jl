@@ -7,24 +7,19 @@ makedocs(
     sitename = "Latexify.jl",
     pages = [
         "index.md",
-        "Functions" => [
-            "tutorials/latexify.md",
-            "tutorials/latexinline.md",
-            "tutorials/latexalign.md",
-            "tutorials/latexarray.md",
-            "tutorials/latextabular.md"
-        ],
+        # "Functions" => [
+        #     "tutorials/latexify.md",
+        #     "tutorials/latexinline.md",
+        #     "tutorials/latexalign.md",
+        #     "tutorials/latexarray.md",
+        #     "tutorials/latextabular.md"
+        # ],
         "Use with other packages" => [
             "tutorials/parameterizedfunctions.md",
             "tutorials/DiffEqBiological.md"
         ],
-        "tutorials/inner_workings.md"
-        # "Functions" => [
-        #     "functions/latexify.md",
-        #     "functions/latexalign.md",
-        #     "functions/latexarray.md",
-        #     "functions/latexoperation.md"
-        # ]
+        "arguments.md",
+        "tutorials/inner_workings.md",
     ],
     doctest = false
 )
