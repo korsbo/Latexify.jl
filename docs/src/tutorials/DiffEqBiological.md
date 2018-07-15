@@ -77,3 +77,18 @@ latexify(rn; env=:chemical, expand=false, starred=true)
 \ce{ x &<=>[{r_{b}}][{r_{u}}] y}\\
 \end{align*}
 ```
+
+## Available options
+### Align
+```@eval
+include("src/table_generator.jl")
+args = [arg for arg in keyword_arguments if (:ReactionNetwork in arg.types || :Any in arg.types) && :align in arg.env]
+latexify(args, env=:mdtable, types=false)
+```
+
+### Arrow notation
+```@eval
+include("src/table_generator.jl")
+args = [arg for arg in keyword_arguments if (:ReactionNetwork in arg.types || :Any in arg.types) && :arrow in arg.env]
+latexify(args, env=:mdtable, types=false)
+```

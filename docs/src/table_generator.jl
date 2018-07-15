@@ -19,18 +19,27 @@ struct KeywordArgument
     types::Array{Symbol}
 end
 
-# KeywordArgument(:template, [:array], "`Bool`", "`false`", "description", [:Any]),
+#     KeywordArgument(:template, [:array], "`Bool`", "`false`", "description", [:Any]),
 keyword_arguments = [
-    KeywordArgument(:starred, [:align, :array], "`Bool`", "`false`", "Star the environment to prevent equation numbering.", [:Any]),
+    KeywordArgument(:starred, [:align, :array, :arrow], "`Bool`", "`false`", "Star the environment to prevent equation numbering.", [:Any]),
     KeywordArgument(:separator, [:align], "`String`", "`\" =& \"`", "Specify how to separate the left hand side and the right.", [:Any]),
-    KeywordArgument(:transpose, [:array], "`Bool`", "`true`", "Flip rows for columns.", [:Any]),
-    KeywordArgument(:double_linebreak, [:array, :align], "`Bool`", "`false`", "Add an extra `\\\\` to the end of the line.", [:Any]),
+    KeywordArgument(:transpose, [:array, :tabular, :mdtable], "`Bool`", "`true`", "Flip rows for columns.", [:Any]),
+    KeywordArgument(:double_linebreak, [:array, :align, :arrow], "`Bool`", "`false`", "Add an extra `\\\\` to the end of the line.", [:Any]),
     KeywordArgument(:bracket, [:align], "`Bool`", "`false`", "Surround variables with square brackets.", [:ParameterizedFunction, :ReactionNetwork]),
+    KeywordArgument(:noise, [:align], "`Bool`", "`false`", "Display the noise function instead of the deterministic one.", [:ReactionNetwork]),
+    KeywordArgument(:adjustment, [:tabular, :array], "`:c` for centered, `:l` for left, `:r` for right", "`:c`", "Set the adjustment of text within the table cells.", [:Any]),
+    KeywordArgument(:expand, [:arrow, :align], "`Bool`", "`true`", "Expand functions such as `hill(x, v, k, n)` to their mathematical expression.", [:ReactionNetwork]),
+    KeywordArgument(:mathjax, [:arrow], "`Bool`", "`true`", "Add `\\require{mhchem}` to tell MathJax to load the required module.", [:ReactionNetwork]),
+    KeywordArgument(:latex, [:mdtable], "`Bool`", "`true`", "Toggle latexification of the table elements.", [:Any]),
+    KeywordArgument(:head, [:mdtable], "`Array`", "`[]`", "Add a header to the table. It will error if it is not of the right length (unless empty). ", [:Any]),
+    KeywordArgument(:side, [:mdtable], "`Array`", "`[]`", "Add a leftmost column to the table. It will error if it is not of the right length (unless empty). ", [:Any]),
+#     KeywordArgument(:template, [:array], "`Bool`", "`false`", "description", [:Any]),
     ]
 
 import Latexify: mdtable
 
 function mdtable(list::Array{KeywordArgument}; types=true)
+    isempty(list) && return nothing
     sort!(list, by=x->x.kw)
     keys = ["`:$(x.kw)`" for x in list]
     # values = [join(["$i" for i in x.values], ", ") for x in list]
