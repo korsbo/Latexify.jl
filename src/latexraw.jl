@@ -19,7 +19,7 @@ latexraw(expr)
 ```
 
 ```jldoctest
-expr = parse("x/(y+x)")
+expr = Meta.parse("x/(y+x)")
 latexraw(expr)
 
 # output
