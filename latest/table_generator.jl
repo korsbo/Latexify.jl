@@ -30,9 +30,9 @@ keyword_arguments = [
     KeywordArgument(:adjustment, [:tabular, :array], "`:c` for centered, `:l` for left, `:r` for right", "`:c`", "Set the adjustment of text within the table cells.", [:Any]),
     KeywordArgument(:expand, [:arrow, :align], "`Bool`", "`true`", "Expand functions such as `hill(x, v, k, n)` to their mathematical expression.", [:ReactionNetwork]),
     KeywordArgument(:mathjax, [:arrow], "`Bool`", "`true`", "Add `\\require{mhchem}` to tell MathJax to load the required module.", [:ReactionNetwork]),
-    KeywordArgument(:latex, [:mdtable], "`Bool`", "`true`", "Toggle latexification of the table elements.", [:Any]),
-    KeywordArgument(:head, [:mdtable], "`Array`", "`[]`", "Add a header to the table. It will error if it is not of the right length (unless empty). ", [:Any]),
-    KeywordArgument(:side, [:mdtable], "`Array`", "`[]`", "Add a leftmost column to the table. It will error if it is not of the right length (unless empty). ", [:Any]),
+    KeywordArgument(:latex, [:mdtable, :tabular], "`Bool`", "`true`", "Toggle latexification of the table elements.", [:Any]),
+    KeywordArgument(:head, [:mdtable, :tabular], "`Array`", "`[]`", "Add a header to the table. It will error if it is not of the right length (unless empty). ", [:Any]),
+    KeywordArgument(:side, [:mdtable, :tabular], "`Array`", "`[]`", "Add a leftmost column to the table. It will error if it is not of the right length (unless empty). ", [:Any]),
 #     KeywordArgument(:template, [:array], "`Bool`", "`false`", "description", [:Any]),
     ]
 
