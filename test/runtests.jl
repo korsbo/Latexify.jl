@@ -14,5 +14,6 @@ using Base.Test
 @testset "latexalign tests" begin include("latexalign_test.jl") end
 @testset "latexarray tests" begin include("latexarray_test.jl") end
 @testset "latexinline tests" begin include("latexinline_test.jl") end
+@testset "latextabular tests" begin include("latextabular_test.jl") end
 @testset "mdtable tests" begin include("mdtable_test.jl") end
 @testset "chemical_arrows test" begin include("chemical_arrows_test.jl") end
