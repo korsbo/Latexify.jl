@@ -1,6 +1,5 @@
 using DiffEqBiological
 using Latexify
-using LaTeXStrings
 using Base.Test
 
 @reaction_func hill2(x, v, k) = v*x^2/(k^2 + x^2)
@@ -37,18 +36,18 @@ raw"\begin{align}
 @test md(rn; env=:chem) ==
 raw"\begin{align}
 \require{mhchem}
-\ce{ \varnothing &->[\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}] x}\\\\
-\ce{ \varnothing &->[p_{y}] y}\\\\
-\ce{ x &->[d_{x}] \varnothing}\\\\
-\ce{ y &->[d_{y}] \varnothing}\\\\
-\ce{ x &<=>[{r_{b}}][{r_{u}}] y}\\\\
+\ce{ \varnothing &->[\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}] x}\\
+\ce{ \varnothing &->[p_{y}] y}\\
+\ce{ x &->[d_{x}] \varnothing}\\
+\ce{ y &->[d_{y}] \varnothing}\\
+\ce{ x &<=>[{r_{b}}][{r_{u}}] y}\\
 \end{align}
 "
 
-@test md(rn; env=:chem, starred=true) ==
+
+@test md(rn; env=:chem, expand=false, mathjax=false, starred=true, double_linebreak=true) ==
 raw"\begin{align*}
-\require{mhchem}
-\ce{ \varnothing &->[\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}] x}\\\\
+\ce{ \varnothing &->[\mathrm{hill2}\left( y, v_{x}, k_{x} \right)] x}\\\\
 \ce{ \varnothing &->[p_{y}] y}\\\\
 \ce{ x &->[d_{x}] \varnothing}\\\\
 \ce{ y &->[d_{y}] \varnothing}\\\\
@@ -62,14 +61,20 @@ ode = @reaction_network InducedDegradation begin
     (r_b * i, r_u), F ↔ Ff # bindin/unbinding
 end  i p_F d_F r_b r_u d_Ff d_R
 
+# @Latexify.generate_test md(ode; env=:chem)
+
+
 @test md(ode; env=:chem) ==
 raw"\begin{align}
 \require{mhchem}
-\ce{ F &->[d_{F}] \varnothing}\\\\
-\ce{ Ff &->[d_{Ff}] \varnothing}\\\\
-\ce{ R &->[d_{R}] \varnothing}\\\\
-\ce{ \varnothing &->[p_{F}] F}\\\\
-\ce{ \varnothing &->[Ff] R}\\\\
-\ce{ F &<=>[{r_{b} \cdot i}][{r_{u}}] Ff}\\\\
+\ce{ F &->[d_{F}] \varnothing}\\
+\ce{ Ff &->[d_{Ff}] \varnothing}\\
+\ce{ R &->[d_{R}] \varnothing}\\
+\ce{ \varnothing &->[p_{F}] F}\\
+\ce{ \varnothing &->[Ff] R}\\
+\ce{ F &<=>[{r_{b} \cdot i}][{r_{u}}] Ff}\\
 \end{align}
 "
+
+
+@test_throws MethodError latexify(rn; env=:arrow, bad_kwarg="should error")
