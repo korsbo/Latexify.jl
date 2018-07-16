@@ -21,7 +21,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Latexify.jl",
     "title": "Supported input",
     "category": "section",
-    "text": "This package supplies functionality for latexifying objects of the following types:Expressions,\nStrings,\nNumbers (including rational and complex),\nMissings\' Missing type,\nSymbols,\nSymbolic expressions from SymEngine.jl,\nAny shape of array containing a mix of any of the above types,\nParameterizedFunctions from DifferentialEquations.jl,\nReactionNetworks from DifferentialEquations.jlExample:julia> str = \"x/(2*k_1+x^2)\"\njulia> latexify(str)\nfracx2 cdot k_1 + x^2"
+    "text": "This package supplies functionality for latexifying objects of the following types:Expressions,\nStrings,\nNumbers (including rational and complex),\nMissings\' Missing type,\nSymbols,\nSymbolic expressions from SymEngine.jl,\nDataFrame from DataFrames.jl,\nAny shape of array containing a mix of any of the above types,\nParameterizedFunctions from DifferentialEquations.jl,\nReactionNetworks from DifferentialEquations.jlExample:julia> str = \"x/(2*k_1+x^2)\"\njulia> latexify(str)\nfracx2 cdot k_1 + x^2"
 },
 
 {
@@ -29,7 +29,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Latexify.jl",
     "title": "Supported output",
     "category": "section",
-    "text": "Latexify has support for generating a range of different LaTeX environments. The main function of the package, latexify(), automatically picks a suitable output environment based on the type(s) of the input. However, you can override this by passing the keyword argument env =. The following environments are available:environment env= description\nno env :raw Latexifies an object and returns a LaTeX formatted string. If the input is an array it will be recursed and all its elements latexified. This function does not surround the resulting string in any LaTeX environments.\nInline :inline latexify the input and surround it with $$ for inline rendering.\nAlign :align Latexifies input and surrounds it with an align environment. Useful for systems of equations and such fun stuff.\nArray :array Latexify the elements of an Array or an Associative and output them in a LaTeX array.\nTabular :table or :tabular Latexify the elements of an array and output a tabular environment. Note that tabular is not supported by MathJax and will therefore not be rendered in Jupyter, etc.\nMarkdown Table :mdtable Output a Markdown table. This will be rendered nicely by Jupyter, etc.\nMarkdown Text :mdtext Output and render any string which can be parsed into Markdown. This is really nothing but a call to Base.Markdown.parse(),  but it does the trick. Useful for rendering bullet lists and such things.\nChemical arrow notation :chem, :chemical, :arrow or :arrows Latexify an AbstractReactionNetwork to \\LaTeX formatted chemical arrow notation using mhchem."
+    "text": "Latexify has support for generating a range of different LaTeX environments. The main function of the package, latexify(), automatically picks a suitable output environment based on the type(s) of the input. However, you can override this by passing the keyword argument env =. The following environments are available:environment env= description\nno env :raw Latexifies an object and returns a LaTeX formatted string. If the input is an array it will be recursed and all its elements latexified. This function does not surround the resulting string in any LaTeX environments.\nInline :inline latexify the input and surround it with $$ for inline rendering.\nAlign :align Latexifies input and surrounds it with an align environment. Useful for systems of equations and such fun stuff.\nArray :array Latexify the elements of an Array or an Associative and output them in a LaTeX array.\nTabular :table or :tabular Latexify the elements of an array and output a tabular environment. Note that tabular is not supported by MathJax and will therefore not be rendered in Jupyter, etc.\nMarkdown Table :mdtable Output a Markdown table. This will be rendered nicely by Jupyter, etc.\nMarkdown Text :mdtext Output and render any string which can be parsed into Markdown. This is really nothing but a call to Base.Markdown.parse(),  but it does the trick. Useful for rendering bullet lists and such things.\nChemical arrow notation :chem, :chemical, :arrow or :arrows Latexify an AbstractReactionNetwork to LaTeX formatted chemical arrow notation using mhchem."
 },
 
 {
@@ -37,7 +37,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Latexify.jl",
     "title": "Modifying the output",
     "category": "section",
-    "text": "Some of the different outputs can be modified using keyword arguments. You can for example transpose an array with transpose=true or specify a header of a table or mdtable with header=[]. For more options, see the sections for the respective output environment."
+    "text": "Some of the different outputs can be modified using keyword arguments. You can for example transpose an array with transpose=true or specify a header of a table or mdtable with header=[]. For more options, see the List of possible arguments."
 },
 
 {
