@@ -13,15 +13,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Latexify.jl",
     "title": "Latexify.jl",
     "category": "section",
-    "text": "Latexify.jl is a package which supplies functions for producing LaTeX formatted strings from Julia objects. Among the supported input types are Julia Expressions, which gets converted to properly formatted LaTeX maths."
+    "text": "Latexify.jl is a package which supplies functions for producing LaTeX formatted strings from Julia objects. The package allows for latexification of a many different kinds of Julia object and it can output several different LaTeX or Markdown environments.A small teaser:using Latexify\ncopy_to_clipboard(true)\nm = [2//3 \"e^(-c*t)\" 1+3im; :(x/(x+k_1)) \"gamma(n)\" :(log10(x))]\nlatexify(m)beginequation\nleft\nbeginarrayccc\nfrac23  e^ - c cdot t  1+3textiti \nfracxx + k_1  Gammaleft( n right)  log_10left( x right) \nendarray\nright\nendequation"
 },
 
 {
-    "location": "index.html#Supported-objects-1",
+    "location": "index.html#Supported-input-1",
     "page": "Latexify.jl",
-    "title": "Supported objects",
+    "title": "Supported input",
     "category": "section",
-    "text": "This package supplies functionality for latexifying objects of the following types:Expressions,\nStrings,\nNumbers (including rational and complex),\nMissings\' Missing type,\nSymbols,\nSymbolic expressions from SymEngine.jl,\nAny shape of array containing a mix of any of the above types,\nParameterizedFunctions from DifferentialEquations.jl,\nReactionNetworks from DifferentialEquations.jlExample:julia> str = \"x/(2*k_1+x^2)\"\njulia> print(latexify(str))\n\n\\frac{x}{2 \\cdot k_{1} + x^{2}}which renders as\\begin{equation*} \\frac{x}{2 \\cdot k_{1} + x^{2}} \\end{equation*}"
+    "text": "This package supplies functionality for latexifying objects of the following types:Expressions,\nStrings,\nNumbers (including rational and complex),\nMissings\' Missing type,\nSymbols,\nSymbolic expressions from SymEngine.jl,\nAny shape of array containing a mix of any of the above types,\nParameterizedFunctions from DifferentialEquations.jl,\nReactionNetworks from DifferentialEquations.jlExample:julia> str = \"x/(2*k_1+x^2)\"\njulia> latexify(str)\nfracx2 cdot k_1 + x^2"
 },
 
 {
@@ -29,63 +29,23 @@ var documenterSearchIndex = {"docs": [
     "page": "Latexify.jl",
     "title": "Supported output",
     "category": "section",
-    "text": "Latexify has support for generating a range of different LaTeX environments. The main function of the package, latexify(), tries to infer what environment you need. However, you can override this by passing the keyword argument env =. The following environments are available:| environment | env= | | ––– | –– | –- | | no env | :raw | Latexifies an object and returns a LaTeX formatted string. If the input is an array it will be recursed and all its elements latexified. This function does not surround the resulting string in any LaTeX environments. | Inline | :inline | latexify the input and surround it with $ for inline rendering. | | Align | :align | Latexifies input and surrounds it with an align environment. Useful for systems of equations and such fun stuff. | | Array | :array |"
+    "text": "Latexify has support for generating a range of different LaTeX environments. The main function of the package, latexify(), automatically picks a suitable output environment based on the type(s) of the input. However, you can override this by passing the keyword argument env =. The following environments are available:environment env= description\nno env :raw Latexifies an object and returns a LaTeX formatted string. If the input is an array it will be recursed and all its elements latexified. This function does not surround the resulting string in any LaTeX environments.\nInline :inline latexify the input and surround it with $$ for inline rendering.\nAlign :align Latexifies input and surrounds it with an align environment. Useful for systems of equations and such fun stuff.\nArray :array Latexify the elements of an Array or an Associative and output them in a \\LaTeX array.\nTabular :table or :tabular Latexify the elements of an array and output a tabular environment. Note that tabular is not supported by MathJax and will therefore not be rendered in Jupyter, etc.\nMarkdown Table :mdtable Output a Markdown table. This will be rendered nicely by Jupyter, etc.\nMarkdown Text :mdtext Output and render any string which can be parsed into Markdown. This is really nothing but a call to Base.Markdown.parse(),  but it does the trick. Useful for rendering bullet lists and such things.\nChemical arrow notation :chem, :chemical, :arrow or :arrows Latexify an AbstractReactionNetwork to \\LaTeX formatted chemical arrow notation using mhchem."
 },
 
 {
-    "location": "index.html#Functions,-at-a-glance-1",
+    "location": "index.html#Modifying-the-output-1",
     "page": "Latexify.jl",
-    "title": "Functions, at a glance",
+    "title": "Modifying the output",
     "category": "section",
-    "text": ""
+    "text": "Some of the different outputs can be modified using keyword arguments. You can for example transpose an array with transpose=true or specify a header of a table or mdtable with header=[]. For more options, see the sections for the respective output environment."
 },
 
 {
-    "location": "index.html#latexify(x)-1",
+    "location": "index.html#Printing-vs-displaying-1",
     "page": "Latexify.jl",
-    "title": "latexify(x)",
+    "title": "Printing vs displaying",
     "category": "section",
-    "text": "Latexifies x and returns it in a suitable latex environment. Inputs which are not containers are converted into inline equations $$, container types (AbstractArray) are converted to arrays, and ParameterizedFunctions are converted to align environments."
-},
-
-{
-    "location": "index.html#latexraw(x)-1",
-    "page": "Latexify.jl",
-    "title": "latexraw(x)",
-    "category": "section",
-    "text": "Latexifies an object x and returns a LaTeX formatted string. If the input is an array, latexraw recurses it and latexifies its elements.This function does not surround the resulting string in any LaTeX environments."
-},
-
-{
-    "location": "index.html#latexinline(x)-1",
-    "page": "Latexify.jl",
-    "title": "latexinline(x)",
-    "category": "section",
-    "text": "Passes x to latexraw, but converts the output to a LaTeXString and surrounds it with a simple $$ environment."
-},
-
-{
-    "location": "index.html#latexalign()-1",
-    "page": "Latexify.jl",
-    "title": "latexalign()",
-    "category": "section",
-    "text": "Latexifies input and surrounds it with an align environment. Useful for systems of equations and such fun stuff."
-},
-
-{
-    "location": "index.html#latexarray()-1",
-    "page": "Latexify.jl",
-    "title": "latexarray()",
-    "category": "section",
-    "text": "Latexifies a 1 or 2D array and generates a corresponding LaTeX array."
-},
-
-{
-    "location": "index.html#latextabular()-1",
-    "page": "Latexify.jl",
-    "title": "latextabular()",
-    "category": "section",
-    "text": "Latexifies the elements of a 1 or 2D array and puts them in a tabular environment."
+    "text": "latexify() returns a LaTeXString. Using display() on such a string will try to render it.latexify(\"x/y\") |> displayfracxyUsing print() will output text which is formatted for latex.latexify(\"x/y\") |> print$\\frac{x}{y}$"
 },
 
 {
@@ -93,95 +53,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Latexify.jl",
     "title": "Automatic copying to clipboard",
     "category": "section",
-    "text": "The strings that you would see when using print on any of the above functions can be automatically copied to the clipboard if you so specify. Since I do not wish to mess with your clipboard without you knowing it, this feature must be activated by you.To do so, runLatexify.copy_to_clipboard(true)To once again disable the feature, pass false to the same function.The copying to the clipboard will now occur at every call to a Latexify.jl function, regardless of how you chose to display the output."
+    "text": "The strings that you would see when using print on any of the above functions can be automatically copied to the clipboard if you so specify. Since I do not wish to mess with your clipboard without you knowing it, this feature must be activated by you.To do so, runcopy_to_clipboard(true)To once again disable the feature, pass false to the same function.The copying to the clipboard will now occur at every call to a Latexify.jl function, regardless of how you chose to display the output."
 },
 
 {
-    "location": "tutorials/latexify.html#",
-    "page": "latexify",
-    "title": "latexify",
-    "category": "page",
-    "text": ""
-},
-
-{
-    "location": "tutorials/latexify.html#latexify-1",
-    "page": "latexify",
-    "title": "latexify",
+    "location": "index.html#Automatic-displaying-of-result-1",
+    "page": "Latexify.jl",
+    "title": "Automatic displaying of result",
     "category": "section",
-    "text": "This is a wrapper of some of the other latexXXX functions. It tries to infer a suitable output mode for the given input. If the environment you are using supports the MIME type \"text/latex\", then the output will be rendered nicely.using Latexify\ncopy_to_clipboard(true)\n\nex = :(x/y)\nlatexify(ex)\nfracxyIf you print the output rather than display, then you will enforce the print-out of a string which is ready for some copy-pasting into your LaTeX document.println(latexify(ex))\n\n## or the equivalent:\nlatexify(ex) |> println$\\frac{x}{y}$A matrix, or a single vector, is turned into an array.M = signif.(rand(3,4), 2)\n\nlatexify(M)\\begin{equation} \\left[ \\begin{array}{cccc} 0.85 & 0.99 & 0.85 & 0.5\\\\\n0.59 & 0.061 & 0.77 & 0.48\\\\\n0.7 & 0.17 & 0.7 & 0.82\\\\\n\\end{array} \\right] \\end{equation}You can transpose the output using the keyword argument transpose=true.If you give two vectors as an argument, they will be displayed as the left-hand-side and right-hand-side of an align environment:latexify([\"x/y\", :z], Any[2.3, 1//2])\\begin{align} \\frac{x}{y} =& 2.3 \\\\\nz =& \\frac{1}{2} \\\\\n\\end{align}If you input a ParameterizedFunction or a ReactionNetwork from DifferentialEquations.jl you will also get an align environment. For more on this, have a look on their respective sections."
-},
-
-{
-    "location": "tutorials/latexinline.html#",
-    "page": "latexinline",
-    "title": "latexinline",
-    "category": "page",
-    "text": ""
-},
-
-{
-    "location": "tutorials/latexinline.html#latexinline-1",
-    "page": "latexinline",
-    "title": "latexinline",
-    "category": "section",
-    "text": "takes a Julia object x and returns a LaTeX formatted string. It also surrounds the output in a simple $$ environment. This works for x of many types, including expressions, which returns LaTeX code for an equation.julia> ex = :(x-y/z)\njulia> latexinline(ex)\nL\"$x - \\frac{y}{z}$\"In Jupyter or Hydrogen this automatically renders as:x - fracyzAmong the supported types are:Expressions,\nStrings,\nNumbers (including rational and complex),\nSymbols,\nSymbolic expressions from SymEngine.jl.\nParameterizedFunctions.It can also take arrays, which it recurses and latexifies the elements, returning an array of latex strings."
-},
-
-{
-    "location": "tutorials/latexalign.html#",
-    "page": "latexalign",
-    "title": "latexalign",
-    "category": "page",
-    "text": ""
-},
-
-{
-    "location": "tutorials/latexalign.html#latexalign-1",
-    "page": "latexalign",
-    "title": "latexalign",
-    "category": "section",
-    "text": "This function converts its input to LaTeX align environments. One way of using the function is to pass it two vectors, one which holds the left-hand-side of the equations and the other which holds the right. For example:lhs = [\"dx/dt\", \"dy/dt\"]\nrhs = [\"y^2 - x\", \"x/y - y\"]\nprint(latexalign(lhs, rhs))outputs:\\begin{align}\n\\frac{dx}{dt} =& y^{2} - x \\\\\n\\frac{dy}{dt} =& \\frac{x}{y} - y \\\\\n\\end{align}In Jupyter, this can be rendered by:display( latexalign(lhs, rhs))\\begin{align*} \\frac{dx}{dt} =& y^{2} - x \\\\\n\\frac{dy}{dt} =& \\frac{x}{y} - y \\\\\n\\end{align*}"
-},
-
-{
-    "location": "tutorials/latexalign.html#Using-DifferentialEquations.jl-1",
-    "page": "latexalign",
-    "title": "Using DifferentialEquations.jl",
-    "category": "section",
-    "text": "The motivation for creating this function was mainly to be able to render ODEs. In my own work, I tend to use DifferentialEquations.jl to define ODEs as ParameterizedFunctions. Therefore, I found it useful to create a method which simply takes the ParameterizedFunction as input:using Latexify\nusing DifferentialEquations\node = @ode_def positiveFeedback begin\n    dx = y/(k_y + y) - x\n    dy = x^n_x/(k_x^n_x + x^n_x) - y\nend k_y k_x n_x\n\nlatexalign(ode)\\begin{align} \\frac{dx}{dt} =& \\frac{y}{k_{y} + y} - x \\\\\n\\frac{dy}{dt} =& \\frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y \\\\\n\\end{align}"
-},
-
-{
-    "location": "tutorials/latexarray.html#",
-    "page": "latexarray",
-    "title": "latexarray",
-    "category": "page",
-    "text": ""
-},
-
-{
-    "location": "tutorials/latexarray.html#latexarray-1",
-    "page": "latexarray",
-    "title": "latexarray",
-    "category": "section",
-    "text": "This functions takes a 1 or 2D array and spits out a latex array environment. For example:julia> arr = eye(Int,3)\njulia> print(latexarray(arr))\n\n\\begin{equation}\n\\left[\n\\begin{array}{ccc}\n1 & 0 & 0\\\\\n0 & 1 & 0\\\\\n0 & 0 & 1\\\\\n\\end{array}\n\\right]\n\\end{equation}which renders as:\\begin{equation} \\left[ \\begin{array}{ccc} 1 & 0 & 0\\\\\n0 & 1 & 0\\\\\n0 & 0 & 1\\\\\n\\end{array} \\right] \\end{equation}latexraw() is called for each element of the input, individually. It therefore does not matter if the input array is of a mixed type.arr = [1.0, 2-3im, 3//4, :(x/(k_1+x)), \"e^(-k_b*t)\"]\nlatexarray(arr)renders as:\\begin{equation} \\left[ \\begin{array}{c} 1.0\\\\\n2-3\\textit{i}\\\\\n\\frac{3}{4}\\\\\n\\frac{x}{k_{1} + x}\\\\\ne^{- k_{b} \\cdot t}\\\\\n\\end{array} \\right] \\end{equation}"
-},
-
-{
-    "location": "tutorials/latextabular.html#",
-    "page": "latextabular",
-    "title": "latextabular",
-    "category": "page",
-    "text": ""
-},
-
-{
-    "location": "tutorials/latextabular.html#latextabular-1",
-    "page": "latextabular",
-    "title": "latextabular",
-    "category": "section",
-    "text": "using Latexify\ncopy_to_clipboard(true)\narr = [\"x/y\" :(y^n); 1.0 :(alpha(x))]\nlatextabular(arr) |> printlnoutputs:\\begin{tabular}{cc}\n$\\frac{x}{y}$ & $y^{n}$\\\\\n$1.0$ & $\\alpha\\left( x \\right)$\\\\\n\\end{tabular}Unfortunately, this does not render nicely in Markdown. But you get the point.latextabular takes two keywords, one for changing the adjustment of the columns (centered by default), and one for transposing the whole thing.latextabular(arr; adjustment=:l, transpose=true) |> println\\begin{tabular}{ll}\n$\\frac{x}{y}$ & $1.0$\\\\\n$y^{n}$ & $\\alpha\\left( x \\right)$\\\\\n\\end{tabular}"
+    "text": "You can toggle whether the result should be automatically displayed. Instead oflatexify(\"x/y\") |> display\n## or\ndisplay( latexify(\"x/y\") )one can toggle automatic display by:auto_display(true)after which all calls to latexify will automatically be displayed. This can be rather convenient, but it can also cause a lot of unwanted printouts if you are using latexify in any form of loop. You can turn off this behaviour again by passing false to the same function."
 },
 
 {
@@ -197,7 +77,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Use with ParameterizedFunctions",
     "title": "Use with ParameterizedFunctions",
     "category": "section",
-    "text": "In the latexalign tutorial I mentioned that one can use latexalign directly on a ParameterizedFunction. Here, I make a somewhat more convoluted and hard-to-read example (you\'ll soon se why):using Latexify\nusing DifferentialEquations\ncopy_to_clipboard(true)\n\node = @ode_def positiveFeedback begin\n    dx = y*y*y/(k_y_x + y) - x - x\n    dy = x^n_x/(k_x^n_x + x^n_x) - y\nend k_y k_x n_x\n\nlatexalign(ode)\\begin{align} \\frac{dx}{dt} =& \\frac{y \\cdot y \\cdot y}{k_{y_x} + y} - x - x \\\\\n\\frac{dy}{dt} =& \\frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y \\\\\n\\end{align}This is pretty nice, but there are a few parts of the equation which could be reduced. Using a keyword argument, you can utilise the SymEngine.jl to reduce the expression before printing.latexalign(ode, field=:symfuncs)\\begin{align} \\frac{dx}{dt} =& -2 \\cdot x + \\frac{y^{3}}{k_{y_x} + y} \\\\\n\\frac{dy}{dt} =& - y + \\frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} \\\\\n\\end{align}"
+    "text": "In the latexalign tutorial I mentioned that one can use latexalign directly on a ParameterizedFunction. Here, I make a somewhat more convoluted and hard-to-read example (you\'ll soon se why):using Latexify\nusing ParameterizedFunctions\ncopy_to_clipboard(true)\n\node = @ode_def positiveFeedback begin\n    dx = y*y*y/(k_y_x + y) - x - x\n    dy = x^n_x/(k_x^n_x + x^n_x) - y\nend k_y k_x n_x\n\nlatexify(ode)beginalign\nfracdxdt = fracy cdot y cdot yk_y_x + y - x - x \nfracdydt = fracx^n_xk_x^n_x + x^n_x - y \nendalignThis is pretty nice, but there are a few parts of the equation which could be reduced. Using a keyword argument, you can utilise the SymEngine.jl to reduce the expression before printing.latexify(ode, field=:symfuncs)beginalign\nfracdxdt = -2 cdot x + fracy^3k_y_x + y \nfracdydt =  - y + fracx^n_xk_x^n_x + x^n_x \nendalign"
 },
 
 {
@@ -205,7 +85,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Use with ParameterizedFunctions",
     "title": "Side-by-side rendering of multiple system.",
     "category": "section",
-    "text": "A vector of ParameterizedFunctions will be rendered side-by-side:ode2 = @ode_def negativeFeedback begin\n    dx = y/(k_y + y) - x\n    dy = k_x^n_x/(k_x^n_x + x^n_x) - y\nend k_y k_x n_x\n\nlatexalign([ode, ode2])\\begin{align} \\frac{dx}{dt}  &=  \\frac{y}{k_{y} + y} - x  &  \\frac{dx}{dt}  &=  \\frac{y}{k_{y} + y} - x  &  \\\\\n\\frac{dy}{dt}  &=  \\frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &  \\frac{dy}{dt}  &=  \\frac{k_{x}^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y  &  \\\\\n\\end{align}"
+    "text": "A vector of ParameterizedFunctions will be rendered side-by-side:ode2 = @ode_def negativeFeedback begin\n    dx = y/(k_y + y) - x\n    dy = k_x^n_x/(k_x^n_x + x^n_x) - y\nend k_y k_x n_x\n\nlatexify([ode, ode2])beginalign\nfracdxdt  =  fracy cdot y cdot yk_y_x + y - x - x    fracdxdt  =  fracyk_y + y - x    \nfracdydt  =  fracx^n_xk_x^n_x + x^n_x - y    fracdydt  =  frack_x^n_xk_x^n_x + x^n_x - y    \nendalign"
 },
 
 {
@@ -213,7 +93,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Use with ParameterizedFunctions",
     "title": "Visualise your parameters.",
     "category": "section",
-    "text": "Another thing that I have found useful is to display the parameters of these functions. The parameters are usually in a vector, and if it is somewhat long, then it can be annoying to try to figure out which element belongs to which parameter. There are several ways to solve this. Here are two:## lets say that we have some parameters\nparam = [3.4,5.2,1e-2]\nlatexify(ode.params, param)\\begin{align} k_{y} =& 3.4 \\\\\nk_{x} =& 5.2 \\\\\nn_{x} =& 0.01 \\\\\n\\end{align}orlatexarray([ode.params, param]; transpose=true)\\begin{equation} \\left[ \\begin{array}{ccc} k_{y} & k_{x} & n_{x}\\\\\n3.4 & 5.2 & 0.01\\\\\n\\end{array} \\right] \\end{equation}"
+    "text": "Another thing that I have found useful is to display the parameters of these functions. The parameters are usually in a vector, and if it is somewhat long, then it can be annoying to try to figure out which element belongs to which parameter. There are several ways to solve this. Here are two:## lets say that we have some parameters\nparam = [3.4,5.2,1e-2]\nlatexify(ode.params, param)beginalign\nk_y = 34 \nk_x = 52 \nn_x = 001 \nendalignorlatexify([ode.params, param]; env=:array, transpose=true)beginequation\nleft\nbeginarrayccc\nk_y  k_x  n_x \n34  52  001 \nendarray\nright\nendequationsignif.() is your friend if your parameters have more significant numbers than you want to see."
 },
 
 {
@@ -221,7 +101,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Use with ParameterizedFunctions",
     "title": "Get the jacobian, hessian, etc.",
     "category": "section",
-    "text": "ParameterizedFunctions symbolically calculates the jacobian, inverse jacobian, hessian, and all kinds of goodness. Since they are available as arrays of symbolic expressions, which are latexifyable, you can render pretty much all of them.latexarray(ode.symjac)\\begin{equation} \\left[ \\begin{array}{cc} -2 & \\frac{3 \\cdot y^{2}}{k_{y_x} + y} - \\frac{y^{3}}{\\left( k_{y_x} + y \\right)^{2}}\\\\\n\\frac{x^{-1 + n_{x}} \\cdot n_{x}}{k_{x}^{n_{x}} + x^{n_{x}}} - \\frac{x^{-1 + 2 \\cdot n_{x}} \\cdot n_{x}}{\\left( k_{x}^{n_{x}} + x^{n_{x}} \\right)^{2}} & -1\\\\\n\\end{array} \\right] \\end{equation}Pretty neat huh? And if you learn how to use latexify, latexalign, latexraw and latexarray you can really format the output in pretty much any way you want."
+    "text": "ParameterizedFunctions symbolically calculates the jacobian, inverse jacobian, hessian, and all kinds of goodness. Since they are available as arrays of symbolic expressions, which are latexifyable, you can render pretty much all of them.latexify(ode.symjac)beginequation\nleft\nbeginarraycc\n-2  frac3 cdot y^2k_y_x + y - fracy^3left( k_y_x + y right)^2 \nfracx^-1 + n_x cdot n_xk_x^n_x + x^n_x - fracx^-1 + 2 cdot n_x cdot n_xleft( k_x^n_x + x^n_x right)^2  -1 \nendarray\nright\nendequation"
+},
+
+{
+    "location": "tutorials/parameterizedfunctions.html#Available-options-1",
+    "page": "Use with ParameterizedFunctions",
+    "title": "Available options",
+    "category": "section",
+    "text": "include(\"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if :ParameterizedFunction in arg.types || :Any in arg.types]\nlatexify(args, env=:mdtable, types=false)"
 },
 
 {
@@ -246,6 +134,86 @@ var documenterSearchIndex = {"docs": [
     "title": "Chemical arrow notation",
     "category": "section",
     "text": "DiffEqBiologicals reaction network is all about chemical arrow notation, so why should we not be able to render arrows?Use latexify\'s env keyword argument to specify that you want :chemical (or the equivalent :arrow, :arrows or :chem).latexify(rn; env=:chemical)\\begin{align} \\require{mhchem} \\ce{ \\varnothing &->[\\frac{v_{x} \\cdot y^{2}}{k_{x}^{2} + y^{2}}] x}\\\\\n\\ce{ \\varnothing &->[p_{y}] y}\\\\\n\\ce{ x &->[d_{x}] \\varnothing}\\\\\n\\ce{ y &->[d_{y}] \\varnothing}\\\\\n\\ce{ x &<=>[{r_{b}}][{r_{u}}] y}\\\\\n\\end{align}The default output is meant to be rendered directly on the screen. This rendering is typically done by MathJax. To get the chemical arrow notation to render automatically, I have included a MathJax command (\\require{mhchem}) in the output string. If you want to use the output in a real LaTeX document, you can pass the keyword argument mathjax=false and this extra command will be omitted. In such case you should also add \\usepackage{mhchem} to the preamble of your latex document.Another keyword argument that may be of use is expand=false (defaults to true). This determines whether your functions should be expanded or not. Also, starred=true will change the outputted latex environment from align to align*. This results in the equations not being numbered.latexify(rn; env=:chemical, expand=false, starred=true)beginalign*\nrequiremhchem\nce varnothing -mathrmhill2left( y v_x k_x right) x\nce varnothing -p_y y\nce x -d_x varnothing\nce y -d_y varnothing\nce x =r_br_u y\nendalign*"
+},
+
+{
+    "location": "tutorials/DiffEqBiological.html#Available-options-1",
+    "page": "Use with @reaction_network from DiffEqBiological.jl.",
+    "title": "Available options",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "tutorials/DiffEqBiological.html#Align-1",
+    "page": "Use with @reaction_network from DiffEqBiological.jl.",
+    "title": "Align",
+    "category": "section",
+    "text": "include(\"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if (:ReactionNetwork in arg.types || :Any in arg.types) && :align in arg.env]\nlatexify(args, env=:mdtable, types=false)"
+},
+
+{
+    "location": "tutorials/DiffEqBiological.html#Arrow-notation-1",
+    "page": "Use with @reaction_network from DiffEqBiological.jl.",
+    "title": "Arrow notation",
+    "category": "section",
+    "text": "include(\"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if (:ReactionNetwork in arg.types || :Any in arg.types) && :arrow in arg.env]\nlatexify(args, env=:mdtable, types=false)"
+},
+
+{
+    "location": "arguments.html#",
+    "page": "List of possible arguments",
+    "title": "List of possible arguments",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "arguments.html#List-of-possible-arguments-1",
+    "page": "List of possible arguments",
+    "title": "List of possible arguments",
+    "category": "section",
+    "text": ""
+},
+
+{
+    "location": "arguments.html#Align-1",
+    "page": "List of possible arguments",
+    "title": "Align",
+    "category": "section",
+    "text": "include(\"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if :align in arg.env]\nlatexify(args, env=:mdtable)"
+},
+
+{
+    "location": "arguments.html#Array-1",
+    "page": "List of possible arguments",
+    "title": "Array",
+    "category": "section",
+    "text": "include(\"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if :array in arg.env]\nlatexify(args, env=:mdtable)"
+},
+
+{
+    "location": "arguments.html#Tabular-1",
+    "page": "List of possible arguments",
+    "title": "Tabular",
+    "category": "section",
+    "text": "include(\"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if :tabular in arg.env]\nlatexify(args, env=:mdtable)"
+},
+
+{
+    "location": "arguments.html#Markdown-Table-1",
+    "page": "List of possible arguments",
+    "title": "Markdown Table",
+    "category": "section",
+    "text": "include(\"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if :mdtable in arg.env]\nlatexify(args, env=:mdtable)"
+},
+
+{
+    "location": "arguments.html#Chemical-arrow-notation-1",
+    "page": "List of possible arguments",
+    "title": "Chemical arrow notation",
+    "category": "section",
+    "text": "Available with ReactionNetworks from DiffEqBiological.include(\"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if :arrow in arg.env]\nlatexify(args, env=:mdtable, types=false)"
 },
 
 {
