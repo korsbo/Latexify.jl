@@ -1,7 +1,7 @@
 
 @require DiffEqBiological begin
     function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
-            expand = true, double_linebreak=false, mathjax=true, starred=false, kwargs...)
+            expand = true, double_linebreak=false, mathjax=true, starred=false)
 
         str = starred ? "\\begin{align*}\n" : "\\begin{align}\n"
         eol = double_linebreak ? "\\\\\\\\\n" : "\\\\\n"

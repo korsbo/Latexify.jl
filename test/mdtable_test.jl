@@ -92,3 +92,5 @@ side = ["row$i" for i in 1:size(M, 1)]
 | col4 |           $x - y$ |           $x - y$ |
 | col5 |            $symb$ |            $symb$ |
 "
+
+@test_throws MethodError mdtable(M; bad_kwarg="should error")
