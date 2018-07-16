@@ -33,12 +33,16 @@ This generates a LaTeXString (from [LaTeXStrings.jl](https://github.com/stevengj
 $\frac{x}{\left( y + x \right)^{2}}$
 ```
 
-And when this LaTeXString is displayed in an environment that supported the tex/latex MIME type (Jupyter notebooks, Jupyterlab and Hydrogen for Atom) it will automatically render as:
+And when this LaTeXString is displayed in an environment which supports the tex/latex MIME type (Jupyter notebooks, Jupyterlab and Hydrogen for Atom) it will automatically render as:
 
 ![fraction](/assets/demo_fraction.png)
 
 
 #### latexifying other things
+
+Latexify.jl is equipped to convert a whole range of types to latex formatted maths. This includes primitive types such as `Symbol`s and `Complex`, but also of containers such as `Array`s and `Dict`s.
+
+
 ```julia
 using Latexify
 print(latexraw("x+y/(b-2)^2"))
@@ -54,13 +58,7 @@ latexify(arr)
 ```
 ![matrix](/assets/demo_matrix.png)
 
-```julia
-d = Dict(:X => 10, "dx/dt" => :(e^(-t)), 2//3 => "atan(x)")
-latexify(d)
-latexify(d; transpose=true)
-latexify(d; env=:align)
-```
-
+The GitHub website does not really support rendering of equations in the README file, so I therefore refer you to the documentation for more info/examples.
 
 ### Use with DifferentialEquations.jl
 The [DifferentialEquations.jl](http://docs.juliadiffeq.org/stable/index.html) suite has some nifty tools for generating differential equations.
