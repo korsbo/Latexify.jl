@@ -30,6 +30,7 @@ This package supplies functionality for latexifying objects of the following typ
 - Missings' Missing type,
 - Symbols,
 - Symbolic expressions from SymEngine.jl,
+- DataFrame from DataFrames.jl,
 - Any shape of array containing a mix of any of the above types,
 - ParameterizedFunctions from DifferentialEquations.jl,
 - ReactionNetworks from DifferentialEquations.jl
@@ -46,7 +47,7 @@ $\frac{x}{2 \cdot k_{1} + x^{2}}$
 
 ## Supported output
 
-Latexify has support for generating a range of different LaTeX environments.
+Latexify has support for generating a range of different ``\LaTeX`` environments.
 The main function of the package, `latexify()`, automatically picks a suitable output environment based on the type(s) of the input.
 However, you can override this by passing the keyword argument `env = `. The following environments are available:
 
@@ -60,7 +61,7 @@ However, you can override this by passing the keyword argument `env = `. The fol
 | Tabular | `:table` or `:tabular` | Latexify the elements of an array and output a tabular environment. Note that tabular is not supported by MathJax and will therefore not be rendered in Jupyter, etc.|
 | Markdown Table | `:mdtable` | Output a Markdown table. This will be rendered nicely by Jupyter, etc. |
 | Markdown Text | `:mdtext` | Output and render any string which can be parsed into Markdown. This is really nothing but a call to `Base.Markdown.parse()`,  but it does the trick. Useful for rendering bullet lists and such things. |
-| Chemical arrow notation | `:chem`, `:chemical`, `:arrow` or `:arrows` | Latexify an AbstractReactionNetwork to \LaTeX formatted chemical arrow notation using [mhchem](https://ctan.org/pkg/mhchem?lang=en).
+| Chemical arrow notation | `:chem`, `:chemical`, `:arrow` or `:arrows` | Latexify an AbstractReactionNetwork to ``\LaTeX`` formatted chemical arrow notation using [mhchem](https://ctan.org/pkg/mhchem?lang=en).
 
 ## Modifying the output
 Some of the different outputs can be modified using keyword arguments. You can for example transpose an array with `transpose=true` or specify a header of a table or mdtable with `header=[]`. For more options, see the sections for the respective output environment.
