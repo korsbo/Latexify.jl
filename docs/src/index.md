@@ -64,7 +64,7 @@ However, you can override this by passing the keyword argument `env = `. The fol
 | Chemical arrow notation | `:chem`, `:chemical`, `:arrow` or `:arrows` | Latexify an AbstractReactionNetwork to ``\LaTeX`` formatted chemical arrow notation using [mhchem](https://ctan.org/pkg/mhchem?lang=en).
 
 ## Modifying the output
-Some of the different outputs can be modified using keyword arguments. You can for example transpose an array with `transpose=true` or specify a header of a table or mdtable with `header=[]`. For more options, see the sections for the respective output environment.
+Some of the different outputs can be modified using keyword arguments. You can for example transpose an array with `transpose=true` or specify a header of a table or mdtable with `header=[]`. For more options, see the [List of possible arguments](@ref).
 
 ## Printing vs displaying
 
