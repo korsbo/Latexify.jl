@@ -3,7 +3,7 @@ using Latexify
 using Base.Test
 d = DataFrame(11:13, [:X, :Y, :Z])
 
-@Latexify.generate_test latexify(d; env=:table, side=[1, 2])
+# @Latexify.generate_test latexify(d; env=:table, side=[1, 2])
 
 @test latexify(d; env=:table, side=[1, 2]) ==
 raw"\begin{tabular}{cccc}
