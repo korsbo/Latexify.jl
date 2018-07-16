@@ -51,6 +51,9 @@ end
 
 get_latex_function(lhs::AbstractVector, rhs::AbstractVector) = latexalign
 
+@require DataFrames begin
+    get_latex_function(r::DataFrames.DataFrame) = mdtable
+end
 
 @require DiffEqBase begin
     get_latex_function(ode::DiffEqBase.AbstractParameterizedFunction) = latexalign

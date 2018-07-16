@@ -4,7 +4,6 @@ M = vcat(hcat(arr...), hcat(arr...))
 head = ["col$i" for i in 1:size(M, 2)]
 side = ["row$i" for i in 1:size(M, 1)]
 
-
 @test mdtable(arr) == Markdown.md"
 | $\frac{x}{y - 1}$ |
 | -----------------:|
@@ -92,5 +91,23 @@ side = ["row$i" for i in 1:size(M, 1)]
 | col4 |           $x - y$ |           $x - y$ |
 | col5 |            $symb$ |            $symb$ |
 "
+
+using DataFrames
+d = DataFrame(11:13, [:X, :Y, :Z])
+
+
+@test latexify(d; env=:mdtable, side=[1, 2]) == Markdown.md"
+|   1 |    X |    Y |    Z |
+| ---:| ----:| ----:| ----:|
+|   2 | $11$ | $12$ | $13$ |
+"
+
+
+@test latexify(d; env=:mdtable) == Markdown.md"
+|    X |    Y |    Z |
+| ----:| ----:| ----:|
+| $11$ | $12$ | $13$ |
+"
+
 
 @test_throws MethodError mdtable(M; bad_kwarg="should error")
