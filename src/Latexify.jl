@@ -33,6 +33,7 @@ include("md.jl")
 include("mdtable.jl")
 include("mdtext.jl")
 
+include("utils.jl")
 macro generate_test(expr)
     return :(clipboard("\n@test $($(string(expr))) == \nraw\"$($(esc(expr)))\"\n\n"))
 end

@@ -14,7 +14,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
     if op == :/
         return "\\frac{$(args[2])}{$(args[3])}"
 
-    elseif op == :*
+    elseif op == :* || op == GlobalRef(Main, :*)
         str=""
         for i in 2:length(args)
             arg = args[i]
@@ -30,7 +30,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
         str = replace(str, "+ -", "-")
         return str
 
-    elseif op == :-
+    elseif op == :- || op == GlobalRef(Main, :-)
         if length(args) == 2
             if prevOp[2] == :none && string(args[2])[1] == '-'
                 return " + " * string(args[2])[2:end]
@@ -105,7 +105,13 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
 
 
     if ex.head == :call
-        return "\\mathrm{$op}\\left( $(join(args[2:end], ", ")) \\right)"
+        if op in (GlobalRef(Main, :getindex), :getindex)
+            return "$(args[2])\\left[$(join(args[3:end], ", "))\\right]"
+        elseif op in (GlobalRef(Main, :setindex!), :setindex!)
+            return "\\textrm{$(args[2])}\\left[$(join(args[4:end], ", "))\\right] = $(args[3])"
+        else
+            return "\\mathrm{$op}\\left( $(join(args[2:end], ", ")) \\right)"
+        end
     end
 
     ex.head == Symbol("'") && return "$(args[1])'"

@@ -114,19 +114,3 @@ end
         return lhs .* rhs
     end
 end
-
-"""
-    latexraw(f::Function, function_args)
-
-This is experimental support for latexifying a simple, but real, julia functions.
-
-f :: A julia one-line function, ex `f(x, y) = x/y`.
-function_args :: arguments for the `f` function so that we can decide upon what method to use.
-"""
-function latexraw(f::Function, args)
-    c = @code_lowered f(args...)
-    ex = c.code[end].args[1]
-    ex2 = postwalk(x -> x isa SlotNumber ? c.slotnames[parse("$x"[2:end])] : x, ex)
-    ex3 = postwalk(x -> x isa GlobalRef ? x.name : x, ex2)
-    latexraw(ex3)
-end

@@ -13,13 +13,13 @@ latexarray(arr)
 ```
 """
 function latexarray(arr::AbstractMatrix; adjustment::Symbol=:c, transpose=false, double_linebreak=false,
-    starred=false)
+    starred=false, bracket=true)
     transpose && (arr = permutedims(arr, [2,1]))
     (rows, columns) = size(arr)
     eol = double_linebreak ? " \\\\\\\\ \n" : " \\\\ \n"
 
     str = "\\begin{equation$(starred ? "*" : "")}\n"
-    str *= "\\left[\n"
+    bracket && (str *= "\\left[\n")
     str *= "\\begin{array}{" * "$(adjustment)"^columns * "}\n"
 
     arr = latexraw(arr)
@@ -29,7 +29,7 @@ function latexarray(arr::AbstractMatrix; adjustment::Symbol=:c, transpose=false,
     end
 
     str *= "\\end{array}\n"
-    str *= "\\right]\n"
+    bracket && (str *= "\\right]\n")
     str *= "\\end{equation$(starred ? "*" : "")}\n"
     latexstr = LaTeXString(str)
     COPY_TO_CLIPBOARD && clipboard(latexstr)
@@ -40,3 +40,8 @@ end
 latexarray(vec::AbstractVector; kwargs...) = latexarray(hcat(vec...); kwargs...)
 latexarray(args::AbstractArray...; kwargs...) = latexarray(hcat(args...); kwargs...)
 latexarray(ass::Associative; kwargs...) = latexarray(collect(keys(ass)), collect(values(ass)); kwargs...)
+
+function latexarray(f::Function, args; kwargs...)
+    result_expr = parse_function_expression(f, args)
+    return latexarray(result_expr; transpose=true, adjustment=:l, bracket=false, kwargs...)
+end
