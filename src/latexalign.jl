@@ -83,6 +83,14 @@ function latexalign(vec::AbstractVector; kwargs...)
 end
 
 
+
+function latexalign(f::Function, args...)
+    function_name = replace("$(typeof(f).name.mt.name)", "_", "\_")
+    c = @code_lowered f(args[1]...)
+    function_args = join(c.slotnames[2:end], ", ") 
+    latexalign([LaTeXString("\\textrm{$function_name}\\left($function_args\\right)")],[latexraw(f, args...)])
+end
+
 @require DiffEqBase begin
     function latexalign(ode::DiffEqBase.AbstractParameterizedFunction; field::Symbol=:funcs, bracket=false, kwargs...)
         lhs = [parse("d$x/dt") for x in ode.syms]

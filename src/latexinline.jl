@@ -1,10 +1,11 @@
-function latexinline(x)
-    latexstr = latexstring( latexraw(x) )
+function latexinline(x, args...; kwargs...)
+    latexstr = latexstring( latexraw(x, args...; kwargs...) )
     COPY_TO_CLIPBOARD && clipboard(latexstr)
     return latexstr
 end
 
 latexinline(x::AbstractArray) = [ latexinline(i) for i in x]
+
 
 @require DiffEqBase begin
     function latexinline(ode::DiffEqBase.AbstractParameterizedFunction)
