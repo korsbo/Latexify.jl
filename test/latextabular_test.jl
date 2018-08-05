@@ -58,7 +58,7 @@ $2$ & $\frac{x}{y - 1}$ & $1.0$ & $\frac{3}{2}$ & $x - y$ & $symb$\\
 "
 
 D = Dict(:a=>"x/(k+x)", :b=>"x - y")
-@test latexify(D) ==
+@test latexify(D) == 
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
