@@ -58,15 +58,11 @@ $2$ & $\frac{x}{y - 1}$ & $1.0$ & $\frac{3}{2}$ & $x - y$ & $symb$\\
 "
 
 D = Dict(:a=>"x/(k+x)", :b=>"x - y")
-@test latexify(D) == 
-raw"\begin{equation}
-\left[
-\begin{array}{cc}
-a & \frac{x}{k + x} \\
-b & x - y \\
-\end{array}
-\right]
-\end{equation}
+@test latexify(D; env=:tabular) ==
+raw"\begin{tabular}{cc}
+$a$ & $\frac{x}{k + x}$\\
+$b$ & $x - y$\\
+\end{tabular}
 "
 
 @test latexify(D; env=:tabular, head=["Keys", "Values"]) ==
