@@ -19,7 +19,7 @@ latexraw(expr)
 ```
 
 ```jldoctest
-expr = parse("x/(y+x)")
+expr = Meta.parse("x/(y+x)")
 latexraw(expr)
 
 # output
@@ -79,7 +79,7 @@ latexraw(arr::AbstractArray) = [latexraw(i) for i in arr]
 latexraw(i::Number) = string(i)
 latexraw(i::Void) = ""
 latexraw(i::Symbol) = convertSubscript(i)
-latexraw(i::SubString) = latexraw(parse(i))
+latexraw(i::SubString) = latexraw(Meta.parse(i))
 latexraw(i::SubString{LaTeXStrings.LaTeXString}) = i
 latexraw(i::Rational) = latexraw( i.den == 1 ? i.num : :($(i.num)/$(i.den)))
 latexraw(z::Complex) = "$(z.re)$(z.im < 0 ? "" : "+" )$(z.im)\\textit{i}"
@@ -88,7 +88,7 @@ latexraw(str::LaTeXStrings.LaTeXString) = str
 
 function latexraw(i::String)
     try
-        ex = parse(i)
+        ex = Meta.parse(i)
         return latexraw(ex)
     catch ParseError
         error("Error in Latexify.jl: You are trying to create latex-maths from a string that cannot be parsed as an expression. If you are trying to make a table or an array with plain text, try passing the keyword argument `latex=false`.")
@@ -101,7 +101,7 @@ end
 @require SymEngine begin
     function latexraw(x::SymEngine.Basic)
         str = string(x)
-        ex = parse(str)
+        ex = Meta.parse(str)
         latexraw(ex)
     end
 end

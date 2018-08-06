@@ -85,7 +85,7 @@ end
 
 @require DiffEqBase begin
     function latexalign(ode::DiffEqBase.AbstractParameterizedFunction; field::Symbol=:funcs, bracket=false, kwargs...)
-        lhs = [parse("d$x/dt") for x in ode.syms]
+        lhs = [Meta.parse("d$x/dt") for x in ode.syms]
         rhs = getfield(ode, field)
         if bracket
             rhs = add_brackets(rhs, ode.syms)
@@ -107,7 +107,7 @@ end
         for ode in odearray
             nr_eq = length(ode.syms)
 
-            lhs = [parse("d$x/dt") for x in ode.syms]
+            lhs = [Meta.parse("d$x/dt") for x in ode.syms]
             rhs = getfield(ode, field)
             first_separator = fill(LaTeXString(" &= "), nr_eq)
             second_separator = fill(LaTeXString(" & "), nr_eq)
@@ -136,14 +136,14 @@ end
     - bracket::Bool - Surround the variables with square brackets to denote concentrations.
     """
     function latexalign(r::DiffEqBase.AbstractReactionNetwork; bracket=false, noise=false, symbolic=false, kwargs...)
-        lhs = [parse("d$x/dt") for x in r.syms]
+        lhs = [Meta.parse("d$x/dt") for x in r.syms]
         if !noise
             symbolic ? (rhs = r.f_symfuncs) : (rhs = clean_subtractions.(r.f_func))
         else
             vec = r.g_func
             M = reshape(vec, :, length(r.syms))
             M = permutedims(M, [2,1])
-            expr_arr = parse.([join(M[i,:], " + ") for i in 1:size(M,1)])
+            expr_arr = Meta.parse.([join(M[i,:], " + ") for i in 1:size(M,1)])
 
             if symbolic
                 rhs = [SymEngine.Basic(ex) for ex in expr_arr]
@@ -167,7 +167,7 @@ end
 add_brackets(arr::AbstractArray, vars) = [add_brackets(element, vars) for element in arr]
 
 @require SymEngine begin
-    add_brackets(syms::SymEngine.Basic, vars) = add_brackets(parse("$syms"), vars)
+    add_brackets(syms::SymEngine.Basic, vars) = add_brackets(Meta.parse("$syms"), vars)
 end
 
 add_brackets(s::Any, vars) = return s

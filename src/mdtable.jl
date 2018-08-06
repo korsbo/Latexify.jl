@@ -73,7 +73,7 @@ function mdtable(M::AbstractMatrix; latex::Bool=true, head=[], side=[], transpos
     for i in 2:size(M,1)
         t *= "| " * join(M[i,:], " | ") * " |\n"
     end
-    t = Markdown.parse(t)
+    t = Markdown.Meta.parse(t)
     COPY_TO_CLIPBOARD && clipboard(t)
     return t
 end

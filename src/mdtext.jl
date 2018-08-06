@@ -1,5 +1,5 @@
 
 function mdtext(s::String)
-    m = Markdown.parse(s)
+    m = Markdown.Meta.parse(s)
     return m
 end
