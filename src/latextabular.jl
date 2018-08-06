@@ -31,7 +31,7 @@ end
 
 latextabular(vec::AbstractVector; kwargs...) = latextabular(hcat(vec...); kwargs...)
 latextabular(vectors::AbstractVector...; kwargs...) = latextabular(hcat(vectors...); kwargs...)
-latextabular(dict::Associative; kwargs...) = latextabular(hcat(collect(keys(dict)), collect(values(dict))); kwargs...)
+latextabular(dict::AbstractDict; kwargs...) = latextabular(hcat(collect(keys(dict)), collect(values(dict))); kwargs...)
 
 @require DataFrames begin
     latextabular(d::DataFrames.DataFrame; kwargs...) =latextabular(hcat(d.columns...); head=keys(d.colindex), kwargs...)

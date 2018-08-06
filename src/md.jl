@@ -38,7 +38,7 @@ This determines the default behaviour of `md()` for different inputs.
 """
 get_md_function(args...) = mdtext
 get_md_function(args::AbstractArray...) = mdtable
-get_md_function(args::Associative) = mdtable
+get_md_function(args::AbstractDict) = mdtable
 
 @require DiffEqBase begin
     get_md_function(args::DiffEqBase.AbstractParameterizedFunction) = mdalign

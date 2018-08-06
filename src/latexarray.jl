@@ -39,4 +39,4 @@ end
 
 latexarray(vec::AbstractVector; kwargs...) = latexarray(hcat(vec...); kwargs...)
 latexarray(args::AbstractArray...; kwargs...) = latexarray(hcat(args...); kwargs...)
-latexarray(ass::Associative; kwargs...) = latexarray(collect(keys(ass)), collect(values(ass)); kwargs...)
+latexarray(ass::AbstractDict; kwargs...) = latexarray(collect(keys(ass)), collect(values(ass)); kwargs...)
