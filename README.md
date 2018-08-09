@@ -45,11 +45,11 @@ Latexify.jl is equipped to convert a whole range of types to latex formatted mat
 
 ```julia
 using Latexify
-print(latexraw("x+y/(b-2)^2"))
+print(latexify("x+y/(b-2)^2"))
 ```
 outputs:
 ```LaTeX
-x + \frac{y}{\left( b - 2 \right)^{2}}
+$x + \frac{y}{\left( b - 2 \right)^{2}}$
 ```
 
 ```julia
