@@ -1,4 +1,4 @@
-doc"""
+@doc doc"""
     mdtable(array; latex=true, head=[], side=[], transpose=false)
 
 Latexify the input and output a markdown-formatted table.
@@ -73,7 +73,7 @@ function mdtable(M::AbstractMatrix; latex::Bool=true, head=[], side=[], transpos
     for i in 2:size(M,1)
         t *= "| " * join(M[i,:], " | ") * " |\n"
     end
-    t = Markdown.Meta.parse(t)
+    t = Markdown.parse(t)
     COPY_TO_CLIPBOARD && clipboard(t)
     return t
 end

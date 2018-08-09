@@ -1,4 +1,5 @@
-doc"""
+
+@doc doc"""
     latexalign()
 Generate a ``LaTeX`` align environment from an input.
 

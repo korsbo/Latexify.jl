@@ -1,4 +1,4 @@
-doc"""
+@doc doc"""
     latexraw(arg)
 
 Generate LaTeX equations from `arg`.
@@ -60,7 +60,7 @@ function latexraw end
 
 function latexraw(inputex::Expr)
     function recurseexp!(ex)
-        prevOp = Vector{Symbol}(length(ex.args))
+        prevOp = Vector{Symbol}(undef, length(ex.args))
         fill!(prevOp, :none)
         for i in 1:length(ex.args)
             if isa(ex.args[i], Expr)
@@ -77,7 +77,7 @@ end
 
 latexraw(arr::AbstractArray) = [latexraw(i) for i in arr]
 latexraw(i::Number) = string(i)
-latexraw(i::Void) = ""
+latexraw(i::Nothing) = ""
 latexraw(i::Symbol) = convertSubscript(i)
 latexraw(i::SubString) = latexraw(Meta.parse(i))
 latexraw(i::SubString{LaTeXStrings.LaTeXString}) = i

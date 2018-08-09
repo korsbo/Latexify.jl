@@ -1,8 +1,8 @@
-__precompile__()
 module Latexify
 using Requires
 using LaTeXStrings
-using Base.Markdown
+using InteractiveUtils
+using Markdown
 using MacroTools: postwalk
 
 export latexify, md, copy_to_clipboard, auto_display
