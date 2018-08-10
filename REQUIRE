@@ -1,6 +1,5 @@
 julia 0.7-rc2
 LaTeXStrings 0.3.0
-InteractiveUtils
 Markdown
 Requires 0.4.3
 MacroTools 0.4.0

@@ -1,7 +1,7 @@
 module Latexify
 using Requires
 using LaTeXStrings
-using InteractiveUtils
+# using InteractiveUtils
 using Markdown
 using MacroTools: postwalk
 
