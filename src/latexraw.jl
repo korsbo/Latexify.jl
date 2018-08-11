@@ -95,22 +95,4 @@ function latexraw(i::String)
     end
 end
 
-@require Missings latexraw(i::Missings.Missing) = "\\textrm{NA}"
-
-
-@require SymEngine begin
-    function latexraw(x::SymEngine.Basic)
-        str = string(x)
-        ex = Meta.parse(str)
-        latexraw(ex)
-    end
-end
-
-
-@require DiffEqBase begin
-    function latexraw(ode::DiffEqBase.AbstractParameterizedFunction)
-        lhs = ["\\frac{d$x}{dt} = " for x in ode.syms]
-        rhs = latexraw(ode.funcs)
-        return lhs .* rhs
-    end
-end
+# @require Missings latexraw(i::Missings.Missing) = "\\textrm{NA}"

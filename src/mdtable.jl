@@ -80,7 +80,3 @@ end
 
 mdtable(v::AbstractArray...; kwargs...) = mdtable(hcat(v...); kwargs...)
 mdtable(d::AbstractDict; kwargs...) = mdtable(collect(keys(d)), collect(values(d)); kwargs...)
-
-@require DataFrames begin
-    mdtable(d::DataFrames.DataFrame; kwargs...) = mdtable(hcat(d.columns...); head=keys(d.colindex), kwargs...)
-end

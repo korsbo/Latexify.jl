@@ -39,15 +39,3 @@ This determines the default behaviour of `md()` for different inputs.
 get_md_function(args...) = mdtext
 get_md_function(args::AbstractArray...) = mdtable
 get_md_function(args::AbstractDict) = mdtable
-
-@require DiffEqBase begin
-    get_md_function(args::DiffEqBase.AbstractParameterizedFunction) = mdalign
-    get_md_function(args::DiffEqBase.AbstractReactionNetwork) = mdalign
-    function get_md_function(x::AbstractArray{T}) where T <: DiffEqBase.AbstractParameterizedFunction
-        return mdalign
-    end
-end
-
-@require DataFrames begin
-    get_md_function(args::DataFrames.DataFrame) = mdtable
-end
