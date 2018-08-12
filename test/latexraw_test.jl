@@ -1,7 +1,7 @@
 
 using Latexify
 using ParameterizedFunctions
-using Base.Test
+using Test
 
 str = "2*x^2 - y/c_2"
 exp = :(2*x^2 - y/c_2)

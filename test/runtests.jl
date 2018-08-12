@@ -4,8 +4,8 @@
 using Latexify
 using LaTeXStrings
 using ParameterizedFunctions
-using Missings
-using Base.Test
+# using Missings
+using Test
 
 # Run tests
 

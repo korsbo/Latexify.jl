@@ -1,7 +1,7 @@
 using Latexify
 using ParameterizedFunctions
 using DiffEqBiological
-using Base.Test
+using Test
 
 f = @ode_def feedback begin
     dx = y/c_1 - x
