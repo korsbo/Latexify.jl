@@ -4,14 +4,14 @@ using ParameterizedFunctions
 using Test
 
 str = "2*x^2 - y/c_2"
-exp = :(2*x^2 - y/c_2)
+ex = :(2*x^2 - y/c_2)
 
 desired_output = "2 \\cdot x^{2} - \\frac{y}{c_{2}}"
 
-@test latexraw(str) == latexraw(exp)
-@test latexraw(exp) == desired_output
+@test latexraw(str) == latexraw(ex)
+@test latexraw(ex) == desired_output
 
-array_test = [exp, str]
+array_test = [ex, str]
 @test all(latexraw(array_test) .== desired_output)
 
 @test latexraw(:y_c_a) == "y_{c\\_a}"
