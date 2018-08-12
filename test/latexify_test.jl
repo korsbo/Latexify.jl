@@ -13,4 +13,8 @@ for env in [:raw, :inline, :array, :align, :tabular]
     @test latexify(test_array; env=env) == eval(parse("latex$env(test_array)"))
 end
 
-@test latexify(f; starred = true) == "\\begin{align*}\n\\frac{dx}{dt} =& \\frac{y}{c_{1}} - x \\\\\n\\frac{dy}{dt} =& x^{c_{2}} - y \\\\\n\\end{align*}\n"
+@test latexify(f; starred=true) == raw"\begin{align*}
+\frac{dx}{dt} =& \frac{y}{c_1} - x \\
+\frac{dy}{dt} =& x^{c_2} - y \\
+\end{align*}
+"
