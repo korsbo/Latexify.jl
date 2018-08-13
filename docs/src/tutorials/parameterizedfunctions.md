@@ -109,7 +109,7 @@ latexify(ode.symjac)
 
 ## Available options
 ```@eval
-include("src/table_generator.jl")
+Base.include(@__MODULE__, "src/table_generator.jl")
 args = [arg for arg in keyword_arguments if :ParameterizedFunction in arg.types || :Any in arg.types]
 latexify(args, env=:mdtable, types=false)
 ```

@@ -81,14 +81,14 @@ latexify(rn; env=:chemical, expand=false, starred=true)
 ## Available options
 ### Align
 ```@eval
-include("src/table_generator.jl")
+Base.include(@__MODULE__, "src/table_generator.jl")
 args = [arg for arg in keyword_arguments if (:ReactionNetwork in arg.types || :Any in arg.types) && :align in arg.env]
 latexify(args, env=:mdtable, types=false)
 ```
 
 ### Arrow notation
 ```@eval
-include("src/table_generator.jl")
+Base.include(@__MODULE__, "src/table_generator.jl")
 args = [arg for arg in keyword_arguments if (:ReactionNetwork in arg.types || :Any in arg.types) && :arrow in arg.env]
 latexify(args, env=:mdtable, types=false)
 ```
