@@ -57,7 +57,7 @@ However, you can override this by passing the keyword argument `env = `. The fol
 | no env | `:raw` | Latexifies an object and returns a ``\LaTeX`` formatted string. If the input is an array it will be recursed and all its elements latexified. This function does not surround the resulting string in any ``\LaTeX`` environments.
 | Inline | `:inline` | latexify the input and surround it with $$ for inline rendering. |
 | Align | `:align` | Latexifies input and surrounds it with an align environment. Useful for systems of equations and such fun stuff. |
-| Array | `:array` | Latexify the elements of an Array or an Associative and output them in a ``\LaTeX`` array. |
+| Array | `:array` | Latexify the elements of an Array or a Dict and output them in a ``\LaTeX`` array. |
 | Tabular | `:table` or `:tabular` | Latexify the elements of an array and output a tabular environment. Note that tabular is not supported by MathJax and will therefore not be rendered in Jupyter, etc.|
 | Markdown Table | `:mdtable` | Output a Markdown table. This will be rendered nicely by Jupyter, etc. |
 | Markdown Text | `:mdtext` | Output and render any string which can be parsed into Markdown. This is really nothing but a call to `Base.Markdown.parse()`,  but it does the trick. Useful for rendering bullet lists and such things. |
@@ -116,3 +116,7 @@ auto_display(true)
 
 after which all calls to `latexify` will automatically be displayed. This can be rather convenient, but it can also cause a lot of unwanted printouts if you are using `latexify` in any form of loop.
 You can turn off this behaviour again by passing `false` to the same function.
+
+## Legacy support
+
+Latexify.jl has stopped supporting Julia versions older than 0.7. This does not mean that you cannot use Latexify with earlier versions, just that these will not get new features. Latexify.jl's release v0.4.1 was the last which supported Julia 0.6. Choose that release in the dropdown menu if you want to see that documentation. 

@@ -5,7 +5,7 @@ using Latexify
 using LaTeXStrings
 using ParameterizedFunctions
 using Missings
-using Base.Test
+using Test
 
 # Run tests
 

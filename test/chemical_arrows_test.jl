@@ -1,6 +1,6 @@
 using DiffEqBiological
 using Latexify
-using Base.Test
+using Test
 
 @reaction_func hill2(x, v, k) = v*x^2/(k^2 + x^2)
 

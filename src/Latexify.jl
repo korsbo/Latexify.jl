@@ -1,8 +1,8 @@
-__precompile__()
 module Latexify
 using Requires
 using LaTeXStrings
-using Base.Markdown
+using InteractiveUtils
+using Markdown
 using MacroTools: postwalk
 
 export latexify, md, copy_to_clipboard, auto_display
@@ -27,11 +27,32 @@ include("latexarray.jl")
 include("latexalign.jl")
 include("latexinline.jl")
 include("latextabular.jl")
-include("chemical_arrows.jl")
 
 include("md.jl")
 include("mdtable.jl")
 include("mdtext.jl")
+
+include("utils.jl")
+
+
+### Add support for additional packages without adding them as dependencies.
+function __init__()
+    @require DiffEqBase = "2b5f629d-d688-5b77-993f-72d75c75574e" begin
+        include(joinpath("plugins", "ParameterizedFunctions.jl"))
+    end
+    @require DiffEqBiological = "eb300fae-53e8-50a0-950c-e21f52c2b7e0" begin
+        include(joinpath("plugins", "DiffEqBiological.jl"))
+    end
+    @require SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8" begin
+        include(joinpath("plugins", "SymEngine.jl"))
+    end
+    @require Missings = "e1d29d7a-bbdc-5cf2-9ac0-f12de2c33e28" begin
+        include(joinpath("plugins", "Missings.jl"))
+    end
+    @require DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0" begin
+        include(joinpath("plugins", "DataFrames.jl"))
+    end
+end
 
 macro generate_test(expr)
     return :(clipboard("\n@test $($(string(expr))) == \nraw\"$($(esc(expr)))\"\n\n"))

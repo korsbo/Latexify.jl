@@ -1,4 +1,4 @@
-doc"""
+@doc doc"""
     mdtable(array; latex=true, head=[], side=[], transpose=false)
 
 Latexify the input and output a markdown-formatted table.
@@ -79,8 +79,4 @@ function mdtable(M::AbstractMatrix; latex::Bool=true, head=[], side=[], transpos
 end
 
 mdtable(v::AbstractArray...; kwargs...) = mdtable(hcat(v...); kwargs...)
-mdtable(d::Associative; kwargs...) = mdtable(collect(keys(d)), collect(values(d)); kwargs...)
-
-@require DataFrames begin
-    mdtable(d::DataFrames.DataFrame; kwargs...) = mdtable(hcat(d.columns...); head=keys(d.colindex), kwargs...)
-end
+mdtable(d::AbstractDict; kwargs...) = mdtable(collect(keys(d)), collect(values(d)); kwargs...)

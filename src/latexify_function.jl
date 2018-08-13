@@ -37,7 +37,7 @@ This determines the default behaviour of `latexify()` for different inputs.
 """
 get_latex_function(args...) = latexinline
 get_latex_function(args::AbstractArray...) = latexarray
-get_latex_function(args::Associative) = latexarray
+get_latex_function(args::AbstractDict) = latexarray
 
 
 function get_latex_function(x::AbstractArray{T}) where T <: AbstractArray
@@ -50,16 +50,3 @@ function get_latex_function(x::AbstractArray{T}) where T <: AbstractArray
 end
 
 get_latex_function(lhs::AbstractVector, rhs::AbstractVector) = latexalign
-
-@require DataFrames begin
-    get_latex_function(r::DataFrames.DataFrame) = mdtable
-end
-
-@require DiffEqBase begin
-    get_latex_function(ode::DiffEqBase.AbstractParameterizedFunction) = latexalign
-    get_latex_function(r::DiffEqBase.AbstractReactionNetwork) = latexalign
-
-    function get_latex_function(x::AbstractArray{T}) where T <: DiffEqBase.AbstractParameterizedFunction
-        return latexalign
-    end
-end

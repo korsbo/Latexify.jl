@@ -1,17 +1,17 @@
 
 using Latexify
 using ParameterizedFunctions
-using Base.Test
+using Test
 
 str = "2*x^2 - y/c_2"
-exp = :(2*x^2 - y/c_2)
+ex = :(2*x^2 - y/c_2)
 
 desired_output = "2 \\cdot x^{2} - \\frac{y}{c_{2}}"
 
-@test latexraw(str) == latexraw(exp)
-@test latexraw(exp) == desired_output
+@test latexraw(str) == latexraw(ex)
+@test latexraw(ex) == desired_output
 
-array_test = [exp, str]
+array_test = [ex, str]
 @test all(latexraw(array_test) .== desired_output)
 
 @test latexraw(:y_c_a) == "y_{c\\_a}"
@@ -47,7 +47,7 @@ array_test = [exp, str]
 @test latexraw("x[2, 3]") == raw"\mathrm{x}\left[2, 3\right]"
 
 
-f = @ode_def feedback begin
+f = @ode_def TestRaw begin
     dx = y/c_1 - x
     dy = x^c_2 - y
 end c_1 c_2

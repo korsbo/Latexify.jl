@@ -1,9 +1,7 @@
-using DataFrames
+using DataFrames: DataFrame
 using Latexify
-using Base.Test
+using Test
 d = DataFrame(11:13, [:X, :Y, :Z])
-
-# @Latexify.generate_test latexify(d; env=:table, side=[1, 2])
 
 @test latexify(d; env=:table, side=[1, 2]) ==
 raw"\begin{tabular}{cccc}
