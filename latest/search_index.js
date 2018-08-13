@@ -29,7 +29,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Latexify.jl",
     "title": "Supported output",
     "category": "section",
-    "text": "Latexify has support for generating a range of different LaTeX environments. The main function of the package, latexify(), automatically picks a suitable output environment based on the type(s) of the input. However, you can override this by passing the keyword argument env =. The following environments are available:environment env= description\nno env :raw Latexifies an object and returns a LaTeX formatted string. If the input is an array it will be recursed and all its elements latexified. This function does not surround the resulting string in any LaTeX environments.\nInline :inline latexify the input and surround it with $$ for inline rendering.\nAlign :align Latexifies input and surrounds it with an align environment. Useful for systems of equations and such fun stuff.\nArray :array Latexify the elements of an Array or an Associative and output them in a LaTeX array.\nTabular :table or :tabular Latexify the elements of an array and output a tabular environment. Note that tabular is not supported by MathJax and will therefore not be rendered in Jupyter, etc.\nMarkdown Table :mdtable Output a Markdown table. This will be rendered nicely by Jupyter, etc.\nMarkdown Text :mdtext Output and render any string which can be parsed into Markdown. This is really nothing but a call to Base.Markdown.parse(),  but it does the trick. Useful for rendering bullet lists and such things.\nChemical arrow notation :chem, :chemical, :arrow or :arrows Latexify an AbstractReactionNetwork to LaTeX formatted chemical arrow notation using mhchem."
+    "text": "Latexify has support for generating a range of different LaTeX environments. The main function of the package, latexify(), automatically picks a suitable output environment based on the type(s) of the input. However, you can override this by passing the keyword argument env =. The following environments are available:environment env= description\nno env :raw Latexifies an object and returns a LaTeX formatted string. If the input is an array it will be recursed and all its elements latexified. This function does not surround the resulting string in any LaTeX environments.\nInline :inline latexify the input and surround it with $$ for inline rendering.\nAlign :align Latexifies input and surrounds it with an align environment. Useful for systems of equations and such fun stuff.\nArray :array Latexify the elements of an Array or a Dict and output them in a LaTeX array.\nTabular :table or :tabular Latexify the elements of an array and output a tabular environment. Note that tabular is not supported by MathJax and will therefore not be rendered in Jupyter, etc.\nMarkdown Table :mdtable Output a Markdown table. This will be rendered nicely by Jupyter, etc.\nMarkdown Text :mdtext Output and render any string which can be parsed into Markdown. This is really nothing but a call to Base.Markdown.parse(),  but it does the trick. Useful for rendering bullet lists and such things.\nChemical arrow notation :chem, :chemical, :arrow or :arrows Latexify an AbstractReactionNetwork to LaTeX formatted chemical arrow notation using mhchem."
 },
 
 {
@@ -62,6 +62,14 @@ var documenterSearchIndex = {"docs": [
     "title": "Automatic displaying of result",
     "category": "section",
     "text": "You can toggle whether the result should be automatically displayed. Instead oflatexify(\"x/y\") |> display\n## or\ndisplay( latexify(\"x/y\") )one can toggle automatic display by:auto_display(true)after which all calls to latexify will automatically be displayed. This can be rather convenient, but it can also cause a lot of unwanted printouts if you are using latexify in any form of loop. You can turn off this behaviour again by passing false to the same function."
+},
+
+{
+    "location": "index.html#Legacy-support-1",
+    "page": "Latexify.jl",
+    "title": "Legacy support",
+    "category": "section",
+    "text": "Latexify.jl has stopped supporting Julia versions older than 0.7. This does not mean that you cannot use Latexify with earlier versions, just that these will not get new features. Latexify.jl\'s release v0.4.1 was the last which supported Julia 0.6. Choose that release in the dropdown menu if you want to see that documentation. "
 },
 
 {
@@ -109,7 +117,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Use with ParameterizedFunctions",
     "title": "Available options",
     "category": "section",
-    "text": "include(\"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if :ParameterizedFunction in arg.types || :Any in arg.types]\nlatexify(args, env=:mdtable, types=false)"
+    "text": "Base.include(@__MODULE__, \"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if :ParameterizedFunction in arg.types || :Any in arg.types]\nlatexify(args, env=:mdtable, types=false)"
 },
 
 {
@@ -133,7 +141,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Use with @reaction_network from DiffEqBiological.jl.",
     "title": "Chemical arrow notation",
     "category": "section",
-    "text": "DiffEqBiologicals reaction network is all about chemical arrow notation, so why should we not be able to render arrows?Use latexify\'s env keyword argument to specify that you want :chemical (or the equivalent :arrow, :arrows or :chem).latexify(rn; env=:chemical)\\begin{align} \\require{mhchem} \\ce{ \\varnothing &->[\\frac{v_{x} \\cdot y^{2}}{k_{x}^{2} + y^{2}}] x}\\\\\n\\ce{ \\varnothing &->[p_{y}] y}\\\\\n\\ce{ x &->[d_{x}] \\varnothing}\\\\\n\\ce{ y &->[d_{y}] \\varnothing}\\\\\n\\ce{ x &<=>[{r_{b}}][{r_{u}}] y}\\\\\n\\end{align}The default output is meant to be rendered directly on the screen. This rendering is typically done by MathJax. To get the chemical arrow notation to render automatically, I have included a MathJax command (\\require{mhchem}) in the output string. If you want to use the output in a real LaTeX document, you can pass the keyword argument mathjax=false and this extra command will be omitted. In such case you should also add \\usepackage{mhchem} to the preamble of your latex document.Another keyword argument that may be of use is expand=false (defaults to true). This determines whether your functions should be expanded or not. Also, starred=true will change the outputted latex environment from align to align*. This results in the equations not being numbered.latexify(rn; env=:chemical, expand=false, starred=true)beginalign*\nrequiremhchem\nce varnothing -mathrmhill2left( y v_x k_x right) x\nce varnothing -p_y y\nce x -d_x varnothing\nce y -d_y varnothing\nce x =r_br_u y\nendalign*"
+    "text": "DiffEqBiologicals reaction network is all about chemical arrow notation, so why should we not be able to render arrows?Use latexify\'s env keyword argument to specify that you want :chemical (or the equivalent :arrow, :arrows or :chem).latexify(rn; env=:chemical)\\begin{align} \\require{mhchem} \\ce{ \\varnothing &->[\\frac{v{x} \\cdot y^{2}}{k{x}^{2} + y^{2}}] x}\\\\\n\\ce{ \\varnothing &->[p{y}] y}\\\\\n\\ce{ x &->[d{x}] \\varnothing}\\\\\n\\ce{ y &->[d{y}] \\varnothing}\\\\\n\\ce{ x &<=>[{r{b}}][{r_{u}}] y}\\\\\n\\end{align}The default output is meant to be rendered directly on the screen. This rendering is typically done by MathJax. To get the chemical arrow notation to render automatically, I have included a MathJax command (\\require{mhchem}) in the output string. If you want to use the output in a real LaTeX document, you can pass the keyword argument mathjax=false and this extra command will be omitted. In such case you should also add \\usepackage{mhchem} to the preamble of your latex document.Another keyword argument that may be of use is expand=false (defaults to true). This determines whether your functions should be expanded or not. Also, starred=true will change the outputted latex environment from align to align*. This results in the equations not being numbered.latexify(rn; env=:chemical, expand=false, starred=true)beginalign*\nrequiremhchem\nce varnothing -mathrmhill2left( y v_x k_x right) x\nce varnothing -p_y y\nce x -d_x varnothing\nce y -d_y varnothing\nce x =r_br_u y\nendalign*"
 },
 
 {
@@ -149,7 +157,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Use with @reaction_network from DiffEqBiological.jl.",
     "title": "Align",
     "category": "section",
-    "text": "include(\"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if (:ReactionNetwork in arg.types || :Any in arg.types) && :align in arg.env]\nlatexify(args, env=:mdtable, types=false)"
+    "text": "Base.include(@__MODULE__, \"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if (:ReactionNetwork in arg.types || :Any in arg.types) && :align in arg.env]\nlatexify(args, env=:mdtable, types=false)"
 },
 
 {
@@ -157,7 +165,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Use with @reaction_network from DiffEqBiological.jl.",
     "title": "Arrow notation",
     "category": "section",
-    "text": "include(\"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if (:ReactionNetwork in arg.types || :Any in arg.types) && :arrow in arg.env]\nlatexify(args, env=:mdtable, types=false)"
+    "text": "Base.include(@__MODULE__, \"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if (:ReactionNetwork in arg.types || :Any in arg.types) && :arrow in arg.env]\nlatexify(args, env=:mdtable, types=false)"
 },
 
 {
@@ -181,7 +189,7 @@ var documenterSearchIndex = {"docs": [
     "page": "List of possible arguments",
     "title": "Align",
     "category": "section",
-    "text": "include(\"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if :align in arg.env]\nlatexify(args, env=:mdtable)"
+    "text": "Base.include(@__MODULE__, \"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if :align in arg.env]\nlatexify(args, env=:mdtable)"
 },
 
 {
@@ -189,7 +197,7 @@ var documenterSearchIndex = {"docs": [
     "page": "List of possible arguments",
     "title": "Array",
     "category": "section",
-    "text": "include(\"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if :array in arg.env]\nlatexify(args, env=:mdtable)"
+    "text": "Base.include(@__MODULE__, \"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if :array in arg.env]\nlatexify(args, env=:mdtable)"
 },
 
 {
@@ -197,7 +205,7 @@ var documenterSearchIndex = {"docs": [
     "page": "List of possible arguments",
     "title": "Tabular",
     "category": "section",
-    "text": "include(\"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if :tabular in arg.env]\nlatexify(args, env=:mdtable)"
+    "text": "Base.include(@__MODULE__, \"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if :tabular in arg.env]\nlatexify(args, env=:mdtable)"
 },
 
 {
@@ -205,7 +213,7 @@ var documenterSearchIndex = {"docs": [
     "page": "List of possible arguments",
     "title": "Markdown Table",
     "category": "section",
-    "text": "include(\"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if :mdtable in arg.env]\nlatexify(args, env=:mdtable)"
+    "text": "Base.include(@__MODULE__, \"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if :mdtable in arg.env]\nlatexify(args, env=:mdtable)"
 },
 
 {
@@ -213,7 +221,7 @@ var documenterSearchIndex = {"docs": [
     "page": "List of possible arguments",
     "title": "Chemical arrow notation",
     "category": "section",
-    "text": "Available with ReactionNetworks from DiffEqBiological.include(\"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if :arrow in arg.env]\nlatexify(args, env=:mdtable, types=false)"
+    "text": "Available with ReactionNetworks from DiffEqBiological.Base.include(@__MODULE__, \"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if :arrow in arg.env]\nlatexify(args, env=:mdtable, types=false)"
 },
 
 {
