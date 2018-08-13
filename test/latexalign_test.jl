@@ -3,12 +3,12 @@ using ParameterizedFunctions
 using DiffEqBiological
 using Test
 
-f = @ode_def feedback begin
+f = @ode_def TestAlignFeedback begin
     dx = y/c_1 - x
     dy = x^c_2 - y
 end c_1 c_2
 
-g = @ode_def test2 begin
+g = @ode_def TestAlign2 begin
     dx = p_x - d_x*x - d_x_y*y*x
     dy = p_y - d_y*y
     dz = p_z
@@ -16,13 +16,12 @@ end p_x d_x d_x_y p_y d_y p_z
 
 @test latexalign(["d$x/dt" for x in f.syms], f.funcs) == "\\begin{align}\n\\frac{dx}{dt} =& \\frac{y}{c_{1}} - x \\\\\n\\frac{dy}{dt} =& x^{c_{2}} - y \\\\\n\\end{align}\n"
 @test latexalign(f) == "\\begin{align}\n\\frac{dx}{dt} =& \\frac{y}{c_{1}} - x \\\\\n\\frac{dy}{dt} =& x^{c_{2}} - y \\\\\n\\end{align}\n"
-@test latexalign(f, field=:symfuncs) ==
+@test latexify(f; env=:align, field=:symjac) ==
 raw"\begin{align}
-\frac{dx}{dt} =&  - x + \frac{y}{c_{1}} \\
-\frac{dy}{dt} =&  - y + x^{c_{2}} \\
+\frac{dx}{dt} =& -1 \cdot 1 =& c_{1}^{-1} \\
+\frac{dy}{dt} =& x^{-1 + c_{2}} \cdot c_{2} =& -1 \cdot 1 \\
 \end{align}
 "
-
 
 @test latexalign([f,g]) == "\\begin{align}\n\\frac{dx}{dt}  &=  \\frac{y}{c_{1}} - x  &  \\frac{dx}{dt}  &=  p_{x} - d_{x} \\cdot x - d_{x\\_y} \\cdot y \\cdot x  &  \\\\\n\\frac{dy}{dt}  &=  x^{c_{2}} - y  &  \\frac{dy}{dt}  &=  p_{y} - d_{y} \\cdot y  &  \\\\\n  &    &  \\frac{dz}{dt}  &=  p_{z} \\cdot 1  &  \\\\\n\\end{align}\n"
 
@@ -30,7 +29,7 @@ raw"\begin{align}
 
 @reaction_func hill2(x, v, k) = v*x^2/(k^2 + x^2)
 
-rn = @reaction_network MyRnType begin
+rn = @reaction_network TestAlignMyRnType begin
   hill2(y, v_x, k_x), 0 --> x
   p_y, 0 --> y
   (d_x, d_y), (x, y) --> 0

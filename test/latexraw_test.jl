@@ -47,7 +47,7 @@ array_test = [ex, str]
 @test latexraw("x[2, 3]") == raw"\mathrm{x}\left[2, 3\right]"
 
 
-f = @ode_def feedback begin
+f = @ode_def TestRaw begin
     dx = y/c_1 - x
     dy = x^c_2 - y
 end c_1 c_2

@@ -1,3 +1,6 @@
+using Markdown
+using Latexify
+
 arr = ["x/(y-1)", 1.0, 3//2, :(x-y), :symb]
 
 M = vcat(hcat(arr...), hcat(arr...))

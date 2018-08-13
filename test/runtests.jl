@@ -4,7 +4,7 @@
 using Latexify
 using LaTeXStrings
 using ParameterizedFunctions
-# using Missings
+using Missings
 using Test
 
 # Run tests
