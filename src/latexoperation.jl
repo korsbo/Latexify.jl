@@ -26,8 +26,8 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
 
     elseif op == :+
         str = join(args[2:end], " + ")
-        str = replace(str, "+  -", "-")
-        str = replace(str, "+ -", "-")
+        str = replace(str, "+  -"=>"-")
+        str = replace(str, "+ -"=>"-")
         return str
 
     elseif op == :-
