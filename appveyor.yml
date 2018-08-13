@@ -28,6 +28,10 @@ notifications:
 install:
   - ps: iex ((new-object net.webclient).DownloadString("https://raw.githubusercontent.com/JuliaCI/Appveyor.jl/version-1/bin/install.ps1"))
 
+build_script:
+  - C:\julia\bin\julia -e "using InteractiveUtils; versioninfo();
+    import Pkg; Pkg.build()"
+
 test_script:
   - echo "%JL_TEST_SCRIPT%"
   - C:\julia\bin\julia -e "%JL_TEST_SCRIPT%"
