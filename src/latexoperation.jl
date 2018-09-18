@@ -11,10 +11,10 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
     op = ex.args[1]
     convertSubscript!(ex)
     args = ex.args
-    if op == :/
+    if op in [:/, :./]
         return "\\frac{$(args[2])}{$(args[3])}"
 
-    elseif op == :*
+    elseif op in [:*, :.*]
         str=""
         for i in 2:length(args)
             arg = args[i]
@@ -24,13 +24,13 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
         end
         return str
 
-    elseif op == :+
+    elseif op in [:+, :.+]
         str = join(args[2:end], " + ")
         str = replace(str, "+  -"=>"-")
         str = replace(str, "+ -"=>"-")
         return str
 
-    elseif op == :-
+    elseif op in [:-, :.-]
         if length(args) == 2
             if prevOp[2] == :none && string(args[2])[1] == '-'
                 return " + " * string(args[2])[2:end]
@@ -48,12 +48,17 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
         end
         return "$(args[2]) - $(args[3])"
 
-    elseif op == :^
+    elseif op in [:^, :.^]
         #isa(args[2], String) && (args[2]="($(args[2]))")
         prevOp[2] != :none  && (args[2]="\\left( $(args[2]) \\right)")
         return "$(args[2])^{$(args[3])}"
     elseif ex.head == :(=) && length(args) == 2
         return "$(args[1]) = $(args[2])"
+    end
+
+    if ex.head == :.
+        ex.head = :call
+        op = string(op, ".") ## Signifies broadcasting.
     end
 
     op == :log10 && return "\\log_{10}\\left( $(args[2]) \\right)"
@@ -105,10 +110,6 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
 
 
 
-    if ex.head == :.
-        ex.head = :call
-        op = string(op, ".") ## Signifies broadcasting.
-    end
 
     if ex.head == :call
         return "\\mathrm{$op}\\left( $(join(args[2:end], ", ")) \\right)"
