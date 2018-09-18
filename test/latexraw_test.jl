@@ -46,6 +46,9 @@ array_test = [ex, str]
 @test latexraw("x[2]") == raw"\mathrm{x}\left[2\right]"
 @test latexraw("x[2, 3]") == raw"\mathrm{x}\left[2, 3\right]"
 
+### Test broadcasting
+@test latexraw(:(sum.((a, b)))) == raw"\mathrm{sum.}\left( a, b \right)"
+
 
 f = @ode_def TestRaw begin
     dx = y/c_1 - x

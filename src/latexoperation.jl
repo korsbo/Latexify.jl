@@ -104,8 +104,19 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
     op in op_list && length(args) > 2 && return "\\$op\\left( $(join(args[2:end], ", ")) \\right)"
 
 
+
+    if ex.head == :.
+        ex.head = :call
+        op = string(op, ".") ## Signifies broadcasting.
+    end
+
     if ex.head == :call
         return "\\mathrm{$op}\\left( $(join(args[2:end], ", ")) \\right)"
+    end
+
+    if ex.head == :tuple
+        # return "\\left(" * join(ex.args, ", ") * "\\right)"
+        return join(ex.args, ", ")
     end
 
     ex.head == Symbol("'") && return "$(args[1])'"
