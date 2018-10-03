@@ -91,7 +91,14 @@ function latexraw(i::String)
         ex = Meta.parse(i)
         return latexraw(ex)
     catch ParseError
-        error("Error in Latexify.jl: You are trying to create latex-maths from a string that cannot be parsed as an expression. If you are trying to make a table or an array with plain text, try passing the keyword argument `latex=false`.")
+        error(
+"""Error in Latexify.jl: You are trying to create latex-maths from a string that
+cannot be parsed as an expression. If you are trying to make a table with plain
+text, try passing the keyword argument `latex=false`. You sould also ensure that
+you have chosen an output environment which is capable of displaying not-maths
+objects. Try for example `env=:table` for a latex table or `env=:mdtable` for a
+markdown table."""
+        )
     end
 end
 
