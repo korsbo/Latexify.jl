@@ -96,20 +96,23 @@ side = ["row$i" for i in 1:size(M, 1)]
 "
 
 using DataFrames
-d = DataFrame(11:13, [:X, :Y, :Z])
+d = DataFrame(A = 11:13, B = [:X, :Y, :Z])
 
 
-@test latexify(d; env=:mdtable, side=[1, 2]) == Markdown.md"
-|   1 |    X |    Y |    Z |
-| ---:| ----:| ----:| ----:|
-|   2 | $11$ | $12$ | $13$ |
+@test latexify(d; env=:mdtable, side=1:3) == Markdown.md"
+|   . |    A |   B |
+| ---:| ----:| ---:|
+|   1 | $11$ | $X$ |
+|   2 | $12$ | $Y$ |
+|   3 | $13$ | $Z$ |
 "
 
-
 @test latexify(d; env=:mdtable) == Markdown.md"
-|    X |    Y |    Z |
-| ----:| ----:| ----:|
-| $11$ | $12$ | $13$ |
+|    A |   B |
+| ----:| ---:|
+| $11$ | $X$ |
+| $12$ | $Y$ |
+| $13$ | $Z$ |
 "
 
 

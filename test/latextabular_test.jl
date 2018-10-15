@@ -1,12 +1,14 @@
 using DataFrames: DataFrame
 using Latexify
 using Test
-d = DataFrame(11:13, [:X, :Y, :Z])
+d = DataFrame(A = 11:13, B = [:X, :Y, :Z])
 
-@test latexify(d; env=:table, side=[1, 2]) ==
-raw"\begin{tabular}{cccc}
-$1$ & $X$ & $Y$ & $Z$\\
-$2$ & $11$ & $12$ & $13$\\
+@test latexify(d; env=:table, side=1:3, latex=false) ==
+raw"\begin{tabular}{ccc}
+. & A & B\\
+1 & 11 & X\\
+2 & 12 & Y\\
+3 & 13 & Z\\
 \end{tabular}
 "
 
