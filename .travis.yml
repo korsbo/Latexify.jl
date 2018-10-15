@@ -18,6 +18,6 @@ script:
   - julia -e 'using Pkg; Pkg.clone(pwd()); Pkg.test("Latexify"; coverage=true)'
 after_success:
   # push coverage results to Coveralls and Codecov
-  - julia -e 'using Pkg; import Latexify; cd(joinpath(dirname(pathof(Latexify))), ".."); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder()); Codecov.submit(Codecov.process_folder())'
+  - julia -e 'using Pkg; import Latexify; cd(joinpath(dirname(pathof(Latexify)), "..")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder()); Codecov.submit(Codecov.process_folder())'
   - julia -e 'using Pkg; Pkg.add("Documenter"), import Latexify;
     cd(dirname(pathof(Latexify))); include(joinpath("..", "docs", "make.jl"))'
