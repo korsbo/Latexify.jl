@@ -58,8 +58,41 @@ function latexoperation(ex::Expr, prevOp::AbstractArray)
 
     if ex.head == :.
         ex.head = :call
-        op = string(op, ".") ## Signifies broadcasting.
+        # op = string(op, ".") ## Signifies broadcasting.
     end
+
+    string(op)[1] == '.' && (op = Symbol(string(op)[2:end]))
+
+    # infix_operators = [:<, :>, Symbol("=="), :<=, :>=, :!=]
+    comparison_operators = Dict(
+        :< => "\\lt",
+        :.< => "\\lt",
+        :> => "\\gt",
+        :.> => "\\gt",
+        Symbol("==") => "=",
+        Symbol(".==") => "=",
+        :<= => "\\leq",
+        :.<= => "\\leq",
+        :>= => "\\geq",
+        :.>= => "\\geq",
+        :!= => "\\neq",
+        :.!= => "\\neq",
+        )
+
+    if op in keys(comparison_operators) && length(args) == 3
+        str = "$(args[2]) $(comparison_operators[op]) $(args[3])"
+        str = "\\left( $str \\right)"
+        return str
+    end
+
+    ### Check for chained comparison operators
+    if ex.head == :comparison && Symbol.(args[2:2:end]) ⊆ keys(comparison_operators)
+        str = join([isodd(i) ? "$var" : comparison_operators[var] for (i, var) in enumerate(Symbol.(args))], " ")
+        str = "\\left( $str \\right)"
+        return str
+    end
+
+    # op in infix_operators && return ""
 
     op == :log10 && return "\\log_{10}\\left( $(args[2]) \\right)"
     op == :log2 && return "\\log_{2}\\left( $(args[2]) \\right)"

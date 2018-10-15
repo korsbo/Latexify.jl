@@ -47,7 +47,7 @@ array_test = [ex, str]
 @test latexraw("x[2, 3]") == raw"\mathrm{x}\left[2, 3\right]"
 
 ### Test broadcasting
-@test latexraw(:(sum.((a, b)))) == raw"\mathrm{sum.}\left( a, b \right)"
+@test latexraw(:(sum.((a, b)))) == raw"\mathrm{sum}\left( a, b \right)"
 
 
 f = @ode_def TestRaw begin
@@ -70,3 +70,7 @@ end c_1 c_2
 @test latexraw("1 - 2 - (- 3 -(2 - 8) + 4)") == raw"1 - 2 - \left(  - 3 - \left( 2 - 8 \right) + 4 \right)"
 
 @test_throws ErrorException latexify("x/y"; env=:raw, bad_kwarg="should error")
+
+
+@test latexraw(:(3 * (a .< b .<= c < d <= e > f <= g .<= h .< i == j .== k != l .!= m))) ==
+raw"3 \cdot \left( a \lt b \leq c \lt d \leq e \gt f \leq g \leq h \lt i = j = k \neq l \neq m \right)"
