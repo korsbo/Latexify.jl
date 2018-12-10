@@ -116,4 +116,4 @@ d = DataFrame(A = 11:13, B = [:X, :Y, :Z])
 "
 
 
-@test_throws MethodError mdtable(M; bad_kwarg="should error")
+# @test_throws MethodError mdtable(M; bad_kwarg="should error")
