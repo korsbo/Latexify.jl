@@ -53,7 +53,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Latexify.jl",
     "title": "Number formatting",
     "category": "section",
-    "text": "You can control the formatting of numbers by passing the keyword argument fmt. This will be passed on to Printf, have a read there for more information.Examples:using Latexify\ncopy_to_clipboard(true)\nlatexify(12345.678; fmt=\"%.1e\")12e+04latexify([12893.1 1.328e2; \"x/y\" 7832//2378]; fmt=\"%.1e\")beginequation\nleft\nbeginarraycc\n13e+04  13e+02 \nfracxy  frac39161189 \nendarray\nright\nendequation"
+    "text": "You can control the formatting of numbers by passing the keyword argument fmt. This will be passed on to Printf, have a read there for more information.Examples:latexify(12345.678; fmt=\"%.1e\")12e+04latexify([12893.1 1.328e2; \"x/y\" 7832//2378]; fmt=\"%.1e\")beginequation\nleft\nbeginarraycc\n13e+04  13e+02 \nfracxy  frac39161189 \nendarray\nright\nendequation"
 },
 
 {
