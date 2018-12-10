@@ -2,6 +2,7 @@
 using Latexify
 using ParameterizedFunctions
 using Test
+using Markdown
 
 str = "2*x^2 - y/c_2"
 ex = :(2*x^2 - y/c_2)
@@ -69,8 +70,50 @@ end c_1 c_2
 @test latexraw("1 - 2 - (- 3 -(2) + 4)") == raw"1 - 2 - \left(  - 3 - 2 + 4 \right)"
 @test latexraw("1 - 2 - (- 3 -(2 - 8) + 4)") == raw"1 - 2 - \left(  - 3 - \left( 2 - 8 \right) + 4 \right)"
 
-@test_throws ErrorException latexify("x/y"; env=:raw, bad_kwarg="should error")
+# @test_throws ErrorException latexify("x/y"; env=:raw, bad_kwarg="should error")
 
 
 @test latexraw(:(3 * (a .< b .<= c < d <= e > f <= g .<= h .< i == j .== k != l .!= m))) ==
 raw"3 \cdot \left( a \lt b \leq c \lt d \leq e \gt f \leq g \leq h \lt i = j = k \neq l \neq m \right)"
+
+
+
+#### Test the fmt keyword option
+@test latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:align, fmt="%.2e") ==
+raw"\begin{align}
+3.29e+07 =& 1.23e+00 =& P_{1} \\
+\frac{x}{y} =& 1.00e+10 =& 1.29e+03 \\
+\end{align}
+"
+
+@test_broken latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:array, fmt="%.2e") ==
+raw"\begin{equation}
+\left[
+\begin{array}{ccc}
+3.29e+07 & 1.23e+00 & P_{1} \\
+\frac{x}{y} & 1.00e+10 & 1.29e+03 \\
+\end{array}
+\right]
+\end{equation}
+"
+
+
+@test latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:table, fmt="%.2e") ==
+raw"\begin{tabular}{ccc}
+$3.29e+07$ & $1.23e+00$ & $P_{1}$\\
+$\frac{x}{y}$ & $1.00e+10$ & $1.29e+03$\\
+\end{tabular}
+"
+
+
+@test latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:mdtable, fmt="%.2e") ==
+Markdown.md"|    $3.29e+07$ | $1.23e+00$ |    $P_{1}$ |
+| -------------:| ----------:| ----------:|
+| $\frac{x}{y}$ | $1.00e+10$ | $1.29e+03$ |
+"
+
+@test latexify(1234.2234; env=:inline, fmt="%.2e") ==
+raw"$1.23e+03$"
+
+@test latexify(1234.2234; env=:raw, fmt="%.2e") ==
+raw"1.23e+03"

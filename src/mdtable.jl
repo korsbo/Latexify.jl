@@ -53,11 +53,11 @@ julia> mdtable(M; head=latexinline(head))
 | $\frac{x}{y}$ | $\frac{1}{2}$ |
 |       $p_{m}$ |       $e^{2}$ |
 """
-function mdtable() end
+function mdtable end
 
-function mdtable(M::AbstractMatrix; latex::Bool=true, head=[], side=[], transpose=false)
+function mdtable(M::AbstractMatrix; latex::Bool=true, head=[], side=[], transpose=false, kwargs...)
     transpose && (M = permutedims(M, [2,1]))
-    latex && (M = latexinline(M))
+    latex && (M = latexinline(M; kwargs...))
     if !isempty(head)
         M = vcat(hcat(head...), M)
         @assert length(head) == size(M, 2) "The length of the head does not match the shape of the input matrix."

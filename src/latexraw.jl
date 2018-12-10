@@ -58,7 +58,7 @@ latexraw(symExpr)
 function latexraw end
 
 
-function latexraw(inputex::Expr)
+function latexraw(inputex::Expr; kwargs...)
     function recurseexp!(ex)
         prevOp = Vector{Symbol}(undef, length(ex.args))
         fill!(prevOp, :none)
@@ -75,18 +75,27 @@ function latexraw(inputex::Expr)
 end
 
 
-latexraw(arr::AbstractArray) = [latexraw(i) for i in arr]
-latexraw(i::Number) = string(i)
-latexraw(i::Nothing) = ""
-latexraw(i::Symbol) = convertSubscript(i)
-latexraw(i::SubString) = latexraw(Meta.parse(i))
-latexraw(i::SubString{LaTeXStrings.LaTeXString}) = i
-latexraw(i::Rational) = latexraw( i.den == 1 ? i.num : :($(i.num)/$(i.den)))
-latexraw(z::Complex) = "$(z.re)$(z.im < 0 ? "" : "+" )$(z.im)\\textit{i}"
-#latexraw(i::DataFrames.DataArrays.NAtype) = "\\textrm{NA}"
-latexraw(str::LaTeXStrings.LaTeXString) = str
+latexraw(arr::AbstractArray; kwargs...) = [latexraw(i; kwargs...) for i in arr]
+# latexraw(i::Number; kwargs...) = string(i)
 
-function latexraw(i::String)
+function latexraw(i::Number; fmt="", kwargs...)
+    if fmt == ""
+        return string(i)
+    else
+        return @eval @sprintf($fmt, $i)
+    end
+end
+
+latexraw(i::Nothing; kwargs...) = ""
+latexraw(i::Symbol; kwargs...) = convertSubscript(i)
+latexraw(i::SubString; kwargs...) = latexraw(Meta.parse(i); kwargs...)
+latexraw(i::SubString{LaTeXStrings.LaTeXString}; kwargs...) = i
+latexraw(i::Rational; kwargs...) = latexraw( i.den == 1 ? i.num : :($(i.num)/$(i.den)); kwargs...)
+latexraw(z::Complex; kwargs...) = "$(z.re)$(z.im < 0 ? "" : "+" )$(z.im)\\textit{i}"
+#latexraw(i::DataFrames.DataArrays.NAtype) = "\\textrm{NA}"
+latexraw(str::LaTeXStrings.LaTeXString; kwargs...) = str
+
+function latexraw(i::String; kwargs...)
     try
         ex = Meta.parse(i)
         return latexraw(ex)

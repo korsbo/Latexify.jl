@@ -84,6 +84,33 @@ latexify("x/y") |> print
 $\frac{x}{y}$
 ```
 
+## Number formatting
+You can control the formatting of numbers by passing the keyword argument `fmt`. This will be passed on to [Printf](https://docs.julialang.org/en/v1/stdlib/Printf/), have a read there for more information.
+
+Examples:
+```julia
+using Latexify
+copy_to_clipboard(true)
+latexify(12345.678; fmt="%.1e")
+```
+$1.2e+04$
+
+```julia
+latexify([12893.1 1.328e2; "x/y" 7832//2378]; fmt="%.1e")
+```
+
+```math
+\begin{equation}
+\left[
+\begin{array}{cc}
+1.3e+04 & 1.3e+02 \\
+\frac{x}{y} & \frac{3916}{1189} \\
+\end{array}
+\right]
+\end{equation}
+```
+
+
 ## Automatic copying to clipboard
 The strings that you would see when using print on any of the above functions can be automatically copied to the clipboard if you so specify.
 Since I do not wish to mess with your clipboard without you knowing it, this feature must be activated by you.
@@ -119,4 +146,4 @@ You can turn off this behaviour again by passing `false` to the same function.
 
 ## Legacy support
 
-Latexify.jl has stopped supporting Julia versions older than 0.7. This does not mean that you cannot use Latexify with earlier versions, just that these will not get new features. Latexify.jl's release v0.4.1 was the last which supported Julia 0.6. Choose that release in the dropdown menu if you want to see that documentation. 
+Latexify.jl has stopped supporting Julia versions older than 0.7. This does not mean that you cannot use Latexify with earlier versions, just that these will not get new features. Latexify.jl's release v0.4.1 was the last which supported Julia 0.6. Choose that release in the dropdown menu if you want to see that documentation.
