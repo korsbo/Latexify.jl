@@ -89,8 +89,6 @@ You can control the formatting of numbers by passing the keyword argument `fmt`.
 
 Examples:
 ```julia
-using Latexify
-copy_to_clipboard(true)
 latexify(12345.678; fmt="%.1e")
 ```
 $1.2e+04$
