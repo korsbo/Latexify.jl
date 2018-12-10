@@ -13,7 +13,7 @@ latexarray(arr)
 ```
 """
 function latexarray(arr::AbstractMatrix; adjustment::Symbol=:c, transpose=false, double_linebreak=false,
-    starred=false)
+    starred=false, kwargs...)
     transpose && (arr = permutedims(arr, [2,1]))
     (rows, columns) = size(arr)
     eol = double_linebreak ? " \\\\\\\\ \n" : " \\\\ \n"
@@ -22,7 +22,7 @@ function latexarray(arr::AbstractMatrix; adjustment::Symbol=:c, transpose=false,
     str *= "\\left[\n"
     str *= "\\begin{array}{" * "$(adjustment)"^columns * "}\n"
 
-    arr = latexraw(arr)
+    arr = latexraw(arr; kwargs...)
     for i=1:rows, j=1:columns
         str *= arr[i,j]
         j==columns ? (str *= eol) : (str *= " & ")

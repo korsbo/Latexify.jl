@@ -41,10 +41,10 @@ julia> latexalign(ode)
 """
 function latexalign end
 
-function latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=false, starred=false)
+function latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=false, starred=false, kwargs...)
     (rows, columns) = size(arr)
     eol = double_linebreak ? " \\\\\\\\\n" : " \\\\\n"
-    arr = latexraw(arr)
+    arr = latexraw(arr; kwargs...)
 
     str = "\\begin{align$(starred ? "*" : "")}\n"
     for i in 1:rows
@@ -74,7 +74,7 @@ end
 Go through the elements, split at any = sign, pass on as a matrix.
 """
 function latexalign(vec::AbstractVector; kwargs...)
-    lvec = latexraw(vec)
+    lvec = latexraw(vec; kwargs...)
     ## turn the array into a matrix
     lmat = hcat(split.(lvec, " = ")...)
     ## turn the matrix ito arrays of left-hand-side, right-hand-side.

@@ -1,6 +1,6 @@
 
 
-function latextabular(arr::AbstractMatrix; latex::Bool=true, head=[], side=[], adjustment::Symbol=:c, transpose=false)
+function latextabular(arr::AbstractMatrix; latex::Bool=true, head=[], side=[], adjustment::Symbol=:c, transpose=false, kwargs...)
     transpose && (arr = permutedims(arr, [2,1]))
 
     if !isempty(head)
@@ -16,7 +16,7 @@ function latextabular(arr::AbstractMatrix; latex::Bool=true, head=[], side=[], a
     (rows, columns) = size(arr)
     str = "\\begin{tabular}{" * "$(adjustment)"^columns * "}\n"
 
-    arr =  latex ? latexinline(arr) : string.(arr)
+    arr =  latex ? latexinline(arr; kwargs...) : string.(arr)
     for i in 1:size(arr, 1)
         str *= join(arr[i,:], " & ")
         str *= "\\\\\n"
