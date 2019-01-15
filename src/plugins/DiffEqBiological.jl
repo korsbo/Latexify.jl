@@ -83,8 +83,8 @@ function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
             expand && (rate_backwards = DiffEqBiological.recursive_clean!(rate_backwards))
             expand && (rate_backwards = DiffEqBiological.recursive_clean!(rate_backwards))
             str *= " &<=>"
-            str *= "[{" * latexraw(rate) * "}]"
-            str *= "[{" * latexraw(rate_backwards) * "}] "
+            str *= "[" * latexraw(rate) * "]"
+            str *= "[" * latexraw(rate_backwards) * "] "
             backwards_reaction = true
         else
             ### Uni-directional arrows
