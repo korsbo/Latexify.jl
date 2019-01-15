@@ -26,7 +26,12 @@ const unicodedict = Dict(val[1] => key for (key, val) in REPL.REPLCompletions.la
 
 function unicode2latex(str::String)
     isascii(str) && return str
-    join(map(key->haskey(unicodedict, key) ? unicodedict[key] : key, [s for s in str]))
+    join(
+        map(
+            key-> isascii(key) || !haskey(unicodedict, key) ? key : unicodedict[key],
+            [s for s in str]
+            )
+        )
 end
 
 
