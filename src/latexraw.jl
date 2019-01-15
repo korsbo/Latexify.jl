@@ -71,7 +71,9 @@ function latexraw(inputex::Expr; kwargs...)
         return latexoperation(ex, prevOp)
     end
     ex = deepcopy(inputex)
-    LaTeXString(recurseexp!(ex))
+    str = recurseexp!(ex)
+    str = unicode2latex(str)
+    LaTeXString(str)
 end
 
 
@@ -87,7 +89,7 @@ function latexraw(i::Number; fmt="", kwargs...)
 end
 
 latexraw(i::Nothing; kwargs...) = ""
-latexraw(i::Symbol; kwargs...) = convertSubscript(i)
+latexraw(i::Symbol; kwargs...) = unicode2latex(convertSubscript(i))
 latexraw(i::SubString; kwargs...) = latexraw(Meta.parse(i); kwargs...)
 latexraw(i::SubString{LaTeXStrings.LaTeXString}; kwargs...) = i
 latexraw(i::Rational; kwargs...) = latexraw( i.den == 1 ? i.num : :($(i.num)/$(i.den)); kwargs...)
