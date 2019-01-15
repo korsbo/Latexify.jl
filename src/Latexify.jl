@@ -5,6 +5,7 @@ using InteractiveUtils
 using Markdown
 using MacroTools: postwalk
 using Printf
+using REPL
 
 export latexify, md, copy_to_clipboard, auto_display
 
@@ -20,6 +21,19 @@ AUTO_DISPLAY = false
 function auto_display(x::Bool)
     global AUTO_DISPLAY = x
 end
+
+const unicodedict = Dict(val[1] => key for (key, val) in REPL.REPLCompletions.latex_symbols)
+
+function unicode2latex(str::String)
+    isascii(str) && return str
+    join(
+        map(
+            key-> isascii(key) || !haskey(unicodedict, key) ? key : unicodedict[key],
+            [s for s in str]
+            )
+        )
+end
+
 
 include("latexraw.jl")
 include("latexoperation.jl")
