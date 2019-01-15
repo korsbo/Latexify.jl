@@ -83,8 +83,8 @@ function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
             expand && (rate_backwards = DiffEqBiological.recursive_clean!(rate_backwards))
             expand && (rate_backwards = DiffEqBiological.recursive_clean!(rate_backwards))
             str *= " &<=>"
-            str *= "[{" * latexraw(rate) * "}]"
-            str *= "[{" * latexraw(rate_backwards) * "}] "
+            str *= "[" * latexraw(rate) * "]"
+            str *= "[" * latexraw(rate_backwards) * "] "
             backwards_reaction = true
         else
             ### Uni-directional arrows
@@ -98,6 +98,8 @@ function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
         str *= join(products, " + ")
         str *= "}$eol"
     end
+    str = str[1:end-length(eol)] * "\n"
+    
     str *= starred ? "\\end{align*}\n" : "\\end{align}\n"
 
     latexstr = LaTeXString(str)
