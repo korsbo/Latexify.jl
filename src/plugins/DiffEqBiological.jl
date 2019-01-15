@@ -98,6 +98,8 @@ function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
         str *= join(products, " + ")
         str *= "}$eol"
     end
+    str = str[1:end-length(eol)] * "\n"
+    
     str *= starred ? "\\end{align*}\n" : "\\end{align}\n"
 
     latexstr = LaTeXString(str)

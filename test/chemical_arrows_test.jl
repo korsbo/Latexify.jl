@@ -18,7 +18,7 @@ raw"\begin{align}
 \ce{ \varnothing &->[p_{y}] y}\\
 \ce{ x &->[d_{x}] \varnothing}\\
 \ce{ y &->[d_{y}] \varnothing}\\
-\ce{ x &<=>[r_{b}][r_{u}] y}\\
+\ce{ x &<=>[r_{b}][r_{u}] y}
 \end{align}
 "
 
@@ -29,7 +29,7 @@ raw"\begin{align}
 \ce{ \varnothing &->[p_{y}] y}\\
 \ce{ x &->[d_{x}] \varnothing}\\
 \ce{ y &->[d_{y}] \varnothing}\\
-\ce{ x &<=>[r_{b}][r_{u}] y}\\
+\ce{ x &<=>[r_{b}][r_{u}] y}
 \end{align}
 "
 
@@ -40,7 +40,7 @@ raw"\begin{align}
 \ce{ \varnothing &->[p_{y}] y}\\
 \ce{ x &->[d_{x}] \varnothing}\\
 \ce{ y &->[d_{y}] \varnothing}\\
-\ce{ x &<=>[r_{b}][r_{u}] y}\\
+\ce{ x &<=>[r_{b}][r_{u}] y}
 \end{align}
 "
 
@@ -51,7 +51,7 @@ raw"\begin{align*}
 \ce{ \varnothing &->[p_{y}] y}\\\\
 \ce{ x &->[d_{x}] \varnothing}\\\\
 \ce{ y &->[d_{y}] \varnothing}\\\\
-\ce{ x &<=>[r_{b}][r_{u}] y}\\\\
+\ce{ x &<=>[r_{b}][r_{u}] y}
 \end{align*}
 "
 
@@ -72,7 +72,7 @@ raw"\begin{align}
 \ce{ R &->[d_{R}] \varnothing}\\
 \ce{ \varnothing &->[p_{F}] F}\\
 \ce{ \varnothing &->[Ff] R}\\
-\ce{ F &<=>[r_{b} \cdot i][r_{u}] Ff}\\
+\ce{ F &<=>[r_{b} \cdot i][r_{u}] Ff}
 \end{align}
 "
 
