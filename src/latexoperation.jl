@@ -173,13 +173,15 @@ function convertSubscript!(ex::Expr)
     return nothing
 end
 
-function convertSubscript(sym::Symbol)
-    if occursin("_", string(sym))
-        subscriptList = split(string(sym), "_")
+function convertSubscript(str::String)
+    if occursin("_", str)
+        subscriptList = split(str, "_")
         subscript = join(subscriptList[2:end], "\\_")
         result = "$(subscriptList[1])_{$subscript}"
     else
-        result = "$sym"
+        result = str
     end
     return result
 end
+
+convertSubscript(sym::Symbol) = convertSubscript(string(sym))
