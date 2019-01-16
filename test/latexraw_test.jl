@@ -48,6 +48,9 @@ array_test = [ex, str]
 @test latexraw("x[2, 3]") == raw"\mathrm{x}\left[2, 3\right]"
 @test latexraw("α") == raw"\alpha"
 @test latexraw("α + 1") == raw"\alpha + 1"
+@test latexraw("α₁") == raw"\alpha_{1}"
+@test latexraw("γ³") == raw"\gamma^3"
+@test latexraw("β₃_hello") == raw"\beta_{3\_hello}"
 ### Test broadcasting
 @test latexraw(:(sum.((a, b)))) == raw"\mathrm{sum}\left( a, b \right)"
 
