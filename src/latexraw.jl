@@ -89,11 +89,12 @@ function latexraw(i::Number; fmt="", kwargs...)
 end
 
 latexraw(i::Nothing; kwargs...) = ""
-latexraw(i::Symbol; kwargs...) = convertSubscript(unicode2latex(string(i)))
+latexraw(i::Char; kwargs...) = LaTeXString(unicode2latex(string(i)))
+latexraw(i::Symbol; kwargs...) = LaTeXString(convertSubscript(unicode2latex(string(i))))
 latexraw(i::SubString; kwargs...) = latexraw(Meta.parse(i); kwargs...)
 latexraw(i::SubString{LaTeXStrings.LaTeXString}; kwargs...) = i
 latexraw(i::Rational; kwargs...) = latexraw( i.den == 1 ? i.num : :($(i.num)/$(i.den)); kwargs...)
-latexraw(z::Complex; kwargs...) = "$(z.re)$(z.im < 0 ? "" : "+" )$(z.im)\\textit{i}"
+latexraw(z::Complex; kwargs...) = LaTeXString("$(z.re)$(z.im < 0 ? "" : "+" )$(z.im)\\textit{i}")
 #latexraw(i::DataFrames.DataArrays.NAtype) = "\\textrm{NA}"
 latexraw(str::LaTeXStrings.LaTeXString; kwargs...) = str
 
