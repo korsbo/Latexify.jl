@@ -34,6 +34,7 @@ keyword_arguments = [
     KeywordArgument(:head, [:mdtable, :tabular], "`Array`", "`[]`", "Add a header to the table. It will error if it is not of the right length (unless empty). ", [:Any]),
     KeywordArgument(:side, [:mdtable, :tabular], "`Array`", "`[]`", "Add a leftmost column to the table. It will error if it is not of the right length (unless empty). ", [:Any]),
     KeywordArgument(:fmt, [:mdtable, :tabular, :align, :array], "format string", "`\"\"`", "Format number output in accordence with Printf. Example: \"%.2e\"", [:Any]),
+    KeywordArgument(:escape_underscores, [:mdtable, :mdtext], "`Bool`", "`false`", "Prevent underscores from being interpreted as formatting.", [:Any]),
 #     KeywordArgument(:template, [:array], "`Bool`", "`false`", "description", [:Any]),
     ]
 
