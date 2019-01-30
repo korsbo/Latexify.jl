@@ -95,6 +95,16 @@ side = ["row$i" for i in 1:size(M, 1)]
 | col5 |            $symb$ |            $symb$ |
 "
 
+
+m = ["one_two_tree"; "four_five_six"; "seven_eight"]
+@test latexify(m; env=:mdtable, latex=false, escape_underscores=true) == Markdown.md"
+|  one\_two\_tree |
+| -------------:|
+| four\_five\_six |
+|   seven_eight |
+"
+
+
 using DataFrames
 d = DataFrame(A = 11:13, B = [:X, :Y, :Z])
 
