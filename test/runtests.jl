@@ -18,3 +18,4 @@ using Test
 @testset "mdtable tests" begin include("mdtable_test.jl") end
 @testset "chemical_arrows test" begin include("chemical_arrows_test.jl") end
 @testset "DataFrame Plugin" begin include("plugins/DataFrames.jl") end
+@testset "unocode2latex" begin include("unicode2latex.jl") end
