@@ -90,7 +90,7 @@ raw"\begin{align}
 \end{align}
 "
 
-@test_broken latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:array, fmt="%.2e") ==
+@test latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:array, fmt="%.2e") ==
 raw"\begin{equation}
 \left[
 \begin{array}{ccc}
