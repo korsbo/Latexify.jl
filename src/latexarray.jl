@@ -16,7 +16,7 @@ function latexarray(arr::AbstractMatrix; adjustment::Symbol=:c, transpose=false,
     starred=false, kwargs...)
     transpose && (arr = permutedims(arr, [2,1]))
     (rows, columns) = size(arr)
-    eol = double_linebreak ? " \\\\\\\\ \n" : " \\\\ \n"
+    eol = double_linebreak ? " \\\\\\\\\n" : " \\\\\n"
 
     str = "\\begin{equation$(starred ? "*" : "")}\n"
     str *= "\\left[\n"
