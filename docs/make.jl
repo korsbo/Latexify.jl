@@ -27,7 +27,7 @@ makedocs(
 deploydocs(
     #deps = Deps.pip("mkdocs", "python-markdown-math"),
     repo = "github.com/korsbo/Latexify.jl.git",
-    julia  = "1.0",
+    julia  = "1.1",
     target = "build",
     osname = "linux",
     make = nothing,
