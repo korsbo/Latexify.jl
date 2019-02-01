@@ -225,6 +225,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "arguments.html#Inline-and-raw-1",
+    "page": "List of possible arguments",
+    "title": "Inline and raw",
+    "category": "section",
+    "text": "Base.include(@__MODULE__, \"src/table_generator.jl\")\nargs = [arg for arg in keyword_arguments if :raw in arg.env || :inline in arg.env]\nlatexify(args, env=:mdtable)"
+},
+
+{
     "location": "arguments.html#Chemical-arrow-notation-1",
     "page": "List of possible arguments",
     "title": "Chemical arrow notation",
