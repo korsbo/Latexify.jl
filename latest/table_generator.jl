@@ -35,7 +35,7 @@ keyword_arguments = [
     KeywordArgument(:side, [:mdtable, :tabular], "`Array`", "`[]`", "Add a leftmost column to the table. It will error if it is not of the right length (unless empty). ", [:Any]),
     KeywordArgument(:fmt, [:mdtable, :tabular, :align, :array, :raw, :inline], "format string", "`\"\"`", "Format number output in accordence with Printf. Example: \"%.2e\"", [:Any]),
     KeywordArgument(:escape_underscores, [:mdtable, :mdtext], "`Bool`", "`false`", "Prevent underscores from being interpreted as formatting.", [:Any]),
-    KeywordArgument(:convert_unicode, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Bool`", "`true`", "Convert unicode characters to latex commands, for example `α` to `\alpha`", [:Any]),
+    KeywordArgument(:convert_unicode, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Bool`", "`true`", "Convert unicode characters to latex commands, for example `α` to `\\alpha`", [:Any]),
 #     KeywordArgument(:template, [:array], "`Bool`", "`false`", "description", [:Any]),
     ]
 
