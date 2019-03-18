@@ -82,3 +82,4 @@ end
 
 mdtable(v::AbstractArray...; kwargs...) = mdtable(hcat(v...); kwargs...)
 mdtable(d::AbstractDict; kwargs...) = mdtable(collect(keys(d)), collect(values(d)); kwargs...)
+mdtable(arg::Tuple; kwargs...) = mdtable(hcat([collect(i) for i in arg]...); kwargs...)

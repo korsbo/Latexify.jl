@@ -77,7 +77,7 @@ function latexraw(inputex::Expr; convert_unicode=true, kwargs...)
 end
 
 
-latexraw(arr::AbstractArray; kwargs...) = [latexraw(i; kwargs...) for i in arr]
+latexraw(arr::Union{AbstractArray, Tuple}; kwargs...) = [latexraw(i; kwargs...) for i in arr]
 latexraw(i::Nothing; kwargs...) = ""
 latexraw(i::SubString; kwargs...) = latexraw(Meta.parse(i); kwargs...)
 latexraw(i::SubString{LaTeXStrings.LaTeXString}; kwargs...) = i

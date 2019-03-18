@@ -126,4 +126,11 @@ d = DataFrame(A = 11:13, B = [:X, :Y, :Z])
 "
 
 
+
+@test latexify(((1.0, 2), (3, 4)); env=:mdtable) == Markdown.md"
+| $1.0$ | $3$ |
+| -----:| ---:|
+|   $2$ | $4$ |
+"
+
 # @test_throws MethodError mdtable(M; bad_kwarg="should error")

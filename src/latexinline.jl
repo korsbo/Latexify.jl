@@ -4,4 +4,4 @@ function latexinline(x; kwargs...)
     return latexstr
 end
 
-latexinline(x::AbstractArray; kwargs...) = [ latexinline(i; kwargs...) for i in x]
+latexinline(x::Union{AbstractArray, Tuple}; kwargs...) = [ latexinline(i; kwargs...) for i in x]

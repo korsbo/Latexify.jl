@@ -28,3 +28,27 @@ raw"\begin{equation}
 \right]
 \end{equation}
 "
+
+
+@test latexify((1.0, 2), (3, 4)) ==
+raw"\begin{equation}
+\left[
+\begin{array}{cc}
+1.0 & 3 \\
+2 & 4 \\
+\end{array}
+\right]
+\end{equation}
+"
+
+
+@test latexify(((1.0, 2), (3, 4))) ==
+raw"\begin{equation}
+\left[
+\begin{array}{cc}
+1.0 & 3 \\
+2 & 4 \\
+\end{array}
+\right]
+\end{equation}
+"
