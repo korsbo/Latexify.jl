@@ -3,5 +3,4 @@ DiffEqBiological
 DiffEqBase 2.4.0
 SymEngine 0.2.0
 Missings 0.2.2
-Markdown
 DataFrames
