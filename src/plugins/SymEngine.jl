@@ -7,10 +7,10 @@
 #         Overload environment functions      #
 ###############################################
 
-function latexraw(x::SymEngine.Basic)
+function latexraw(x::SymEngine.Basic; kwargs...)
     str = string(x)
     ex = Meta.parse(str)
-    latexraw(ex)
+    latexraw(ex; kwargs...)
 end
 
 ###############################################
