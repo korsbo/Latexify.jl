@@ -49,7 +49,7 @@ x \cdot y & x \cdot \left( y + z \right) \cdot y \cdot \left( z + a \right) \cdo
 "
 
 # align
-f = @ode_def TestAlignFeedback begin
+f = @ode_def TestAlignFeedback2 begin
     dx = y*c_1 - x
     dy = x^c_2 - y
 end c_1 c_2
