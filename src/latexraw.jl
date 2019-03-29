@@ -86,6 +86,14 @@ function latexraw(i::Number; fmt="", kwargs...)
     end
 end
 
+function latexraw(i::AbstractFloat; fmt="", kwargs...)
+    if fmt == ""
+        return replace(string(i), r"e-?\d+" => s->" \\cdot 10^{$(s[2:end])}")
+    else
+        return replace(@eval @sprintf($fmt, $i), r"e-?\d+" => s->" \\cdot 10^{$(s[2:end])}")
+    end
+end
+
 latexraw(i::Nothing; kwargs...) = ""
 latexraw(i::Symbol; kwargs...) = convertSubscript(i)
 latexraw(i::SubString; kwargs...) = latexraw(Meta.parse(i); kwargs...)
