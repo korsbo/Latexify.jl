@@ -60,6 +60,14 @@ function latexalign(lhs::AbstractArray, rhs::AbstractArray; kwargs...)
     return latexalign(hcat(lhs, rhs); kwargs...)
 end
 
+function latexalign(lhs::Tuple, rhs::Tuple; kwargs...)
+    return latexalign(hcat(collect(lhs), collect(rhs)); kwargs...)
+end
+
+latexalign(args::Tuple...; kwargs...) = latexalign(hcat([collect(i) for i in args]...); kwargs...)
+
+latexalign(arg::Tuple; kwargs...) = latexalign(hcat([collect(i) for i in arg]...); kwargs...)
+
 function latexalign(nested::AbstractVector{AbstractVector}; kwargs...)
     return latexalign(hcat(nested...); kwargs...)
 end

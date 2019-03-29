@@ -36,7 +36,7 @@ rn = @reaction_network TestAlignMyRnType begin
   (r_b, r_u), x ↔ y
 end v_x k_x p_y d_x d_y r_b r_u
 
-@test latexalign(rn).s ==
+@test latexalign(rn; clean=true).s ==
 raw"\begin{align}
 \frac{dx}{dt} =& \frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}} - d_{x} \cdot x - r_{b} \cdot x + r_{u} \cdot y \\
 \frac{dy}{dt} =& p_{y} - d_{y} \cdot y + r_{b} \cdot x - r_{u} \cdot y \\
@@ -47,6 +47,14 @@ raw"\begin{align}
 raw"\begin{align}
 \frac{dx}{dt} =&  - x \cdot d_{x} - x \cdot r_{b} + y \cdot r_{u} + \frac{y^{2} \cdot v_{x}}{k_{x}^{2} + y^{2}} \\
 \frac{dy}{dt} =& p_{y} + x \cdot r_{b} - y \cdot d_{y} - y \cdot r_{u} \\
+\end{align}
+"
+
+
+@test latexify(((1.0, 2), (3, 4)); env=:align) ==
+raw"\begin{align}
+1.0 =& 3 \\
+2 =& 4 \\
 \end{align}
 "
 

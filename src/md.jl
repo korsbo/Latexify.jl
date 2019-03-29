@@ -39,3 +39,4 @@ This determines the default behaviour of `md()` for different inputs.
 get_md_function(args...) = mdtext
 get_md_function(args::AbstractArray...) = mdtable
 get_md_function(args::AbstractDict) = mdtable
+get_md_function(args::Tuple) = mdtable

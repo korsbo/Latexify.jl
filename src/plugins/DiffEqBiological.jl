@@ -20,11 +20,20 @@ Generate an align environment from a reaction network.
 - noise::Bool - output the noise function?
 - symbolic::Bool - use symbolic calculation to reduce the expression?
 - bracket::Bool - Surround the variables with square brackets to denote concentrations.
+- clean::Bool - Clean out redundant "1*". Only useful for DiffEqBiological@v3.4.2 or earlier.
 """
-function latexalign(r::DiffEqBase.AbstractReactionNetwork; bracket=false, noise=false, symbolic=false, kwargs...)
+function latexalign(r::DiffEqBase.AbstractReactionNetwork; bracket=false, noise=false, symbolic=false, clean=false, kwargs...)
     lhs = [Meta.parse("d$x/dt") for x in r.syms]
     if !noise
-        symbolic ? (rhs = r.f_symfuncs) : (rhs = clean_subtractions.(r.f_func))
+        if symbolic
+            rhs = r.f_symfuncs
+        else
+            if clean
+                rhs = clean_subtractions.(r.f_func)
+            else
+                rhs = r.f_func
+            end
+        end
     else
         vec = r.g_func
         M = reshape(vec, :, length(r.syms))
@@ -83,8 +92,8 @@ function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
             expand && (rate_backwards = DiffEqBiological.recursive_clean!(rate_backwards))
             expand && (rate_backwards = DiffEqBiological.recursive_clean!(rate_backwards))
             str *= " &<=>"
-            str *= "[{" * latexraw(rate) * "}]"
-            str *= "[{" * latexraw(rate_backwards) * "}] "
+            str *= "[" * latexraw(rate) * "]"
+            str *= "[" * latexraw(rate_backwards) * "] "
             backwards_reaction = true
         else
             ### Uni-directional arrows
@@ -98,6 +107,8 @@ function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
         str *= join(products, " + ")
         str *= "}$eol"
     end
+    str = str[1:end-length(eol)] * "\n"
+
     str *= starred ? "\\end{align*}\n" : "\\end{align}\n"
 
     latexstr = LaTeXString(str)
@@ -114,6 +125,9 @@ Replace additions of negative terms with subtractions.
 
 This is a fairly stupid function which is designed for a specific problem
 with reaction networks. It is neither recursive nor very general.
+
+Note: this function was moved to DiffEqBiological and is only retained here for
+compatibility with older versions.
 
 Return :: cleaned out expression
 """
@@ -139,4 +153,9 @@ function clean_subtractions(ex::Expr)
         end
     end
     return result
+end
+
+function clean_subtractions(arg)
+    @warn "It appears that you are using a version of DiffEqBiological which does not require the latexify `clean` keyword argument. The `clean=true` specification will be ignored."
+    return arg
 end

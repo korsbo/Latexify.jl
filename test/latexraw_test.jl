@@ -46,7 +46,11 @@ array_test = [ex, str]
 @test latexraw(Missing()) == "\\textrm{NA}"
 @test latexraw("x[2]") == raw"\mathrm{x}\left[2\right]"
 @test latexraw("x[2, 3]") == raw"\mathrm{x}\left[2, 3\right]"
-
+@test latexraw("α") == raw"\alpha"
+@test latexraw("α + 1") == raw"\alpha + 1"
+@test latexraw("α₁") == raw"\alpha_{1}"
+@test latexraw("γ³") == raw"\gamma^3"
+@test latexraw("β₃_hello") == raw"\beta_{3\_hello}"
 ### Test broadcasting
 @test latexraw(:(sum.((a, b)))) == raw"\mathrm{sum}\left( a, b \right)"
 
@@ -86,7 +90,7 @@ raw"\begin{align}
 \end{align}
 "
 
-@test_broken latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:array, fmt="%.2e") ==
+@test latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:array, fmt="%.2e") ==
 raw"\begin{equation}
 \left[
 \begin{array}{ccc}

@@ -55,7 +55,7 @@ julia> mdtable(M; head=latexinline(head))
 """
 function mdtable end
 
-function mdtable(M::AbstractMatrix; latex::Bool=true, head=[], side=[], transpose=false, kwargs...)
+function mdtable(M::AbstractMatrix; latex::Bool=true, escape_underscores=false, head=[], side=[], transpose=false, kwargs...)
     transpose && (M = permutedims(M, [2,1]))
     latex && (M = latexinline(M; kwargs...))
     if !isempty(head)
@@ -73,6 +73,8 @@ function mdtable(M::AbstractMatrix; latex::Bool=true, head=[], side=[], transpos
     for i in 2:size(M,1)
         t *= "| " * join(M[i,:], " | ") * " |\n"
     end
+
+    escape_underscores && (t = replace(t, "_"=>"\\_"))
     t = Markdown.parse(t)
     COPY_TO_CLIPBOARD && clipboard(t)
     return t
@@ -80,3 +82,4 @@ end
 
 mdtable(v::AbstractArray...; kwargs...) = mdtable(hcat(v...); kwargs...)
 mdtable(d::AbstractDict; kwargs...) = mdtable(collect(keys(d)), collect(values(d)); kwargs...)
+mdtable(arg::Tuple; kwargs...) = mdtable(hcat([collect(i) for i in arg]...); kwargs...)

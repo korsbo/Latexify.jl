@@ -95,6 +95,16 @@ side = ["row$i" for i in 1:size(M, 1)]
 | col5 |            $symb$ |            $symb$ |
 "
 
+
+m = ["one_two_tree"; "four_five_six"; "seven_eight"]
+@test latexify(m; env=:mdtable, latex=false, escape_underscores=true) == Markdown.md"
+|  one\_two\_tree |
+| -------------:|
+| four\_five\_six |
+|   seven_eight |
+"
+
+
 using DataFrames
 d = DataFrame(A = 11:13, B = [:X, :Y, :Z])
 
@@ -115,5 +125,12 @@ d = DataFrame(A = 11:13, B = [:X, :Y, :Z])
 | $13$ | $Z$ |
 "
 
+
+
+@test latexify(((1.0, 2), (3, 4)); env=:mdtable) == Markdown.md"
+| $1.0$ | $3$ |
+| -----:| ---:|
+|   $2$ | $4$ |
+"
 
 # @test_throws MethodError mdtable(M; bad_kwarg="should error")

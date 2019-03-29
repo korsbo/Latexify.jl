@@ -58,7 +58,7 @@ latexraw(symExpr)
 function latexraw end
 
 
-function latexraw(inputex::Expr; kwargs...)
+function latexraw(inputex::Expr; convert_unicode=true, kwargs...)
     function recurseexp!(ex)
         prevOp = Vector{Symbol}(undef, length(ex.args))
         fill!(prevOp, :none)
@@ -71,12 +71,20 @@ function latexraw(inputex::Expr; kwargs...)
         return latexoperation(ex, prevOp)
     end
     ex = deepcopy(inputex)
-    LaTeXString(recurseexp!(ex))
+    str = recurseexp!(ex)
+    convert_unicode && (str = unicode2latex(str))
+    LaTeXString(str)
 end
 
 
-latexraw(arr::AbstractArray; kwargs...) = [latexraw(i; kwargs...) for i in arr]
-# latexraw(i::Number; kwargs...) = string(i)
+latexraw(arr::Union{AbstractArray, Tuple}; kwargs...) = [latexraw(i; kwargs...) for i in arr]
+latexraw(i::Nothing; kwargs...) = ""
+latexraw(i::SubString; kwargs...) = latexraw(Meta.parse(i); kwargs...)
+latexraw(i::SubString{LaTeXStrings.LaTeXString}; kwargs...) = i
+latexraw(i::Rational; kwargs...) = latexraw( i.den == 1 ? i.num : :($(i.num)/$(i.den)); kwargs...)
+latexraw(z::Complex; kwargs...) = LaTeXString("$(z.re)$(z.im < 0 ? "" : "+" )$(z.im)\\textit{i}")
+#latexraw(i::DataFrames.DataArrays.NAtype) = "\\textrm{NA}"
+latexraw(str::LaTeXStrings.LaTeXString; kwargs...) = str
 
 function latexraw(i::Number; fmt="", kwargs...)
     if fmt == ""
@@ -94,19 +102,18 @@ function latexraw(i::AbstractFloat; fmt="", kwargs...)
     end
 end
 
-latexraw(i::Nothing; kwargs...) = ""
-latexraw(i::Symbol; kwargs...) = convertSubscript(i)
-latexraw(i::SubString; kwargs...) = latexraw(Meta.parse(i); kwargs...)
-latexraw(i::SubString{LaTeXStrings.LaTeXString}; kwargs...) = i
-latexraw(i::Rational; kwargs...) = latexraw( i.den == 1 ? i.num : :($(i.num)/$(i.den)); kwargs...)
-latexraw(z::Complex; kwargs...) = "$(z.re)$(z.im < 0 ? "" : "+" )$(z.im)\\textit{i}"
-#latexraw(i::DataFrames.DataArrays.NAtype) = "\\textrm{NA}"
-latexraw(str::LaTeXStrings.LaTeXString; kwargs...) = str
+function latexraw(i::Char; convert_unicode=true, kwargs...)
+    LaTeXString(convert_unicode ? unicode2latex(string(i)) : string(i))
+end
+
+function latexraw(i::Symbol; convert_unicode=true, kwargs...)
+    LaTeXString(convertSubscript(convert_unicode ? unicode2latex(string(i)) : string(i)))
+end
 
 function latexraw(i::String; kwargs...)
     try
         ex = Meta.parse(i)
-        return latexraw(ex)
+        return latexraw(ex; kwargs...)
     catch ParseError
         error(
 """Error in Latexify.jl: You are trying to create latex-maths from a string that

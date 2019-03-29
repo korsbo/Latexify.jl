@@ -21,6 +21,7 @@ function auto_display(x::Bool)
     global AUTO_DISPLAY = x
 end
 
+include("unicode2latex.jl")
 include("latexraw.jl")
 include("latexoperation.jl")
 include("latexify_function.jl")
