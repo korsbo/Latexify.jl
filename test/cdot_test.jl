@@ -69,6 +69,8 @@ raw"\begin{align}
 "
 
 # reactions
+if VERSION >= v"1.0"
+
 rn = @reaction_network begin
     hillr(D₂,α,K,n), ∅ --> m₁
     hillr(D₁,α,K,n), ∅ --> m₂
@@ -165,6 +167,7 @@ $0$ & $0$ & $0$ & $k_+ \cdot P_2$ & $0$ & $ - k_-$ & $0$\\
 $0$ & $0$ & $k_+ \cdot P_2$ & $k_+ \cdot P_1$ & $0$ & $0$ & $ - k_-$\\
 \end{tabular}
 "
+end
 
 # mdtable
 arr = ["x*(y-1)", 1.0, 3*2, :(x-2y), :symb]
