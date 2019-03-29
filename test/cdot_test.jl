@@ -69,6 +69,8 @@ raw"\begin{align}
 "
 
 # reactions
+if VERSION >= v"1.0"
+
 rn = @reaction_network begin
     hillr(D₂,α,K,n), ∅ --> m₁
     hillr(D₁,α,K,n), ∅ --> m₂
@@ -144,8 +146,8 @@ raw"\begin{align}
 # tabular
 @test latexify(rn.symjac; env=:tabular, cdot=false) == 
 raw"\begin{tabular}{ccccccc}
-$ - \delta$ & $0$ & $0$ & $0$ & $0$ & $\frac{ - K^{n} n \alpha D_2^{-1 + n}}{\left( K^{n} + D_2^{n} \right)^{2}}$ & $0$\\
-$0$ & $ - \delta$ & $0$ & $0$ & $\frac{ - K^{n} n \alpha D_1^{-1 + n}}{\left( K^{n} + D_1^{n} \right)^{2}}$ & $0$ & $0$\\
+$ - \delta$ & $0$ & $0$ & $0$ & $0$ & $\frac{ - K^{n} n \alpha D_2^{-1 + n}}{\left( D_2^{n} + K^{n} \right)^{2}}$ & $0$\\
+$0$ & $ - \delta$ & $0$ & $0$ & $\frac{ - K^{n} n \alpha D_1^{-1 + n}}{\left( D_1^{n} + K^{n} \right)^{2}}$ & $0$ & $0$\\
 $\beta$ & $0$ & $ - \mu - 2 k_+ P_1 - k_+ P_2$ & $ - k_+ P_1$ & $2 k_-$ & $0$ & $k_{-}$\\
 $0$ & $\beta$ & $ - k_+ P_2$ & $ - \mu - k_+ P_1 - 2 k_+ P_2$ & $0$ & $2 k_-$ & $k_{-}$\\
 $0$ & $0$ & $k_+ P_1$ & $0$ & $ - k_-$ & $0$ & $0$\\
@@ -156,8 +158,8 @@ $0$ & $0$ & $k_+ P_2$ & $k_+ P_1$ & $0$ & $0$ & $ - k_-$\\
 
 @test latexify(rn.symjac; env=:tabular, cdot=true) == 
 raw"\begin{tabular}{ccccccc}
-$ - \delta$ & $0$ & $0$ & $0$ & $0$ & $\frac{ - K^{n} \cdot n \cdot \alpha \cdot D_2^{-1 + n}}{\left( K^{n} + D_2^{n} \right)^{2}}$ & $0$\\
-$0$ & $ - \delta$ & $0$ & $0$ & $\frac{ - K^{n} \cdot n \cdot \alpha \cdot D_1^{-1 + n}}{\left( K^{n} + D_1^{n} \right)^{2}}$ & $0$ & $0$\\
+$ - \delta$ & $0$ & $0$ & $0$ & $0$ & $\frac{ - K^{n} \cdot n \cdot \alpha \cdot D_2^{-1 + n}}{\left( D_2^{n} + K^{n} \right)^{2}}$ & $0$\\
+$0$ & $ - \delta$ & $0$ & $0$ & $\frac{ - K^{n} \cdot n \cdot \alpha \cdot D_1^{-1 + n}}{\left( D_1^{n} + K^{n} \right)^{2}}$ & $0$ & $0$\\
 $\beta$ & $0$ & $ - \mu - 2 \cdot k_+ \cdot P_1 - k_+ \cdot P_2$ & $ - k_+ \cdot P_1$ & $2 \cdot k_-$ & $0$ & $k_{-}$\\
 $0$ & $\beta$ & $ - k_+ \cdot P_2$ & $ - \mu - k_+ \cdot P_1 - 2 \cdot k_+ \cdot P_2$ & $0$ & $2 \cdot k_-$ & $k_{-}$\\
 $0$ & $0$ & $k_+ \cdot P_1$ & $0$ & $ - k_-$ & $0$ & $0$\\
@@ -165,6 +167,8 @@ $0$ & $0$ & $0$ & $k_+ \cdot P_2$ & $0$ & $ - k_-$ & $0$\\
 $0$ & $0$ & $k_+ \cdot P_2$ & $k_+ \cdot P_1$ & $0$ & $0$ & $ - k_-$\\
 \end{tabular}
 "
+
+end
 
 # mdtable
 arr = ["x*(y-1)", 1.0, 3*2, :(x-2y), :symb]
