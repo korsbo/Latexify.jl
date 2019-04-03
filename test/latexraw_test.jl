@@ -38,6 +38,7 @@ array_test = [ex, str]
 @test latexraw(:(acsc(x))) ==  "\\mathrm{arccsc}\\left( x \\right)"
 @test latexraw(:(csch(x))) ==  "\\mathrm{csch}\\left( x \\right)"
 @test latexraw(:(acsch(x))) ==  "\\mathrm{arccsch}\\left( x \\right)"
+@test latexraw(:(x ± y)) == "x \\pm y"
 @test latexraw(:(f(x))) ==  "\\mathrm{f}\\left( x \\right)"
 @test latexraw("x = 4*y") == "x = 4 \\cdot y"
 @test latexraw(:(sqrt(x))) == "\\sqrt{x}"
