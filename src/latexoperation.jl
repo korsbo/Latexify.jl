@@ -10,7 +10,8 @@ a parenthesis is needed.
 function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
     op = ex.args[1]
     convertSubscript!(ex)
-    args = ex.args
+    args = map(i -> i isa Number ? latexraw(i; kwargs...) : i, ex.args)
+
     if op in [:/, :./]
         return "\\frac{$(args[2])}{$(args[3])}"
 
