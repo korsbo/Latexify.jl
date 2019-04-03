@@ -68,12 +68,12 @@ function latexraw(inputex::Expr; convert_unicode=true, kwargs...)
                 ex.args[i] = recurseexp!(ex.args[i])
             end
         end
-        return latexoperation(ex, prevOp)
+        return latexoperation(ex, prevOp; kwargs...)
     end
     ex = deepcopy(inputex)
     str = recurseexp!(ex)
     convert_unicode && (str = unicode2latex(str))
-    LaTeXString(str)
+    return LaTeXString(str)
 end
 
 
@@ -86,12 +86,16 @@ latexraw(z::Complex; kwargs...) = LaTeXString("$(z.re)$(z.im < 0 ? "" : "+" )$(z
 #latexraw(i::DataFrames.DataArrays.NAtype) = "\\textrm{NA}"
 latexraw(str::LaTeXStrings.LaTeXString; kwargs...) = str
 
-function latexraw(i::Number; fmt="", kwargs...)
-    if fmt == ""
-        return string(i)
-    else
-        return @eval @sprintf($fmt, $i)
-    end
+#function latexraw(i::Number; fmt="", kwargs...)
+#    if fmt == ""
+#        return string(i)
+#    else
+#        return @eval @sprintf($fmt, $i)
+#    end
+#end
+
+function latexraw(i::Number; fmt="", number_formatter = fmt=="" ? PlainNumberFormatter() : PrintfNumberFormatter(fmt), kwargs...)
+    return number_formatter(i)
 end
 
 function latexraw(i::Char; convert_unicode=true, kwargs...)

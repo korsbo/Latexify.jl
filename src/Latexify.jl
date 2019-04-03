@@ -11,6 +11,8 @@ export latexify, md, copy_to_clipboard, auto_display
 ## Allow some backwards compatibility until its time to deprecate.
 export latexarray, latexalign, latexraw, latexinline, latextabular, mdtable
 
+export StyledNumberFormatter, FancyNumberFormatter
+
 COPY_TO_CLIPBOARD = false
 function copy_to_clipboard(x::Bool)
     global COPY_TO_CLIPBOARD = x
@@ -35,6 +37,8 @@ include("mdtable.jl")
 include("mdtext.jl")
 
 include("utils.jl")
+
+include("numberformatters.jl")
 
 
 ### Add support for additional packages without adding them as dependencies.
