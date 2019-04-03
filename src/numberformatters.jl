@@ -1,6 +1,6 @@
 abstract type AbstractNumberFormatter end
 
-const float_regex = r"(?'mantissa'(?'before_dp'(?'sign'-?)(?'before_dp_nosign'\d+))(\.(?'after_dp'\d+))?)(?'e_or_E'e)(?'raw_exp'\+?0*(?'exp'(?'sign_exp'-?)\d+))"
+const float_regex = r"(?'mantissa'(?'before_dp'(?'sign'-?)(?'before_dp_nosign'\d+))(\.(?'after_dp'\d+))?)(?'e_or_E'e)(?'raw_exp'\+?0*(?'exp'(?'sign_exp'-?)\d+))"i
 
 struct PlainNumberFormatter <: AbstractNumberFormatter end
 
