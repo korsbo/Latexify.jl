@@ -16,16 +16,16 @@ end
 #         Overload environment functions      #
 ###############################################
 
-function latexraw(ode::DiffEqBase.AbstractParameterizedFunction)
+function latexraw(ode::DiffEqBase.AbstractParameterizedFunction; kwargs...)
     lhs = ["\\frac{d$x}{dt} = " for x in ode.syms]
-    rhs = latexraw(ode.funcs)
+    rhs = latexraw(ode.funcs; kwargs...)
     return lhs .* rhs
 end
 
 
-function latexinline(ode::DiffEqBase.AbstractParameterizedFunction)
+function latexinline(ode::DiffEqBase.AbstractParameterizedFunction; kwargs...)
     lhs = ["\\frac{d$x}{dt} = " for x in ode.syms]
-    rhs = latexraw(ode.funcs)
+    rhs = latexraw(ode.funcs; kwargs...)
     return latexstring.( lhs .* rhs )
 end
 

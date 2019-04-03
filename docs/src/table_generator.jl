@@ -36,6 +36,7 @@ keyword_arguments = [
     KeywordArgument(:fmt, [:mdtable, :tabular, :align, :array, :raw, :inline], "format string", "`\"\"`", "Format number output in accordence with Printf. Example: \"%.2e\"", [:Any]),
     KeywordArgument(:escape_underscores, [:mdtable, :mdtext], "`Bool`", "`false`", "Prevent underscores from being interpreted as formatting.", [:Any]),
     KeywordArgument(:convert_unicode, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Bool`", "`true`", "Convert unicode characters to latex commands, for example `α` to `\\alpha`", [:Any]),
+    KeywordArgument(:cdot, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Bool`", "`true`", "Toggle between using `\cdot` or just a space to represent multiplication.", [:Any]),
     KeywordArgument(:symbolic, [:align], "`Bool`", "`false`", "Use symbolic calculations to clean up the expression.", [:ReactionNetwork]),
     KeywordArgument(:clean, [:align], "`Bool`", "`false`", "Clean out `1*` terms. Only useful for DiffEqBiological versions 3.4 or below.", [:ReactionNetwork]),
 #     KeywordArgument(:template, [:array], "`Bool`", "`false`", "description", [:Any]),

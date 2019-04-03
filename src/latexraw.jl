@@ -68,7 +68,7 @@ function latexraw(inputex::Expr; convert_unicode=true, kwargs...)
                 ex.args[i] = recurseexp!(ex.args[i])
             end
         end
-        return latexoperation(ex, prevOp)
+        return latexoperation(ex, prevOp; kwargs...)
     end
     ex = deepcopy(inputex)
     str = recurseexp!(ex)
