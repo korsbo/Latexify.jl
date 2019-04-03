@@ -7,7 +7,7 @@ This uses the information about the previous operations to decide if
 a parenthesis is needed.
 
 """
-function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)
+function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
     op = ex.args[1]
     convertSubscript!(ex)
     args = map(i -> i isa Number ? latexraw(i; kwargs...) : i, ex.args)
@@ -21,7 +21,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)
             arg = args[i]
             prevOp[i] in [:+, :-, :±]  && (arg = "\\left( $arg \\right)")
             str = string(str, arg)
-            i != length(args) && (str *= " \\cdot ")
+            i != length(args) && (str *= cdot ? " \\cdot " : " ")
         end
         return str
 
@@ -164,7 +164,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)
     return ""
 end
 
-latexoperation(sym::Symbol, prevOp::AbstractArray) = "$sym"
+latexoperation(sym::Symbol, prevOp::AbstractArray; kwargs...) = "$sym"
 
 
 function convertSubscript!(ex::Expr)

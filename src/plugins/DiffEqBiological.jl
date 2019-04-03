@@ -58,8 +58,7 @@ end
 
 
 function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
-    expand = true, double_linebreak=false, mathjax=true, starred=false)
-
+    expand = true, double_linebreak=false, mathjax=true, starred=false, kwargs...)
     str = starred ? "\\begin{align*}\n" : "\\begin{align}\n"
     eol = double_linebreak ? "\\\\\\\\\n" : "\\\\\n"
 
@@ -80,7 +79,7 @@ function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
         expand && (rate = DiffEqBiological.recursive_clean!(rate))
 
         ### Generate formatted string of substrates
-        substrates = [latexraw("$(substrate.stoichiometry== 1 ? "" : "$(substrate.stoichiometry) * ") $(substrate.reactant)") for substrate in r.substrates ]
+        substrates = [latexraw("$(substrate.stoichiometry== 1 ? "" : "$(substrate.stoichiometry) * ") $(substrate.reactant)"; kwargs...) for substrate in r.substrates ]
         isempty(substrates) && (substrates = ["\\varnothing"])
 
         str *= join(substrates, " + ")
@@ -92,17 +91,17 @@ function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
             expand && (rate_backwards = DiffEqBiological.recursive_clean!(rate_backwards))
             expand && (rate_backwards = DiffEqBiological.recursive_clean!(rate_backwards))
             str *= " &<=>"
-            str *= "[" * latexraw(rate) * "]"
-            str *= "[" * latexraw(rate_backwards) * "] "
+            str *= "[" * latexraw(rate; kwargs...) * "]"
+            str *= "[" * latexraw(rate_backwards; kwargs...) * "] "
             backwards_reaction = true
         else
             ### Uni-directional arrows
             str *= " &->"
-            str *= "[" * latexraw(rate) * "] "
+            str *= "[" * latexraw(rate; kwargs...) * "] "
         end
 
         ### Generate formatted string of products
-        products = [latexraw("$(product.stoichiometry== 1 ? "" : "$(product.stoichiometry) * ") $(product.reactant)") for product in r.products ]
+        products = [latexraw("$(product.stoichiometry== 1 ? "" : "$(product.stoichiometry) * ") $(product.reactant)"; kwargs...) for product in r.products ]
         isempty(products) && (products = ["\\varnothing"])
         str *= join(products, " + ")
         str *= "}$eol"

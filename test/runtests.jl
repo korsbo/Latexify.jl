@@ -19,4 +19,5 @@ using Test
 @testset "chemical_arrows test" begin include("chemical_arrows_test.jl") end
 @testset "DataFrame Plugin" begin include("plugins/DataFrames.jl") end
 @testset "unicode2latex" begin include("unicode2latex.jl") end
+@testset "cdot test" begin include("cdot_test.jl") end
 @testset "numberformatters" begin include("numberformatters_test.jl") end

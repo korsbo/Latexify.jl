@@ -77,4 +77,4 @@ raw"\begin{align}
 "
 
 
-@test_throws MethodError latexify(rn; env=:arrow, bad_kwarg="should error")
+# @test_throws MethodError latexify(rn; env=:arrow, bad_kwarg="should error")
