@@ -66,7 +66,7 @@ One of them is [ParameterizedFunctions](https://github.com/JuliaDiffEq/Parameter
 The ability to latexify such ODEs is pretty much what lured me to create this package.
 
 ```julia
-using DifferentialEquations
+using Parameterizedfunctions
 using Latexify
 
 f = @ode_def positiveFeedback begin
@@ -85,7 +85,7 @@ outputs:
 
 
 ```julia
-using DifferentialEquations
+using DiffEqBiological
 using Latexify
 
 rn = @reaction_network demoNetwork begin
