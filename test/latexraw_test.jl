@@ -87,7 +87,7 @@ raw"3 \cdot \left( a \lt b \leq c \lt d \leq e \gt f \leq g \leq h \lt i = j = k
 @test latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:align, fmt="%.2e") ==
 raw"\begin{align}
 3.29e+07 =& 1.23e+00 =& P_{1} \\
-\frac{x}{y} =& 1.00e+10 =& 1.29e+03 \\
+\frac{x}{y} =& 1.00e+10 =& 1.29e+03
 \end{align}
 "
 

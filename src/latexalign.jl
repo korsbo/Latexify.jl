@@ -47,9 +47,10 @@ function latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=fals
     arr = latexraw(arr; kwargs...)
 
     str = "\\begin{align$(starred ? "*" : "")}\n"
-    for i in 1:rows
+    for i in 1:(rows-1)
         str *= join(arr[i,:], separator) * eol
     end
+    str *= join(arr[end,:], separator) * "\n"  # No EOL on the last line.
     str *= "\\end{align$(starred ? "*" : "")}\n"
     latexstr = LaTeXString(str)
     COPY_TO_CLIPBOARD && clipboard(latexstr)

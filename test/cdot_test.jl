@@ -57,14 +57,14 @@ end c_1 c_2
 @test latexify(f; env=:align, cdot=false) == 
 raw"\begin{align}
 \frac{dx}{dt} =& y c_{1} - x \\
-\frac{dy}{dt} =& x^{c_{2}} - y \\
+\frac{dy}{dt} =& x^{c_{2}} - y
 \end{align}
 "
 
 @test latexify(f; env=:align, cdot=true) == 
 raw"\begin{align}
 \frac{dx}{dt} =& y \cdot c_{1} - x \\
-\frac{dy}{dt} =& x^{c_{2}} - y \\
+\frac{dy}{dt} =& x^{c_{2}} - y
 \end{align}
 "
 
@@ -93,7 +93,7 @@ raw"\begin{align}
 \frac{dP_2}{dt} =& \beta m_2 - \mu P_2 -2 k_+ \frac{P_2^{2}}{2} + 2 k_- D_2 - k_+ P_1 P_2 + k_- T \\
 \frac{dD_1}{dt} =& k_+ \frac{P_1^{2}}{2} - k_- D_1 \\
 \frac{dD_2}{dt} =& k_+ \frac{P_2^{2}}{2} - k_- D_2 \\
-\frac{dT}{dt} =& k_+ P_1 P_2 - k_- T \\
+\frac{dT}{dt} =& k_+ P_1 P_2 - k_- T
 \end{align}
 "
 
@@ -105,7 +105,7 @@ raw"\begin{align}
 \frac{dP_2}{dt} =& \beta \cdot m_2 - \mu \cdot P_2 -2 \cdot k_+ \cdot \frac{P_2^{2}}{2} + 2 \cdot k_- \cdot D_2 - k_+ \cdot P_1 \cdot P_2 + k_- \cdot T \\
 \frac{dD_1}{dt} =& k_+ \cdot \frac{P_1^{2}}{2} - k_- \cdot D_1 \\
 \frac{dD_2}{dt} =& k_+ \cdot \frac{P_2^{2}}{2} - k_- \cdot D_2 \\
-\frac{dT}{dt} =& k_+ \cdot P_1 \cdot P_2 - k_- \cdot T \\
+\frac{dT}{dt} =& k_+ \cdot P_1 \cdot P_2 - k_- \cdot T
 \end{align}
 "
 
