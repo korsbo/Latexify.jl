@@ -28,6 +28,7 @@ include("latexify_function.jl")
 include("latexarray.jl")
 include("latexalign.jl")
 include("latexinline.jl")
+include("latexequation.jl")
 include("latextabular.jl")
 
 include("md.jl")
