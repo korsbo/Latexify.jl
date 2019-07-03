@@ -21,7 +21,7 @@ end
 
 #     KeywordArgument(:template, [:array], "`Bool`", "`false`", "description", [:Any]),
 keyword_arguments = [
-    KeywordArgument(:starred, [:align, :array, :arrow], "`Bool`", "`false`", "Star the environment to prevent equation numbering.", [:Any]),
+    KeywordArgument(:starred, [:align, :array, :arrow, :equation], "`Bool`", "`false`", "Star the environment to prevent equation numbering.", [:Any]),
     KeywordArgument(:separator, [:align], "`String`", "`\" =& \"`", "Specify how to separate the left hand side and the right.", [:Any]),
     KeywordArgument(:transpose, [:array, :tabular, :mdtable], "`Bool`", "`true`", "Flip rows for columns.", [:Any]),
     KeywordArgument(:double_linebreak, [:array, :align, :arrow], "`Bool`", "`false`", "Add an extra `\\\\` to the end of the line.", [:Any]),
@@ -36,7 +36,7 @@ keyword_arguments = [
     KeywordArgument(:fmt, [:mdtable, :tabular, :align, :array, :raw, :inline], "format string", "`\"\"`", "Format number output in accordence with Printf. Example: \"%.2e\"", [:Any]),
     KeywordArgument(:escape_underscores, [:mdtable, :mdtext], "`Bool`", "`false`", "Prevent underscores from being interpreted as formatting.", [:Any]),
     KeywordArgument(:convert_unicode, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Bool`", "`true`", "Convert unicode characters to latex commands, for example `α` to `\\alpha`", [:Any]),
-    KeywordArgument(:cdot, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Bool`", "`true`", "Toggle between using `\cdot` or just a space to represent multiplication.", [:Any]),
+    KeywordArgument(:cdot, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Bool`", "`true`", "Toggle between using `\\cdot` or just a space to represent multiplication.", [:Any]),
     KeywordArgument(:symbolic, [:align], "`Bool`", "`false`", "Use symbolic calculations to clean up the expression.", [:ReactionNetwork]),
     KeywordArgument(:clean, [:align], "`Bool`", "`false`", "Clean out `1*` terms. Only useful for DiffEqBiological versions 3.4 or below.", [:ReactionNetwork]),
 #     KeywordArgument(:template, [:array], "`Bool`", "`false`", "description", [:Any]),
