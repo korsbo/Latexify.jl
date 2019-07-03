@@ -3,7 +3,7 @@ using Latexify
 
 makedocs(
     modules = [Latexify],
-    format = :html,
+    format = Documenter.HTML(prettyurls = get(ENV, "CI", nothing) == "true"),
     sitename = "Latexify.jl",
     pages = [
         "index.md",
@@ -27,9 +27,7 @@ makedocs(
 deploydocs(
     #deps = Deps.pip("mkdocs", "python-markdown-math"),
     repo = "github.com/korsbo/Latexify.jl.git",
-    julia  = "1.1",
     target = "build",
-    osname = "linux",
     make = nothing,
     deps = nothing
     )
