@@ -13,6 +13,7 @@ using Test
 @testset "latexraw tests" begin include("latexraw_test.jl") end
 @testset "latexalign tests" begin include("latexalign_test.jl") end
 @testset "latexarray tests" begin include("latexarray_test.jl") end
+@testset "latexequation tests" begin include("latexequation_test.jl") end
 @testset "latexinline tests" begin include("latexinline_test.jl") end
 @testset "latextabular tests" begin include("latextabular_test.jl") end
 @testset "mdtable tests" begin include("mdtable_test.jl") end

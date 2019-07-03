@@ -57,6 +57,7 @@ However, you can override this by passing the keyword argument `env = `. The fol
 | no env | `:raw` | Latexifies an object and returns a ``\LaTeX`` formatted string. If the input is an array it will be recursed and all its elements latexified. This function does not surround the resulting string in any ``\LaTeX`` environments.
 | Inline | `:inline` | latexify the input and surround it with $$ for inline rendering. |
 | Align | `:align` | Latexifies input and surrounds it with an align environment. Useful for systems of equations and such fun stuff. |
+| Equation | `:equation` or `:eq` | Latexifies input and surrounds it with an equation environment. |
 | Array | `:array` | Latexify the elements of an Array or a Dict and output them in a ``\LaTeX`` array. |
 | Tabular | `:table` or `:tabular` | Latexify the elements of an array and output a tabular environment. Note that tabular is not supported by MathJax and will therefore not be rendered in Jupyter, etc.|
 | Markdown Table | `:mdtable` | Output a Markdown table. This will be rendered nicely by Jupyter, etc. |

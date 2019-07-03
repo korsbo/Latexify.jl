@@ -16,6 +16,7 @@ function infer_output(env, args...)
         env == :raw && return latexraw
         env == :array && return latexarray
         env == :align && return latexalign
+        env in [:eq, :equation] && return latexequation
         env == :mdtable && return mdtable
         env == :mdtext && return mdtext
         env in [:arrows, :chem, :chemical, :arrow] && return chemical_arrows

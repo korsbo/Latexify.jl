@@ -7,6 +7,12 @@ args = [arg for arg in keyword_arguments if :align in arg.env]
 latexify(args, env=:mdtable)
 ```
 
+## Equation
+```@eval
+Base.include(@__MODULE__, "src/table_generator.jl")
+args = [arg for arg in keyword_arguments if :equation in arg.env]
+latexify(args, env=:mdtable)
+```
 
 ## Array
 ```@eval
