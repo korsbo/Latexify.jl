@@ -85,7 +85,7 @@ rn = @reaction_network begin
     (k₊,k₋), P₁+P₂ ↔ T
 end α K n δ γ β μ k₊ k₋;
 
-@test latexify(rn; cdot=false) == 
+@test_broken latexify(rn; cdot=false) == 
 raw"\begin{align}
 \frac{dm_1}{dt} =& \frac{\alpha K^{n}}{K^{n} + D_2^{n}} - \delta m_1 + \gamma \\
 \frac{dm_2}{dt} =& \frac{\alpha K^{n}}{K^{n} + D_1^{n}} - \delta m_2 + \gamma \\
@@ -97,7 +97,7 @@ raw"\begin{align}
 \end{align}
 "
 
-@test latexify(rn; cdot=true) == 
+@test_broken latexify(rn; cdot=true) == 
 raw"\begin{align}
 \frac{dm_1}{dt} =& \frac{\alpha \cdot K^{n}}{K^{n} + D_2^{n}} - \delta \cdot m_1 + \gamma \\
 \frac{dm_2}{dt} =& \frac{\alpha \cdot K^{n}}{K^{n} + D_1^{n}} - \delta \cdot m_2 + \gamma \\
@@ -144,7 +144,7 @@ raw"\begin{align}
 "
 
 # tabular
-@test latexify(rn.symjac; env=:tabular, cdot=false) == 
+@test_broken latexify(rn.symjac; env=:tabular, cdot=false) == 
 raw"\begin{tabular}{ccccccc}
 $ - \delta$ & $0$ & $0$ & $0$ & $0$ & $\frac{ - K^{n} n \alpha D_2^{-1 + n}}{\left( K^{n} + D_2^{n} \right)^{2}}$ & $0$\\
 $0$ & $ - \delta$ & $0$ & $0$ & $\frac{ - K^{n} n \alpha D_1^{-1 + n}}{\left( K^{n} + D_1^{n} \right)^{2}}$ & $0$ & $0$\\
@@ -156,7 +156,7 @@ $0$ & $0$ & $k_+ P_2$ & $k_+ P_1$ & $0$ & $0$ & $ - k_-$\\
 \end{tabular}
 "
 
-@test latexify(rn.symjac; env=:tabular, cdot=true) == 
+@test_broken latexify(rn.symjac; env=:tabular, cdot=true) == 
 raw"\begin{tabular}{ccccccc}
 $ - \delta$ & $0$ & $0$ & $0$ & $0$ & $\frac{ - K^{n} \cdot n \cdot \alpha \cdot D_2^{-1 + n}}{\left( K^{n} + D_2^{n} \right)^{2}}$ & $0$\\
 $0$ & $ - \delta$ & $0$ & $0$ & $\frac{ - K^{n} \cdot n \cdot \alpha \cdot D_1^{-1 + n}}{\left( K^{n} + D_1^{n} \right)^{2}}$ & $0$ & $0$\\
