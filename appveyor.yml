@@ -30,8 +30,8 @@ install:
 build_script:
 # Need to convert from shallow to complete for Pkg.clone to work
   - IF EXIST .git\shallow (git fetch --unshallow)
-  - C:\julia\bin\julia -e "using InteractiveUtils; versioninfo();
-    using Pkg; Pkg.clone(pwd(), \"Latexify\"); Pkg.build(\"Latexify\")"
+  - C:\julia\bin\julia --project -e "using InteractiveUtils; versioninfo();
+    using Pkg"
 
 test_script:
   - echo "%JL_TEST_SCRIPT%"
