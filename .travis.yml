@@ -15,9 +15,9 @@ notifications:
 # uncomment the following lines to override the default test script
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia -e 'using Pkg; Pkg.clone(pwd()); Pkg.test("Latexify"; coverage=true)'
+  - julia --project -e 'using Pkg; Pkg.test("Latexify"; coverage=true)'
 after_success:
   # push coverage results to Coveralls and Codecov
-  - julia -e 'using Pkg; import Latexify; cd(joinpath(dirname(pathof(Latexify)), "..")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder()); Codecov.submit(Codecov.process_folder())'
-  - julia -e 'using Pkg; ps=Pkg.PackageSpec(name="Documenter", version="0.19"); Pkg.add(ps); Pkg.pin(ps), import Latexify;
-    cd(dirname(pathof(Latexify))); include(joinpath("..", "docs", "make.jl"))'
+  - julia --project -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder()); Codecov.submit(Codecov.process_folder())'
+  - julia --project -e 'using Pkg; ps=Pkg.PackageSpec(name="Documenter", version="0.19"); Pkg.add(ps); Pkg.pin(ps), import Latexify;
+    include(joinpath("..", "docs", "make.jl"))'
