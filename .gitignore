@@ -2,6 +2,7 @@
 *.jl.*.cov
 *.jl.mem
 deps/deps.jl
+*Manifest.toml
 
 docs/build
 docs/site
