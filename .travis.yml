@@ -27,5 +27,5 @@ jobs:
       script:
         - julia --project=doc/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd()));
                                                Pkg.instantiate()'
-        - julia --project=doc/ doc/make.jl
+        - julia --project=doc/ doc/src/make.jl
       after_success: skip
