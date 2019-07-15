@@ -46,6 +46,9 @@ function __init__()
     @require DiffEqBiological = "eb300fae-53e8-50a0-950c-e21f52c2b7e0" begin
         include(joinpath("plugins", "DiffEqBiological.jl"))
     end
+    @require ModelingToolkit = "961ee093-0014-501f-94e3-6117800e7a78" begin
+        include(joinpath("plugins", "ModelingToolkit.jl"))
+    end
     @require SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8" begin
         include(joinpath("plugins", "SymEngine.jl"))
     end
