@@ -4,6 +4,9 @@ authors = ["Niklas Korsbo <niklas.korsbo@gmail.com>"]
 repo = "https://github.com/korsbo/Latexify.jl.git"
 version = "0.9.0"
 
+[compat]
+julia = "1"
+
 [deps]
 InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
