@@ -20,3 +20,27 @@ raw"\begin{align*}
 \frac{dy}{dt} =& x^{c_{2}} - y
 \end{align*}
 "
+ 
+#### Test the setting of default keyword arguments.
+
+@test latexify("x * y") == 
+raw"$x \cdot y$"
+
+set_default(cdot = false)
+
+Latexify.@generate_test latexify("x * y")
+
+@test latexify("x * y") == 
+raw"$x y$"
+
+@test get_default() == Dict{Symbol,Any}(:cdot => false)
+
+reset_default()
+@test get_default() == Dict{Symbol,Any}()
+
+Latexify.@generate_test latexify("x * y")
+
+@test latexify("x * y") == 
+raw"$x \cdot y$"
+
+

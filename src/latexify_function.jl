@@ -1,7 +1,7 @@
 function latexify(args...; env::Symbol=:auto, kwargs...)
     latex_function = infer_output(env, args...)
 
-    result = latex_function(args...; kwargs...)
+    result = latex_function(args...; merge(default_kwargs, kwargs)...)
 
     COPY_TO_CLIPBOARD && clipboard(result)
     AUTO_DISPLAY && display(result)

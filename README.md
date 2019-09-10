@@ -113,6 +113,9 @@ There are more stuff that you can do, but for that I will refer you to the
 
 - `copy_to_clipboard(::Bool)`, toggle automatic copying of the resulting LaTeX code to the clipboard (default is false).
 - `auto_display(::Bool)` toggles automatic display of your output, even if it is not the last command to have run.
+- `set_default(; kwargs...)`, set your own default kwargs for your Julia session. This is not to be used within a package since the effect is global.
+- `reset_default(; kwargs...)`, reset the changes you made with the above command.
+- `get_default(; kwargs...)`, view the changes you have made to the default kwargs.
 
 
 ## Installation
