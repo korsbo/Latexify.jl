@@ -28,17 +28,20 @@ raw"$x \cdot y$"
 
 set_default(cdot = false)
 
-Latexify.@generate_test latexify("x * y")
-
 @test latexify("x * y") == 
 raw"$x y$"
 
 @test get_default() == Dict{Symbol,Any}(:cdot => false)
 
+set_default(cdot = true, transpose = true)
+
+@test get_default() == Dict{Symbol,Any}(:cdot => true,:transpose => true)
+@test get_default(:cdot) == true
+@test get_default(:cdot, :transpose) == (true, true)
+@test get_default([:cdot, :transpose]) == Bool[1, 1]
+
 reset_default()
 @test get_default() == Dict{Symbol,Any}()
-
-Latexify.@generate_test latexify("x * y")
 
 @test latexify("x * y") == 
 raw"$x \cdot y$"
