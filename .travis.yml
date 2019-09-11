@@ -15,7 +15,8 @@ notifications:
 addons:
   apt:
     packages:
-    - xsel
+    - xclip
+    - xvfb
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia --project -e 'using Pkg; Pkg.test("Latexify"; coverage=true)'
