@@ -6,7 +6,8 @@ using Markdown
 using MacroTools: postwalk
 using Printf
 
-export latexify, md, copy_to_clipboard, auto_display
+export latexify, md, copy_to_clipboard, auto_display, set_default, get_default,
+    reset_default
 
 ## Allow some backwards compatibility until its time to deprecate.
 export latexarray, latexalign, latexraw, latexinline, latextabular, mdtable
@@ -30,6 +31,7 @@ include("latexalign.jl")
 include("latexinline.jl")
 include("latexequation.jl")
 include("latextabular.jl")
+include("default_kwargs.jl")
 
 include("md.jl")
 include("mdtable.jl")

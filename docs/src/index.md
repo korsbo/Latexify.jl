@@ -143,6 +143,30 @@ auto_display(true)
 after which all calls to `latexify` will automatically be displayed. This can be rather convenient, but it can also cause a lot of unwanted printouts if you are using `latexify` in any form of loop.
 You can turn off this behaviour again by passing `false` to the same function.
 
+## Setting your own defaults
+If you get tired of specifying the same keyword argument over and over in a session, you can just reset its default:
+```julia
+set_default(fmt = "%.2f", convert_unicode = false)
+```
+
+Note that this changes Latexify.jl from within and should therefore only be used in your own Julia sessions (do not call this from within your packages). 
+
+The calls are additive so that a new call with 
+```julia
+set_default(cdot = false)
+```
+will not cancel out the changes we just made to `fmt` and `convert_unicode`. 
+
+To view your changes, use
+```julia
+get_default()
+```
+and to reset your changes, use
+```julia
+reset_default()
+```
+
+
 ## Legacy support
 
 Latexify.jl has stopped supporting Julia versions older than 0.7. This does not mean that you cannot use Latexify with earlier versions, just that these will not get new features. Latexify.jl's release v0.4.1 was the last which supported Julia 0.6. Choose that release in the dropdown menu if you want to see that documentation.
