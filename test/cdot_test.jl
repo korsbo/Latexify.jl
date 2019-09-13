@@ -28,7 +28,7 @@ raw"x \left( y + z \right) y \left( z + a \right) \left( z + b \right)"
 raw"x \cdot \left( y + z \right) \cdot y \cdot \left( z + a \right) \cdot \left( z + b \right)"
 
 # array
-@test latexify( [:(x*y), :(x*(y+z)*y*(z+a)*(z+b))]; env=:array, cdot=false) ==
+@test latexify( [:(x*y), :(x*(y+z)*y*(z+a)*(z+b))]; env=:array, transpose=true, cdot=false) ==
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
@@ -38,7 +38,7 @@ x y & x \left( y + z \right) y \left( z + a \right) \left( z + b \right) \\
 \end{equation}
 "
 
-@test latexify( [:(x*y), :(x*(y+z)*y*(z+a)*(z+b))]; env=:array, cdot=true) == 
+@test latexify( [:(x*y), :(x*(y+z)*y*(z+a)*(z+b))]; env=:array, transpose=true, cdot=true) == 
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
