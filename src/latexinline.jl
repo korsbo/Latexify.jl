@@ -5,3 +5,4 @@ function latexinline(x; kwargs...)
 end
 
 latexinline(x::Union{AbstractArray, Tuple}; kwargs...) = [ latexinline(i; kwargs...) for i in x]
+latexinline(args...; kwargs...) = latexinline(args; kwargs...)
