@@ -1,13 +1,15 @@
 function latexify(args...; env::Symbol=:auto, kwargs...)
+    args, custom_kwargs = apply_recipe(args...)
+    result = latex_function(args...; merge(default_kwargs, custom_kwargs, kwargs)...)
     latex_function = infer_output(env, args...)
 
-    result = latex_function(args...; merge(default_kwargs, kwargs)...)
 
     COPY_TO_CLIPBOARD && clipboard(result)
     AUTO_DISPLAY && display(result)
     return result
 end
 
+apply_recipe(args...) = (args, Dict{Symbol, Any}())
 
 function infer_output(env, args...)
     if env != :auto

@@ -55,7 +55,7 @@ function get_function_def(func_signature::Expr, args::Vector)
     if func_signature.head == :where
         Expr(:where, get_function_def(front, args), esc.(func_signature.args[2:end])...)
     elseif func_signature.head == :call
-        func = Expr(:call, :(Latexify.apply_recipe), esc.([args])...)
+        func = Expr(:call, :(Latexify.apply_recipe), esc.(args)...)
         if isa(front, Expr) && front.head == :curly
             Expr(:where, func, esc.(front.args[2:end])...)
         else
@@ -137,8 +137,8 @@ macro latexrecipe(funcexpr)
         error("Missing function arguments... need something to dispatch on!")
     end
     #
-    @show(func_signature)
-    @show(func_body)
+    #= @show(func_signature) =#
+    #= @show(func_body) =#
     #
     args, kw_body, kw_dict = create_kw_body(func_signature)
     func = get_function_def(func_signature, args)
@@ -147,7 +147,7 @@ macro latexrecipe(funcexpr)
     #= # replace all the key => value lines with argument setting logic =#
     #= # and break up by series. =#
     process_recipe_body!(func_body)
-    @show(func_body)
+    #= @show(func_body) =#
 #
     #= # now build a function definition for apply_recipe, wrapping the return value in a tuple if needed. =#
     funcdef = Expr(:function, func, esc(quote
@@ -161,13 +161,13 @@ macro latexrecipe(funcexpr)
         $func_body
     end))
     #
-    @show(args)
-    @show(kw_body)
-    @show(kw_dict)
-    @show(func)
+    #= @show(args) =#
+    #= @show(kw_body) =#
+    #= @show(kw_dict) =#
+    #= @show(func) =#
 
-    @show(funcdef)
+    #= @show(funcdef) =#
     #= return funcdef =#
-    return nothing
+    return funcdef
 end
 
