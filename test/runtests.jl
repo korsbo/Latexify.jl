@@ -9,6 +9,7 @@ using Test
 
 # Run tests
 
+@testset "recipe test" begin include("recipe_test.jl") end
 @testset "latexify tests" begin include("latexify_test.jl") end
 @testset "latexraw tests" begin include("latexraw_test.jl") end
 @testset "latexalign tests" begin include("latexalign_test.jl") end
