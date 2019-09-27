@@ -1,9 +1,3 @@
-# What is needed?
-#
-#  -  Infer environment
-#  -  conversion from custom type to accepted type
-#
-
 const _debug_recipes = Bool[false]
 function debug(v::Bool = true)
     _debug_recipes[1] = v
@@ -41,8 +35,8 @@ function create_kw_body(func_signature::Expr)
                 k = k.args[1]
                 @warn("Type annotations on keyword arguments not currently supported in recipes. Type information has been discarded")
             end
-            push!(kw_body.args, :($k = $v))
-            kw_dict[k] = v
+            push!(kw_body.args, :($k = kwargs[$(Meta.quot(k))]))
+            kw_dict[k] = v isa QuoteNode ? v.value : v
         end
         args = args[2:end]
     end
@@ -52,10 +46,12 @@ end
 # build an apply_recipe function header from the recipe function header
 function get_function_def(func_signature::Expr, args::Vector)
     front = func_signature.args[1]
+    kwarg_expr = Expr(:parameters, Expr(:..., esc(:kwargs)))
     if func_signature.head == :where
         Expr(:where, get_function_def(front, args), esc.(func_signature.args[2:end])...)
     elseif func_signature.head == :call
-        func = Expr(:call, :(Latexify.apply_recipe), esc.(args)...)
+        #= func = Expr(:call, :(Latexify.apply_recipe), esc.(args)..., Expr(:parameters, :kwargs)) =#
+        func = Expr(:call, :(Latexify.apply_recipe), kwarg_expr, esc.(args)...)
         if isa(front, Expr) && front.head == :curly
             Expr(:where, func, esc.(front.args[2:end])...)
         else
@@ -66,7 +62,6 @@ function get_function_def(func_signature::Expr, args::Vector)
     end
 end
 
-using MacroTools: postwalk
 # process the body of the recipe recursively.
 # when we see the series macro, we split that block off:
     # let
@@ -81,15 +76,22 @@ function process_recipe_body!(expr::Expr)
         if isa(e,Expr)
 
             # process trailing flags, like:
-            #   a --> b, :quiet
-            quiet = false
+            #   a --> b, :quiet, :force
+            quiet, force = false, false 
             if _is_arrow_tuple(e)
                 for flag in e.args
                     if _equals_symbol(flag, :quiet)
                         quiet = true
+                    elseif _equals_symbol(flag, :force)
+                        force = true
                     end
                 end
                 e = e.args[1]
+            end
+
+            if e.head == :(:=)
+                force = true
+                e.head = :(-->)
             end
 
             # we are going to recursively swap out `a --> b, flags...` commands
@@ -100,7 +102,11 @@ function process_recipe_body!(expr::Expr)
                     k = QuoteNode(k)
                 end
 
-                set_expr = :(kwargs[$k] = $v)
+                set_expr = if force
+                    :(kwargs[$k] = $v)
+                else
+                    :(haskey(kwargs, $k) || (kwargs[$k] = $v))
+                end
 
                 quiet = false
                 expr.args[i] = if quiet
@@ -121,53 +127,40 @@ function process_recipe_body!(expr::Expr)
             end
         end
     end
-    #= expr = postwalk(x-> :head in fieldnames(typeof(x)) && x.head == :return ? :(return ($(x.args[1]), kwargs)) : x, expr) =#
 end
 
 macro latexrecipe(funcexpr)
     func_signature, func_body = funcexpr.args
-    #
+
     if !(funcexpr.head in (:(=), :function))
         error("Must wrap a valid function call!")
     end
+
     if !(isa(func_signature, Expr) && func_signature.head in (:call, :where))
         error("Expected `func_signature = ...` with func_signature as a call or where Expr... got: $func_signature")
     end
+
     if length(func_signature.args) < 2
         error("Missing function arguments... need something to dispatch on!")
     end
-    #
-    #= @show(func_signature) =#
-    #= @show(func_body) =#
-    #
+
     args, kw_body, kw_dict = create_kw_body(func_signature)
     func = get_function_def(func_signature, args)
-#
-    #= # this is where the receipe func_body is processed =#
-    #= # replace all the key => value lines with argument setting logic =#
-    #= # and break up by series. =#
     process_recipe_body!(func_body)
-    #= @show(func_body) =#
-#
-    #= # now build a function definition for apply_recipe, wrapping the return value in a tuple if needed. =#
+
+    @show kw_dict
+
+    # now build a function definition for apply_recipe, wrapping the return value in a tuple if needed.
     funcdef = Expr(:function, func, esc(quote
         if Latexify._debug_recipes[1]
             println("apply_recipe args: ", $args)
         end
-        #= kwargs = Dict{Symbol, Any}() =#
-        kwargs = $kw_dict
+        kwargs = merge($kw_dict, kwargs)
 
         $kw_body
         $func_body
     end))
-    #
-    #= @show(args) =#
-    #= @show(kw_body) =#
-    #= @show(kw_dict) =#
-    #= @show(func) =#
 
-    #= @show(funcdef) =#
-    #= return funcdef =#
     return funcdef
 end
 

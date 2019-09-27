@@ -1,8 +1,14 @@
-function latexify(args...; env::Symbol=:auto, kwargs...)
-    args, custom_kwargs = apply_recipe(args...)
-    result = latex_function(args...; merge(default_kwargs, custom_kwargs, kwargs)...)
+function latexify(args...; kwargs...)
+
+    ## Let potential recipes transform the arguments.
+    args, kwargs = apply_recipe(args...; merge(default_kwargs, kwargs)...)
+
+    ## If the environment is unspecified, use auto inference.
+    env = haskey(kwargs, :env) ? kwargs[:env] : :auto
+
     latex_function = infer_output(env, args...)
 
+    result = latex_function(args...; kwargs...)
 
     COPY_TO_CLIPBOARD && clipboard(result)
     AUTO_DISPLAY && display(result)
