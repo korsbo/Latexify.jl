@@ -148,7 +148,6 @@ macro latexrecipe(funcexpr)
     func = get_function_def(func_signature, args)
     process_recipe_body!(func_body)
 
-    @show kw_dict
 
     # now build a function definition for apply_recipe, wrapping the return value in a tuple if needed.
     funcdef = Expr(:function, func, esc(quote
