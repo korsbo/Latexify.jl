@@ -15,7 +15,7 @@ function latexify(args...; kwargs...)
     return result
 end
 
-apply_recipe(args...) = (args, Dict{Symbol, Any}())
+apply_recipe(args...; kwargs...) = (args, kwargs)
 
 function infer_output(env, args...)
     if env != :auto
