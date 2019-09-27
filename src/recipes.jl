@@ -1,3 +1,6 @@
+# Much of this is copied/adapted from RecipesBase.jl. Cred to everyone who has 
+# worked on that package!
+
 const _debug_recipes = Bool[false]
 function debug(v::Bool = true)
     _debug_recipes[1] = v
@@ -76,13 +79,11 @@ function process_recipe_body!(expr::Expr)
         if isa(e,Expr)
 
             # process trailing flags, like:
-            #   a --> b, :quiet, :force
-            quiet, force = false, false 
+            #   a --> b, :force
+            force = false
             if _is_arrow_tuple(e)
                 for flag in e.args
-                    if _equals_symbol(flag, :quiet)
-                        quiet = true
-                    elseif _equals_symbol(flag, :force)
+                    if _equals_symbol(flag, :force)
                         force = true
                     end
                 end
@@ -109,12 +110,7 @@ function process_recipe_body!(expr::Expr)
                 end
 
                 quiet = false
-                expr.args[i] = if quiet
-                    # quietly ignore keywords which are not supported
-                    :(Latexify.is_key_supported($k) ? $set_expr : nothing)
-                else
-                    set_expr
-                end
+                expr.args[i] = set_expr 
 
             elseif e.head != :call
                 # we want to recursively replace the arrows, but not inside function calls
@@ -149,7 +145,7 @@ macro latexrecipe(funcexpr)
     process_recipe_body!(func_body)
 
 
-    # now build a function definition for apply_recipe, wrapping the return value in a tuple if needed.
+    # now build a function definition for apply_recipe
     funcdef = Expr(:function, func, esc(quote
         if Latexify._debug_recipes[1]
             println("apply_recipe args: ", $args)
