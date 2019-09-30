@@ -42,9 +42,30 @@ keyword_arguments = [
 #     KeywordArgument(:template, [:array], "`Bool`", "`false`", "description", [:Any]),
     ]
 
-import Latexify: mdtable
+#= @latexrecipe function f(list::Array{KeywordArgument}; types=true) =#
+#=     isempty(list) && return nothing =#
+#=     sort!(list, by=x->x.kw) =#
+#=     keys = ["`:$(x.kw)`" for x in list] =#
+#=     # values = [join(["$i" for i in x.values], ", ") for x in list] =#
+#=     applicable_types = [join(["`$i`" for i in x.types], ", ") for x in list] =#
+#=     values = [x.values for x in list] =#
+#=     defaults = [x.default for x in list] =#
+#=     descriptions = [x.description for x in list] =#
 
-function mdtable(list::Array{KeywordArgument}; types=true)
+#=     latex --> false =#
+#=     env := :mdtable =#
+
+#=     if any(x->x.types != [:Any], list) && types =#
+#=         head --> ["Keyword", "Values", "Default", "Applicable types", "Description"] =#
+#=         return hcat(keys, values, defaults, applicable_types, descriptions) =# 
+#=     else =#
+#=         head --> ["Keyword", "Values", "Default", "Description"] =#
+#=         return hcat(keys, values, defaults, descriptions) =#
+#=     end =#
+#= end =#
+
+import Latexify: mdtable
+function mdtable(list::Array{KeywordArgument}; types=true, kwargs...)
     isempty(list) && return nothing
     sort!(list, by=x->x.kw)
     keys = ["`:$(x.kw)`" for x in list]

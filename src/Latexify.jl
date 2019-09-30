@@ -7,7 +7,7 @@ using MacroTools: postwalk
 using Printf
 
 export latexify, md, copy_to_clipboard, auto_display, set_default, get_default,
-    reset_default
+    reset_default, @latexrecipe
 
 ## Allow some backwards compatibility until its time to deprecate.
 export latexarray, latexalign, latexraw, latexinline, latextabular, mdtable
@@ -32,6 +32,7 @@ include("latexinline.jl")
 include("latexequation.jl")
 include("latextabular.jl")
 include("default_kwargs.jl")
+include("recipes.jl")
 
 include("md.jl")
 include("mdtable.jl")

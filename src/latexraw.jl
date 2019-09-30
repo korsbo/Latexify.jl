@@ -78,6 +78,7 @@ end
 
 
 latexraw(arr::Union{AbstractArray, Tuple}; kwargs...) = [latexraw(i; kwargs...) for i in arr]
+latexraw(args...; kwargs...) = latexraw(args; kwargs...)
 latexraw(i::Nothing; kwargs...) = ""
 latexraw(i::SubString; kwargs...) = latexraw(Meta.parse(i); kwargs...)
 latexraw(i::SubString{LaTeXStrings.LaTeXString}; kwargs...) = i
