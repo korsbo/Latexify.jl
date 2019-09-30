@@ -46,11 +46,57 @@ end
     return t.tup1, t.tup2
 end
 
+struct MyFloat 
+    x::Float64
+end
+
+@latexrecipe function f(vec::Vector{T}) where T <: MyFloat
+    fmt --> "%.4e"
+    return [myfloat.x for myfloat in vec]
+end
+
+struct MyDoubleVec{T}
+    vec1::AbstractVector{T}
+    vec2::AbstractVector{T}
+end
+
+@latexrecipe function f(vec::MyDoubleVec{T}) where T <: MyFloat
+    return [myfloat.x for myfloat in vec.vec1], [myfloat.x for myfloat in vec.vec2]
+end
+
 end
 
 using .MyModule
 t = MyModule.MyType([:A, :B, 3], [1, 2, 3])
 t2 = MyModule.MyType([:X, :Y, :(x/y)], Number[1.23434534, 232423.42345, 12//33])
+
+vec = [MyModule.MyFloat(x) for x in 1:4]
+Latexify.@generate_test latexify(vec)
+
+@test latexify(vec) == 
+raw"\begin{equation}
+\left[
+\begin{array}{cccc}
+1.0000e+00 & 2.0000e+00 & 3.0000e+00 & 4.0000e+00 \\
+\end{array}
+\right]
+\end{equation}
+"
+
+double_vec = MyModule.MyDoubleVec([MyModule.MyFloat(x) for x in 1:4], [MyModule.MyFloat(x) for x in 8:11])
+@test latexify(double_vec) == 
+raw"\begin{equation}
+\left[
+\begin{array}{cc}
+1.0 & 8.0 \\
+2.0 & 9.0 \\
+3.0 & 10.0 \\
+4.0 & 11.0 \\
+\end{array}
+\right]
+\end{equation}
+"
+
 
 
 @test latexify(t2, fmt="%.8f") == 
