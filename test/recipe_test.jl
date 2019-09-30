@@ -15,6 +15,35 @@ end
     return reverse ? (t.vec2, t.vec1) : (t.vec1, t.vec2)
 end
 
+struct MyVec
+    vec::AbstractVector
+end
+
+@latexrecipe function f(v::MyVec; reverse=false)
+    env --> :array
+    fmt := "%.2f"
+    return reverse ? v.vec[end, -1, 1] : v.vec
+end
+
+struct MyTup
+    tup::Tuple
+end
+
+@latexrecipe function f(v::MyTup; reverse=false)
+    env --> :array
+    fmt := "%.2f"
+    return reverse ? v.tup[end, -1, 1] : v.tup
+end
+
+struct MyDoubleTup
+    tup1::Tuple
+    tup2::Tuple
+end
+
+@latexrecipe function f(t::MyDoubleTup)
+    return t.tup1, t.tup2
+end
+
 end
 
 using .MyModule
@@ -65,6 +94,43 @@ raw"\begin{equation}
 1.00 & A \\
 2.00 & B \\
 3.00 & 3.00 \\
+\end{array}
+\right]
+\end{equation}
+"
+
+
+vec = MyModule.MyVec([1., 2.])
+@test latexify(vec) == 
+raw"\begin{equation}
+\left[
+\begin{array}{cc}
+1.00 & 2.00 \\
+\end{array}
+\right]
+\end{equation}
+"
+
+tup = MyModule.MyTup((1., 2.))
+
+@test latexify(tup) == 
+raw"\begin{equation}
+\left[
+\begin{array}{cc}
+1.00 & 2.00 \\
+\end{array}
+\right]
+\end{equation}
+"
+
+
+tup2 = MyModule.MyDoubleTup((1., 3), (2., 4.))
+@test latexify(tup2) == 
+raw"\begin{equation}
+\left[
+\begin{array}{cc}
+1.0 & 2.0 \\
+3 & 4.0 \\
 \end{array}
 \right]
 \end{equation}

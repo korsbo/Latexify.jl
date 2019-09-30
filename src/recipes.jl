@@ -119,7 +119,15 @@ function process_recipe_body!(expr::Expr)
             end
             
             if  e.head == :return
-                e.args[1] = :(($(e.args[1]), kwargs))
+                if e.args[1] isa Expr
+                    if e.args[1] isa Tuple
+                        e.args[1] = :(($(e.args[1]), kwargs))
+                    else
+                        e.args[1] = :((($(e.args[1]),), kwargs))
+                    end
+                else
+                    e.args[1] = :((($(e.args[1]),), kwargs))
+                end
             end
         end
     end
