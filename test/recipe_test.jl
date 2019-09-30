@@ -103,7 +103,7 @@ raw"\begin{equation}
 
 
 vec = MyModule.MyVec([1., 2.])
-@test latexify(vec) == 
+@test latexify(vec, transpose=true) == 
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
@@ -115,7 +115,7 @@ raw"\begin{equation}
 
 tup = MyModule.MyTup((1., 2.))
 
-@test latexify(tup) == 
+@test latexify(tup, transpose=true) == 
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
@@ -125,7 +125,7 @@ raw"\begin{equation}
 \end{equation}
 "
 
-@test latexify(tup, reverse=true) == 
+@test latexify(tup, reverse=true, transpose=true) == 
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
