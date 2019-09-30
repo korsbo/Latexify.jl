@@ -9,6 +9,8 @@ struct MyType
     vec2
 end
 
+my_reverse(x) = x[end:-1:1]
+
 @latexrecipe function f(t::MyType; reverse=false)
     env --> :align
     fmt := "%.2f"
@@ -32,7 +34,7 @@ end
 @latexrecipe function f(v::MyTup; reverse=false)
     env --> :array
     fmt := "%.2f"
-    return reverse ? v.tup[end, -1, 1] : v.tup
+    return reverse ? my_reverse(v.tup) : v.tup
 end
 
 struct MyDoubleTup
@@ -122,6 +124,17 @@ raw"\begin{equation}
 \right]
 \end{equation}
 "
+
+@test latexify(tup, reverse=true) == 
+raw"\begin{equation}
+\left[
+\begin{array}{cc}
+2.00 & 1.00 \\
+\end{array}
+\right]
+\end{equation}
+"
+
 
 
 tup2 = MyModule.MyDoubleTup((1., 3), (2., 4.))
