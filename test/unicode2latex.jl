@@ -1,7 +1,7 @@
 @test latexify("α"; convert_unicode=false) == raw"$α$"
 
 
-@test latexify(['α', :β, "γ/η"], convert_unicode=false) ==
+@test latexify(['α', :β, "γ/η"], transpose=true, convert_unicode=false) ==
 raw"\begin{equation}
 \left[
 \begin{array}{ccc}
