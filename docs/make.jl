@@ -14,6 +14,7 @@ makedocs(
         #     "tutorials/latexarray.md",
         #     "tutorials/latextabular.md"
         # ],
+        "tutorials/recipes.md",
         "Use with other packages" => [
             "tutorials/parameterizedfunctions.md",
             "tutorials/DiffEqBiological.md"
