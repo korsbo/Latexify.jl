@@ -71,8 +71,6 @@ t = MyModule.MyType([:A, :B, 3], [1, 2, 3])
 t2 = MyModule.MyType([:X, :Y, :(x/y)], Number[1.23434534, 232423.42345, 12//33])
 
 vec = [MyModule.MyFloat(x) for x in 1:4]
-Latexify.@generate_test latexify(vec)
-
 @test latexify(vec; transpose=true) == 
 raw"\begin{equation}
 \left[
