@@ -98,11 +98,6 @@ You can control the formatting of numbers by passing any of the following to the
 
 
 
-If you pass a string (for example `fmt = "%.2e"`) this
-will be passed on to to
-[Printf](https://docs.julialang.org/en/v1/stdlib/Printf/), have a read there
-for more information.
-
 Examples:
 ```julia
 latexify(12345.678; fmt="%.1e")
