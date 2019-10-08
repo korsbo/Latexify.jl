@@ -67,7 +67,7 @@ end
 end
 
 using .MyModule
-t = MyModule.MyType([:A, :B, 3], [1, 2, 3])
+t = MyModule.MyType([:A, :B, 3.], [1., 2, 3])
 t2 = MyModule.MyType([:X, :Y, :(x/y)], Number[1.23434534, 232423.42345, 12//33])
 
 vec = [MyModule.MyFloat(x) for x in 1:4]
@@ -101,7 +101,7 @@ raw"\begin{equation}
 raw"\begin{align}
 X =& 1.23 \\
 Y =& 232423.42 \\
-\frac{x}{y} =& \frac{4}{11}
+\frac{x}{y} =& \frac{4.00}{11.00}
 \end{align}
 "
 
