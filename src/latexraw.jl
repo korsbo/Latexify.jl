@@ -90,16 +90,9 @@ latexraw(z::Complex; kwargs...) = LaTeXString("$(z.re)$(z.im < 0 ? "" : "+" )$(z
 #latexraw(i::DataFrames.DataArrays.NAtype) = "\\textrm{NA}"
 latexraw(str::LaTeXStrings.LaTeXString; kwargs...) = str
 
-#function latexraw(i::Number; fmt="", kwargs...)
-#    if fmt == ""
-#        return string(i)
-#    else
-#        return @eval @sprintf($fmt, $i)
-#    end
-#end
-
-function latexraw(i::Number; fmt="", number_formatter = fmt=="" ? PlainNumberFormatter() : PrintfNumberFormatter(fmt), kwargs...)
-    return number_formatter(i)
+function latexraw(i::Number; fmt=PlainNumberFormatter(), kwargs...)
+    fmt isa String && (fmt = PrintfNumberFormatter(fmt))
+    return fmt(i)
 end
 
 function latexraw(i::Char; convert_unicode=true, kwargs...)

@@ -86,7 +86,22 @@ $\frac{x}{y}$
 ```
 
 ## Number formatting
-You can control the formatting of numbers by passing the keyword argument `fmt`. This will be passed on to [Printf](https://docs.julialang.org/en/v1/stdlib/Printf/), have a read there for more information.
+
+You can control the formatting of numbers by passing any of the following to the `fmt` keyword:
+
+
+- a [printf-style](https://en.wikipedia.org/wiki/Printf_format_string) formatting string, for example `fmt = "%.2e"`.
+- a single argument function, for example `fmt = x -> round(x, sigdigits=2)`.
+- a formatter supplied by Latexify.jl, for example `fmt = FancyNumberFormatter(2)` (thanks to @simeonschaub). You can pass any of these formatters an integer argument which specifies how many significant digits you want.
+  - `FancyNumberFormatter()` replaces the exponent notation, from `1.2e+3` to `1.2 \cdot 10^3`. 
+  - `StyledNumberFormatter()` replaces the exponent notation, from `1.2e+3` to `1.2 \mathrm{e} 3`.
+
+
+
+If you pass a string (for example `fmt = "%.2e"`) this
+will be passed on to to
+[Printf](https://docs.julialang.org/en/v1/stdlib/Printf/), have a read there
+for more information.
 
 Examples:
 ```julia
@@ -95,15 +110,28 @@ latexify(12345.678; fmt="%.1e")
 $1.2e+04$
 
 ```julia
-latexify([12893.1 1.328e2; "x/y" 7832//2378]; fmt="%.1e")
+latexify([12893.1 1.328e2; "x/y" 7832//2378]; fmt=FancyNumberFormatter(3))
 ```
-
 ```math
 \begin{equation}
 \left[
 \begin{array}{cc}
-1.3e+04 & 1.3e+02 \\
+1.29 \cdot 10^{4} & 133 \\
 \frac{x}{y} & \frac{3916}{1189} \\
+\end{array}
+\right]
+\end{equation}
+```
+
+```julia
+using Formatting
+latexify([12893.1 1.328e2]; fmt=x->format(round(x, sigdigits=2), autoscale=:metric))
+```
+```math
+\begin{equation}
+\left[
+\begin{array}{cc}
+13k & 130 \\
 \end{array}
 \right]
 \end{equation}
