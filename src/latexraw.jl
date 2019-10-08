@@ -77,8 +77,11 @@ function latexraw(inputex::Expr; convert_unicode=true, kwargs...)
 end
 
 
+function latexraw(args...; kwargs...) 
+    @assert length(args) > 1 "latexify does not support objects of type $(typeof(args[1]))."
+    latexraw(args; kwargs...)
+end
 latexraw(arr::Union{AbstractArray, Tuple}; kwargs...) = [latexraw(i; kwargs...) for i in arr]
-latexraw(args...; kwargs...) = latexraw(args; kwargs...)
 latexraw(i::Nothing; kwargs...) = ""
 latexraw(i::SubString; kwargs...) = latexraw(Meta.parse(i); kwargs...)
 latexraw(i::SubString{LaTeXStrings.LaTeXString}; kwargs...) = i
