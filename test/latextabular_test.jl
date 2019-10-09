@@ -5,7 +5,7 @@ d = DataFrame(A = 11:13, B = [:X, :Y, :Z])
 
 @test latexify(d; env=:table, side=1:3, latex=false) ==
 raw"\begin{tabular}{ccc}
-. & A & B\\
+ & A & B\\
 1 & 11 & X\\
 2 & 12 & Y\\
 3 & 13 & Z\\

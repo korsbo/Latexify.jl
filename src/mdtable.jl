@@ -57,6 +57,13 @@ function mdtable end
 
 function mdtable(M::AbstractMatrix; latex::Bool=true, escape_underscores=false, head=[], side=[], transpose=false, kwargs...)
     transpose && (M = permutedims(M, [2,1]))
+    if latex
+        M = latexinline(M; kwargs...)
+    elseif haskey(kwargs, :fmt)
+        formatter = kwargs[:fmt] isa String ? PrintfNumberFormatter(kwargs[:fmt]) : kwargs[:fmt]
+        M = map(x -> x isa Number ? formatter(x) : x, M)
+    end
+
     if !isempty(head)
         M = vcat(hcat(head...), M)
         @assert length(head) == size(M, 2) "The length of the head does not match the shape of the input matrix."
@@ -67,12 +74,6 @@ function mdtable(M::AbstractMatrix; latex::Bool=true, escape_underscores=false, 
         M = hcat(side, M)
     end
 
-    if latex
-        M = latexinline(M; kwargs...)
-    elseif haskey(kwargs, :fmt)
-        formatter = kwargs[:fmt] isa String ? PrintfNumberFormatter(kwargs[:fmt]) : kwargs[:fmt]
-        M = map(x -> x isa Number ? formatter(x) : x, M)
-    end
 
     t = "| " * join(M[1,:], " | ") * " |\n"
     t *= "| ---  "^(size(M,2)-1) * "| --- |\n"

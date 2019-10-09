@@ -27,7 +27,7 @@ side = ["row$i" for i in 1:size(M, 1)]
 "
 
 @test mdtable(arr; head = ["head"], side=1:length(arr)) == Markdown.md"
-|   . |              head |
+|   ∘ |              head |
 | ---:| -----------------:|
 |   1 | $\frac{x}{y - 1}$ |
 |   2 |             $1.0$ |
@@ -79,14 +79,14 @@ side = ["row$i" for i in 1:size(M, 1)]
 "
 
 @test mdtable(M, head=head, side=side) == Markdown.md"
-|    . |              col1 |  col2 |          col3 |    col4 |   col5 |
+|    ∘ |              col1 |  col2 |          col3 |    col4 |   col5 |
 | ----:| -----------------:| -----:| -------------:| -------:| ------:|
 | row1 | $\frac{x}{y - 1}$ | $1.0$ | $\frac{3}{2}$ | $x - y$ | $symb$ |
 | row2 | $\frac{x}{y - 1}$ | $1.0$ | $\frac{3}{2}$ | $x - y$ | $symb$ |
 "
 
 @test mdtable(M, head=side, side=head, transpose=true) == Markdown.md"
-|    . |              row1 |              row2 |
+|    ∘ |              row1 |              row2 |
 | ----:| -----------------:| -----------------:|
 | col1 | $\frac{x}{y - 1}$ | $\frac{x}{y - 1}$ |
 | col2 |             $1.0$ |             $1.0$ |
@@ -110,7 +110,7 @@ d = DataFrame(A = 11:13, B = [:X, :Y, :Z])
 
 
 @test latexify(d; env=:mdtable, side=1:3) == Markdown.md"
-|   . |    A |   B |
+|   ∘ |    A |   B |
 | ---:| ----:| ---:|
 |   1 | $11$ | $X$ |
 |   2 | $12$ | $Y$ |
