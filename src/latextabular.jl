@@ -8,7 +8,7 @@ function latextabular(arr::AbstractMatrix; latex::Bool=true, head=[], side=[], a
         @assert length(head) == size(arr, 2) "The length of the head does not match the shape of the input matrix."
     end
     if !isempty(side)
-        length(side) == size(arr, 1) - 1 && (side = ["."; side]) ## why is empty not allowed?
+        length(side) == size(arr, 1) - 1 && (side = [""; side]) 
         @assert length(side) == size(arr, 1) "The length of the side does not match the shape of the input matrix."
         arr = hcat(side, arr)
     end
@@ -16,7 +16,13 @@ function latextabular(arr::AbstractMatrix; latex::Bool=true, head=[], side=[], a
     (rows, columns) = size(arr)
     str = "\\begin{tabular}{" * "$(adjustment)"^columns * "}\n"
 
-    arr =  latex ? latexinline(arr; kwargs...) : string.(arr)
+    if latex
+        arr = latexinline(arr; kwargs...)
+    elseif haskey(kwargs, :fmt)
+        formatter = kwargs[:fmt] isa String ? PrintfNumberFormatter(kwargs[:fmt]) : kwargs[:fmt]
+        arr = map(x -> x isa Number ? formatter(x) : x, arr)
+    end
+
     for i in 1:size(arr, 1)
         str *= join(arr[i,:], " & ")
         str *= "\\\\\n"

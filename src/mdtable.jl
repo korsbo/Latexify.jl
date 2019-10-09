@@ -57,15 +57,21 @@ function mdtable end
 
 function mdtable(M::AbstractMatrix; latex::Bool=true, escape_underscores=false, head=[], side=[], transpose=false, kwargs...)
     transpose && (M = permutedims(M, [2,1]))
-    latex && (M = latexinline(M; kwargs...))
     if !isempty(head)
         M = vcat(hcat(head...), M)
         @assert length(head) == size(M, 2) "The length of the head does not match the shape of the input matrix."
     end
     if !isempty(side)
-        length(side) == size(M, 1) - 1 && (side = ["."; side]) ## why is empty not allowed?
+        length(side) == size(M, 1) - 1 && (side = [LaTeXString("∘"); side]) 
         @assert length(side) == size(M, 1) "The length of the side does not match the shape of the input matrix."
         M = hcat(side, M)
+    end
+
+    if latex
+        M = latexinline(M; kwargs...)
+    elseif haskey(kwargs, :fmt)
+        formatter = kwargs[:fmt] isa String ? PrintfNumberFormatter(kwargs[:fmt]) : kwargs[:fmt]
+        M = map(x -> x isa Number ? formatter(x) : x, M)
     end
 
     t = "| " * join(M[1,:], " | ") * " |\n"
