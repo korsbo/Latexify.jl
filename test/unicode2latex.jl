@@ -10,3 +10,5 @@ raw"\begin{equation}
 \right]
 \end{equation}
 "
+
+@test latexify("αaβ") == raw"${\alpha}a\beta$"

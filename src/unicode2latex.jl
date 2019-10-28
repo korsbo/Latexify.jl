@@ -2452,15 +2452,20 @@ const unicodedict = Dict{Char, String}(
     '•' => raw"\bullet",
     )
 
-
 function unicode2latex(str::String)
     isascii(str) && return str
-    str = join(
-        map(
-            key-> isascii(key) || !haskey(unicodedict, key) ? key : unicodedict[key],
-            [s for s in str]
-            )
-        )
+    str_array = [get(unicodedict, char, char) for char in str] 
+    str_length = length(str_array)
+
+    for (i, char) in enumerate(str)
+        if str_array[i] isa String
+            if i < str_length && str_array[i+1] isa Char && (isletter(str_array[i+1]) || isdigit(str_array[i+1]))
+                str_array[i] = "{$(str_array[i])}"
+            end
+        end
+    end
+
+    str = join(str_array)
 
     str = replace(str, raw"\_"=>"_")
     str = replace(str, raw"\^"=>"^")
