@@ -41,9 +41,8 @@ julia> latexalign(ode)
 """
 function latexalign end
 
-function latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=false, starred=false, kwargs...)
+function latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=false, eol = double_linebreak ? " \\\\\\\\\n" : " \\\\\n", starred=false, kwargs...)
     (rows, columns) = size(arr)
-    eol = double_linebreak ? " \\\\\\\\\n" : " \\\\\n"
     arr = latexraw(arr; kwargs...)
 
     str = "\\begin{align$(starred ? "*" : "")}\n"
@@ -52,9 +51,9 @@ function latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=fals
     end
     str *= join(arr[end,:], separator) * "\n"  # No EOL on the last line.
     str *= "\\end{align$(starred ? "*" : "")}\n"
-    latexstr = LaTeXString(str)
-    COPY_TO_CLIPBOARD && clipboard(latexstr)
-    return latexstr
+    #= latexstr = LaTeXString(str) =#
+    #= COPY_TO_CLIPBOARD && clipboard(latexstr) =#
+    return output(str; kwargs...)
 end
 
 function latexalign(lhs::AbstractArray, rhs::AbstractArray; kwargs...)
