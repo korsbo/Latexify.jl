@@ -29,9 +29,7 @@ function latextabular(arr::AbstractMatrix; latex::Bool=true, head=[], side=[], a
     end
 
     str *= "\\end{tabular}\n"
-    latexstr = LaTeXString(str)
-    COPY_TO_CLIPBOARD && clipboard(latexstr)
-    return latexstr
+    return output(str; kwargs...)
 end
 
 
