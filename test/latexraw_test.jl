@@ -123,3 +123,89 @@ raw"$1.23e+03$"
 
 @test latexify(1234.2234; env=:raw, fmt="%.2e") ==
 raw"1.23e+03"
+
+
+test_functions = [:sinh, :alpha, :Theta, :cosc, :acoth, :acot, :asech, :lambda,
+                  :asinh, :sinc, :eta, :kappa, :nu, :asin, :epsilon, :sigma,
+                  :upsilon, :phi, :tanh, :iota, :Psi, :acosh, :log, :zeta, :mu,
+                  :csc, :xi, :tau, :beta, :Lambda, :Xi, :Phi, :acsc, :atan,
+                  :sech, :atanh, :gamma, :Delta, :rho, :sec, :log10, :delta,
+                  :pi, :cot, :log2, :cos, :Omega, :psi, :atan2, :Gamma, :cosh,
+                  :acos, :Pi, :Upsilon, :omega, :coth, :chi, :tan, :csch,
+                  :acsch, :theta, :asec, :Sigma, :sin]
+
+
+@test latexify(["3*$(func)(x)^2/4 -1" for func = test_functions]) == 
+raw"\begin{equation}
+\left[
+\begin{array}{c}
+\frac{3 \cdot \sinh^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \left( \alpha\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \Theta\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \mathrm{cosc}^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \mathrm{arccoth}^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \mathrm{arccot}^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \mathrm{arcsech}^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \left( \lambda\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \mathrm{arcsinh}^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \mathrm{sinc}^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \left( \eta\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \kappa\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \nu\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \arcsin^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \left( \epsilon\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \sigma\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \upsilon\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \phi\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \tanh^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \left( \iota\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \Psi\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \mathrm{arccosh}^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \left( \log\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \zeta\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \mu\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \csc^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \left( \xi\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \tau\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \beta\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \Lambda\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \Xi\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \Phi\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \mathrm{arccsc}^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \arctan^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \mathrm{sech}^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \mathrm{arctanh}^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \left( \Gamma\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \Delta\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \rho\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \sec^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \left( \log_{10}\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \delta\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \pi\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \cot^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \left( \log_{2}\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \cos^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \left( \Omega\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \psi\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \arctan^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \left( \Gamma\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \cosh^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \arccos^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \left( \Pi\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \Upsilon\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \left( \omega\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \coth^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \left( \chi\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \tan^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \mathrm{csch}^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \mathrm{arccsch}^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \left( \theta\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \mathrm{arcsec}^{2}\left( x \right)}{4} - 1 \\
+\frac{3 \cdot \left( \Sigma\left( x \right) \right)^{2}}{4} - 1 \\
+\frac{3 \cdot \sin^{2}\left( x \right)}{4} - 1 \\
+\end{array}
+\right]
+\end{equation}
+"
+
+
