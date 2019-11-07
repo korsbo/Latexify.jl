@@ -56,13 +56,6 @@ raw"\begin{align}
 \end{align}
 "
 
-@test latexalign(rn, symbolic=true) ==
-raw"\begin{align}
-\frac{dx}{dt} =&  - x \cdot d_{x} - x \cdot r_{b} + y \cdot r_{u} + \frac{y^{2} \cdot v_{x}}{k_{x}^{2} + y^{2}} \\
-\frac{dy}{dt} =& p_{y} + x \cdot r_{b} - y \cdot d_{y} - y \cdot r_{u}
-\end{align}
-"
-
 @test latexify(((1.0, 2), (3, 4)); env=:align) == 
 raw"\begin{align}
 1.0 =& 3 \\
