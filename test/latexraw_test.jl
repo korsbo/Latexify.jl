@@ -21,6 +21,7 @@ array_test = [ex, str]
 @test latexraw(1) == "1"
 @test latexraw(:(log10(x))) == "\\log_{10}\\left( x \\right)"
 @test latexraw(:(sin(x))) ==  "\\sin\\left( x \\right)"
+@test latexraw(:(sin(x)^2)) ==  "\\sin^{2}\\left( x \\right)"
 @test latexraw(:(asin(x))) ==  "\\arcsin\\left( x \\right)"
 @test latexraw(:(asinh(x))) ==  "\\mathrm{arcsinh}\\left( x \\right)"
 @test latexraw(:(sinc(x))) ==  "\\mathrm{sinc}\\left( x \\right)"
