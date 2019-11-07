@@ -64,7 +64,7 @@ function latexraw(inputex::Expr; convert_unicode=true, kwargs...)
         fill!(prevOp, :none)
         for i in 1:length(ex.args)
             if isa(ex.args[i], Expr)
-                length(ex.args[i].args) > 2 && (prevOp[i] = ex.args[i].args[1])
+                length(ex.args[i].args) > 1 && (prevOp[i] = ex.args[i].args[1])
                 ex.args[i] = recurseexp!(ex.args[i])
             end
         end

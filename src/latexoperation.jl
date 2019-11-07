@@ -1,4 +1,3 @@
-
 """
     latexoperation(ex::Expr, prevOp::AbstractArray)
 
@@ -54,6 +53,10 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
 
     elseif op in [:^, :.^]
         #isa(args[2], String) && (args[2]="($(args[2]))")
+        if prevOp[2] in trigonometric_functions
+            str = get(function2latex, prevOp[2], "\\$(prevOp[2])")
+            return replace(args[2], str => "$(str)^{$(args[3])}")
+        end
         prevOp[2] != :none  && (args[2]="\\left( $(args[2]) \\right)")
         return "$(args[2])^{$(args[3])}"
     elseif ex.head == :(=) && length(args) == 2
@@ -96,28 +99,10 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
         return str
     end
 
-    # op in infix_operators && return ""
+    if op in keys(function2latex)
+        return "$(function2latex[op])\\left( $(join(args[2:end], ", ")) \\right)"
+    end
 
-    op == :log10 && return "\\log_{10}\\left( $(args[2]) \\right)"
-    op == :log2 && return "\\log_{2}\\left( $(args[2]) \\right)"
-    op == :asin && return "\\arcsin\\left( $(args[2]) \\right)"
-    op == :asinh && return "\\mathrm{arcsinh}\\left( $(args[2]) \\right)"
-    op == :sinc && return "\\mathrm{sinc}\\left( $(args[2]) \\right)"
-    op == :acos && return "\\arccos\\left( $(args[2]) \\right)"
-    op == :acosh && return "\\mathrm{arccosh}\\left( $(args[2]) \\right)"
-    op == :cosc && return "\\mathrm{cosc}\\left( $(args[2]) \\right)"
-    op == :atan && return "\\arctan\\left( $(args[2]) \\right)"
-    op == :atan2 && return "\\arctan\\left( $(args[2]) \\right)"
-    op == :atanh && return "\\mathrm{arctanh}\\left( $(args[2]) \\right)"
-    op == :acot && return "\\mathrm{arccot}\\left( $(args[2]) \\right)"
-    op == :acoth && return "\\mathrm{arccoth}\\left( $(args[2]) \\right)"
-    op == :asec && return "\\mathrm{arcsec}\\left( $(args[2]) \\right)"
-    op == :sech && return "\\mathrm{sech}\\left( $(args[2]) \\right)"
-    op == :asech && return "\\mathrm{arcsech}\\left( $(args[2]) \\right)"
-    op == :acsc && return "\\mathrm{arccsc}\\left( $(args[2]) \\right)"
-    op == :csch && return "\\mathrm{csch}\\left( $(args[2]) \\right)"
-    op == :acsch && return "\\mathrm{arccsch}\\left( $(args[2]) \\right)"
-    op == :gamma && return "\\Gamma\\left( $(args[2]) \\right)"
     op == :sqrt && return "\\$op{$(args[2])}"
     op == :abs && return "\\left\\|$(args[2])\\right\\|"
     op == :exp && return "e^{$(args[2])}"
@@ -127,26 +112,6 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
         argstring = join(args[2:end], ", ")
         return "\\mathrm{$op}\\left[$argstring\\right]"
     end
-
-
-    ## operations which are called the same in Julia and LaTeX
-    op_list = (# Greek letters
-        :alpha, :beta, :gamma, :delta, :epsilon, :zeta, :eta, :theta,
-        :iota, :kappa, :lambda, :mu, :nu, :xi, :pi, :rho, :sigma, :tau,
-        :upsilon, :phi, :chi, :psi, :omega,
-        :Gamma, :Delta, :Theta, :Lambda, :Xi, :Pi, :Sigma, :Upsilon,
-        :Phi, :Psi, :Omega,
-        # trigonometric functions
-        :sin, :cos, :tan, :cot, :sec, :csc, :sinh, :cosh, :tanh, :coth,
-        # log
-        :log)
-
-    op in op_list && length(args) == 1 && return "\\$op"
-    op in op_list && length(args) == 2 && return "\\$op\\left( $(args[2]) \\right)"
-    op in op_list && length(args) > 2 && return "\\$op\\left( $(join(args[2:end], ", ")) \\right)"
-
-
-
 
     if ex.head == :call
         return "\\mathrm{$op}\\left( $(join(args[2:end], ", ")) \\right)"

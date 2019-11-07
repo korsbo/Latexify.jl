@@ -25,6 +25,7 @@ function auto_display(x::Bool)
 end
 
 include("unicode2latex.jl")
+include("function2latex.jl")
 include("latexraw.jl")
 include("latexoperation.jl")
 include("latexify_function.jl")
