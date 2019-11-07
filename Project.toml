@@ -2,7 +2,7 @@ name = "Latexify"
 uuid = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
 authors = ["Niklas Korsbo <niklas.korsbo@gmail.com>"]
 repo = "https://github.com/korsbo/Latexify.jl.git"
-version = "0.12.1"
+version = "0.12.2"
 
 [deps]
 InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
@@ -13,10 +13,10 @@ Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 Requires = "ae029012-a4dd-5104-9daa-d747884805df"
 
 [compat]
-julia = "1"
 LaTeXStrings = "0.3, 1"
 MacroTools = "0.4, 0.5"
 Requires = "0.5"
+julia = "0.7, 1"
 
 [extras]
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
