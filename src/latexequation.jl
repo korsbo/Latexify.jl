@@ -8,8 +8,6 @@ function latexequation(eq; starred=false, kwargs...)
     str *= latexstr
     str *= "\n"
     str *= "\\end{equation$(starred ? "*" : "")}\n"
-    latexstr = LaTeXString(str)
-    COPY_TO_CLIPBOARD && clipboard(latexstr)
-    return latexstr
+    return output(str; kwargs...)
 end
 

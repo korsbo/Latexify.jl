@@ -60,3 +60,13 @@ function get_latex_function(x::AbstractArray{T}) where T <: AbstractArray
 end
 
 get_latex_function(lhs::AbstractVector, rhs::AbstractVector) = latexalign
+
+
+function output(str; post_processing=x->x, escape_underscores=false, kwargs...)
+    str = post_processing(str)
+    str == nothing && return nothing
+    escape_underscores && (str = replace(str, "_"=>"\\_"))
+    latexstr = LaTeXString(str)
+    COPY_TO_CLIPBOARD && clipboard(latexstr)
+    return latexstr
+end

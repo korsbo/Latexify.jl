@@ -33,9 +33,7 @@ function latexarray(arr::AbstractArray; adjustment::Symbol=:c, transpose=false, 
     str *= "\\end{array}\n"
     str *= "\\right]\n"
     str *= "\\end{equation$(starred ? "*" : "")}\n"
-    latexstr = LaTeXString(str)
-    COPY_TO_CLIPBOARD && clipboard(latexstr)
-    return latexstr
+    return output(str; kwargs...)
 end
 
 

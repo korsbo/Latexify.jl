@@ -110,9 +110,7 @@ function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
 
     str *= starred ? "\\end{align*}\n" : "\\end{align}\n"
 
-    latexstr = LaTeXString(str)
-    COPY_TO_CLIPBOARD && clipboard(latexstr)
-    return latexstr
+    return output(str; kwargs...)
 end
 
 
