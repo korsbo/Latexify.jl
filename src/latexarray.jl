@@ -30,7 +30,7 @@ function latexarray(arr::AbstractArray; adjustment::Symbol=:c, transpose=false, 
     end
 
     str *= "\\end{array}\n"
-    str *= "\\right]\n"
+    str *= "\\right]"
     latexstr = LaTeXString(str)
     # COPY_TO_CLIPBOARD && clipboard(latexstr)
     return latexstr
