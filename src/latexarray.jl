@@ -20,8 +20,7 @@ function latexarray(arr::AbstractArray; adjustment::Symbol=:c, transpose=false, 
 
     eol = double_linebreak ? " \\\\\\\\\n" : " \\\\\n"
 
-    str = "\\begin{equation$(starred ? "*" : "")}\n"
-    str *= "\\left[\n"
+    str = "\\left[\n"
     str *= "\\begin{array}{" * "$(adjustment)"^columns * "}\n"
 
     arr = latexraw(arr; kwargs...)
@@ -32,9 +31,8 @@ function latexarray(arr::AbstractArray; adjustment::Symbol=:c, transpose=false, 
 
     str *= "\\end{array}\n"
     str *= "\\right]\n"
-    str *= "\\end{equation$(starred ? "*" : "")}\n"
     latexstr = LaTeXString(str)
-    COPY_TO_CLIPBOARD && clipboard(latexstr)
+    # COPY_TO_CLIPBOARD && clipboard(latexstr)
     return latexstr
 end
 
