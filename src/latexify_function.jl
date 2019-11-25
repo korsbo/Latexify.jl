@@ -22,7 +22,7 @@ function infer_output(env, args...)
         env == :inline && return latexinline
         env in [:tabular, :table] && return latextabular
         env == :raw && return latexraw
-        env == :array && return latexarray
+        env == :array && return (args...; kwargs...) -> latexequation(latexarray(args...; kwargs...); kwargs...)
         env == :align && return latexalign
         env in [:eq, :equation] && return latexequation
         env == :mdtable && return mdtable
@@ -45,15 +45,15 @@ Use overloading to determine which latex environment to output.
 This determines the default behaviour of `latexify()` for different inputs.
 """
 get_latex_function(args...) = latexinline
-get_latex_function(args::AbstractArray...) = latexarray
-get_latex_function(args::AbstractDict) = latexarray
-get_latex_function(args::Tuple...) = latexarray
+get_latex_function(args::AbstractArray...) = (args...; kwargs...) -> latexequation(latexarray(args...; kwargs...); kwargs...)
+get_latex_function(args::AbstractDict) = (args...; kwargs...) -> latexequation(latexarray(args...; kwargs...); kwargs...)
+get_latex_function(args::Tuple...) = (args...; kwargs...) -> latexequation(latexarray(args...; kwargs...); kwargs...)
 
 
 function get_latex_function(x::AbstractArray{T}) where T <: AbstractArray
     try
         x = hcat(x...)
-        return latexarray
+        return (args...; kwargs...) -> latexequation(latexarray(args...; kwargs...); kwargs...)
     catch
         return latexinline
     end

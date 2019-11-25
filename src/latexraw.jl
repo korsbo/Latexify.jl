@@ -59,13 +59,16 @@ function latexraw end
 
 
 function latexraw(inputex::Expr; convert_unicode=true, kwargs...)
+    inputex = postwalk(x -> x isa Expr && x.head in [:hcat, :vcat, :vect] ? latexarray(eval(x); kwargs...) : x, inputex)
     function recurseexp!(ex)
         prevOp = Vector{Symbol}(undef, length(ex.args))
         fill!(prevOp, :none)
         for i in 1:length(ex.args)
             if isa(ex.args[i], Expr)
-                length(ex.args[i].args) > 1 && (prevOp[i] = ex.args[i].args[1])
+                length(ex.args[i].args) > 1 && ex.args[i].args[1] isa Symbol && (prevOp[i] = ex.args[i].args[1])
                 ex.args[i] = recurseexp!(ex.args[i])
+            elseif ex.args[i] isa AbstractArray
+                ex.args[i] = latexarray(ex.args[i]; kwargs...)
             end
         end
         return latexoperation(ex, prevOp; kwargs...)

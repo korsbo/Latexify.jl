@@ -61,3 +61,34 @@ raw"\begin{equation}
 \right]
 \end{equation}
 "
+
+
+@test latexify(:(x = [1 2] * [1, 2] * [1 2; 3 4])) == 
+raw"$x = \left[
+\begin{array}{cc}
+1 & 2 \\
+\end{array}
+\right] \cdot \left[
+\begin{array}{c}
+1 \\
+2 \\
+\end{array}
+\right] \cdot \left[
+\begin{array}{cc}
+1 & 2 \\
+3 & 4 \\
+\end{array}
+\right]$"
+
+
+@test latexify(:(x = $arr)) == 
+raw"$x = \left[
+\begin{array}{c}
+1 \\
+2 \\
+\frac{x}{y} \\
+4 \\
+\end{array}
+\right]$"
+
+
