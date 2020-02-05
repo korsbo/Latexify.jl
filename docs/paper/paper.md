@@ -49,10 +49,11 @@ that a computational model is ultimately simulating may increase
 comprehensibility and improve troubleshooting.  It, furthermore, allows for
 de-mystification of computational models generated using DSLs.  The
 programmatic formatting of equations and tables enables their automatic
-inclusion into generated documents, reports or posts (using tools such as
-Weave.jl [@weave]). Such programmatic translation can also help to ensure an
-accurate correspondence between what software does and what reports or articles
-claim that they do.  It is also just rather convenient.
+inclusion into generated documents, documentation, reports or posts (possibly
+in combination with tools such as Weave.jl [@weave]). Such programmatic
+translation can also help to ensure an accurate correspondence between what
+software does and what reports or articles claim that they do.  It is also just
+rather convenient.
 
 
 # Acknowledgements
