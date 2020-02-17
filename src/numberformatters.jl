@@ -9,9 +9,10 @@ struct PlainNumberFormatter <: AbstractNumberFormatter end
 
 struct PrintfNumberFormatter <: AbstractNumberFormatter
     fmt::String
+    f::Function
 end
-
-(f::PrintfNumberFormatter)(x) = @eval @sprintf $(f.fmt) $x
+PrintfNumberFormatter(fmt::String) = PrintfNumberFormatter(fmt, Formatting.generate_formatter(fmt))
+(f::PrintfNumberFormatter)(x) = f.f(x)
 
 
 struct StyledNumberFormatter <: AbstractNumberFormatter

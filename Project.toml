@@ -5,6 +5,7 @@ repo = "https://github.com/korsbo/Latexify.jl.git"
 version = "0.12.3"
 
 [deps]
+Formatting = "59287772-0a20-5a39-b81b-1366585eb4c0"
 InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 MacroTools = "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
@@ -16,6 +17,7 @@ Requires = "ae029012-a4dd-5104-9daa-d747884805df"
 LaTeXStrings = "0.3, 1"
 MacroTools = "0.4, 0.5"
 Requires = "0.5, 1.0"
+Formatting = "0.4"
 julia = "1"
 
 [extras]

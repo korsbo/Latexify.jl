@@ -5,6 +5,7 @@ using InteractiveUtils
 using Markdown
 using MacroTools: postwalk
 using Printf
+using Formatting
 
 export latexify, md, copy_to_clipboard, auto_display, set_default, get_default,
     reset_default, @latexrecipe
