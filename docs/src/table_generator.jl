@@ -39,6 +39,7 @@ keyword_arguments = [
     KeywordArgument(:cdot, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Bool`", "`true`", "Toggle between using `\\cdot` or just a space to represent multiplication.", [:Any]),
     KeywordArgument(:symbolic, [:align], "`Bool`", "`false`", "Use symbolic calculations to clean up the expression.", [:ReactionNetwork]),
     KeywordArgument(:clean, [:align], "`Bool`", "`false`", "Clean out `1*` terms. Only useful for DiffEqBiological versions 3.4 or below.", [:ReactionNetwork]),
+    KeywordArgument(:rows, [:align], "Iterable or symol", ":all", "Which rows to include in the output.", [:Any]),
 #     KeywordArgument(:template, [:array], "`Bool`", "`false`", "description", [:Any]),
     ]
 
