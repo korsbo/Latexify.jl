@@ -2459,7 +2459,7 @@ function unicode2latex(str::String)
 
     for (i, char) in enumerate(str)
         if str_array[i] isa String
-            if i < str_length && str_array[i+1] isa Char && (isletter(str_array[i+1]) || isdigit(str_array[i+1]))
+            if i < str_length && str_array[i+1] isa Char && (isletter(str_array[i+1]) || isnumeric(str_array[i+1]))
                 str_array[i] = "{$(str_array[i])}"
             end
         end
