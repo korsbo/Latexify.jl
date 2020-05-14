@@ -1,6 +1,6 @@
 
 
-function latextabular(arr::AbstractMatrix; latex::Bool=true, head=[], side=[], adjustment::Symbol=:c, transpose=false, kwargs...)
+function latextabular(arr::AbstractMatrix; latex::Bool=true, booktabs::Bool=false, head=[], side=[], adjustment::Symbol=:c, transpose=false, kwargs...)
     transpose && (arr = permutedims(arr, [2,1]))
 
     if !isempty(head)
@@ -16,6 +16,10 @@ function latextabular(arr::AbstractMatrix; latex::Bool=true, head=[], side=[], a
     (rows, columns) = size(arr)
     str = "\\begin{tabular}{" * "$(adjustment)"^columns * "}\n"
 
+    if booktabs
+        str *= "\\toprule\n"
+    end
+    
     if latex
         arr = latexinline(arr; kwargs...)
     elseif haskey(kwargs, :fmt)
@@ -23,11 +27,23 @@ function latextabular(arr::AbstractMatrix; latex::Bool=true, head=[], side=[], a
         arr = map(x -> x isa Number ? formatter(x) : x, arr)
     end
 
-    for i in 1:size(arr, 1)
+    # print first row
+    str *= join(arr[1,:], " & ")
+    str *= "\\\\\n"
+    
+    if booktabs && !isempty(head)
+        str *= "\\midrule\n"
+    end
+    
+    for i in 2:size(arr, 1)
         str *= join(arr[i,:], " & ")
         str *= "\\\\\n"
     end
 
+    if booktabs
+        str *= "\\bottomrule\n"
+    end
+    
     str *= "\\end{tabular}\n"
     latexstr = LaTeXString(str)
     COPY_TO_CLIPBOARD && clipboard(latexstr)
