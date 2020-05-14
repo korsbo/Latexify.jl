@@ -57,6 +57,26 @@ $2$ & $\frac{x}{y - 1}$ & $1.0$ & $\frac{3}{2}$ & $x - y$ & $symb$\\
 \end{tabular}
 "
 
+@test latexify(M; env=:table, booktabs=true) == 
+raw"\begin{tabular}{ccccc}
+\toprule
+$\frac{x}{y - 1}$ & $1.0$ & $\frac{3}{2}$ & $x - y$ & $symb$\\
+$\frac{x}{y - 1}$ & $1.0$ & $\frac{3}{2}$ & $x - y$ & $symb$\\
+\bottomrule
+\end{tabular}
+"
+
+@test latexify(M; env=:table, head=1:5, booktabs=true) == 
+raw"\begin{tabular}{ccccc}
+\toprule
+$1$ & $2$ & $3$ & $4$ & $5$\\
+\midrule
+$\frac{x}{y - 1}$ & $1.0$ & $\frac{3}{2}$ & $x - y$ & $symb$\\
+$\frac{x}{y - 1}$ & $1.0$ & $\frac{3}{2}$ & $x - y$ & $symb$\\
+\bottomrule
+\end{tabular}
+"
+
 D = Dict(:a=>"x/(k+x)", :b=>"x - y")
 @test latexify(D; env=:tabular) ==
 raw"\begin{tabular}{cc}
