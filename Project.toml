@@ -14,10 +14,10 @@ Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 Requires = "ae029012-a4dd-5104-9daa-d747884805df"
 
 [compat]
+Formatting = "0.4"
 LaTeXStrings = "0.3, 1"
 MacroTools = "0.4, 0.5"
 Requires = "0.5, 1.0"
-Formatting = "0.4"
 julia = "1"
 
 [extras]

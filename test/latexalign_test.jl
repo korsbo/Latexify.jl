@@ -22,6 +22,13 @@ raw"\begin{align}
 \end{align}
 "
 
+@test latexify(f; rows=1) == 
+raw"\begin{align}
+\frac{dx}{dt} =& \frac{y}{c_{1}} - x
+\end{align}
+"
+
+
 @test latexify(f; env=:align, field=:symjac) == 
 raw"\begin{align}
 \frac{dx}{dt} =& -1 \cdot 1 =& c_{1}^{-1} \\
@@ -62,5 +69,6 @@ raw"\begin{align}
 2 =& 4
 \end{align}
 "
+
 
 # @test_throws MethodError latexify(rn; bad_kwarg="should error")
