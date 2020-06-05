@@ -135,6 +135,8 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
     ## Use the last expression in a block. 
     ## This is somewhat shady but it helps with latexifying functions.
     ex.head == :block && return args[end]
+
+    ex.head == :(::) && return "$(args[1])::$(args[2])"
     
     ## if we have reached this far without a return, then error.
     error("Latexify.jl's latexoperation does not know what to do with one of the
