@@ -8,3 +8,8 @@ l2 = @latexrun dummyfunc2(x; y=1, z=3) = x^2/y + z
 
 @test dummyfunc2(1.) == 4
 
+copy_to_clipboard(true)
+l3 = @latexify dummyfunc2(x::Number; y=1, z=3) = x^2/y + z
+@test l3 == raw"$\mathrm{dummyfunc2}\left( x::Number; y = 1, z = 3 \right) = \frac{x^{2}}{y} + z$"
+
+
