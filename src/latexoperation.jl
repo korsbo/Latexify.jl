@@ -128,10 +128,12 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
 
     ex.head == Symbol("'") && return "$(args[1])'"
 
-    ex.head == :kw && return "$(ex.args[1]) = $(ex.args[2])"
+    ## Enable the parsing of kwargs in a function definition
+    ex.head == :kw && return "$(args[1]) = $(args[2])"
     ex.head == :parameters && return join(args, ", ")
 
-    ex.head == :block && length(args)==2 && return args[2]
+    ## Use the last expression in a block. 
+    ## This is somewhat shady but it helps with latexifying functions.
     ex.head == :block && return args[end]
     
     ## if we have reached this far without a return, then error.
