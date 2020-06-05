@@ -132,6 +132,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
     ex.head == :parameters && return join(args, ", ")
 
     ex.head == :block && length(args)==2 && return args[2]
+    ex.head == :block && return args[end]
     
     ## if we have reached this far without a return, then error.
     error("Latexify.jl's latexoperation does not know what to do with one of the
