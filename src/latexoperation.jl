@@ -114,7 +114,11 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
     end
 
     if ex.head == :call
-        return "\\mathrm{$op}\\left( $(join(args[2:end], ", ")) \\right)"
+        if args[2] isa String && occursin("=", args[2])
+            return "\\mathrm{$op}\\left( $(join(args[3:end], ", ")); $(args[2]) \\right)"
+        else
+            return "\\mathrm{$op}\\left( $(join(args[2:end], ", ")) \\right)"
+        end
     end
 
     if ex.head == :tuple
@@ -123,9 +127,18 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
     end
 
     ex.head == Symbol("'") && return "$(args[1])'"
+
+    ## Enable the parsing of kwargs in a function definition
+    ex.head == :kw && return "$(args[1]) = $(args[2])"
+    ex.head == :parameters && return join(args, ", ")
+
+    ## Use the last expression in a block. 
+    ## This is somewhat shady but it helps with latexifying functions.
+    ex.head == :block && return args[end]
+    
     ## if we have reached this far without a return, then error.
     error("Latexify.jl's latexoperation does not know what to do with one of the
-                operators in your expression ($op).")
+          expressions provides ($ex).")
     return ""
 end
 

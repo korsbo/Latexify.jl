@@ -188,7 +188,24 @@ and to reset your changes, use
 ```julia
 reset_default()
 ```
+## Macros
+Two macros are exported. 
 
+- `@latexify` simply latexifies the expression that you provide to it, similar to `latexify(:(...))`.
+- `@latexrun` both executes and latexifies the given expression. 
+
+They can for example be useful for latexifying simple mathsy functions like
+```julia
+lstr = @latexrun f(x; y=2) = x/y
+```
+
+## External rendering
+While LaTeXStrings already render nicely in many IDEs or in Jupyter, they do not render in the REPL. Therefore, we provide a function `render(str)` which generates a standalone PDF using LuaLaTeX and opens that file in your default PDF viewer. 
+
+I have found the following syntax pretty useful:
+```julia
+latexify(:(x/y)) |> render
+```
 
 ## Legacy support
 
