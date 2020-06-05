@@ -12,4 +12,6 @@ copy_to_clipboard(true)
 l3 = @latexify dummyfunc2(x::Number; y=1, z=3) = x^2/y + z
 @test l3 == raw"$\mathrm{dummyfunc2}\left( x::Number; y = 1, z = 3 \right) = \frac{x^{2}}{y} + z$"
 
+l4 = @latexify dummyfunc2(::Number; y=1, z=3) = x^2/y + z
+@test l4 == raw"$\mathrm{dummyfunc2}\left( ::Number; y = 1, z = 3 \right) = \frac{x^{2}}{y} + z$"
 
