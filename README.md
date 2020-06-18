@@ -66,7 +66,7 @@ One of them is [ParameterizedFunctions](https://github.com/JuliaDiffEq/Parameter
 The ability to latexify such ODEs is pretty much what lured me to create this package.
 
 ```julia
-using Parameterizedfunctions
+using ParameterizedFunctions
 using Latexify
 
 f = @ode_def positiveFeedback begin
