@@ -2,9 +2,9 @@
 #   Override default handling (default = inline) #
 ##################################################
 
-get_latex_function(r::DiffEqBase.AbstractReactionNetwork) = latexalign
+get_latex_function(r::ModelingToolkit.ReactionSystem) = latexalign
 
-get_md_function(args::DiffEqBase.AbstractReactionNetwork) = mdalign
+get_md_function(args::ModelingToolkit.ReactionSystem) = mdalign
 
 
 ###############################################
@@ -12,7 +12,7 @@ get_md_function(args::DiffEqBase.AbstractReactionNetwork) = mdalign
 ###############################################
 
 """
-latexalign(r::AbstractReactionNetwork; noise=false, symbolic=true)
+latexalign(r::AbstractReactionSystem; noise=false, symbolic=true)
 
 Generate an align environment from a reaction network.
 
@@ -22,42 +22,81 @@ Generate an align environment from a reaction network.
 - bracket::Bool - Surround the variables with square brackets to denote concentrations.
 - clean::Bool - Clean out redundant "1*". Only useful for DiffEqBiological@v3.4.2 or earlier.
 """
-function latexalign(r::DiffEqBase.AbstractReactionNetwork; bracket=false, noise=false, symbolic=false, clean=false, kwargs...)
-    lhs = [Meta.parse("d$x/dt") for x in r.syms]
-    if !noise
-        if symbolic
-            rhs = r.f_symfuncs
-        else
-            if clean
-                rhs = clean_subtractions.(r.f_func)
-            else
-                rhs = r.f_func
-            end
-        end
-    else
-        vec = r.g_func
-        M = reshape(vec, :, length(r.syms))
-        M = permutedims(M, [2,1])
-        expr_arr = Meta.parse.([join(M[i,:], " + ") for i in 1:size(M,1)])
+# function latexalign(r::ModelingToolkit.ReactionSystem; bracket=false, noise=false, clean=false, kwargs...)
+#     osys = convert(ODES)
+#     syms = Symbol.(states(r))
+#     lhs = [Meta.parse("d$x/dt") for x in syms]
+#     # if !noise
+#         f_func = [Expr(ode.rhs) for ode in equations(osys)]
+#         if clean
+#             rhs = clean_subtractions.(r.f_func)
+#         else
+#             rhs = r.f_func
+#         end
+#     # else
+#     #     vec = r.g_func
+#     #     M = reshape(vec, :, length(r.syms))
+#     #     M = permutedims(M, [2,1])
+#     #     expr_arr = Meta.parse.([join(M[i,:], " + ") for i in 1:size(M,1)])
 
-        if symbolic
-            rhs = [SymEngine.Basic(ex) for ex in expr_arr]
-        else
-            for i in 1:length(expr_arr)
-                filter!(x -> x != 0, expr_arr[i].args)
-            end
-            rhs = expr_arr
+#     #     if symbolic
+#     #         rhs = [SymEngine.Basic(ex) for ex in expr_arr]
+#     #     else
+#     #         for i in 1:length(expr_arr)
+#     #             filter!(x -> x != 0, expr_arr[i].args)
+#     #         end
+#     #         rhs = expr_arr
+#     #     end
+#     # end
+#     if bracket
+#         rhs = add_brackets(rhs, syms)
+#         lhs = [:(d[$x]/dt) for x in syms]
+#     end
+#     return latexalign(lhs, rhs; kwargs...)
+# end
+
+# #Recursively traverses an expression and removes things like X^1, 1*X. Will not actually have any affect on the expression when used as a function, but will make it much easier to look at it for debugging, as well as if it is transformed to LaTeX code.
+function recursive_clean!(expr)
+    (expr isa Symbol) && (expr == :no___noise___scaling) && (return 1)
+    (typeof(expr)!=Expr) && (return expr)
+    for i = 1:length(expr.args)
+        expr.args[i] = recursive_clean!(expr.args[i])
+    end
+    (expr.args[1] == :^) && (expr.args[3] == 1) && (return expr.args[2])
+    if expr.args[1] == :*
+        in(0,expr.args) && (return 0)
+        i = 1
+        while (i = i + 1) <= length(expr.args)
+             if (typeof(expr.args[i]) == Expr) && (expr.args[i].head == :call) && (expr.args[i].args[1] == :*)
+                 for arg in expr.args[i].args
+                     (arg != :*) && push!(expr.args, arg)
+                 end
+             end
         end
+        for i = length(expr.args):-1:2
+            (typeof(expr.args[i]) == Expr) && (expr.args[i].head == :call) && (expr.args[i].args[1] == :*) && deleteat!(expr.args,i)
+            (expr.args[i] == 1) && deleteat!(expr.args,i)
+        end
+        (length(expr.args) == 2) && (return expr.args[2])                   # We have a multiplication of only one thing, return only that thing.
+        (length(expr.args) == 1) && (return 1)                              #We have only * and no real argumenys.
+        (length(expr.args) == 3) && (expr.args[2] == -1) && return :(-$(expr.args[3]))
+        (length(expr.args) == 3) && (expr.args[3] == -1) && return :(-$(expr.args[2]))
     end
-    if bracket
-        rhs = add_brackets(rhs, r.syms)
-        lhs = [:(d[$x]/dt) for x in r.syms]
+    if expr.head == :call
+        (expr.args[1] == :/) && (expr.args[3] == 1) && (return expr.args[2])
+        haskey(funcdict, expr.args[1]) && return funcdict[expr.args[1]](expr.args[2:end])
+        in(expr.args[1],hill_name) && return hill(expr)
+        in(expr.args[1],hillR_name) && return hillR(expr)
+        in(expr.args[1],mm_name) && return mm(expr)
+        in(expr.args[1],mmR_name) && return mmR(expr)
+        (expr.args[1] == :binomial) && (expr.args[3] == 1) && return expr.args[2]
+        #@isdefined($(expr.args[1])) || error("Function $(expr.args[1]) not defined.")
     end
-    return latexalign(lhs, rhs; kwargs...)
+    return expr
 end
 
 
-function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
+function chemical_arrows(rn::ModelingToolkit.ReactionSystem;
     expand = true, double_linebreak=false, mathjax=true, starred=false, kwargs...)
     str = starred ? "\\begin{align*}\n" : "\\begin{align}\n"
     eol = double_linebreak ? "\\\\\\\\\n" : "\\\\\n"
@@ -66,7 +105,8 @@ function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
 
 
     backwards_reaction = false
-    for (i, r) in enumerate(rn.reactions)
+    rxs = ModelingToolkit.equations(rn)
+    for (i, r) in enumerate(rxs)
         if backwards_reaction
             backwards_reaction = false
             continue
@@ -74,22 +114,22 @@ function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
         str *= "\\ce{ "
 
         ### Expand functions to maths expressions
-        rate = deepcopy(r.rate_org)
-        expand && (rate = DiffEqBiological.recursive_clean!(rate))
-        expand && (rate = DiffEqBiological.recursive_clean!(rate))
+        rate = Expr(r.rate)
+        expand && (rate = recursive_clean!(rate))
+        expand && (rate = recursive_clean!(rate))
 
         ### Generate formatted string of substrates
-        substrates = [latexraw("$(substrate.stoichiometry== 1 ? "" : "$(substrate.stoichiometry) * ") $(substrate.reactant)"; kwargs...) for substrate in r.substrates ]
+        substrates = [latexraw("$(substrate[2]== 1 ? "" : "$(substrate[2]) * ") $(substrate[1].op.name)"; kwargs...) for substrate in zip(r.substrates,r.substoich)]
         isempty(substrates) && (substrates = ["\\varnothing"])
 
         str *= join(substrates, " + ")
 
         ### Generate reaction arrows
-        if i + 1 <= length(rn.reactions) && r.products == rn.reactions[i+1].substrates && r.substrates == rn.reactions[i+1].products
+        if i + 1 <= length(rxs) && issetequal(r.products,rxs[i+1].substrates) && issetequal(r.substrates,rxs[i+1].products)
             ### Bi-directional arrows
-            rate_backwards = deepcopy(rn.reactions[i+1].rate_org)
-            expand && (rate_backwards = DiffEqBiological.recursive_clean!(rate_backwards))
-            expand && (rate_backwards = DiffEqBiological.recursive_clean!(rate_backwards))
+            rate_backwards = Expr(rxs[i+1].rate)
+            expand && (rate_backwards = recursive_clean!(rate_backwards))
+            expand && (rate_backwards = recursive_clean!(rate_backwards))
             str *= " &<=>"
             str *= "[" * latexraw(rate; kwargs...) * "]"
             str *= "[" * latexraw(rate_backwards; kwargs...) * "] "
@@ -101,7 +141,7 @@ function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
         end
 
         ### Generate formatted string of products
-        products = [latexraw("$(product.stoichiometry== 1 ? "" : "$(product.stoichiometry) * ") $(product.reactant)"; kwargs...) for product in r.products ]
+        products = [latexraw("$(product[2]== 1 ? "" : "$(product[2]) * ") $(product[1].op.name)"; kwargs...) for product in zip(r.products,r.prodstoich) ]
         isempty(products) && (products = ["\\varnothing"])
         str *= join(products, " + ")
         str *= "}$eol"
