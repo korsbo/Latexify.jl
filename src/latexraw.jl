@@ -88,8 +88,8 @@ latexraw(arr::Union{AbstractArray, Tuple}; kwargs...) = [latexraw(i; kwargs...) 
 latexraw(i::Nothing; kwargs...) = ""
 latexraw(i::SubString; kwargs...) = latexraw(Meta.parse(i); kwargs...)
 latexraw(i::SubString{LaTeXStrings.LaTeXString}; kwargs...) = i
-latexraw(i::Rational; kwargs...) = latexraw( i.den == 1 ? i.num : :($(i.num)/$(i.den)); kwargs...)
-latexraw(z::Complex; kwargs...) = LaTeXString("$(z.re)$(z.im < 0 ? "" : "+" )$(z.im)\\textit{i}")
+latexraw(i::Rational; kwargs...) = i.den == 1 ? latexraw(i.num; kwargs...) : latexraw(:($(i.num)/$(i.den)); kwargs...)
+latexraw(z::Complex; kwargs...) = LaTeXString("$(latexraw(z.re;kwargs...))$(z.im < 0 ? "-" : "+" )$(latexraw(abs(z.im);kwargs...))\\textit{i}")
 #latexraw(i::DataFrames.DataArrays.NAtype) = "\\textrm{NA}"
 latexraw(str::LaTeXStrings.LaTeXString; kwargs...) = str
 
