@@ -109,17 +109,22 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
     op == :abs && return "\\left\\|$(args[2])\\right\\|"
     op == :exp && return "e^{$(args[2])}"
 
+    ## Leave math italics for single-character operator names (e.g., f(x)).
+    opname = string(op)
+    if length(opname) > 1
+        opname = "\\mathrm{$opname}"
+    end
 
     if ex.head == :ref
         argstring = join(args[2:end], ", ")
-        return "\\mathrm{$op}\\left[$argstring\\right]"
+        return "$opname\\left[$argstring\\right]"
     end
 
     if ex.head == :call
         if args[2] isa String && occursin("=", args[2])
-            return "\\mathrm{$op}\\left( $(join(args[3:end], ", ")); $(args[2]) \\right)"
+            return "$opname\\left( $(join(args[3:end], ", ")); $(args[2]) \\right)"
         else
-            return "\\mathrm{$op}\\left( $(join(args[2:end], ", ")) \\right)"
+            return "$opname\\left( $(join(args[2:end], ", ")) \\right)"
         end
     end
 
