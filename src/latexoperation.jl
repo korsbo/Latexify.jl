@@ -158,11 +158,11 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
         if length(args) == 3
             # Check if already parsed elseif as args[3]
             haselseif::Bool = occursin(Regex("\\$textif"), args[3])
-            otherwise::String = haselseif ? "" : "& \\text{otherwise}"
-            return """$begincases $(args[2]) & $textif $(args[1])\\\\
-                      $(args[3]) $otherwise $endcases"""
+            otherwise::String = haselseif ? "" : " & \\text{otherwise}"
+            return """$begincases$(args[2]) & $textif $(args[1])\\\\
+                      $(args[3])$otherwise$endcases"""
         elseif length(args) == 2
-            return "$begincases $(args[2]) & $textif $(args[1]) $endcases"
+            return "$begincases$(args[2]) & $textif $(args[1])$endcases"
         end
     end
 
