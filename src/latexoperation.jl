@@ -61,6 +61,8 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
         return "$(args[2])^{$(args[3])}"
     elseif (ex.head in (:(=), :function)) && length(args) == 2
         return "$(args[1]) = $(args[2])"
+    elseif op == :(!)
+        return "\\neg $(args[2])"
     end
 
     if ex.head == :.
@@ -158,6 +160,10 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
             return "$begincases $(args[2]) & $textif $(args[1]) $endcases"
         end
     end
+
+    ## Conditional operators converted to logical operators.
+    ex.head == :(&&) && length(args) == 2 && return "$(args[1]) \\wedge $(args[2])"
+    ex.head == :(||) && length(args) == 2 && return "$(args[1]) \\vee $(args[2])"
 
     ## if we have reached this far without a return, then error.
     error("Latexify.jl's latexoperation does not know what to do with one of the
