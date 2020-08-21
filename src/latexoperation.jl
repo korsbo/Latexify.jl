@@ -74,10 +74,10 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
 
     # infix_operators = [:<, :>, Symbol("=="), :<=, :>=, :!=]
     comparison_operators = Dict(
-        :< => "\\lt",
-        :.< => "\\lt",
-        :> => "\\gt",
-        :.> => "\\gt",
+        :< => "<",
+        :.< => "<",
+        :> => ">",
+        :.> => ">",
         Symbol("==") => "=",
         Symbol(".==") => "=",
         :<= => "\\leq",
