@@ -40,14 +40,14 @@ array_test = [ex, str]
 @test latexraw(:(csch(x))) ==  "\\mathrm{csch}\\left( x \\right)"
 @test latexraw(:(acsch(x))) ==  "\\mathrm{arccsch}\\left( x \\right)"
 @test latexraw(:(x ± y)) == "x \\pm y"
-@test latexraw(:(f(x))) ==  "\\mathrm{f}\\left( x \\right)"
+@test latexraw(:(f(x))) ==  "f\\left( x \\right)"
 @test latexraw("x = 4*y") == "x = 4 \\cdot y"
 @test latexraw(:(sqrt(x))) == "\\sqrt{x}"
 @test latexraw(complex(1,-1)) == "1-1\\textit{i}"
 @test latexraw(1//2) == "\\frac{1}{2}"
 @test latexraw(Missing()) == "\\textrm{NA}"
-@test latexraw("x[2]") == raw"\mathrm{x}\left[2\right]"
-@test latexraw("x[2, 3]") == raw"\mathrm{x}\left[2, 3\right]"
+@test latexraw("x[2]") == raw"x\left[2\right]"
+@test latexraw("x[2, 3]") == raw"x\left[2, 3\right]"
 @test latexraw("α") == raw"\alpha"
 @test latexraw("α + 1") == raw"\alpha + 1"
 @test latexraw("α₁") == raw"\alpha_{1}"
@@ -80,7 +80,7 @@ end c_1 c_2
 
 
 @test latexraw(:(3 * (a .< b .<= c < d <= e > f <= g .<= h .< i == j .== k != l .!= m))) ==
-raw"3 \cdot \left( a \lt b \leq c \lt d \leq e \gt f \leq g \leq h \lt i = j = k \neq l \neq m \right)"
+raw"3 \cdot \left( a < b \leq c < d \leq e > f \leq g \leq h < i = j = k \neq l \neq m \right)"
 
 
 
@@ -135,7 +135,7 @@ test_functions = [:sinh, :alpha, :Theta, :cosc, :acoth, :acot, :asech, :lambda,
                   :acsch, :theta, :asec, :Sigma, :sin]
 
 
-@test latexify(["3*$(func)(x)^2/4 -1" for func = test_functions]) == 
+@test latexify(["3*$(func)(x)^2/4 -1" for func = test_functions]) ==
 raw"\begin{equation}
 \left[
 \begin{array}{c}
@@ -209,3 +209,43 @@ raw"\begin{equation}
 "
 
 
+## Test logical operators
+@test latexraw(:(x && y)) == "x \\wedge y"
+@test latexraw(:(x || y)) == "x \\vee y"
+@test latexraw(:(x || !y)) == "x \\vee \\neg y"
+
+
+## Test {cases} enviroment
+@test latexraw(:(R(p,e,d) = e ? 0 : log(p) - d)) ==
+raw"R\left( p, e, d \right) = \begin{cases}
+0 & \text{if } e\\
+\log\left( p \right) - d & \text{otherwise}
+\end{cases}"
+
+@test latexraw(:(R(p,e,d,t) = if (t && e); 0 elseif (t && !e); d else log(p) end)) ==
+raw"R\left( p, e, d, t \right) = \begin{cases}
+0 & \text{if } t \wedge e\\
+d & \text{if } t \wedge \neg e\\
+\log\left( p \right) & \text{otherwise}
+\end{cases}"
+
+@test latexraw(:(function reward(p,e,d,t)
+    if t && e
+        return 0
+    elseif t && !e
+        return -1d
+    elseif 2t && e
+        return -2d
+    elseif 3t && e
+        return -3d
+    else
+        return log(p)
+    end
+end)) ==
+raw"\mathrm{reward}\left( p, e, d, t \right) = \begin{cases}
+0 & \text{if } t \wedge e\\
+-1 \cdot d & \text{if } t \wedge \neg e\\
+-2 \cdot d & \text{if } 2 \cdot t \wedge e\\
+-3 \cdot d & \text{if } 3 \cdot t \wedge e\\
+\log\left( p \right) & \text{otherwise}
+\end{cases}"

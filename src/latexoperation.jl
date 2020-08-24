@@ -59,8 +59,10 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
         end
         prevOp[2] != :none  && (args[2]="\\left( $(args[2]) \\right)")
         return "$(args[2])^{$(args[3])}"
-    elseif ex.head == :(=) && length(args) == 2
+    elseif (ex.head in (:(=), :function)) && length(args) == 2
         return "$(args[1]) = $(args[2])"
+    elseif op == :(!)
+        return "\\neg $(args[2])"
     end
 
     if ex.head == :.
@@ -72,10 +74,10 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
 
     # infix_operators = [:<, :>, Symbol("=="), :<=, :>=, :!=]
     comparison_operators = Dict(
-        :< => "\\lt",
-        :.< => "\\lt",
-        :> => "\\gt",
-        :.> => "\\gt",
+        :< => "<",
+        :.< => "<",
+        :> => ">",
+        :.> => ">",
         Symbol("==") => "=",
         Symbol(".==") => "=",
         :<= => "\\leq",
@@ -107,17 +109,22 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
     op == :abs && return "\\left\\|$(args[2])\\right\\|"
     op == :exp && return "e^{$(args[2])}"
 
+    ## Leave math italics for single-character operator names (e.g., f(x)).
+    opname = string(op)
+    if length(opname) > 1
+        opname = "\\mathrm{$opname}"
+    end
 
     if ex.head == :ref
         argstring = join(args[2:end], ", ")
-        return "\\mathrm{$op}\\left[$argstring\\right]"
+        return "$opname\\left[$argstring\\right]"
     end
 
     if ex.head == :call
         if args[2] isa String && occursin("=", args[2])
-            return "\\mathrm{$op}\\left( $(join(args[3:end], ", ")); $(args[2]) \\right)"
+            return "$opname\\left( $(join(args[3:end], ", ")); $(args[2]) \\right)"
         else
-            return "\\mathrm{$op}\\left( $(join(args[2:end], ", ")) \\right)"
+            return "$opname\\left( $(join(args[2:end], ", ")) \\right)"
         end
     end
 
@@ -139,7 +146,30 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
     ## Sort out type annotations. Mainly for function arguments.
     ex.head == :(::) && length(args) == 1 && return "::$(args[1])"
     ex.head == :(::) && length(args) == 2 && return "$(args[1])::$(args[2])"
-    
+
+    ## Pass back values that were explicitly returned.
+    ex.head == :return && length(args) == 1 && return args[1]
+
+    ## Case enviroment for if statements and ternary ifs.
+    if ex.head in (:if, :elseif)
+        textif::String = "\\text{if }"
+        begincases::String = ex.head == :if ? "\\begin{cases}\n" : ""
+        endcases::String = ex.head == :if ? "\n\\end{cases}" : ""
+        if length(args) == 3
+            # Check if already parsed elseif as args[3]
+            haselseif::Bool = occursin(Regex("\\$textif"), args[3])
+            otherwise::String = haselseif ? "" : " & \\text{otherwise}"
+            return """$begincases$(args[2]) & $textif $(args[1])\\\\
+                      $(args[3])$otherwise$endcases"""
+        elseif length(args) == 2
+            return "$begincases$(args[2]) & $textif $(args[1])$endcases"
+        end
+    end
+
+    ## Conditional operators converted to logical operators.
+    ex.head == :(&&) && length(args) == 2 && return "$(args[1]) \\wedge $(args[2])"
+    ex.head == :(||) && length(args) == 2 && return "$(args[1]) \\vee $(args[2])"
+
     ## if we have reached this far without a return, then error.
     error("Latexify.jl's latexoperation does not know what to do with one of the
           expressions provides ($ex).")
