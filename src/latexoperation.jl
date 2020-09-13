@@ -14,7 +14,6 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
     # Remove math italics for variables (i.e. words) longer than 2 characters.
     args = map(i -> (i isa String && all(map(isletter, collect(i))) && length(i) > 2) ? "{\\rm $i}" : i, args)
 
-
     if op in [:/, :./]
         return "\\frac{$(args[2])}{$(args[3])}"
 
