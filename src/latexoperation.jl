@@ -113,7 +113,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
     op == :exp && return "e^{$(args[2])}"
 
     ## Leave math italics for single-character operator names (e.g., f(x)).
-    opname = string(op)
+    opname = replace(string(op), '_'=>raw"\_")
     if length(opname) > 1
         opname = "\\mathrm{$opname}"
     end
