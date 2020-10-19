@@ -61,7 +61,7 @@ f = @ode_def TestRaw begin
     dx = y/c_1 - x
     dy = x^c_2 - y
 end c_1 c_2
-@test latexraw(f) == ["\\frac{dx}{dt} = \\frac{y}{c_{1}} - x", "\\frac{dy}{dt} = x^{c_{2}} - y"]
+@test_broken latexraw(f) == ["\\frac{dx}{dt} = \\frac{y}{c_{1}} - x", "\\frac{dy}{dt} = x^{c_{2}} - y"]
 
 
 ### Test for correct signs in nested sums/differences.

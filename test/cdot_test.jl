@@ -54,14 +54,14 @@ f = @ode_def TestAlignFeedback2 begin
     dy = x^c_2 - y
 end c_1 c_2
 
-@test latexify(f; env=:align, cdot=false) == 
+@test_broken latexify(f; env=:align, cdot=false) == 
 raw"\begin{align}
 \frac{dx}{dt} =& y c_{1} - x \\
 \frac{dy}{dt} =& x^{c_{2}} - y
 \end{align}
 "
 
-@test latexify(f; env=:align, cdot=true) == 
+@test_broken latexify(f; env=:align, cdot=true) == 
 raw"\begin{align}
 \frac{dx}{dt} =& y \cdot c_{1} - x \\
 \frac{dy}{dt} =& x^{c_{2}} - y
