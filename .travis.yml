@@ -14,7 +14,6 @@ notifications:
   email: false
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - sudo apt-get -y install xclip
   - julia --project -e 'using Pkg; Pkg.test("Latexify"; coverage=true)'
 after_success:
   # push coverage results to Coveralls and Codecov
