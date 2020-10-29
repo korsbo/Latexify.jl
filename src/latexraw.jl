@@ -71,7 +71,7 @@ function latexraw(inputex::Expr; convert_unicode=true, kwargs...)
                 ex.args[i] = latexarray(ex.args[i]; kwargs...)
             end
         end
-        return latexoperation(ex, prevOp; kwargs...)
+        return latexoperation(ex, prevOp; convert_unicode=convert_unicode, kwargs...)
     end
     ex = deepcopy(inputex)
     str = recurseexp!(ex)
@@ -130,4 +130,4 @@ environment that is capable of displaying not-maths objects. Try for example
     end
 end
 
-# @require Missings latexraw(i::Missings.Missing) = "\\textrm{NA}"
+latexraw(i::Missing) = "\\textrm{NA}"

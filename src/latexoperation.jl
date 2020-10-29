@@ -8,8 +8,7 @@ a parenthesis is needed.
 """
 function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
     op = ex.args[1]
-    convertSubscript!(ex)
-    args = map(i -> i isa Number ? latexraw(i; kwargs...) : i, ex.args)
+    args = map(i -> !isa(i,  String) ? latexraw(i; kwargs...) : i, ex.args)
 
     # Remove math italics for variables (i.e. words) longer than 2 characters.
     args = map(i -> (i isa String && all(map(isletter, collect(i))) && length(i) > 2) ? "{\\rm $i}" : i, args)
