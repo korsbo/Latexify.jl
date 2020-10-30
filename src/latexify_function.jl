@@ -48,7 +48,7 @@ get_latex_function(args...) = latexinline
 get_latex_function(args::AbstractArray...) = (args...; kwargs...) -> latexequation(latexarray(args...; kwargs...); kwargs...)
 get_latex_function(args::AbstractDict) = (args...; kwargs...) -> latexequation(latexarray(args...; kwargs...); kwargs...)
 get_latex_function(args::Tuple...) = (args...; kwargs...) -> latexequation(latexarray(args...; kwargs...); kwargs...)
-
+get_latex_function(arg::LaTeXString) = (arg; kwargs...) -> arg
 
 function get_latex_function(x::AbstractArray{T}) where T <: AbstractArray
     try
