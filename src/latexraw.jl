@@ -103,7 +103,10 @@ function latexraw(i::Char; convert_unicode=true, kwargs...)
 end
 
 function latexraw(i::Symbol; convert_unicode=true, kwargs...)
-    LaTeXString(convertSubscript(convert_unicode ? unicode2latex(string(i)) : string(i)))
+    str = string(i)
+    str = convertSubscript(str)
+    convert_unicode && (str = unicode2latex(str))
+    return LaTeXString(str)
 end
 
 function latexraw(i::String; kwargs...)
