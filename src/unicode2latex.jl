@@ -42,7 +42,7 @@ const unicodedict = Dict{Char, String}(
     '⨰' => raw"\dottimes",
     '◜' => raw"\ularc",
     '⨅' => raw"\bigsqcap",
-    '₃' => raw"\_3",
+    '₃' => raw"{\_3}",
     '𝙧' => raw"\bisansr",
     '𝐪' => raw"\bfq",
     '↲' => raw"\Ldsh",
@@ -83,7 +83,7 @@ const unicodedict = Dict{Char, String}(
     '▦' => raw"\squarehvfill",
     '⥪' => raw"\leftharpoonupdash",
     '≀' => raw"\wr",
-    '₅' => raw"\_5",
+    '₅' => raw"{\_5}",
     '⤦' => raw"\hkswarow",
     '𝝤' => raw"\bsansOmicron",
     '⌓' => raw"\profsurf",
@@ -149,7 +149,7 @@ const unicodedict = Dict{Char, String}(
     '∆' => raw"\increment",
     '𝘢' => raw"\isansa",
     '♭' => raw"\flat",
-    '⁸' => raw"\^8",
+    '⁸' => raw"{\^8}",
     '⟺' => raw"\iff",
     '𝕞' => raw"\bbm",
     '𝗼' => raw"\bsanso",
@@ -259,11 +259,11 @@ const unicodedict = Dict{Char, String}(
     '⫀' => raw"\supsetplus",
     '⨊' => raw"\modtwosum",
     '⦝' => raw"\rightanglemdot",
-    '₆' => raw"\_6",
+    '₆' => raw"{\_6}",
     '𝜣' => raw"\biTheta",
     '𝐭' => raw"\bft",
     'Ϟ' => raw"\Koppa",
-    '¹' => raw"\^1",
+    '¹' => raw"{\^1}",
     '…' => raw"\ldots",
     '⬯' => raw"\whtvertoval",
     '𝚎' => raw"\tte",
@@ -557,7 +557,7 @@ const unicodedict = Dict{Char, String}(
     '⥦' => raw"\leftrightharpoonsup",
     '⟦' => raw"\openbracketleft",
     '∮' => raw"\oint",
-    '₇' => raw"\_7",
+    '₇' => raw"{\_7}",
     '𝖭' => raw"\sansN",
     '⪊' => raw"\gnapprox",
     '▹' => raw"\smalltriangleright",
@@ -611,7 +611,7 @@ const unicodedict = Dict{Char, String}(
     '𝞖' => raw"\bisansEta",
     '𝘂' => raw"\bsansu",
     '⪠' => raw"\simgE",
-    '₀' => raw"\_0",
+    '₀' => raw"{\_0}",
     'ɬ' => raw"\btdl",
     '⥫' => raw"\dashleftharpoondown",
     '𝕕' => raw"\bbd",
@@ -784,7 +784,7 @@ const unicodedict = Dict{Char, String}(
     '⅀' => raw"\bbsum",
     '𝞞' => raw"\bisansOmicron",
     '⇊' => raw"\downdownarrows",
-    '⁵' => raw"\^5",
+    '⁵' => raw"{\^5}",
     '𝑤' => raw"\itw",
     '⥄' => raw"\rLarr",
     '𝔩' => raw"\frakl",
@@ -877,7 +877,7 @@ const unicodedict = Dict{Char, String}(
     '𝔯' => raw"\frakr",
     '𝙏' => raw"\bisansT",
     '⬣' => raw"\hexagonblack",
-    '²' => raw"\^2",
+    '²' => raw"{\^2}",
     'ϟ' => raw"\upkoppa",
     '⪨' => raw"\lescc",
     '𝟵' => raw"\bsansnine",
@@ -1085,7 +1085,7 @@ const unicodedict = Dict{Char, String}(
     '⦿' => raw"\circledbullet",
     'ʇ' => raw"\trnt",
     '𝞠' => raw"\bisansRho",
-    '₉' => raw"\_9",
+    '₉' => raw"{\_9}",
     '𝟡' => raw"\bbnine",
     '𝑟' => raw"\itr",
     '𝝾' => raw"\bsansomicron",
@@ -1217,7 +1217,7 @@ const unicodedict = Dict{Char, String}(
     '𝓎' => raw"\scry",
     'ᵦ' => raw"\_beta",
     'η' => raw"\eta",
-    '⁴' => raw"\^4",
+    '⁴' => raw"{\^4}",
     '⤪' => raw"\towa",
     '𝒅' => raw"\bid",
     '⊙' => raw"\odot",
@@ -1294,7 +1294,7 @@ const unicodedict = Dict{Char, String}(
     '⨩' => raw"\commaminus",
     '⅄' => raw"\Yup",
     '𝛼' => raw"\italpha",
-    '₂' => raw"\_2",
+    '₂' => raw"{\_2}",
     '⥙' => raw"\LeftDownVectorBar",
     '𝘲' => raw"\isansq",
     '𝛢' => raw"\itAlpha",
@@ -1330,7 +1330,7 @@ const unicodedict = Dict{Char, String}(
     '𝐸' => raw"\itE",
     '𝜵' => raw"\binabla",
     '▿' => raw"\triangledown",
-    '⁰' => raw"\^0",
+    '⁰' => raw"{\^0}",
     '𝟨' => raw"\sanssix",
     '⥒' => raw"\LeftVectorBar",
     '⩀' => raw"\capdot",
@@ -1344,7 +1344,7 @@ const unicodedict = Dict{Char, String}(
     '𝖔' => raw"\bfrako",
     '⨝' => raw"\join",
     '𝕯' => raw"\bfrakD",
-    '₄' => raw"\_4",
+    '₄' => raw"{\_4}",
     '≺' => raw"\prec",
     '𝓅' => raw"\scrp",
     '𝛨' => raw"\itEta",
@@ -1456,7 +1456,7 @@ const unicodedict = Dict{Char, String}(
     '𝗠' => raw"\bsansM",
     '╱' => raw"\diagup",
     '𝔾' => raw"\bbG",
-    '₁' => raw"\_1",
+    '₁' => raw"{\_1}",
     'ʕ' => raw"\reglst",
     '𝟘' => raw"\bbzero",
     'ʧ' => raw"\tesh",
@@ -1516,7 +1516,7 @@ const unicodedict = Dict{Char, String}(
     'ᴳ' => raw"\^G",
     '⪛' => raw"\eqqslantless",
     '𝘩' => raw"\isansh",
-    '⁶' => raw"\^6",
+    '⁶' => raw"{\^6}",
     '⇤' => raw"\barleftarrow",
     '♧' => raw"\varclubsuit",
     '𝔣' => raw"\frakf",
@@ -1571,7 +1571,7 @@ const unicodedict = Dict{Char, String}(
     '𝜀' => raw"\itepsilon",
     '⨤' => raw"\simplus",
     '𝚾' => raw"\bfChi",
-    '⁹' => raw"\^9",
+    '⁹' => raw"{\^9}",
     'ℕ' => raw"\bbN",
     '𝜍' => raw"\itvarsigma",
     '⧁' => raw"\ogreaterthan",
@@ -1792,7 +1792,7 @@ const unicodedict = Dict{Char, String}(
     '𝗭' => raw"\bsansZ",
     '⥉' => raw"\twoheaduparrowcircle",
     '𝝶' => raw"\bsanseta",
-    '⁷' => raw"\^7",
+    '⁷' => raw"{\^7}",
     '𝖡' => raw"\sansB",
     '𝕭' => raw"\bfrakB",
     '⫋' => raw"\subsetneqq",
@@ -1903,7 +1903,7 @@ const unicodedict = Dict{Char, String}(
     '⪟' => raw"\simlE",
     '⇒' => raw"\Rightarrow",
     '⋫' => raw"\ntriangleright",
-    '₈' => raw"\_8",
+    '₈' => raw"{\_8}",
     'ℍ' => raw"\bbH",
     '𝕧' => raw"\bbv",
     '𝛝' => raw"\bfvartheta",
@@ -2273,7 +2273,7 @@ const unicodedict = Dict{Char, String}(
     '∃' => raw"\exists",
     '⚬' => raw"\mdsmwhtcircle",
     '♐' => raw"\sagittarius",
-    '³' => raw"\^3",
+    '³' => raw"{\^3}",
     '̌' => raw"\check",
     '▱' => raw"\parallelogram",
     '𝙭' => raw"\bisansx",
@@ -2466,8 +2466,45 @@ function unicode2latex(str::String)
     end
 
     str = join(str_array)
+    str = merge_subscripts(str)
+    str = merge_superscripts(str)
 
-    str = replace(str, raw"\_"=>"_")
-    str = replace(str, raw"\^"=>"^")
+    ## neaten up combinations of sub- and superscripts
+    str = replace(str, r"{\_{(\d+)}}{\^{(\d+)}}" => s"{_{\1}^{\2}}")
+    str = replace(str, r"{\^{(\d+)}}{\_{(\d+)}}" => s"{^{\1}_{\2}}")
     str
+end
+
+"""
+    merge_superscripts(str)
+
+Merge sequential superscripts to a better representation.
+
+Returns a string where sequences like "{\\^1}{\\^3}" are replaced by "^{13}".
+"""
+function merge_superscripts(str)
+    ## replace multiple superscripts with a single one. 
+    r = r"{\\\^(\d+)}{\\\^(\d+)}"
+    while match(r, str) !== nothing
+        str = replace(str, r => s"{\\^\1\2}")
+    end
+    str = replace(str, r"{\\\^(\d+)}{{\\\^(\d)}}" => s"{\\^\1\2}")
+    str = replace(str, r"{\\\^(\d+)}" => s"{^{\1}}")
+end
+
+"""
+    merge_superscripts(str)
+
+Merge sequential subscripts to a better representation.
+
+Returns a string where sequences like "{\\_1}{\\_3}" are replaced by "_{13}".
+"""
+function merge_subscripts(str)
+    ## Replace multiple subscripts with single one, e.g. {_1}{_2} to _{12}
+    r = r"{\\_(\d+)}{\\_(\d+)}"
+    while match(r, str) !== nothing
+        str = replace(str, r => s"{\\_\1\2}")
+    end
+    str = replace(str, r"{\\_(\d+)}{{\\_(\d)}}" => s"{\\_\1\2}")
+    str = replace(str, r"{\\_(\d+)}" => s"{_{\1}}")
 end
