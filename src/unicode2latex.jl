@@ -2470,8 +2470,8 @@ function unicode2latex(str::String)
     str = merge_superscripts(str)
 
     ## neaten up combinations of sub- and superscripts
-    str = replace(str, r"{\_{(\d+)}}{\^{(\d+)}}" => s"{_{\1}^{\2}}")
-    str = replace(str, r"{\^{(\d+)}}{\_{(\d+)}}" => s"{^{\1}_{\2}}")
+    str = replace(str, r"{\_([{]*\d+[}]*)}{\^([{]*\d+[}]*)}" => s"{_\1^\2}")
+    str = replace(str, r"{\^([{]*\d+[}]*)}{\_([{]*\d+[}]*)}" => s"{^\1_\2}")
     str
 end
 
@@ -2489,7 +2489,9 @@ function merge_superscripts(str)
         str = replace(str, r => s"{\\^\1\2}")
     end
     str = replace(str, r"{\\\^(\d+)}{{\\\^(\d)}}" => s"{\\^\1\2}")
-    str = replace(str, r"{\\\^(\d+)}" => s"{^{\1}}")
+    str = replace(str, r"{\\\^(\d)}" => s"{^\1}")
+    str = replace(str, r"{\\\^(\d\d+)}" => s"{^{\1}}")
+    str
 end
 
 """
@@ -2506,5 +2508,7 @@ function merge_subscripts(str)
         str = replace(str, r => s"{\\_\1\2}")
     end
     str = replace(str, r"{\\_(\d+)}{{\\_(\d)}}" => s"{\\_\1\2}")
+    str = replace(str, r"{\\_(\d)}" => s"{_\1}")
     str = replace(str, r"{\\_(\d+)}" => s"{_{\1}}")
+    return str
 end
