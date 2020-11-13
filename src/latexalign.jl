@@ -44,6 +44,7 @@ function latexalign end
 function latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=false, starred=false, rows=:all, kwargs...)
     eol = double_linebreak ? " \\\\\\\\\n" : " \\\\\n"
     arr = latexraw(arr; kwargs...)
+    separator isa String && (separator = fill(separator, size(arr)[1]))
 
     str = "\\begin{align$(starred ? "*" : "")}\n"
     if rows == :all
@@ -51,11 +52,12 @@ function latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=fals
     else 
         iterate_rows = rows
     end
+
     for i in iterate_rows
         if i != last(iterate_rows)
-            str *= join(arr[i,:], separator) * eol
+            str *= join(arr[i,:], separator[i]) * eol
         else
-            str *= join(arr[i,:], separator) * "\n"
+            str *= join(arr[i,:], separator[i]) * "\n"
         end
     end
     str *= "\\end{align$(starred ? "*" : "")}\n"
