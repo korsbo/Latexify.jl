@@ -41,6 +41,7 @@ keyword_arguments = [
     KeywordArgument(:clean, [:align], "`Bool`", "`false`", "Clean out `1*` terms. Only useful for DiffEqBiological versions 3.4 or below.", [:ReactionNetwork]),
     KeywordArgument(:rows, [:align], "Iterable or symol", ":all", "Which rows to include in the output.", [:Any]),
     KeywordArgument(:booktabs, [:tabular], "`Bool`", "`false`", "Add top, mid and bottom booktabs rule", [:Any]),
+    KeywordArgument(:index, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Symb`", "`:bracket`", "Represent index specification with `:bracket` (`u[1]`) or `:subscript` (`u_1`). ", [:Any]),
 #     KeywordArgument(:template, [:array], "`Bool`", "`false`", "description", [:Any]),
     ]
 

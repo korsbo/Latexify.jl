@@ -6,7 +6,7 @@ This uses the information about the previous operations to decide if
 a parenthesis is needed.
 
 """
-function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
+function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, index=:bracket, kwargs...)
     op = ex.args[1]
     args = map(i -> typeof(i) ∉ (String, LineNumberNode) ? latexraw(i; kwargs...) : i, ex.args)
 
@@ -118,8 +118,14 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
     end
 
     if ex.head == :ref
-        argstring = join(args[2:end], ", ")
-        return "$opname\\left[$argstring\\right]"
+        if index == :subscript
+            return "$(args[1])_{$(join(args[2:end], ","))}"
+        elseif index == :bracket
+            argstring = join(args[2:end], ", ")
+            return "$opname\\left[$argstring\\right]"
+        else
+            throw(ArgumentError("Incorrect `index` keyword argument to latexify. Valid values are :subscript and :bracket"))
+        end
     end
 
     if ex.head == :macrocall && ex.args[1] == Symbol("@__dot__") 
@@ -177,6 +183,8 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
     ## Conditional operators converted to logical operators.
     ex.head == :(&&) && length(args) == 2 && return "$(args[1]) \\wedge $(args[2])"
     ex.head == :(||) && length(args) == 2 && return "$(args[1]) \\vee $(args[2])"
+
+
 
     ## if we have reached this far without a return, then error.
     error("Latexify.jl's latexoperation does not know what to do with one of the

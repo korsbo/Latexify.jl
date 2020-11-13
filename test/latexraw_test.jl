@@ -11,6 +11,9 @@ desired_output = "2 \\cdot x^{2} - \\frac{y}{c_{2}}"
 @test latexraw(str) == latexraw(ex)
 @test latexraw(ex) == desired_output
 
+@test latexify(:(u[1, 2]); index = :bracket) == raw"$u\left[1, 2\right]$"
+@test latexify(:(u[1, 2]); index = :subscript) == raw"$u_{1,2}$"
+
 array_test = [ex, str]
 @test all(latexraw(array_test) .== desired_output)
 
