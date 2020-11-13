@@ -14,6 +14,10 @@ desired_output = "2 \\cdot x^{2} - \\frac{y}{c_{2}}"
 array_test = [ex, str]
 @test all(latexraw(array_test) .== desired_output)
 
+@test latexraw(:(@__dot__(x / y))) == raw"\frac{x}{y}"
+@test latexraw(:(@. x / y)) == raw"\frac{x}{y}"
+@test latexraw(:(eps())) == raw"\mathrm{eps}()"
+
 @test latexraw(:y_c_a) == "y_{c\\_a}"
 @test latexraw(1.0) == "1.0"
 @test latexraw(1.00) == "1.0"
