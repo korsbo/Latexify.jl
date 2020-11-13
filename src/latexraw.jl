@@ -63,7 +63,7 @@ function latexraw(inputex::Expr; convert_unicode=true, kwargs...)
     inputex = postwalk(x -> x isa Expr && x.head in [:hcat, :vcat, :vect] ? 
                        latexarray(
                                   ## If it is a matrix
-                                  if x isa Expr && x.args[1].head == :row
+                                  if x.args[1] isa Expr && x.args[1].head == :row
                                       eval(x.head)(map(y -> permutedims(y.args), x.args)...)
                                   else 
                                       eval(x.head)( x.args...)
