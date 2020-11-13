@@ -66,7 +66,11 @@ function latexraw(inputex::Expr; convert_unicode=true, kwargs...)
                                   if x.args[1] isa Expr && x.args[1].head == :row
                                       eval(x.head)(map(y -> permutedims(y.args), x.args)...)
                                   else 
-                                      eval(x.head)( x.args...)
+                                      if x.head in [:hcat, :row]
+                                          hcat( x.args...)
+                                      elseif x.head in [:vcat, :vect]
+                                          vcat( x.args...)
+                                      end
                                   end
                                   ; kwargs...) 
                        : 
