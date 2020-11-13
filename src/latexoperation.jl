@@ -122,8 +122,14 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
         return "$opname\\left[$argstring\\right]"
     end
 
+    if ex.head == :macrocall && ex.args[1] == Symbol("@__dot__") 
+        return ex.args[3]
+    end
+
     if ex.head == :call
-        if args[2] isa String && occursin("=", args[2])
+        if length(args) == 1
+            return "$opname()"
+        elseif args[2] isa String && occursin("=", args[2])
             return "$opname\\left( $(join(args[3:end], ", ")); $(args[2]) \\right)"
         else
             return "$opname\\left( $(join(args[2:end], ", ")) \\right)"
@@ -174,7 +180,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, kwargs...)
 
     ## if we have reached this far without a return, then error.
     error("Latexify.jl's latexoperation does not know what to do with one of the
-          expressions provides ($ex).")
+          expressions provided ($ex).")
     return ""
 end
 
