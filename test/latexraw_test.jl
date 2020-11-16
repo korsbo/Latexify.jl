@@ -8,6 +8,31 @@ ex = :(2*x^2 - y/c_2)
 
 desired_output = "2 \\cdot x^{2} - \\frac{y}{c_{2}}"
 
+@test latexify(:(a = [x / y; 3; 4])) == 
+raw"$a = \left[
+\begin{array}{c}
+\frac{x}{y} \\
+3 \\
+4 \\
+\end{array}
+\right]$"
+
+@test latexify(:(a = [x / y 2 3 4])) == 
+raw"$a = \left[
+\begin{array}{cccc}
+\frac{x}{y} & 2 & 3 & 4 \\
+\end{array}
+\right]$"
+
+@test latexify(:(a = [x / y 2; 3 4])) == 
+raw"$a = \left[
+\begin{array}{cc}
+\frac{x}{y} & 2 \\
+3 & 4 \\
+\end{array}
+\right]$"
+
+
 @test latexraw(str) == latexraw(ex)
 @test latexraw(ex) == desired_output
 

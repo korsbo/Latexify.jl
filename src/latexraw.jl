@@ -59,7 +59,24 @@ function latexraw end
 
 
 function latexraw(inputex::Expr; convert_unicode=true, kwargs...)
-    inputex = postwalk(x -> x isa Expr && x.head in [:hcat, :vcat, :vect] ? latexarray(eval(x); kwargs...) : x, inputex)
+    ## Pass all arrays or matrices in the expr to latexarray
+    inputex = postwalk(x -> x isa Expr && x.head in [:hcat, :vcat, :vect] ? 
+                       latexarray(
+                                  ## If it is a matrix
+                                  if x.args[1] isa Expr && x.args[1].head == :row
+                                      eval(x.head)(map(y -> permutedims(y.args), x.args)...)
+                                  else 
+                                      if x.head == :hcat
+                                          hcat( x.args...)
+                                      elseif x.head in [:vcat, :vect]
+                                          vcat( x.args...)
+                                      end
+                                  end
+                                  ; kwargs...) 
+                       : 
+                       x, inputex)
+
+    recurseexp!(lstr::LaTeXString) = lstr.s
     function recurseexp!(ex)
         prevOp = Vector{Symbol}(undef, length(ex.args))
         fill!(prevOp, :none)
