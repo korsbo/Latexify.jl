@@ -34,7 +34,7 @@ function render(s::LaTeXString; debug=false, name=tempname(), command="\\Large")
         write(f, doc)
     end
     cd(dirname(name)) do 
-        cmd = `lualatex $(name).tex`
+        cmd = `lualatex --interaction=batchmode $(name).tex`
         debug || (cmd = pipeline(cmd, devnull))
         run(cmd)
     end
