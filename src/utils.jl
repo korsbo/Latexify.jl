@@ -18,7 +18,7 @@ Display a standalone PDF with the given input.
 """
 function render(s::LaTeXString; debug=false, name=tempname(), command="\\Large")
     doc = """
-    \\documentclass[varwidth]{standalone}
+    \\documentclass[varwidth=100cm]{standalone}
     \\usepackage{amssymb}
     \\usepackage{amsmath}
     \\begin{document}
