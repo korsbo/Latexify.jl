@@ -17,7 +17,8 @@ makedocs(
         "tutorials/recipes.md",
         "Use with other packages" => [
             "tutorials/parameterizedfunctions.md",
-            "tutorials/DiffEqBiological.md"
+            "tutorials/DiffEqBiological.md",
+            "tutorials/Unitful.md",
         ],
         "arguments.md",
         "tutorials/inner_workings.md",

@@ -65,6 +65,9 @@ function __init__()
     @require DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0" begin
         include("plugins/DataFrames.jl")
     end
+    @require Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d" begin
+        include("plugins/Unitful.jl")
+    end
 end
 
 macro generate_test(expr)

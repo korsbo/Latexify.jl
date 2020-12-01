@@ -34,6 +34,7 @@ This package supplies functionality for latexifying objects of the following typ
 - Any shape of array containing a mix of any of the above types,
 - ParameterizedFunctions from DifferentialEquations.jl,
 - ReactionNetworks from DifferentialEquations.jl
+- FreeUnits and Quantity from Unitful.jl
 
 
 Example:

@@ -22,3 +22,4 @@ using Test
 @testset "unocode2latex" begin include("unicode2latex.jl") end
 @testset "cdot test" begin include("cdot_test.jl") end
 @testset "numberformatters" begin include("numberformatters_test.jl") end
+@testset "Unitful Plugin" begin include("plugins/Unitful.jl") end
