@@ -49,3 +49,20 @@ function render(s::LaTeXString; debug=false, name=tempname(), command="\\Large")
     end
     return nothing
 end
+
+
+function expr_to_array(ex)
+    ex.head == :typed_vcat && (ex = Expr(:vcat, ex.args[2:end]...))
+    ex.head == :typed_hcat && (ex = Expr(:hcat, ex.args[2:end]...))
+    ex.head == :ref && (ex = Expr(:vect, ex.args[2:end]...))
+    ## If it is a matrix
+    if ex.args[1] isa Expr && ex.args[1].head == :row
+        return eval(ex.head)(map(y -> permutedims(y.args), ex.args)...)
+    else 
+        if ex.head == :hcat
+            return hcat( ex.args...)
+        elseif ex.head in [:vcat, :vect]
+            return vcat( ex.args...)
+        end
+    end
+end
