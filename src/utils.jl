@@ -21,6 +21,7 @@ function render(s::LaTeXString; debug=false, name=tempname(), command="\\Large")
     \\documentclass[varwidth=100cm]{standalone}
     \\usepackage{amssymb}
     \\usepackage{amsmath}
+    $(occursin("\\ce{", s) ? "\\usepackage{mhchem}" : "")
     \\begin{document}
     {
         $command
@@ -30,6 +31,7 @@ function render(s::LaTeXString; debug=false, name=tempname(), command="\\Large")
     """
     doc = replace(doc, "\\begin{align}"=>"\\[\n\\begin{aligned}")
     doc = replace(doc, "\\end{align}"=>"\\end{aligned}\n\\]")
+    doc = replace(doc, "\\require{mhchem}\n"=>"")
     open("$(name).tex", "w") do f
         write(f, doc)
     end
