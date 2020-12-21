@@ -68,7 +68,7 @@ function __init__()
 end
 
 macro generate_test(expr)
-    return :(clipboard("\n@test $($(string(expr))) == \nraw\"$($(esc(expr)))\"\n\n"))
+    return :(clipboard("@test $($(string(expr))) == replace(\nraw\"$($(esc(expr)))\", \"\\r\\n\"=>\"\\n\")\n"))
 end
 
 end
