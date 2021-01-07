@@ -54,7 +54,7 @@ end
     render(::LaTeXString[, ::MIME"mime"]; debug=false, name=tempname(), command="\\Large", open=true)
 
 Display a standalone document with the given input. Supported MIME-type strings are
-"application/pdf" (default), "application/x-dvi" and "image/png".
+"application/pdf" (default), "application/x-dvi", "image/png" and "image/svg+xml".
 """
 function render(s::LaTeXString; debug=false, name=tempname(), command="\\Large", open=true)
     return render(s, MIME("application/pdf"); debug=debug, name=name, command=command, open=open)
@@ -95,7 +95,7 @@ function render(s::LaTeXString, ::MIME"application/x-dvi"; debug=false, name=tem
 end
 
 
-function render(s::LaTeXString, ::MIME"image/png"; debug=false, name=tempname(), command="\\Large", open=true, dpi=150)
+function render(s::LaTeXString, ::MIME"image/png"; debug=false, name=tempname(), command="\\Large", open=true, dpi=300)
     render(s, MIME("application/x-dvi"); debug=debug, name=name, command=command, open=false)
 
     cmd = `dvipng -bg Transparent -D $(dpi) -T tight -o $(name).png $(name).dvi`
@@ -104,6 +104,21 @@ function render(s::LaTeXString, ::MIME"image/png"; debug=false, name=tempname(),
 
     if open
         _openfile(name; ext="png")
+    end
+
+    return nothing
+end
+
+
+function render(s::LaTeXString, ::MIME"image/svg+xml"; debug=false, name=tempname(), command="\\Large", open=true)
+    render(s, MIME("application/x-dvi"); debug=debug, name=name, command=command, open=false)
+
+    cmd = `dvisvgm -n -v 0 -o $(name).svg $(name).dvi`
+    debug || (cmd = pipeline(cmd, devnull))
+    run(cmd)
+
+    if open
+        _openfile(name; ext="svg")
     end
 
     return nothing

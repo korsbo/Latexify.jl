@@ -207,13 +207,13 @@ I have found the following syntax pretty useful:
 latexify(:(x/y)) |> render
 ```
 
-Alternatively, `render(str, mime)` can also be used to generate and open DVI and PNG files, which might be useful for other purposes:
+Alternatively, `render(str, mime)` can also be used to generate and open DVI, PNG and SVG files, which might be useful for other purposes:
 
 ```julia
 latexify(:(x/y)) |> s -> render(s, MIME("image/png"))
 ```
 
-PNG output relies on [dvipng](http://www.nongnu.org/dvipng/).
+PNG and SVG outputs rely on [dvipng](http://www.nongnu.org/dvipng/) and [dvisvgm](https://dvisvgm.de/), respectively.
 
 ## Legacy support
 
