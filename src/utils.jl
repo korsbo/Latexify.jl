@@ -11,12 +11,7 @@ function add_brackets(ex::Expr, vars)
 end
 
 
-"""
-    render(::LaTeXString; debug=false, name=tempname(), command="\\Large")
-
-Display a standalone PDF with the given input.
-"""
-function render(s::LaTeXString; debug=false, name=tempname(), command="\\Large")
+function _writetex(s::LaTeXString; name=tempname(), command="\\Large")
     doc = """
     \\documentclass[varwidth=100cm]{standalone}
     \\usepackage{amssymb}
@@ -35,11 +30,12 @@ function render(s::LaTeXString; debug=false, name=tempname(), command="\\Large")
     open("$(name).tex", "w") do f
         write(f, doc)
     end
-    cd(dirname(name)) do 
-        cmd = `lualatex --interaction=batchmode $(name).tex`
-        debug || (cmd = pipeline(cmd, devnull))
-        run(cmd)
-    end
+
+    return nothing
+end
+
+
+function _openfile(name)
     if Sys.iswindows()
         run(`cmd /c "start $(name).pdf"`, wait=false)
     elseif Sys.islinux()
@@ -49,6 +45,33 @@ function render(s::LaTeXString; debug=false, name=tempname(), command="\\Large")
     elseif Sys.isbsd()
         run(`xdg-open $(name).pdf`, wait=false)
     end
+
+    return nothing
+end
+
+
+"""
+    render(::LaTeXString[, ::MIME"mime"]; debug=false, name=tempname(), command="\\Large")
+
+Display a standalone document with the given input. Only supported MIME-type string is
+"application/pdf".
+"""
+function render(s::LaTeXString; debug=false, name=tempname(), command="\\Large")
+    return render(s, MIME("application/pdf"); debug=debug, name=name, command=command)
+end
+
+
+function render(s::LaTeXString, ::MIME"application/pdf"; debug=false, name=tempname(), command="\\Large")
+    _writetex(s; name=name, command=command)
+
+    cd(dirname(name)) do
+        cmd = `lualatex --interaction=batchmode $(name).tex`
+        debug || (cmd = pipeline(cmd, devnull))
+        run(cmd)
+    end
+
+    _openfile(name)
+
     return nothing
 end
 
