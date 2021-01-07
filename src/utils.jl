@@ -35,15 +35,15 @@ function _writetex(s::LaTeXString; name=tempname(), command="\\Large")
 end
 
 
-function _openfile(name)
+function _openfile(name; ext="pdf")
     if Sys.iswindows()
-        run(`cmd /c "start $(name).pdf"`, wait=false)
+        run(`cmd /c "start $(name).$(ext)"`, wait=false)
     elseif Sys.islinux()
-        run(`xdg-open $(name).pdf`, wait=false)
+        run(`xdg-open $(name).$(ext)`, wait=false)
     elseif Sys.isapple()
-        run(`open $(name).pdf`, wait=false)
+        run(`open $(name).$(ext)`, wait=false)
     elseif Sys.isbsd()
-        run(`xdg-open $(name).pdf`, wait=false)
+        run(`xdg-open $(name).$(ext)`, wait=false)
     end
 
     return nothing
@@ -51,17 +51,17 @@ end
 
 
 """
-    render(::LaTeXString[, ::MIME"mime"]; debug=false, name=tempname(), command="\\Large")
+    render(::LaTeXString[, ::MIME"mime"]; debug=false, name=tempname(), command="\\Large", open=true)
 
-Display a standalone document with the given input. Only supported MIME-type string is
-"application/pdf".
+Display a standalone document with the given input. Supported MIME-type strings are
+"application/pdf" (default), "application/x-dvi" and "image/png".
 """
-function render(s::LaTeXString; debug=false, name=tempname(), command="\\Large")
-    return render(s, MIME("application/pdf"); debug=debug, name=name, command=command)
+function render(s::LaTeXString; debug=false, name=tempname(), command="\\Large", open=true)
+    return render(s, MIME("application/pdf"); debug=debug, name=name, command=command, open=open)
 end
 
 
-function render(s::LaTeXString, ::MIME"application/pdf"; debug=false, name=tempname(), command="\\Large")
+function render(s::LaTeXString, ::MIME"application/pdf"; debug=false, name=tempname(), command="\\Large", open=true)
     _writetex(s; name=name, command=command)
 
     cd(dirname(name)) do
@@ -70,7 +70,41 @@ function render(s::LaTeXString, ::MIME"application/pdf"; debug=false, name=tempn
         run(cmd)
     end
 
-    _openfile(name)
+    if open
+        _openfile(name; ext="pdf")
+    end
+
+    return nothing
+end
+
+
+function render(s::LaTeXString, ::MIME"application/x-dvi"; debug=false, name=tempname(), command="\\Large", open=true)
+    _writetex(s; name=name, command=command)
+
+    cd(dirname(name)) do
+        cmd = `dvilualatex --interaction=batchmode $(name).tex`
+        debug || (cmd = pipeline(cmd, devnull))
+        run(cmd)
+    end
+
+    if open
+        _openfile(name; ext="dvi")
+    end
+
+    return nothing
+end
+
+
+function render(s::LaTeXString, ::MIME"image/png"; debug=false, name=tempname(), command="\\Large", open=true, dpi=150)
+    render(s, MIME("application/x-dvi"); debug=debug, name=name, command=command, open=false)
+
+    cmd = `dvipng -bg Transparent -D $(dpi) -T tight -o $(name).png $(name).dvi`
+    debug || (cmd = pipeline(cmd, devnull))
+    run(cmd)
+
+    if open
+        _openfile(name; ext="png")
+    end
 
     return nothing
 end
