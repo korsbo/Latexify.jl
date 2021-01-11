@@ -41,12 +41,16 @@ julia> latexalign(ode)
 """
 function latexalign end
 
-function latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=false, starred=false, rows=:all, kwargs...)
+function latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=false, starred=false, rows=:all, aligned=false, kwargs...)
     eol = double_linebreak ? " \\\\\\\\\n" : " \\\\\n"
     arr = latexraw(arr; kwargs...)
     separator isa String && (separator = fill(separator, size(arr)[1]))
-
-    str = "\\begin{align$(starred ? "*" : "")}\n"
+    str = ""
+    if aligned
+        str *= "\\begin{aligned}\n"
+    else
+        str *= "\\begin{align$(starred ? "*" : "")}\n"
+    end
     if rows == :all
         iterate_rows = 1:(size(arr)[1])
     else 
@@ -60,7 +64,11 @@ function latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=fals
             str *= join(arr[i,:], separator[i]) * "\n"
         end
     end
-    str *= "\\end{align$(starred ? "*" : "")}\n"
+    if aligned
+        str *= "\\end{aligned}\n"
+    else
+        str *= "\\end{align$(starred ? "*" : "")}\n"
+    end
     latexstr = LaTeXString(str)
     COPY_TO_CLIPBOARD && clipboard(latexstr)
     return latexstr

@@ -17,5 +17,16 @@ raw"\begin{align}
 "
 
 
+lhs = [:a, :b]
+rhs = [1, 2]
+
+@test latexify(lhs, rhs; env = :aligned) == replace(
+raw"\[
+\begin{aligned}
+a =& 1 \\
+b =& 2
+\end{aligned}
+\]
+", "\r\n"=>"\n")
 
 # @test_throws MethodError latexify(rn; bad_kwarg="should error")
