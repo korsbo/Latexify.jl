@@ -56,8 +56,8 @@ end
 Display a standalone document with the given input. Supported MIME-type strings are
 "application/pdf" (default), "application/x-dvi", "image/png" and "image/svg+xml".
 """
-function render(s::LaTeXString; debug=false, name=tempname(), command="\\Large", open=true)
-    return render(s, MIME("application/pdf"); debug=debug, name=name, command=command, open=open)
+function render(s::LaTeXString; kwargs...)
+    return render(s, MIME("application/pdf"); kwargs...)
 end
 
 
