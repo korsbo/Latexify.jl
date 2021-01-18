@@ -51,10 +51,10 @@ end
 
 
 """
-    render(::LaTeXString[, ::MIME"mime"]; debug=false, name=tempname(), command="\\Large", open=true)
+    render(::LaTeXString[, ::MIME"mime"]; debug=false, name=tempname(), command="\\Large", callshow=true, open=true)
 
 Display a standalone document with the given input. Supported MIME-type strings are
-"application/pdf" (default), "application/x-dvi", "image/png" and "image/svg+xml".
+"application/pdf" (default), "application/x-dvi", "image/png" and "image/svg".
 """
 function render(s::LaTeXString; kwargs...)
     return render(s, MIME("application/pdf"); kwargs...)
@@ -70,6 +70,13 @@ function render(s::LaTeXString, ::MIME"application/pdf"; debug=false, name=tempn
         run(cmd)
     end
 
+    # `display(MIME("application/pdf")` is generally not defined even though
+    # `displayable(MIME("application/pdf")` returns `true`.
+    #
+    # if callshow && displayable(MIME("application/pdf"))
+    #     Base.open("$name.pdf") do f
+    #         display(MIME("application/pdf"), read(f, String))
+    #     end
     if open
         _openfile(name; ext="pdf")
     end
@@ -87,6 +94,13 @@ function render(s::LaTeXString, ::MIME"application/x-dvi"; debug=false, name=tem
         run(cmd)
     end
 
+    # `display(MIME("application/x-dvi")` is generally not defined even though
+    # `displayable(MIME("application/x-dvi")` returns `true`.
+    #
+    # if callshow && displayable(MIME("application/x-dvi"))
+    #     Base.open("$name.dvi") do f
+    #         display(MIME("application/x-dvi"), read(f, String))
+    #     end
     if open
         _openfile(name; ext="dvi")
     end
@@ -95,14 +109,18 @@ function render(s::LaTeXString, ::MIME"application/x-dvi"; debug=false, name=tem
 end
 
 
-function render(s::LaTeXString, ::MIME"image/png"; debug=false, name=tempname(), command="\\Large", open=true, dpi=300)
+function render(s::LaTeXString, ::MIME"image/png"; debug=false, name=tempname(), command="\\Large", callshow=true, open=true, dpi=300)
     render(s, MIME("application/x-dvi"); debug=debug, name=name, command=command, open=false)
 
     cmd = `dvipng -bg Transparent -D $(dpi) -T tight -o $(name).png $(name).dvi`
     debug || (cmd = pipeline(cmd, devnull))
     run(cmd)
 
-    if open
+    if callshow && displayable(MIME("image/png"))
+        Base.open("$name.png") do f
+            display(MIME("image/png"), read(f))
+        end
+    elseif open
         _openfile(name; ext="png")
     end
 
@@ -110,14 +128,21 @@ function render(s::LaTeXString, ::MIME"image/png"; debug=false, name=tempname(),
 end
 
 
-function render(s::LaTeXString, ::MIME"image/svg+xml"; debug=false, name=tempname(), command="\\Large", open=true)
+function render(s::LaTeXString, ::MIME"image/svg"; debug=false, name=tempname(), command="\\Large", callshow=true, open=true)
     render(s, MIME("application/x-dvi"); debug=debug, name=name, command=command, open=false)
 
     cmd = `dvisvgm -n -v 0 -o $(name).svg $(name).dvi`
     debug || (cmd = pipeline(cmd, devnull))
     run(cmd)
 
-    if open
+    # `displayable(MIME("image/svg"))` returns `true` even in a textual
+    # context (e.g., in the REPL), but `display(MIME("image/svg+xml"), ...)`
+    # is the one normally defined.
+    if callshow && displayable(MIME("image/svg"))
+        Base.open("$name.svg") do f
+            display(MIME("image/svg+xml"), read(f, String))
+        end
+    elseif open
         _openfile(name; ext="svg")
     end
 
