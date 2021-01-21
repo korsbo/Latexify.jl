@@ -12,6 +12,12 @@ matrix:
     - julia: nightly
 notifications:
   email: false
+addons:
+  apt:
+    packages:
+    - texlive-latex-base
+    - dvipng
+    - dvisvgm
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
   - julia --project -e 'using Pkg; Pkg.test("Latexify"; coverage=true)'

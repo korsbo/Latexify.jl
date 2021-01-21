@@ -11,12 +11,7 @@ function add_brackets(ex::Expr, vars)
 end
 
 
-"""
-    render(::LaTeXString; debug=false, name=tempname(), command="\\Large")
-
-Display a standalone PDF with the given input.
-"""
-function render(s::LaTeXString; debug=false, name=tempname(), command="\\Large")
+function _writetex(s::LaTeXString; name=tempname(), command="\\Large")
     doc = """
     \\documentclass[varwidth=100cm]{standalone}
     \\usepackage{amssymb}
@@ -35,20 +30,122 @@ function render(s::LaTeXString; debug=false, name=tempname(), command="\\Large")
     open("$(name).tex", "w") do f
         write(f, doc)
     end
-    cd(dirname(name)) do 
+
+    return nothing
+end
+
+
+function _openfile(name; ext="pdf")
+    if Sys.iswindows()
+        run(`cmd /c "start $(name).$(ext)"`, wait=false)
+    elseif Sys.islinux()
+        run(`xdg-open $(name).$(ext)`, wait=false)
+    elseif Sys.isapple()
+        run(`open $(name).$(ext)`, wait=false)
+    elseif Sys.isbsd()
+        run(`xdg-open $(name).$(ext)`, wait=false)
+    end
+
+    return nothing
+end
+
+
+"""
+    render(::LaTeXString[, ::MIME"mime"]; debug=false, name=tempname(), command="\\Large", callshow=true, open=true)
+
+Display a standalone document with the given input. Supported MIME-type strings are
+"application/pdf" (default), "application/x-dvi", "image/png" and "image/svg".
+"""
+function render(s::LaTeXString; kwargs...)
+    return render(s, MIME("application/pdf"); kwargs...)
+end
+
+
+function render(s::LaTeXString, ::MIME"application/pdf"; debug=false, name=tempname(), command="\\Large", open=true)
+    _writetex(s; name=name, command=command)
+
+    cd(dirname(name)) do
         cmd = `lualatex --interaction=batchmode $(name).tex`
         debug || (cmd = pipeline(cmd, devnull))
         run(cmd)
     end
-    if Sys.iswindows()
-        run(`cmd /c "start $(name).pdf"`, wait=false)
-    elseif Sys.islinux()
-        run(`xdg-open $(name).pdf`, wait=false)
-    elseif Sys.isapple()
-        run(`open $(name).pdf`, wait=false)
-    elseif Sys.isbsd()
-        run(`xdg-open $(name).pdf`, wait=false)
+
+    # `display(MIME("application/pdf")` is generally not defined even though
+    # `displayable(MIME("application/pdf")` returns `true`.
+    #
+    # if callshow && displayable(MIME("application/pdf"))
+    #     Base.open("$name.pdf") do f
+    #         display(MIME("application/pdf"), read(f, String))
+    #     end
+    if open
+        _openfile(name; ext="pdf")
     end
+
+    return nothing
+end
+
+
+function render(s::LaTeXString, ::MIME"application/x-dvi"; debug=false, name=tempname(), command="\\Large", open=true)
+    _writetex(s; name=name, command=command)
+
+    cd(dirname(name)) do
+        cmd = `dvilualatex --interaction=batchmode $(name).tex`
+        debug || (cmd = pipeline(cmd, devnull))
+        run(cmd)
+    end
+
+    # `display(MIME("application/x-dvi")` is generally not defined even though
+    # `displayable(MIME("application/x-dvi")` returns `true`.
+    #
+    # if callshow && displayable(MIME("application/x-dvi"))
+    #     Base.open("$name.dvi") do f
+    #         display(MIME("application/x-dvi"), read(f, String))
+    #     end
+    if open
+        _openfile(name; ext="dvi")
+    end
+
+    return nothing
+end
+
+
+function render(s::LaTeXString, ::MIME"image/png"; debug=false, name=tempname(), command="\\Large", callshow=true, open=true, dpi=300)
+    render(s, MIME("application/x-dvi"); debug=debug, name=name, command=command, open=false)
+
+    cmd = `dvipng -bg Transparent -D $(dpi) -T tight -o $(name).png $(name).dvi`
+    debug || (cmd = pipeline(cmd, devnull))
+    run(cmd)
+
+    if callshow && displayable(MIME("image/png"))
+        Base.open("$name.png") do f
+            display(MIME("image/png"), read(f))
+        end
+    elseif open
+        _openfile(name; ext="png")
+    end
+
+    return nothing
+end
+
+
+function render(s::LaTeXString, ::MIME"image/svg"; debug=false, name=tempname(), command="\\Large", callshow=true, open=true)
+    render(s, MIME("application/x-dvi"); debug=debug, name=name, command=command, open=false)
+
+    cmd = `dvisvgm -n -v 0 -o $(name).svg $(name).dvi`
+    debug || (cmd = pipeline(cmd, devnull))
+    run(cmd)
+
+    # `displayable(MIME("image/svg"))` returns `true` even in a textual
+    # context (e.g., in the REPL), but `display(MIME("image/svg+xml"), ...)`
+    # is the one normally defined.
+    if callshow && displayable(MIME("image/svg"))
+        Base.open("$name.svg") do f
+            display(MIME("image/svg+xml"), read(f, String))
+        end
+    elseif open
+        _openfile(name; ext="svg")
+    end
+
     return nothing
 end
 

@@ -200,12 +200,20 @@ lstr = @latexrun f(x; y=2) = x/y
 ```
 
 ## External rendering
-While LaTeXStrings already render nicely in many IDEs or in Jupyter, they do not render in the REPL. Therefore, we provide a function `render(str)` which generates a standalone PDF using LuaLaTeX and opens that file in your default PDF viewer. 
+While LaTeXStrings already render nicely in many IDEs or in Jupyter, they do not render in the REPL. Therefore, we provide a function `render(str)` which generates a standalone PDF using LuaLaTeX and opens that file in your default PDF viewer.
 
 I have found the following syntax pretty useful:
 ```julia
 latexify(:(x/y)) |> render
 ```
+
+Alternatively, `render(str, mime)` can also be used to generate and display DVI, PNG and SVG files, which might be useful for other purposes:
+
+```julia
+latexify(:(x/y)) |> s -> render(s, MIME("image/png"))
+```
+
+PNG and SVG outputs rely on [dvipng](http://www.nongnu.org/dvipng/) and [dvisvgm](https://dvisvgm.de/), respectively.
 
 ## Legacy support
 
