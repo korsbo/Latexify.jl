@@ -4,6 +4,15 @@ args(ex::Expr) = ex.args[2:end]
 op(ex::Expr) = ex.args[1]
 head(ex::Expr) = ex.head
 
+
+arguments(ex::Expr) = ex.args[2:end]
+operation(ex::Expr) = ex.args[1]
+head(ex::Expr) = ex.head
+arguments(::Any) = nothing
+operation(::Any) = nothing
+head(::Any) = nothing
+
+
 nested(::Any) = false
 
 
@@ -22,58 +31,53 @@ end
 
 
 ### Fallback method for functions of type f(x...)
-lf(func, ::Any, args) = "$(value(func))\\left($(join(args, ", "))\\right)"
-lf(func::ValUnion(Latexify.trigonometric_functions), ::Any, args) = "\\$(value(func))\\left($(join(args, ", "))\\right)"
+lf(op, ::Any, args) = "$(value(op))\\left($(join(lf.(args, op), ", "))\\right)"
+lf(op::ValUnion(Latexify.trigonometric_functions), ::Any, args) = "\\$(value(func))\\left($(join(lf.(args, op), ", "))\\right)"
 # lf(func::Val{:sin}, ::Any, args) = "$(value(func))\\left($(join(args, ", "))\\right)"
 
 
 function lf(op::Val{:+}, ::ValUnion(:*, :^), args) 
-    surround(join(args, " $(value(op)) "))
+    surround(join(lf.(args, op), " $(value(op)) "))
 end
 
-lf(op::Val{:+}, prevop, args) = join(args, " + ")
+lf(op::Val{:+}, prevop, args) = join(lf.(args, op), " + ")
 
 # ### router functions
 lf(::Val{:call}, op, prevop, args) = lf(op, prevop, args)
 
 # ### :call functions
 lf(op::Val{:*}, prevop, args; mul_symb=" \\cdot ", kw...) = 
-    join(args, string(mul_symb))
+    join(lf.(args, op), string(mul_symb))
 lf(op::Val{:-}, prevop, args; kw...) = 
-    length(args) == 1 ? "- $(args[1])" : join(args, " - ")
+    length(args) == 1 ? "- $(lf(args[1], op))" : join(lf.(args, op), " - ")
 
 
 function lf(op::Val{:^}, ::Any, args; kw...) 
-    pattern = r"^\\(\w*)"
-    m = match(pattern, args[1])
-    if !isnothing(m) && Symbol(m.captures[1]) ∈ Latexify.trigonometric_functions
-        replace(args[1], pattern=>"$(m.match)^{$(args[2])}" )
+    if operation(args[1]) in Latexify.trigonometric_functions
+        fsym = args[1]
+        fstring = get(Latexify.function2latex, fsym, "\\$(fsym)")
+        "$fstring^{$(lf(args[2], op))}\\left( $(join(lf.(arguments(args[1]), operation(args[1])), ", ")) \\right)"
     else
-        "$(args[1])^{$(strip_surround(args[2]))}"
+        "$(lf(args[1], op))^{$(lf(args[2], Val{:NoSurround}()))}"
     end
 end
 
-# # function lf(::Val{:^}, prevop::ValUnion(:sin, :cos), args; kw...)
-# function lf(::T, prevop::Val{:^}, args; kw...) where T <: ValUnion(:sin, :cos)
-# display(args)
-# return "sin"
-# end
-
 lf(op::Val{:/}, prevop, args; kw...) = 
-    "\\frac{$(args[1])}{$(args[2])}"
+    "\\frac{$(lf(args[1], op))}{$(lf(args[2], op))}"
 lf(op::Val{:revealargs}, prevop, args; kw...) = args
 
 
 # ### non :call functions
-lf(::Val{:ref}, op, prevop, args; kw...) = "$(value(op))\\left[$(join(args, ", "))\\right]"
-lf(::Val{:latexifymerge}, op, prevop, args; kw...) = string(value(op)) * join(args, "") 
+lf(::Val{:ref}, op, prevop, args; kw...) = "$(value(op))\\left[$(join(lf.(args, op), ", "))\\right]"
+lf(::Val{:latexifymerge}, op, prevop, args; kw...) = string(value(op)) * join(lf.(args, op), "") 
+
 
 
 lf(head::Symbol, op::Symbol, prevop::Symbol, args) = lf(Val{head}(), Val{op}(), Val{prevop}(), args)
 lf(head::Symbol, op::Symbol, prevop, args) = lf(Val{head}(), Val{op}(), prevop, args)
-lf(ex, prevop) = lf(head(ex), op(ex), prevop, args(ex))
+lf(ex, prevop=nothing) = nested(ex) ? lf(head(ex), op(ex), prevop, args(ex)) : string(ex)
 
 
-dive(ex, prevop=nothing) = dive(Val{nested(ex)}(), ex, prevop)
-dive(::Val{false}, ex, prevop) = string(ex)
-dive(::Val{true}, ex, prevop) = lf(head(ex), op(ex), prevop, dive.(args(ex), op(ex)))
+
+
+
