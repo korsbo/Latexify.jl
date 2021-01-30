@@ -32,9 +32,13 @@ end
 
 ### Fallback method for functions of type f(x...)
 lf(op, ::Any, args) = "$(value(op))\\left($(join(lf.(args, op), ", "))\\right)"
-lf(op::ValUnion(Latexify.trigonometric_functions), ::Any, args) = "\\$(value(func))\\left($(join(lf.(args, op), ", "))\\right)"
-# lf(func::Val{:sin}, ::Any, args) = "$(value(func))\\left($(join(args, ", "))\\right)"
 
+function lf(op::ValUnion(Latexify.trigonometric_functions), ::Any, args) 
+    fstr = get(Latexify.function2latex, value(op), "\\$(value(op))")
+    return "$fstr\\left($(join(lf.(args, op), ", "))\\right)"
+end
+
+lf(::Val{:(=)}, op, prevop, args) = "$(lf(value(op), Val{:NoSurround}())) = $(lf(args[1], Val{:NoSurround}()))"
 
 function lf(op::Val{:+}, ::ValUnion(:*, :^), args) 
     surround(join(lf.(args, op), " $(value(op)) "))
