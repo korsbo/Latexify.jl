@@ -1,36 +1,39 @@
 using Latexify
-nested(ex::Expr) = true
-args(ex::Expr) = ex.args[2:end]
-op(ex::Expr) = ex.args[1]
-head(ex::Expr) = ex.head
 
-
-arguments(ex::Expr) = ex.args[2:end]
-operation(ex::Expr) = ex.args[1]
-head(ex::Expr) = ex.head
+nested(::Any) = false
 arguments(::Any) = nothing
 operation(::Any) = nothing
 head(::Any) = nothing
 
+nested(::Expr) = true
+arguments(ex::Expr) = ex.args[2:end]
+operation(ex::Expr) = ex.args[1]
+head(ex::Expr) = ex.head
 
-nested(::Any) = false
-
-
+### Ninja functions
 value(::Val{T}) where T = T
 isiterable(x) = hasmethod(iterate, (typeof(x),))
 ValUnion(x) = isiterable(x) ? Union{typeof.(Val.(x))...} : Val{x}
 ValUnion(a, b, c...) = ValUnion((a, b, c...))
 
-
+### Overloadable formatting functions
 surround(x) = "\\left( $x \\right)"
-function strip_surround(x)
-    m = match(r"^\\left\( (.*) \\right\)$", x)
-    return isnothing(m) ? x : m.captures[1]
-end
 
+#### Automatic argument conversion for convenience
 
+# Reached the end of the tree? 
+lf(ex, prevop=nothing) = nested(ex) ? lf(head(ex), operation(ex), prevop, arguments(ex)) : string(ex)
 
-### Fallback method for functions of type f(x...)
+# Let three-argument with omitted head imply that head == :call. 
+# This reduces verbosity of a bunch of calls.
+lf(::Val{:call}, op, prevop, args) = lf(op, prevop, args)
+
+lf(head::Symbol, op::Symbol, prevop::Symbol, args) = lf(Val{head}(), Val{op}(), Val{prevop}(), args)
+# Allows prevopts like `nothing` or just passing through `Val`'s
+lf(head::Symbol, op::Symbol, prevop, args) = lf(Val{head}(), Val{op}(), prevop, args)
+
+#### :call functions
+# Fallback method for functions of type f(x...)
 lf(op, ::Any, args) = "$(value(op))\\left($(join(lf.(args, op), ", "))\\right)"
 
 function lf(op::ValUnion(Latexify.trigonometric_functions), ::Any, args) 
@@ -38,23 +41,19 @@ function lf(op::ValUnion(Latexify.trigonometric_functions), ::Any, args)
     return "$fstr\\left($(join(lf.(args, op), ", "))\\right)"
 end
 
-lf(::Val{:(=)}, op, prevop, args) = "$(lf(value(op), Val{:NoSurround}())) = $(lf(args[1], Val{:NoSurround}()))"
-
+lf(op::Val{:+}, prevop, args) = join(lf.(args, op), " + ")
 function lf(op::Val{:+}, ::ValUnion(:*, :^), args) 
     surround(join(lf.(args, op), " $(value(op)) "))
 end
 
-lf(op::Val{:+}, prevop, args) = join(lf.(args, op), " + ")
-
-# ### router functions
-lf(::Val{:call}, op, prevop, args) = lf(op, prevop, args)
-
-# ### :call functions
-lf(op::Val{:*}, prevop, args; mul_symb=" \\cdot ", kw...) = 
-    join(lf.(args, op), string(mul_symb))
 lf(op::Val{:-}, prevop, args; kw...) = 
     length(args) == 1 ? "- $(lf(args[1], op))" : join(lf.(args, op), " - ")
+    
+lf(op::Val{:*}, prevop, args; mul_symb=" \\cdot ", kw...) = 
+    join(lf.(args, op), string(mul_symb))
 
+lf(op::Val{:/}, prevop, args; kw...) = 
+    "\\frac{$(lf(args[1], op))}{$(lf(args[2], op))}"
 
 function lf(op::Val{:^}, ::Any, args; kw...) 
     if operation(args[1]) in Latexify.trigonometric_functions
@@ -66,20 +65,13 @@ function lf(op::Val{:^}, ::Any, args; kw...)
     end
 end
 
-lf(op::Val{:/}, prevop, args; kw...) = 
-    "\\frac{$(lf(args[1], op))}{$(lf(args[2], op))}"
 lf(op::Val{:revealargs}, prevop, args; kw...) = args
-
 
 # ### non :call functions
 lf(::Val{:ref}, op, prevop, args; kw...) = "$(value(op))\\left[$(join(lf.(args, op), ", "))\\right]"
 lf(::Val{:latexifymerge}, op, prevop, args; kw...) = string(value(op)) * join(lf.(args, op), "") 
+lf(::Val{:(=)}, op, prevop, args) = "$(lf(value(op), Val{:NoSurround}())) = $(lf(args[1], Val{:NoSurround}()))"
 
-
-
-lf(head::Symbol, op::Symbol, prevop::Symbol, args) = lf(Val{head}(), Val{op}(), Val{prevop}(), args)
-lf(head::Symbol, op::Symbol, prevop, args) = lf(Val{head}(), Val{op}(), prevop, args)
-lf(ex, prevop=nothing) = nested(ex) ? lf(head(ex), op(ex), prevop, args(ex)) : string(ex)
 
 
 
