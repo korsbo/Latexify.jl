@@ -1,4 +1,5 @@
 using Latexify
+using LaTeXStrings
 
 nested(::Any) = false
 arguments(::Any) = nothing
@@ -65,15 +66,23 @@ function lf(op::Val{:^}, ::Any, args; kw...)
     end
 end
 
-lf(op::Val{:revealargs}, prevop, args; kw...) = args
-
 # ### non :call functions
 lf(::Val{:ref}, op, prevop, args; kw...) = "$(value(op))\\left[$(join(lf.(args, op), ", "))\\right]"
-lf(::Val{:latexifymerge}, op, prevop, args; kw...) = string(value(op)) * join(lf.(args, op), "") 
 lf(::Val{:(=)}, op, prevop, args) = "$(lf(value(op), Val{:NoSurround}())) = $(lf(args[1], Val{:NoSurround}()))"
 
+##### Latexify special commands
+lf(::Val{:showargs}, prevop, args; kw...) = string(args)
+lf(::Val{:showprevop}, prevop, args; kw...) = string(prevop)
+lf(::Val{:textcolor}, prevop, args) = "\\textcolor{$(args[2])}{$(lf(args[1], prevop))}"
+lf(::Val{:mathrm}, prevop, args) = "\\mathrm{$(lf(args[1], prevop))}"
+lf(::Val{:merge}, prevop, args; kw...) = join(lf.(args, prevop), "") 
 
 
+
+function latexdive(x)
+    str = lf(x)
+    return LaTeXString(str) 
+end
 
 
 
