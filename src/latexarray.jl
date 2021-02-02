@@ -23,11 +23,7 @@ function latexarray(arr::AbstractArray; adjustment::Symbol=:c, transpose=false, 
     str = "\\left[\n"
     str *= "\\begin{array}{" * "$(adjustment)"^columns * "}\n"
 
-    arr = latexraw(arr; kwargs...)
-    for i=1:rows, j=1:columns
-        str *= arr[i,j]
-        j==columns ? (str *= eol) : (str *= " & ")
-    end
+    str *= join(join.(eachrow(latexify.(arr;kwargs...,env=:raw))," & ") .* eol)
 
     str *= "\\end{array}\n"
     str *= "\\right]"
@@ -41,7 +37,7 @@ latexarray(args::AbstractArray...; kwargs...) = latexarray(hcat(args...); kwargs
 latexarray(arg::AbstractDict; kwargs...) = latexarray(collect(keys(arg)), collect(values(arg)); kwargs...)
 latexarray(arg::Tuple...; kwargs...) = latexarray([collect(i) for i in arg]...; kwargs...)
 
-function latexarray(arg::Tuple; kwargs...) 
+function latexarray(arg::Tuple; kwargs...)
     if first(arg) isa Tuple || first(arg) isa AbstractArray
         return latexarray([collect(i) for i in arg]...; kwargs...)
     end
