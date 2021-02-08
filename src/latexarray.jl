@@ -23,7 +23,11 @@ function latexarray(arr::AbstractArray; adjustment::Symbol=:c, transpose=false, 
     str = "\\left[\n"
     str *= "\\begin{array}{" * "$(adjustment)"^columns * "}\n"
 
-    str *= join(join.(eachrow(latexify.(arr;kwargs...,env=:raw))," & ") .* eol)
+    arr = latexify.(arr; kwargs...,env=:raw)
+    for i=1:rows, j=1:columns
+        str *= arr[i,j]
+        j==columns ? (str *= eol) : (str *= " & ")
+    end
 
     str *= "\\end{array}\n"
     str *= "\\right]"
