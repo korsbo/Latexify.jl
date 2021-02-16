@@ -17,6 +17,8 @@ isiterable(x) = hasmethod(iterate, (typeof(x),))
 ValUnion(x) = isiterable(x) ? Union{typeof.(Val.(x))...} : Val{x}
 ValUnion(a, b, c...) = ValUnion((a, b, c...))
 
+joinsafe(x, y) = isiterable(x) ? join(x, y) : string(x)
+
 ### Overloadable formatting functions
 surround(x) = "\\left( $x \\right)"
 
@@ -47,16 +49,16 @@ function lf(op::Val{:+}, ::ValUnion(:*, :^), args)
     surround(join(lf.(args, op), " $(value(op)) "))
 end
 
-lf(op::Val{:-}, prevop, args; kw...) = 
+lf(op::ValUnion(:-, :.-), prevop, args; kw...) = 
     length(args) == 1 ? "- $(lf(args[1], op))" : join(lf.(args, op), " - ")
     
-lf(op::Val{:*}, prevop, args; mul_symb=" \\cdot ", kw...) = 
+lf(op::ValUnion(:*, :.*), prevop, args; mul_symb=" \\cdot ", kw...) = 
     join(lf.(args, op), string(mul_symb))
 
-lf(op::Val{:/}, prevop, args; kw...) = 
+lf(op::ValUnion(:/, :./), prevop, args; kw...) = 
     "\\frac{$(lf(args[1], op))}{$(lf(args[2], op))}"
 
-function lf(op::Val{:^}, ::Any, args; kw...) 
+function lf(op::ValUnion(:^, :.^), ::Any, args; kw...) 
     if operation(args[1]) in Latexify.trigonometric_functions
         fsym = args[1]
         fstring = get(Latexify.function2latex, fsym, "\\$(fsym)")
@@ -66,6 +68,8 @@ function lf(op::Val{:^}, ::Any, args; kw...)
     end
 end
 
+lf(op::ValUnion(:±, :.±), prevop, args) = "$(args[1]) \\pm $(lf(args[2], op))"
+
 # ### non :call functions
 lf(::Val{:ref}, op, prevop, args; kw...) = "$(value(op))\\left[$(join(lf.(args, op), ", "))\\right]"
 lf(::Val{:(=)}, op, prevop, args) = "$(lf(value(op), Val{:NoSurround}())) = $(lf(args[1], Val{:NoSurround}()))"
@@ -73,16 +77,22 @@ lf(::Val{:(=)}, op, prevop, args) = "$(lf(value(op), Val{:NoSurround}())) = $(lf
 ##### Latexify special commands
 lf(::Val{:showargs}, prevop, args; kw...) = string(args)
 lf(::Val{:showprevop}, prevop, args; kw...) = string(prevop)
-lf(::Val{:textcolor}, prevop, args) = "\\textcolor{$(args[2])}{$(lf(args[1], prevop))}"
+function lf(::Val{:textcolor}, prevop, args)
+    if length(args) == 2
+        return "\\textcolor{$(head(args[1]) == :tuple ? join(args[1].args, ",") : args[1])}{$(lf(args[2], prevop))}"
+    elseif length(args) == 3
+        return "\\textcolor[$(joinsafe(args[1], ","))]{$(head(args[2]) == :tuple ? join(args[2].args, ",") : args[2])}{$(lf(args[3], prevop))}"
+    else
+        error(ArgumentError("Latexify's textcolor takes two or three arguments."))
+    end
+end
 lf(::Val{:mathrm}, prevop, args) = "\\mathrm{$(lf(args[1], prevop))}"
 lf(::Val{:merge}, prevop, args; kw...) = join(lf.(args, prevop), "") 
-
 
 
 function latexdive(x)
     str = lf(x)
     return LaTeXString(str) 
 end
-
 
 
