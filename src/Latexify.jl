@@ -49,6 +49,8 @@ include("utils.jl")
 include("numberformatters.jl")
 
 include("latexify_function.jl")
+include("refactor_prototype_2.jl")
+export decend, unpack, head, operation, arguments, nested, default_matcher, LatexifyOperation
 
 ### Add support for additional packages without adding them as dependencies.
 function __init__()
