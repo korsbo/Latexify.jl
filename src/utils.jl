@@ -16,7 +16,8 @@ function _writetex(s::LaTeXString; name=tempname(), command="\\Large")
     \\documentclass[varwidth=100cm]{standalone}
     \\usepackage{amssymb}
     \\usepackage{amsmath}
-    $(occursin("\\ce{", s) ? "\\usepackage{mhchem}" : "")
+    $(occursin("\\ce{", s) ? "\\usepackage[version=3]{mhchem}" : "")
+    $(occursin("\\textcolor{", s) ? "\\usepackage{xcolor}" : "")
     \\begin{document}
     {
         $command
