@@ -12,7 +12,9 @@ latexarray(arr)
 "\\begin{equation}\n\\left[\n\\begin{array}{cc}\n1 & 2\\\\ \n3 & 4\\\\ \n\\end{array}\n\\right]\n\\end{equation}\n"
 ```
 """
-function latexarray(arr::AbstractArray; adjustment::Symbol=:c, transpose=false, double_linebreak=false,
+latexarray(args...; kwargs...) = latexify(args...;kwargs...,env=:array)
+
+function _latexarray(arr::AbstractArray; adjustment::Symbol=:c, transpose=false, double_linebreak=false,
     starred=false, kwargs...)
     transpose && (arr = permutedims(arr))
     rows = first(size(arr))
@@ -37,13 +39,13 @@ function latexarray(arr::AbstractArray; adjustment::Symbol=:c, transpose=false, 
 end
 
 
-latexarray(args::AbstractArray...; kwargs...) = latexarray(hcat(args...); kwargs...)
-latexarray(arg::AbstractDict; kwargs...) = latexarray(collect(keys(arg)), collect(values(arg)); kwargs...)
-latexarray(arg::Tuple...; kwargs...) = latexarray([collect(i) for i in arg]...; kwargs...)
+_latexarray(args::AbstractArray...; kwargs...) = _latexarray(hcat(args...); kwargs...)
+_latexarray(arg::AbstractDict; kwargs...) = _latexarray(collect(keys(arg)), collect(values(arg)); kwargs...)
+_latexarray(arg::Tuple...; kwargs...) = _latexarray([collect(i) for i in arg]...; kwargs...)
 
-function latexarray(arg::Tuple; kwargs...)
+function _latexarray(arg::Tuple; kwargs...)
     if first(arg) isa Tuple || first(arg) isa AbstractArray
-        return latexarray([collect(i) for i in arg]...; kwargs...)
+        return _latexarray([collect(i) for i in arg]...; kwargs...)
     end
-    return latexarray(collect(arg); kwargs...)
+    return _latexarray(collect(arg); kwargs...)
 end

@@ -1,6 +1,6 @@
+latextabular(args...; kwargs...) = latexify(args...; kwargs..., env=:tabular)
 
-
-function latextabular(arr::AbstractMatrix; latex::Bool=true, booktabs::Bool=false, head=[], side=[], adjustment::Symbol=:c, transpose=false, kwargs...)
+function _latextabular(arr::AbstractMatrix; latex::Bool=true, booktabs::Bool=false, head=[], side=[], adjustment::Symbol=:c, transpose=false, kwargs...)
     transpose && (arr = permutedims(arr, [2,1]))
 
     if !isempty(head)
@@ -8,7 +8,7 @@ function latextabular(arr::AbstractMatrix; latex::Bool=true, booktabs::Bool=fals
         @assert length(head) == size(arr, 2) "The length of the head does not match the shape of the input matrix."
     end
     if !isempty(side)
-        length(side) == size(arr, 1) - 1 && (side = [""; side]) 
+        length(side) == size(arr, 1) - 1 && (side = [""; side])
         @assert length(side) == size(arr, 1) "The length of the side does not match the shape of the input matrix."
         arr = hcat(side, arr)
     end
@@ -19,7 +19,7 @@ function latextabular(arr::AbstractMatrix; latex::Bool=true, booktabs::Bool=fals
     if booktabs
         str *= "\\toprule\n"
     end
-    
+
     if latex
         arr = latexinline(arr; kwargs...)
     elseif haskey(kwargs, :fmt)
@@ -30,11 +30,11 @@ function latextabular(arr::AbstractMatrix; latex::Bool=true, booktabs::Bool=fals
     # print first row
     str *= join(arr[1,:], " & ")
     str *= "\\\\\n"
-    
+
     if booktabs && !isempty(head)
         str *= "\\midrule\n"
     end
-    
+
     for i in 2:size(arr, 1)
         str *= join(arr[i,:], " & ")
         str *= "\\\\\n"
@@ -43,7 +43,7 @@ function latextabular(arr::AbstractMatrix; latex::Bool=true, booktabs::Bool=fals
     if booktabs
         str *= "\\bottomrule\n"
     end
-    
+
     str *= "\\end{tabular}\n"
     latexstr = LaTeXString(str)
     COPY_TO_CLIPBOARD && clipboard(latexstr)
@@ -51,6 +51,6 @@ function latextabular(arr::AbstractMatrix; latex::Bool=true, booktabs::Bool=fals
 end
 
 
-latextabular(vec::AbstractVector; kwargs...) = latextabular(hcat(vec...); kwargs...)
-latextabular(vectors::AbstractVector...; kwargs...) = latextabular(hcat(vectors...); kwargs...)
-latextabular(dict::AbstractDict; kwargs...) = latextabular(hcat(collect(keys(dict)), collect(values(dict))); kwargs...)
+_latextabular(vec::AbstractVector; kwargs...) = latextabular(hcat(vec...); kwargs...)
+_latextabular(vectors::AbstractVector...; kwargs...) = latextabular(hcat(vectors...); kwargs...)
+_latextabular(dict::AbstractDict; kwargs...) = latextabular(hcat(collect(keys(dict)), collect(values(dict))); kwargs...)

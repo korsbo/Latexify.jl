@@ -39,9 +39,9 @@ julia> latexalign(ode)
 ```
 
 """
-function latexalign end
+latexalign(args...; kwargs...) = latexify(args...; kwargs..., env=:align)
 
-function latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=false, starred=false, rows=:all, aligned=false, kwargs...)
+function _latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=false, starred=false, rows=:all, aligned=false, kwargs...)
     eol = double_linebreak ? " \\\\\\\\\n" : " \\\\\n"
     arr = latexraw(arr; kwargs...)
     separator isa String && (separator = fill(separator, size(arr)[1]))
@@ -53,7 +53,7 @@ function latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=fals
     end
     if rows == :all
         iterate_rows = 1:(size(arr)[1])
-    else 
+    else
         iterate_rows = rows
     end
 
@@ -74,37 +74,37 @@ function latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=fals
     return latexstr
 end
 
-function latexalign(lhs::AbstractArray, rhs::AbstractArray; kwargs...)
+function _latexalign(lhs::AbstractArray, rhs::AbstractArray; kwargs...)
     return latexalign(hcat(lhs, rhs); kwargs...)
 end
 
-function latexalign(lhs::Tuple, rhs::Tuple; kwargs...)
+function _latexalign(lhs::Tuple, rhs::Tuple; kwargs...)
     return latexalign(hcat(collect(lhs), collect(rhs)); kwargs...)
 end
 
-latexalign(args::Tuple...; kwargs...) = latexalign(hcat([collect(i) for i in args]...); kwargs...)
+_latexalign(args::Tuple...; kwargs...) = latexalign(hcat([collect(i) for i in args]...); kwargs...)
 
-latexalign(arg::Tuple; kwargs...) = latexalign(hcat([collect(i) for i in arg]...); kwargs...)
+_latexalign(arg::Tuple; kwargs...) = latexalign(hcat([collect(i) for i in arg]...); kwargs...)
 
-function latexalign(nested::AbstractVector{AbstractVector}; kwargs...)
+function _latexalign(nested::AbstractVector{AbstractVector}; kwargs...)
     return latexalign(hcat(nested...); kwargs...)
 end
 
-function latexalign(d::AbstractDict; kwargs...)
+function _latexalign(d::AbstractDict; kwargs...)
     latexalign(collect(keys(d)), collect(values(d)); kwargs...)
 end
 
 """
-    latexalign(vec::AbstractVector)
+    _latexalign(vec::AbstractVector)
 
 Go through the elements, split at any = sign, pass on as a matrix.
 """
-function latexalign(vec::AbstractVector; kwargs...)
+function _latexalign(vec::AbstractVector; kwargs...)
     lvec = latexraw(vec; kwargs...)
     ## turn the array into a matrix
     lmat = hcat(split.(lvec, " = ")...)
     ## turn the matrix ito arrays of left-hand-side, right-hand-side.
     larr = [lmat[i,:] for i in 1:size(lmat, 1)]
-    length(larr) < 2 && error("Invalid intput to latexalign().")
+    length(larr) < 2 && error("Invalid intput to _latexalign().")
     return latexalign( hcat(larr...) ; kwargs...)
 end

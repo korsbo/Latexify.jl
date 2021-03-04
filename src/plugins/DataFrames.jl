@@ -16,15 +16,15 @@ function mdtable(d::DataFrames.DataFrame; kwargs...)
     mdtable(body; head=head, kwargs...)
 end
 
-function latextabular(d::DataFrames.DataFrame; kwargs...)
+function _latextabular(d::DataFrames.DataFrame; kwargs...)
     body = convert(Matrix, d)
     head = propertynames(d)
-    latextabular(body; head=head, kwargs...)
+    _latextabular(body; head=head, kwargs...)
 end
 
-function latexarray(d::DataFrames.DataFrame; kwargs...)
+function _latexarray(d::DataFrames.DataFrame; kwargs...)
     body = convert(Matrix, d)
     head = permutedims(propertynames(d))
     result = vcat(head, body)
-    latexarray(result; kwargs...)
+    _latexarray(result; kwargs...)
 end

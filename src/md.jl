@@ -13,20 +13,17 @@ mdalign(args...; kwargs...) = latexalign(args...; kwargs...)
 mdarray(args...; kwargs...) = latexarray(args...; kwargs...)
 md_chemical_arrows(args...; kwargs...) = chemical_arrows(args...; kwargs...)
 
+const MDOUTPUTS = Dict(
+                       :table => mdtable,
+                       :text => mdtext,
+                       :align => mdalign,
+                       :array => mdarray,
+                       :inline => latexinline
+                      )
 function infer_md_output(env, args...)
-    if env != :auto
-        env == :table && return mdtable
-        env == :text && return mdtext
-        env == :align && return mdalign
-        env == :array && return mdarray
-        env == :inline && return latexinline
-        env in [:arrows, :chem, :chemical, :arrow] && return md_chemical_arrows
-        error("The MD environment $env is not defined.")
-    end
-
-    md_function = get_md_function(args...)
-
-    return md_function
+    env === :auto && return get_md_function(args...)
+    env in [:arrows, :chem, :chemical, :arrow] && return md_chemical_arrows
+    return MDOUTPUTS[env]
 end
 
 """

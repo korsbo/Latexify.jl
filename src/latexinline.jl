@@ -1,8 +1,10 @@
-function latexinline(x; kwargs...)
-    latexstr = latexstring( latexraw(x; kwargs...) )
+latexinline(args...;kwargs...) = latexify(args...;kwargs...,env=:inline)
+
+function _latexinline(x; kwargs...)
+    latexstr = latexstring( latexify(x; kwargs...,env=:raw) )
     COPY_TO_CLIPBOARD && clipboard(latexstr)
     return latexstr
 end
 
-latexinline(x::Union{AbstractArray, Tuple}; kwargs...) = [ latexinline(i; kwargs...) for i in x]
-latexinline(args...; kwargs...) = latexinline(args; kwargs...)
+_latexinline(x::Union{AbstractArray, Tuple}; kwargs...) = [ _latexinline(i; kwargs...) for i in x ]
+_latexinline(args...; kwargs...) = _latexinline(args; kwargs...)
