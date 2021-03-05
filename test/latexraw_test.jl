@@ -90,7 +90,9 @@ array_test = [ex, str]
 @test latexraw("β¹⁴₃") == raw"\beta{^{14}_3}"
 @test latexraw("β¹⁴") == raw"\beta{^{14}}"
 @test latexraw("β⁴") == raw"\beta{^4}"
-
+@test latexraw(Inf) == raw"\infty"
+@test latexraw(:Inf) == raw"\infty"
+@test latexraw("Inf") == raw"\infty"
 
 
 

@@ -99,6 +99,7 @@ _latexraw(z::Complex; kwargs...) = LaTeXString("$(latexraw(z.re;kwargs...))$(z.i
 _latexraw(str::LaTeXStrings.LaTeXString; kwargs...) = str
 
 function _latexraw(i::Number; fmt=PlainNumberFormatter(), kwargs...)
+    isinf(i) && return LaTeXString("\\infty")
     fmt isa String && (fmt = PrintfNumberFormatter(fmt))
     return fmt(i)
 end
@@ -108,7 +109,7 @@ function _latexraw(i::Char; convert_unicode=true, kwargs...)
 end
 
 function _latexraw(i::Symbol; convert_unicode=true, kwargs...)
-    str = string(i)
+    str = string(i == :Inf ? :∞ : i)
     str = convertSubscript(str)
     convert_unicode && (str = unicode2latex(str))
     return LaTeXString(str)
