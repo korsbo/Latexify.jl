@@ -16,7 +16,6 @@ addons:
   apt:
     packages:
     - texlive-latex-base
-    - texlive-latex-utils
     - dvipng
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
