@@ -67,8 +67,6 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, index=:brack
             str = get(function2latex, prevOp[2], "\\$(prevOp[2])")
             return replace(args[2], str => "$(str)^{$(args[3])}")
         end
-        # prevOp[2] != :none  && (args[2]="\\left( $(args[2]) \\right)")
-        @show dump(ex)
         if (prevOp[2] != :none) || (ex.args[2] isa Real && sign(ex.args[2]) == -1) || (ex.args[2] isa Complex) || (ex.args[2] isa Rational)
             args[2]="\\left( $(args[2]) \\right)"
         end
