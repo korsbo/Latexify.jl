@@ -95,8 +95,6 @@ array_test = [ex, str]
 
 @test latexify(:((-1) ^ 2)) == replace(
 raw"$\left( -1 \right)^{2}$", "\r\n"=>"\n")
-@test latexify(:($a ^ 2)) == replace(
-raw"$\left( 1+2\textit{i} \right)^{2}$", "\r\n"=>"\n")
 @test latexify(:($(1 + 2im) ^ 2)) == replace(
 raw"$\left( 1+2\textit{i} \right)^{2}$", "\r\n"=>"\n")
 @test latexify(:($(3 // 2) ^ 2)) == replace(
