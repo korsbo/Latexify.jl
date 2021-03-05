@@ -151,8 +151,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, index=:brack
     end
 
     if ex.head == :tuple
-        # return "\\left(" * join(ex.args, ", ") * "\\right)"
-        return join(ex.args, ", ")
+        return "\\left(" * join(ex.args, ", ") * "\\right)"
     end
 
     ex.head == Symbol("'") && return "$(args[1])'"
