@@ -56,8 +56,9 @@ function latexalign(r::DiffEqBase.AbstractReactionNetwork; bracket=false, noise=
     return latexalign(lhs, rhs; kwargs...)
 end
 
+chemical_arrows(args...; kwargs...) = latexify(args...;kwargs..., env=:arrows)
 
-function chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
+function _chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
     expand = true, double_linebreak=false, mathjax=true, starred=false, kwargs...)
     str = starred ? "\\begin{align*}\n" : "\\begin{align}\n"
     eol = double_linebreak ? "\\\\\\\\\n" : "\\\\\n"

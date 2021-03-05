@@ -69,7 +69,7 @@ function mdtable(M::AbstractMatrix; latex::Bool=true, escape_underscores=false, 
         @assert length(head) == size(M, 2) "The length of the head does not match the shape of the input matrix."
     end
     if !isempty(side)
-        length(side) == size(M, 1) - 1 && (side = [LaTeXString("∘"); side]) 
+        length(side) == size(M, 1) - 1 && (side = [LaTeXString("∘"); side])
         @assert length(side) == size(M, 1) "The length of the side does not match the shape of the input matrix."
         M = hcat(side, M)
     end

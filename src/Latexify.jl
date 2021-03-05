@@ -29,7 +29,6 @@ include("unicode2latex.jl")
 include("function2latex.jl")
 include("latexraw.jl")
 include("latexoperation.jl")
-include("latexify_function.jl")
 include("latexarray.jl")
 include("latexalign.jl")
 include("latexbracket.jl")
@@ -40,14 +39,15 @@ include("default_kwargs.jl")
 include("recipes.jl")
 include("macros.jl")
 
-include("md.jl")
 include("mdtable.jl")
 include("mdtext.jl")
+include("md.jl")
 
 include("utils.jl")
 
 include("numberformatters.jl")
 
+include("latexify_function.jl")
 
 ### Add support for additional packages without adding them as dependencies.
 function __init__()

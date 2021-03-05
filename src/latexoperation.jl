@@ -13,7 +13,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, index=:brack
     # Remove math italics for variables (i.e. words) longer than 2 characters.
     # args = map(i -> (i isa String && all(map(isletter, collect(i))) && length(i) > 2) ? "{\\rm $i}" : i, args)
 
-    if ex.head == :latexifymerge 
+    if ex.head == :latexifymerge
         if all(prevOp .== :none)
             return Symbol(join(ex.args))
         else
@@ -136,7 +136,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, index=:brack
         end
     end
 
-    if ex.head == :macrocall && ex.args[1] == Symbol("@__dot__") 
+    if ex.head == :macrocall && ex.args[1] == Symbol("@__dot__")
         return ex.args[3]
     end
 
@@ -161,7 +161,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, index=:brack
     ex.head == :kw && return "$(args[1]) = $(args[2])"
     ex.head == :parameters && return join(args, ", ")
 
-    ## Use the last expression in a block. 
+    ## Use the last expression in a block.
     ## This is somewhat shady but it helps with latexifying functions.
     ex.head == :block && return args[end]
 

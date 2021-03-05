@@ -1,7 +1,7 @@
 
-function latexequation end
+latexequation(args...; kwargs...) = latexify(args...; kwargs..., env=:equation)
 
-function latexequation(eq; starred=false, kwargs...)
+function _latexequation(eq; starred=false, kwargs...)
     latexstr = latexraw(eq; kwargs...)
 
     str = "\\begin{equation$(starred ? "*" : "")}\n"
