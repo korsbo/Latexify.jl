@@ -99,7 +99,7 @@ _latexraw(z::Complex; kwargs...) = LaTeXString("$(latexraw(z.re;kwargs...))$(z.i
 _latexraw(str::LaTeXStrings.LaTeXString; kwargs...) = str
 
 function _latexraw(i::Number; fmt=PlainNumberFormatter(), kwargs...)
-    isinf(i) && return LaTeXString("\\infty")
+    try isinf(i) && return LaTeXString("\\infty") catch; end
     fmt isa String && (fmt = PrintfNumberFormatter(fmt))
     return fmt(i)
 end
