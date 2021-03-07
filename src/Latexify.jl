@@ -11,7 +11,7 @@ export latexify, md, copy_to_clipboard, auto_display, set_default, get_default,
     reset_default, @latexrecipe, render, @latexify, @latexrun
 
 ## Allow some backwards compatibility until its time to deprecate.
-export latexarray, latexalign, latexraw, latexinline, latextabular, mdtable
+export latexequation, latexarray, latexalign, latexraw, latexinline, latextabular, mdtable
 
 export StyledNumberFormatter, FancyNumberFormatter
 

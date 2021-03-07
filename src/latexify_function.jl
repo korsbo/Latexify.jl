@@ -24,7 +24,7 @@ const OUTPUTFUNCTIONS = Dict(
                              :tabular   => _latextabular,
                              :table     => _latextabular,
                              :raw       => _latexraw,
-                             :array     => (args...; kwargs...) -> _latexequation(_latexarray(args...; kwargs...); kwargs...),
+                             :array     => _latexarray,
                              :align     => _latexalign,
                              :aligned   => (args...; kwargs...) -> _latexbracket(_latexalign(args...; kwargs..., aligned=true, starred=false); kwargs...),
                              :eq        => _latexequation,
@@ -48,7 +48,7 @@ Use overloading to determine which latex environment to output.
 This determines the default behaviour of `latexify()` for different inputs.
 """
 get_latex_function(args...) = _latexinline
-get_latex_function(args::AbstractArray...) = (args...; kwargs...) -> _latexequation(_latexarray(args...; kwargs...); kwargs...)
+get_latex_function(args::AbstractArray...) = _latexequation
 get_latex_function(args::AbstractDict) = (args...; kwargs...) -> _latexequation(_latexarray(args...; kwargs...); kwargs...)
 get_latex_function(args::Tuple...) = (args...; kwargs...) -> _latexequation(_latexarray(args...; kwargs...); kwargs...)
 get_latex_function(arg::LaTeXString) = (arg; kwargs...) -> arg

@@ -22,7 +22,7 @@ struct MyVec
 end
 
 @latexrecipe function f(v::MyVec; reverse=false)
-    env --> :array
+    env --> :equation
     fmt := "%.2f"
     return reverse ? v.vec[end, -1, 1] : v.vec
 end
@@ -32,7 +32,7 @@ struct MyTup
 end
 
 @latexrecipe function f(v::MyTup; reverse=false)
-    env --> :array
+    env --> :equation
     fmt := "%.2f"
     return reverse ? my_reverse(v.tup) : v.tup
 end
@@ -46,7 +46,7 @@ end
     return t.tup1, t.tup2
 end
 
-struct MyFloat 
+struct MyFloat
     x::Float64
 end
 
@@ -71,7 +71,7 @@ t = MyModule.MyType([:A, :B, 3.], [1., 2, 3])
 t2 = MyModule.MyType([:X, :Y, :(x/y)], Number[1.23434534, 232423.42345, 12//33])
 
 vec = [MyModule.MyFloat(x) for x in 1:4]
-@test latexify(vec; transpose=true) == 
+@test latexify(vec; transpose=true) ==
 raw"\begin{equation}
 \left[
 \begin{array}{cccc}
@@ -82,7 +82,7 @@ raw"\begin{equation}
 "
 
 double_vec = MyModule.MyDoubleVec([MyModule.MyFloat(x) for x in 1:4], [MyModule.MyFloat(x) for x in 8:11])
-@test latexify(double_vec) == 
+@test latexify(double_vec) ==
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
@@ -97,7 +97,7 @@ raw"\begin{equation}
 
 
 
-@test latexify(t2, fmt="%.8f") == 
+@test latexify(t2, fmt="%.8f") ==
 raw"\begin{align}
 X =& 1.23 \\
 Y =& 232423.42 \\
@@ -105,7 +105,7 @@ Y =& 232423.42 \\
 \end{align}
 "
 
-@test latexify(t) == 
+@test latexify(t) ==
 raw"\begin{align}
 A =& 1.00 \\
 B =& 2.00 \\
@@ -113,7 +113,7 @@ B =& 2.00 \\
 \end{align}
 "
 
-@test latexify(t; reverse=true) == 
+@test latexify(t; reverse=true) ==
 raw"\begin{align}
 1.00 =& A \\
 2.00 =& B \\
@@ -121,7 +121,7 @@ raw"\begin{align}
 \end{align}
 "
 
-@test latexify(t; env=:array) == 
+@test latexify(t; env=:equation) ==
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
@@ -133,7 +133,7 @@ B & 2.00 \\
 \end{equation}
 "
 
-@test latexify(t; env=:array, reverse=true) == 
+@test latexify(t; env=:equation, reverse=true) ==
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
@@ -147,7 +147,7 @@ raw"\begin{equation}
 
 
 vec = MyModule.MyVec([1., 2.])
-@test latexify(vec, transpose=true) == 
+@test latexify(vec, transpose=true) ==
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
@@ -159,7 +159,7 @@ raw"\begin{equation}
 
 tup = MyModule.MyTup((1., 2.))
 
-@test latexify(tup, transpose=true) == 
+@test latexify(tup, transpose=true) ==
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
@@ -169,7 +169,7 @@ raw"\begin{equation}
 \end{equation}
 "
 
-@test latexify(tup, reverse=true, transpose=true) == 
+@test latexify(tup, reverse=true, transpose=true) ==
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
@@ -182,7 +182,7 @@ raw"\begin{equation}
 
 
 tup2 = MyModule.MyDoubleTup((1., 3), (2., 4.))
-@test latexify(tup2) == 
+@test latexify(tup2) ==
 raw"\begin{equation}
 \left[
 \begin{array}{cc}

@@ -9,4 +9,4 @@ display("text/latex", x)
 ```
 where `x` is a latex-formatted string.
 
-This requires `x` to specify a ``\LaTeX`` environment. `latexalign` and `latexarray` already does this, but if you want to render the result of `latexify` you must supply an environment (for example `"\$ $x \$"`).
+This requires `x` to specify a ``\LaTeX`` environment. `latexalign` and `latexequation` already does this, but if you want to render the result of `latexify` you must supply an environment (for example `"\$ $x \$"`).
