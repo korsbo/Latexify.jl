@@ -6,5 +6,6 @@ function _latexinline(x; kwargs...)
     return latexstr
 end
 
-_latexinline(x::Union{AbstractArray, Tuple}; kwargs...) = [ _latexinline(i; kwargs...) for i in x ]
+_latexinline(x::AbstractArray; kwargs...) = _latexinline.(x; kwargs...)
+_latexinline(x::Tuple; kwargs...) = [_latexinline.(x; kwargs...)...]
 _latexinline(args...; kwargs...) = _latexinline(args; kwargs...)

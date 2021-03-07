@@ -25,7 +25,7 @@ function _latexarray(arr::AbstractArray; adjustment::Symbol=:c, transpose=false,
     str = "\\left[\n"
     str *= "\\begin{array}{" * "$(adjustment)"^columns * "}\n"
 
-    arr = latexify.(arr; kwargs...,env=:raw)
+    arr = latexraw.(arr; kwargs...)
     for i=1:rows, j=1:columns
         str *= arr[i,j]
         j==columns ? (str *= eol) : (str *= " & ")

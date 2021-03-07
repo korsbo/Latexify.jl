@@ -21,7 +21,7 @@ function _latextabular(arr::AbstractMatrix; latex::Bool=true, booktabs::Bool=fal
     end
 
     if latex
-        arr = latexinline(arr; kwargs...)
+        arr = latexinline.(arr; kwargs...)
     elseif haskey(kwargs, :fmt)
         formatter = kwargs[:fmt] isa String ? PrintfNumberFormatter(kwargs[:fmt]) : kwargs[:fmt]
         arr = map(x -> x isa Number ? formatter(x) : x, arr)

@@ -8,7 +8,7 @@ ex = :(2*x^2 - y/c_2)
 
 desired_output = "2 \\cdot x^{2} - \\frac{y}{c_{2}}"
 
-@test latexify(:(a = [x / y; 3; 4])) == 
+@test latexify(:(a = [x / y; 3; 4])) ==
 raw"$a = \left[
 \begin{array}{c}
 \frac{x}{y} \\
@@ -17,14 +17,14 @@ raw"$a = \left[
 \end{array}
 \right]$"
 
-@test latexify(:(a = [x / y 2 3 4])) == 
+@test latexify(:(a = [x / y 2 3 4])) ==
 raw"$a = \left[
 \begin{array}{cccc}
 \frac{x}{y} & 2 & 3 & 4 \\
 \end{array}
 \right]$"
 
-@test latexify(:(a = [x / y 2; 3 4])) == 
+@test latexify(:(a = [x / y 2; 3 4])) ==
 raw"$a = \left[
 \begin{array}{cc}
 \frac{x}{y} & 2 \\
@@ -40,7 +40,7 @@ raw"$a = \left[
 @test latexify(:(u[1, 2]); index = :subscript) == raw"$u_{1,2}$"
 
 array_test = [ex, str]
-@test all(latexraw(array_test) .== desired_output)
+@test all(latexraw.(array_test) .== desired_output)
 
 @test latexraw(:(@__dot__(x / y))) == raw"\frac{x}{y}"
 @test latexraw(:(@. x / y)) == raw"\frac{x}{y}"
@@ -137,7 +137,7 @@ raw"\begin{align}
 \end{align}
 "
 
-@test latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:array, fmt="%.2e") ==
+@test latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:equation, fmt="%.2e") ==
 raw"\begin{equation}
 \left[
 \begin{array}{ccc}

@@ -60,7 +60,7 @@ latexraw(args...; kwargs...) = latexify(args...; kwargs..., env=:raw)
 function _latexraw(inputex::Expr; convert_unicode=true, kwargs...)
     ## Pass all arrays or matrices in the expr to latexarray
     inputex = postwalk(x -> x isa Expr && x.head in [:hcat, :vcat, :vect, :typed_vcat, :typed_hcat] ?
-                       _latexarray(expr_to_array(x); kwargs...)
+                       latexarray(expr_to_array(x); kwargs...)
                        : x,
                        inputex)
 
@@ -73,7 +73,7 @@ function _latexraw(inputex::Expr; convert_unicode=true, kwargs...)
                 length(ex.args[i].args) > 1 && ex.args[i].args[1] isa Symbol && (prevOp[i] = ex.args[i].args[1])
                 ex.args[i] = recurseexp!(ex.args[i])
             elseif ex.args[i] isa AbstractArray
-                ex.args[i] = _latexarray(ex.args[i]; kwargs...)
+                ex.args[i] = latexraw(ex.args[i]; kwargs...)
             end
         end
         return latexoperation(ex, prevOp; convert_unicode=convert_unicode, kwargs...)
@@ -89,7 +89,7 @@ function _latexraw(args...; kwargs...)
     @assert length(args) > 1 "latexify does not support objects of type $(typeof(args[1]))."
     _latexraw(args; kwargs...)
 end
-_latexraw(arr::Union{AbstractArray, Tuple}; kwargs...) = [latexraw(i; kwargs...) for i in arr]
+_latexraw(arr::Union{AbstractArray, Tuple}; kwargs...) = _latexarray(arr; kwargs...)
 _latexraw(i::Nothing; kwargs...) = ""
 _latexraw(i::SubString; kwargs...) = latexraw(Meta.parse(i); kwargs...)
 _latexraw(i::SubString{LaTeXStrings.LaTeXString}; kwargs...) = i
