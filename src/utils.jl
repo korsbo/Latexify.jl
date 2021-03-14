@@ -74,7 +74,8 @@ function best_displayable()
     return MIME("image/pdf")
 end
 
-function render(s::LaTeXString, mime::MIME"juliavscode/html"; renderer=:mathjax, scale=1.1, kwargs...)
+
+function html_wrap(s::LaTeXString; renderer=:mathjax, scale=1.1, kwargs...)
   str = replace(s, "\$"=> "\$\$")
 
   if renderer == :katex
@@ -109,7 +110,12 @@ function render(s::LaTeXString, mime::MIME"juliavscode/html"; renderer=:mathjax,
     error(ArgumentError("Invalid renderer. Valid options are `:katex` and `:mathjax`."))
   end
 
-  display(mime, import_str * str)
+  return import_str * str
+end
+
+# render(s::LaTeXString, mime::MIME"juliavscode/html"; kwargs...) = render(stdout, mime; kwargs...)
+function render(s::LaTeXString, mime::MIME"juliavscode/html"; kwargs...)
+      display(mime, html_wrap(s; kwargs...))
 end
 
 
