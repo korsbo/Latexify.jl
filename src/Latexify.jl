@@ -4,6 +4,7 @@ using LaTeXStrings
 using InteractiveUtils
 using Markdown
 using MacroTools: postwalk
+import MacroTools
 using Printf
 using Formatting
 
@@ -70,6 +71,61 @@ end
 
 macro generate_test(expr)
     return :(clipboard("@test $($(string(expr))) == replace(\nraw\"$($(esc(expr)))\", \"\\r\\n\"=>\"\\n\")\n"))
+end
+
+"""
+    @append_latexify_test!(fname, expr)
+
+Generate a Latexify test and append it to the file `fname`. 
+
+The expression `expr` should return a string when evaluated.
+
+Example use:
+```
+Latexify.@append_latexify_test!("./tests/latexify_tests.jl", latexify(:(x/y)))
+```
+
+The macro returns the output of the expression and can often be rendered
+for a visual check that the test itself is ok. 
+```
+Latexify.@append_latexify_test!("./tests/latexify_tests.jl", latexify(:(x/y))) |> render
+```
+"""
+macro append_latexify_test!(fname, expr)
+    fname = esc(fname)
+    return :(
+    str = "@test $($(string(expr))) == replace(\nraw\"$($(esc(expr)))\", \"\\r\\n\"=>\"\\n\")\n\n";
+    open($fname, "a") do f
+        write(f,str) 
+    end;
+    $(esc(expr))
+    )
+end
+
+"""
+    @append_test!(fname, expr)
+
+Both execute and append code to a test file.
+
+The code can be either a normal expression or a string.
+Example use:
+```
+Latexify.@append_test A = [1 2; 3 4]
+```
+
+Useful for adding code that generates objects to be used in latexify tests.
+"""
+macro append_test!(fname, str)
+    fname = esc(fname)
+    returnobj = str isa String ? Meta.parse(str) : str
+    printobj = str isa String ? str : string(MacroTools.striplines(str))
+    return :(
+    open($fname, "a") do f
+        write(f, $(esc(printobj)))
+        write(f, "\n\n")
+    end;
+    $(esc(returnobj))
+    )
 end
 
 end
