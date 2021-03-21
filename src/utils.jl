@@ -75,18 +75,8 @@ function best_displayable()
 end
 
 
-function html_wrap(s::LaTeXString; renderer=:mathjax, scale=1.1, kwargs...)
-  if renderer == :katex
-      import_str = """
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
-      <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.js" integrity="sha384-g7c+Jr9ZivxKLnZTDUhnkOnsh30B4H0rpLUpJ4jAIKs4fnJI+sEnkvrMWph2EDg4" crossorigin="anonymous"></script>
-      <script defer src="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/contrib/auto-render.min.js" integrity="sha384-mll67QQFJfxn0IYznZYonOWZ644AWYC+Pt2cHqMaRhXVrursRwvLnLaebdGIlYNa" crossorigin="anonymous"
-        onload="renderMathInElement(document.body);"></script>
-      """
-      str = replace(str, "\\begin{align}"=>"\\[\n\\begin{aligned}")
-      str = replace(str, "\\end{align}"=>"\\end{aligned}\n\\]")
-  elseif renderer == :mathjax
-      import_str = """
+function html_wrap(s::LaTeXString; scale=1.1, kwargs...)
+    import_str = """
         <script>
             MathJax = {
                 tex: {
@@ -104,11 +94,7 @@ function html_wrap(s::LaTeXString; renderer=:mathjax, scale=1.1, kwargs...)
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
         <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         """
-  else
-    error(ArgumentError("Invalid renderer. Valid options are `:katex` and `:mathjax`."))
-  end
-
-  return import_str * s.s
+    return import_str * s.s
 end
 
 # render(s::LaTeXString, mime::MIME"juliavscode/html"; kwargs...) = render(stdout, mime; kwargs...)
