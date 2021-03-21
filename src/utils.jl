@@ -76,8 +76,6 @@ end
 
 
 function html_wrap(s::LaTeXString; renderer=:mathjax, scale=1.1, kwargs...)
-  str = replace(s, "\$"=> "\$\$")
-
   if renderer == :katex
       import_str = """
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" integrity="sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X" crossorigin="anonymous">
@@ -92,7 +90,7 @@ function html_wrap(s::LaTeXString; renderer=:mathjax, scale=1.1, kwargs...)
         <script>
             MathJax = {
                 tex: {
-                    inlineMath: [['\$', '\$'], ['\\(', '\\)']]
+                    displayMath: [['\$', '\$']]
                 },
                 chtml: {
                     scale: $scale
@@ -103,14 +101,14 @@ function html_wrap(s::LaTeXString; renderer=:mathjax, scale=1.1, kwargs...)
             };
         </script>
         <script src="/js/mathjax/tex-chtml.js" id="MathJax-script" async></script>
-      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-      """
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        """
   else
     error(ArgumentError("Invalid renderer. Valid options are `:katex` and `:mathjax`."))
   end
 
-  return import_str * str
+  return import_str * s.s
 end
 
 # render(s::LaTeXString, mime::MIME"juliavscode/html"; kwargs...) = render(stdout, mime; kwargs...)
