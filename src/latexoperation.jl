@@ -6,7 +6,7 @@ This uses the information about the previous operations to decide if
 a parenthesis is needed.
 
 """
-function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, index=:bracket, kwargs...)
+function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, index=:bracket, kwargs...)::String 
     op = ex.args[1]
     args = map(i -> typeof(i) ∉ (String, LineNumberNode) ? latexraw(i; kwargs...) : i, ex.args)
 
@@ -139,7 +139,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, index=:brack
     end
 
     if ex.head == :macrocall && ex.args[1] == Symbol("@__dot__")
-        return ex.args[3]
+        return string(ex.args[end])
     end
 
     if ex.head == :call
