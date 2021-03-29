@@ -31,7 +31,6 @@ deploydocs(
     #deps = Deps.pip("mkdocs", "python-markdown-math"),
     repo = "github.com/korsbo/Latexify.jl.git",
     target = "build",
-    deploy_config = GitHubActions(),
     # make = nothing,
     # deps = nothing,
     )
