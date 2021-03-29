@@ -1,9 +1,11 @@
 using Documenter
 using Latexify
+using LaTeXStrings
 
+Base.show(io::IO, ::MIME"text/html", l::LaTeXString) = l.s
 makedocs(
     modules = [Latexify],
-    format = Documenter.HTML(prettyurls = get(ENV, "CI", nothing) == "true"),
+    format = Documenter.HTML(prettyurls = get(ENV, "CI", nothing) == "true", mathengine = MathJax3()),
     sitename = "Latexify.jl",
     pages = [
         "index.md",
@@ -22,15 +24,16 @@ makedocs(
         "arguments.md",
         "tutorials/inner_workings.md",
     ],
-    doctest = false
+    doctest = false,
 )
 
 deploydocs(
     #deps = Deps.pip("mkdocs", "python-markdown-math"),
     repo = "github.com/korsbo/Latexify.jl.git",
     target = "build",
-    make = nothing,
-    deps = nothing
+    deploy_config = GitHubActions(),
+    # make = nothing,
+    # deps = nothing,
     )
 
 
