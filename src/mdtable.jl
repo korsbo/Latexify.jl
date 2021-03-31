@@ -58,7 +58,7 @@ function mdtable end
 function mdtable(M::AbstractMatrix; latex::Bool=true, escape_underscores=false, head=[], side=[], transpose=false, kwargs...)
     transpose && (M = permutedims(M, [2,1]))
     if latex
-        M = latexinline(M; kwargs...)
+        M = _latexinline.(M; kwargs...)
     elseif haskey(kwargs, :fmt)
         formatter = kwargs[:fmt] isa String ? PrintfNumberFormatter(kwargs[:fmt]) : kwargs[:fmt]
         M = map(x -> x isa Number ? formatter(x) : x, M)
