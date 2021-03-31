@@ -6,5 +6,4 @@ function _latexbracket(x; kwargs...)
     return latexstr
 end
 
-_latexbracket(x::Union{AbstractArray, Tuple}; kwargs...) = [latexbracket.(x; kwargs...)...]
 _latexbracket(args...; kwargs...) = latexbracket(args; kwargs...)
