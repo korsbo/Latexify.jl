@@ -14,7 +14,7 @@ raw"\begin{equation}
 \end{equation}
 "
 
-Latexify.@generate_test latexify(arr; env=:inline)
+# Latexify.@generate_test latexify(arr; env=:inline)
 @test latexify(arr; env = :inline) == replace(
 raw"$\left[
 \begin{array}{cc}
