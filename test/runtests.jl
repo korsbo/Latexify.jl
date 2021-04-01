@@ -3,7 +3,6 @@
 #Start Test Script
 using Latexify
 using LaTeXStrings
-using Missings
 using Test
 
 # Run tests

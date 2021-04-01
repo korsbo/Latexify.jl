@@ -61,9 +61,6 @@ function __init__()
     @require SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8" begin
         include("plugins/SymEngine.jl")
     end
-    @require Missings = "e1d29d7a-bbdc-5cf2-9ac0-f12de2c33e28" begin
-        include("plugins/Missings.jl")
-    end
     @require DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0" begin
         include("plugins/DataFrames.jl")
     end

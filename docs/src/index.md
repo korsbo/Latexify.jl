@@ -4,21 +4,12 @@ Latexify.jl is a package which supplies functions for producing ``\LaTeX`` forma
 
 A small teaser:
 
-```julia
+```@example main
 using Latexify
-copy_to_clipboard(true)
+copy_to_clipboard(false) # hide
+Latexify.set_default(; starred=true)
 m = [2//3 "e^(-c*t)" 1+3im; :(x/(x+k_1)) "gamma(n)" :(log10(x))]
 latexify(m)
-```
-```math
-\begin{equation}
-\left[
-\begin{array}{ccc}
-\frac{2}{3} & e^{ - c \cdot t} & 1+3\textit{i} \\
-\frac{x}{x + k_{1}} & \Gamma\left( n \right) & \log_{10}\left( x \right) \\
-\end{array}
-\right]
-\end{equation}
 ```
 
 ## Supported input
@@ -27,7 +18,7 @@ This package supplies functionality for latexifying objects of the following typ
 - Expressions,
 - Strings,
 - Numbers (including rational and complex),
-- Missings' Missing type,
+- Missing,
 - Symbols,
 - Symbolic expressions from SymEngine.jl,
 - DataFrame from DataFrames.jl,
@@ -37,12 +28,11 @@ This package supplies functionality for latexifying objects of the following typ
 
 
 Example:
-```julia-repl
-julia> str = "x/(2*k_1+x^2)"
-julia> latexify(str)
 
+```@example main
+str = "x/(2*k_1+x^2)"
+latexify(str)
 ```
-$\frac{x}{2 \cdot k_{1} + x^{2}}$
 
 
 ## Supported output
@@ -71,18 +61,15 @@ Some of the different outputs can be modified using keyword arguments. You can f
 
 `latexify()` returns a LaTeXString. Using `display()` on such a string will try to render it.
 
-```julia
+```@example main
 latexify("x/y") |> display
 ```
 $\frac{x}{y}$
 
 Using `print()` will output text which is formatted for latex.
 
-```julia
+```@example main
 latexify("x/y") |> print
-```
-```latex
-$\frac{x}{y}$
 ```
 
 ## Number formatting
@@ -99,12 +86,12 @@ You can control the formatting of numbers by passing any of the following to the
 
 
 Examples:
-```julia
+```@example main
 latexify(12345.678; fmt="%.1e")
 ```
 $1.2e+04$
 
-```julia
+```@example main
 latexify([12893.1 1.328e2; "x/y" 7832//2378]; fmt=FancyNumberFormatter(3))
 ```
 ```math
@@ -118,18 +105,9 @@ latexify([12893.1 1.328e2; "x/y" 7832//2378]; fmt=FancyNumberFormatter(3))
 \end{equation}
 ```
 
-```julia
+```@example main
 using Formatting
 latexify([12893.1 1.328e2]; fmt=x->format(round(x, sigdigits=2), autoscale=:metric))
-```
-```math
-\begin{equation}
-\left[
-\begin{array}{cc}
-13k & 130 \\
-\end{array}
-\right]
-\end{equation}
 ```
 
 
