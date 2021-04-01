@@ -201,9 +201,9 @@ function expr_to_array(ex)
         return eval(ex.head)(map(y -> permutedims(y.args), ex.args)...)
     else 
         if ex.head == :hcat
-            return hcat( ex.args...)
+            return reduce(hcat, ex.args)
         elseif ex.head in [:vcat, :vect]
-            return vcat( ex.args...)
+            return reduce(vcat, ex.args)
         end
     end
 end
