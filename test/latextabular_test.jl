@@ -14,7 +14,7 @@ raw"\begin{tabular}{ccc}
 
 arr = ["x/(y-1)", 1.0, 3//2, :(x-y), :symb]
 
-M = vcat(hcat(arr...), hcat(arr...))
+M = vcat(reduce(hcat, arr), reduce(hcat, arr))
 head = ["col$i" for i in 1:size(M, 2)]
 side = ["row$i" for i in 1:size(M, 1)]
 

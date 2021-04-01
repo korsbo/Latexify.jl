@@ -65,7 +65,7 @@ function mdtable(M::AbstractMatrix; latex::Bool=true, escape_underscores=false, 
     end
 
     if !isempty(head)
-        M = vcat(hcat(head...), M)
+        M = vcat(reduce(hcat, head), M)
         @assert length(head) == size(M, 2) "The length of the head does not match the shape of the input matrix."
     end
     if !isempty(side)
@@ -87,6 +87,6 @@ function mdtable(M::AbstractMatrix; latex::Bool=true, escape_underscores=false, 
     return t
 end
 
-mdtable(v::AbstractArray...; kwargs...) = mdtable(hcat(v...); kwargs...)
+mdtable(v::AbstractArray...; kwargs...) = mdtable(reduce(hcat, v); kwargs...)
 mdtable(d::AbstractDict; kwargs...) = mdtable(collect(keys(d)), collect(values(d)); kwargs...)
-mdtable(arg::Tuple; kwargs...) = mdtable(hcat([collect(i) for i in arg]...); kwargs...)
+mdtable(arg::Tuple; kwargs...) = mdtable(reduce(hcat, [collect(i) for i in arg]); kwargs...)

@@ -66,6 +66,6 @@ function latexalign(odearray::AbstractVector{T}; field::Symbol=:funcs, kwargs...
 
         append!(a, [lhs, first_separator, rhs, second_separator])
     end
-    a = hcat(a...)
+    a = reduce(hcat, a)
     return latexalign(a; separator=" ", kwargs...)
 end
