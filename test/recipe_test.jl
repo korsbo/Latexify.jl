@@ -50,6 +50,11 @@ struct MyFloat
     x::Float64
 end
 
+@latexrecipe function f(m::MyFloat)
+    fmt --> "%.6e"
+    return m.x*m.x
+end
+
 @latexrecipe function f(vec::Vector{T}) where T <: MyFloat
     fmt --> "%.4e"
     return [myfloat.x for myfloat in vec]
@@ -69,6 +74,10 @@ end
 using .MyModule
 t = MyModule.MyType([:A, :B, 3.], [1., 2, 3])
 t2 = MyModule.MyType([:X, :Y, :(x/y)], Number[1.23434534, 232423.42345, 12//33])
+
+m = MyModule.MyFloat(3)
+@test latexify(m) == raw"$9.000000e+00$"
+@test latexify(:(2+$m)) == raw"$2 + 9.000000e+00$"
 
 vec = [MyModule.MyFloat(x) for x in 1:4]
 @test latexify(vec; transpose=true) == replace(
