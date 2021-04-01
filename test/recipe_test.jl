@@ -71,7 +71,7 @@ t = MyModule.MyType([:A, :B, 3.], [1., 2, 3])
 t2 = MyModule.MyType([:X, :Y, :(x/y)], Number[1.23434534, 232423.42345, 12//33])
 
 vec = [MyModule.MyFloat(x) for x in 1:4]
-@test latexify(vec; transpose=true) ==
+@test latexify(vec; transpose=true) == replace(
 raw"\begin{equation}
 \left[
 \begin{array}{cccc}
@@ -79,10 +79,10 @@ raw"\begin{equation}
 \end{array}
 \right]
 \end{equation}
-"
+", "\r\n"=>"\n")
 
 double_vec = MyModule.MyDoubleVec([MyModule.MyFloat(x) for x in 1:4], [MyModule.MyFloat(x) for x in 8:11])
-@test latexify(double_vec) ==
+@test latexify(double_vec) == replace(
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
@@ -93,35 +93,35 @@ raw"\begin{equation}
 \end{array}
 \right]
 \end{equation}
-"
+", "\r\n"=>"\n")
 
 
 
-@test latexify(t2, fmt="%.8f") ==
+@test latexify(t2, fmt="%.8f") == replace(
 raw"\begin{align}
 X =& 1.23 \\
 Y =& 232423.42 \\
 \frac{x}{y} =& \frac{4.00}{11.00}
 \end{align}
-"
+", "\r\n"=>"\n")
 
-@test latexify(t) ==
+@test latexify(t) == replace(
 raw"\begin{align}
 A =& 1.00 \\
 B =& 2.00 \\
 3.00 =& 3.00
 \end{align}
-"
+", "\r\n"=>"\n")
 
-@test latexify(t; reverse=true) ==
+@test latexify(t; reverse=true) == replace(
 raw"\begin{align}
 1.00 =& A \\
 2.00 =& B \\
 3.00 =& 3.00
 \end{align}
-"
+", "\r\n"=>"\n")
 
-@test latexify(t; env=:equation) ==
+@test latexify(t; env=:equation) == replace(
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
@@ -131,9 +131,9 @@ B & 2.00 \\
 \end{array}
 \right]
 \end{equation}
-"
+", "\r\n"=>"\n")
 
-@test latexify(t; env=:equation, reverse=true) ==
+@test latexify(t; env=:equation, reverse=true) == replace(
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
@@ -143,11 +143,11 @@ raw"\begin{equation}
 \end{array}
 \right]
 \end{equation}
-"
+", "\r\n"=>"\n")
 
 
 vec = MyModule.MyVec([1., 2.])
-@test latexify(vec, transpose=true) ==
+@test latexify(vec, transpose=true) == replace(
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
@@ -155,11 +155,11 @@ raw"\begin{equation}
 \end{array}
 \right]
 \end{equation}
-"
+", "\r\n"=>"\n")
 
 tup = MyModule.MyTup((1., 2.))
 
-@test latexify(tup, transpose=true) ==
+@test latexify(tup, transpose=true) == replace(
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
@@ -167,9 +167,9 @@ raw"\begin{equation}
 \end{array}
 \right]
 \end{equation}
-"
+", "\r\n"=>"\n")
 
-@test latexify(tup, reverse=true, transpose=true) ==
+@test latexify(tup, reverse=true, transpose=true) == replace(
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
@@ -177,12 +177,12 @@ raw"\begin{equation}
 \end{array}
 \right]
 \end{equation}
-"
+", "\r\n"=>"\n")
 
 
 
 tup2 = MyModule.MyDoubleTup((1., 3), (2., 4.))
-@test latexify(tup2) ==
+@test latexify(tup2) == replace(
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
@@ -191,6 +191,6 @@ raw"\begin{equation}
 \end{array}
 \right]
 \end{equation}
-"
+", "\r\n"=>"\n")
 
 

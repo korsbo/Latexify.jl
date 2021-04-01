@@ -2,35 +2,36 @@
 using Latexify
 using Test
 using Markdown
+using Missing
 
 str = "2*x^2 - y/c_2"
 ex = :(2*x^2 - y/c_2)
 
 desired_output = "2 \\cdot x^{2} - \\frac{y}{c_{2}}"
 
-@test latexify(:(a = [x / y; 3; 4])) ==
+@test latexify(:(a = [x / y; 3; 4])) == replace(
 raw"$a = \left[
 \begin{array}{c}
 \frac{x}{y} \\
 3 \\
 4 \\
 \end{array}
-\right]$"
+\right]$", "\r\n"=>"\n")
 
-@test latexify(:(a = [x / y 2 3 4])) ==
+@test latexify(:(a = [x / y 2 3 4])) == replace(
 raw"$a = \left[
 \begin{array}{cccc}
 \frac{x}{y} & 2 & 3 & 4 \\
 \end{array}
-\right]$"
+\right]$", "\r\n"=>"\n")
 
-@test latexify(:(a = [x / y 2; 3 4])) ==
+@test latexify(:(a = [x / y 2; 3 4])) == replace(
 raw"$a = \left[
 \begin{array}{cc}
 \frac{x}{y} & 2 \\
 3 & 4 \\
 \end{array}
-\right]$"
+\right]$", "\r\n"=>"\n")
 
 
 @test latexraw(str) == latexraw(ex)
@@ -76,7 +77,7 @@ array_test = [ex, str]
 @test latexraw(:(sqrt(x))) == "\\sqrt{x}"
 @test latexraw(complex(1,-1)) == "1-1\\textit{i}"
 @test latexraw(1//2) == "\\frac{1}{2}"
-@test latexraw(Missing()) == "\\textrm{NA}"
+@test latexraw(missing) == "\\textrm{NA}"
 @test latexraw("x[2]") == raw"x\left[2\right]"
 @test latexraw("x[2, 3]") == raw"x\left[2, 3\right]"
 @test latexraw("α") == raw"\alpha"
@@ -130,14 +131,14 @@ raw"3 \cdot \left( a < b \leq c < d \leq e > f \leq g \leq h < i = j = k \neq l 
 
 
 #### Test the fmt keyword option
-@test latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:align, fmt="%.2e") ==
+@test latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:align, fmt="%.2e") == replace(
 raw"\begin{align}
 3.29e+07 =& 1.23e+00 =& P_{1} \\
 \frac{x}{y} =& 1.00e+10 =& 1.29e+03
 \end{align}
-"
+", "\r\n"=>"\n")
 
-@test latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:equation, fmt="%.2e") ==
+@test latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:equation, fmt="%.2e") == replace(
 raw"\begin{equation}
 \left[
 \begin{array}{ccc}
@@ -146,15 +147,15 @@ raw"\begin{equation}
 \end{array}
 \right]
 \end{equation}
-"
+", "\r\n"=>"\n")
 
 
-@test latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:table, fmt="%.2e") ==
+@test latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:table, fmt="%.2e") == replace(
 raw"\begin{tabular}{ccc}
 $3.29e+07$ & $1.23e+00$ & $P_{1}$\\
 $\frac{x}{y}$ & $1.00e+10$ & $1.29e+03$\\
 \end{tabular}
-"
+", "\r\n"=>"\n")
 
 
 @test latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:mdtable, fmt="%.2e") ==
@@ -180,7 +181,7 @@ test_functions = [:sinh, :alpha, :Theta, :cosc, :acoth, :acot, :asech, :lambda,
                   :acsch, :theta, :asec, :Sigma, :sin]
 
 
-@test latexify(["3*$(func)(x)^2/4 -1" for func = test_functions]) ==
+@test latexify(["3*$(func)(x)^2/4 -1" for func = test_functions]) == replace(
 raw"\begin{equation}
 \left[
 \begin{array}{c}
@@ -251,7 +252,7 @@ raw"\begin{equation}
 \end{array}
 \right]
 \end{equation}
-"
+", "\r\n"=>"\n")
 
 
 ## Test logical operators
@@ -261,18 +262,18 @@ raw"\begin{equation}
 
 
 ## Test {cases} enviroment
-@test latexraw(:(R(p,e,d) = e ? 0 : log(p) - d)) ==
+@test latexraw(:(R(p,e,d) = e ? 0 : log(p) - d)) == replace(
 raw"R\left( p, e, d \right) = \begin{cases}
 0 & \text{if } e\\
 \log\left( p \right) - d & \text{otherwise}
-\end{cases}"
+\end{cases}", "\r\n"=>"\n")
 
-@test latexraw(:(R(p,e,d,t) = if (t && e); 0 elseif (t && !e); d else log(p) end)) ==
+@test latexraw(:(R(p,e,d,t) = if (t && e); 0 elseif (t && !e); d else log(p) end)) == replace(
 raw"R\left( p, e, d, t \right) = \begin{cases}
 0 & \text{if } t \wedge e\\
 d & \text{if } t \wedge \neg e\\
 \log\left( p \right) & \text{otherwise}
-\end{cases}"
+\end{cases}", "\r\n"=>"\n")
 
 @test latexraw(:(function reward(p,e,d,t)
     if t && e
@@ -286,11 +287,11 @@ d & \text{if } t \wedge \neg e\\
     else
         return log(p)
     end
-end)) ==
+end)) == replace(
 raw"\mathrm{reward}\left( p, e, d, t \right) = \begin{cases}
 0 & \text{if } t \wedge e\\
 -1 \cdot d & \text{if } t \wedge \neg e\\
 -2 \cdot d & \text{if } 2 \cdot t \wedge e\\
 -3 \cdot d & \text{if } 3 \cdot t \wedge e\\
 \log\left( p \right) & \text{otherwise}
-\end{cases}"
+\end{cases}", "\r\n"=>"\n")
