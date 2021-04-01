@@ -6,9 +6,9 @@ This uses the information about the previous operations to decide if
 a parenthesis is needed.
 
 """
-function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, index=:bracket, kwargs...)::String 
+function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, index=:bracket, kwargs...)::String
     op = ex.args[1]
-    args = map(i -> typeof(i) ∉ (String, LineNumberNode) ? latexraw.(i; kwargs...) : i, ex.args)
+    args = map(i -> typeof(i) ∉ (String, LineNumberNode) ? latexraw(i; kwargs...) : i, ex.args)
 
     # Remove math italics for variables (i.e. words) longer than 2 characters.
     # args = map(i -> (i isa String && all(map(isletter, collect(i))) && length(i) > 2) ? "{\\rm $i}" : i, args)
