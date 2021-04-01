@@ -2,7 +2,6 @@
 using Latexify
 using Test
 using Markdown
-using Missing
 
 str = "2*x^2 - y/c_2"
 ex = :(2*x^2 - y/c_2)
