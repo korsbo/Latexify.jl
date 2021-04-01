@@ -80,7 +80,7 @@ function html_wrap(s::LaTeXString; scale=1.1, kwargs...)
         <script>
             MathJax = {
                 tex: {
-                    displayMath: [['\$', '\$']]
+                    displayMath: [['\$', '\$'], ['\\\\[', '\\\\]']]
                 },
                 chtml: {
                     scale: $scale
