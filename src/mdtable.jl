@@ -76,7 +76,7 @@ function mdtable(M::AbstractMatrix; latex::Bool=true, escape_underscores=false, 
 
 
     t = "| " * join(M[1,:], " | ") * " |\n"
-    t *= "| ---  "^(size(M,2)-1) * "| --- |\n"
+    size(M, 1) > 1 && (t *= "| ---  "^(size(M,2)-1) * "| --- |\n")
     for i in 2:size(M,1)
         t *= "| " * join(M[i,:], " | ") * " |\n"
     end
@@ -87,6 +87,7 @@ function mdtable(M::AbstractMatrix; latex::Bool=true, escape_underscores=false, 
     return t
 end
 
+mdtable(v::AbstractArray; kwargs...) = mdtable(reduce(hcat, v); kwargs...)
 mdtable(v::AbstractArray...; kwargs...) = mdtable(reduce(hcat, v); kwargs...)
 mdtable(d::AbstractDict; kwargs...) = mdtable(collect(keys(d)), collect(values(d)); kwargs...)
 mdtable(arg::Tuple; kwargs...) = mdtable(reduce(hcat, [collect(i) for i in arg]); kwargs...)
