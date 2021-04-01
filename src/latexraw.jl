@@ -139,4 +139,4 @@ environment that is capable of displaying not-maths objects. Try for example
     end
 end
 
-_latexraw(i::Missing) = "\\textrm{NA}"
+_latexraw(i::Missing; kwargs...) = "\\textrm{NA}"
