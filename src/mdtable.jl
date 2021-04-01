@@ -87,7 +87,7 @@ function mdtable(M::AbstractMatrix; latex::Bool=true, escape_underscores=false, 
     return t
 end
 
-mdtable(v::AbstractArray; kwargs...) = mdtable(reduce(hcat, v); kwargs...)
+mdtable(v::AbstractArray; kwargs...) = mdtable(reshape(v, (length(v), 1)); kwargs...)
 mdtable(v::AbstractArray...; kwargs...) = mdtable(reduce(hcat, v); kwargs...)
 mdtable(d::AbstractDict; kwargs...) = mdtable(collect(keys(d)), collect(values(d)); kwargs...)
 mdtable(arg::Tuple; kwargs...) = mdtable(reduce(hcat, [collect(i) for i in arg]); kwargs...)
