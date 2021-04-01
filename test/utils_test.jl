@@ -29,7 +29,7 @@ Latexify._writetex(xdoty_tex; name=name)
 tex = open("$(name).tex") do f
     read(f, String)
 end
-@test tex == raw"""
+@test tex == replace(raw"""
 \documentclass[varwidth=100cm]{standalone}
 \usepackage{amssymb}
 \usepackage{amsmath}
@@ -40,13 +40,13 @@ end
     $x \cdot y$
 }
 \end{document}
-"""
+""", "\r\n"=>"\n")
 
 Latexify._writetex(L"\ce{ 2 P_1 &<=>[k_{+}][k_{-}] D_{1}}"; name=name)
 tex = open("$(name).tex") do f
     read(f, String)
 end
-@test tex == raw"""
+@test tex == replace(raw"""
 \documentclass[varwidth=100cm]{standalone}
 \usepackage{amssymb}
 \usepackage{amsmath}
@@ -57,4 +57,4 @@ end
     $\ce{ 2 P_1 &<=>[k_{+}][k_{-}] D_{1}}$
 }
 \end{document}
-"""
+""", "\r\n"=>"\n")

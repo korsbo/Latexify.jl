@@ -3,7 +3,7 @@ using Test
 
 arr = [1 2; 3 4]
 
-@test latexify(arr) ==
+@test latexify(arr) == replace(
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
@@ -12,7 +12,7 @@ raw"\begin{equation}
 \end{array}
 \right]
 \end{equation}
-"
+", "\r\n"=>"\n")
 
 # Latexify.@generate_test latexify(arr; env=:inline)
 @test latexify(arr; env = :inline) == replace(
@@ -57,7 +57,7 @@ raw"\left[
 
 arr = [1,2,:(x/y),4]
 
-@test latexify(arr) ==
+@test latexify(arr) == replace(
 raw"\begin{equation}
 \left[
 \begin{array}{c}
@@ -68,9 +68,9 @@ raw"\begin{equation}
 \end{array}
 \right]
 \end{equation}
-"
+", "\r\n"=>"\n")
 
-@test latexify(arr; transpose=true) == 
+@test latexify(arr; transpose=true) == replace(
 raw"\begin{equation}
 \left[
 \begin{array}{cccc}
@@ -78,9 +78,9 @@ raw"\begin{equation}
 \end{array}
 \right]
 \end{equation}
-"
+", "\r\n"=>"\n")
 
-@test latexify((1.0, 2), (3, 4)) ==
+@test latexify((1.0, 2), (3, 4)) == replace(
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
@@ -89,9 +89,9 @@ raw"\begin{equation}
 \end{array}
 \right]
 \end{equation}
-"
+", "\r\n"=>"\n")
 
-@test latexify(((1.0, 2), (3, 4))) ==
+@test latexify(((1.0, 2), (3, 4))) == replace(
 raw"\begin{equation}
 \left[
 \begin{array}{cc}
@@ -100,10 +100,10 @@ raw"\begin{equation}
 \end{array}
 \right]
 \end{equation}
-"
+", "\r\n"=>"\n")
 
 
-@test latexify(:(x = [1 2] * [1, 2] * [1 2; 3 4])) == 
+@test latexify(:(x = [1 2] * [1, 2] * [1 2; 3 4])) == replace(
 raw"$x = \left[
 \begin{array}{cc}
 1 & 2 \\
@@ -118,10 +118,10 @@ raw"$x = \left[
 1 & 2 \\
 3 & 4 \\
 \end{array}
-\right]$"
+\right]$", "\r\n"=>"\n")
 
 
-@test latexify(:(x = $arr)) == 
+@test latexify(:(x = $arr)) == replace(
 raw"$x = \left[
 \begin{array}{c}
 1 \\
@@ -129,6 +129,6 @@ raw"$x = \left[
 \frac{x}{y} \\
 4 \\
 \end{array}
-\right]$"
+\right]$", "\r\n"=>"\n")
 
 

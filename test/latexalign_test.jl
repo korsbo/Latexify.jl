@@ -2,19 +2,19 @@ using Latexify
 using Test
 
 
-@test latexify(((1.0, 2), (3, 4)); env=:align) == 
+@test latexify(((1.0, 2), (3, 4)); env=:align) == replace(
 raw"\begin{align}
 1.0 =& 3 \\
 2 =& 4
 \end{align}
-"
+", "\r\n"=>"\n")
 
-@test latexify(((1.0, 2), (3, 4)); separator = [" =& ", " ∈& "], env = :align) == 
+@test latexify(((1.0, 2), (3, 4)); separator = [" =& ", " ∈& "], env = :align) == replace(
 raw"\begin{align}
 1.0 =& 3 \\
 2 ∈& 4
 \end{align}
-"
+", "\r\n"=>"\n")
 
 
 lhs = [:a, :b]
