@@ -100,7 +100,7 @@ end
 Go through the elements, split at any = sign, pass on as a matrix.
 """
 function _latexalign(vec::AbstractVector; kwargs...)
-    lvec = latexraw(vec; kwargs...)
+    lvec = _latexraw.(vec; kwargs...)
     ## turn the array into a matrix
     lmat = reduce(hcat, split.(lvec, " = "))
     ## turn the matrix ito arrays of left-hand-side, right-hand-side.
