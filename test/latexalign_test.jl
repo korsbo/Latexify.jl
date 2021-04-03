@@ -30,3 +30,10 @@ b =& 2
 ", "\r\n"=>"\n")
 
 # @test_throws MethodError latexify(rn; bad_kwarg="should error")
+
+# Latexify.@generate_test latexify(["a=1"], env=:align)
+@test latexify(["a=1"], env = :align) == replace(
+raw"\begin{align}
+a =& 1
+\end{align}
+", "\r\n"=>"\n")
