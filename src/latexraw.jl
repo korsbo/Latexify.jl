@@ -57,32 +57,8 @@ latexraw(symExpr)
 """
 latexraw(args...; kwargs...) = latexify(args...; kwargs..., env=:raw)
 
-function _latexraw(inputex::Expr; convert_unicode=true, kwargs...)
-    ## Pass all arrays or matrices in the expr to latexarray
-    inputex = postwalk(x -> x isa Expr && x.head in [:hcat, :vcat, :vect, :typed_vcat, :typed_hcat] ?
-                       latexarray(expr_to_array(x); kwargs...)
-                       : x,
-                       inputex)
-
-    recurseexp!(lstr::LaTeXString) = lstr.s
-    function recurseexp!(ex)
-        prevOp = Vector{Symbol}(undef, length(ex.args))
-        fill!(prevOp, :none)
-        for i in 1:length(ex.args)
-            if isa(ex.args[i], Expr)
-                length(ex.args[i].args) > 1 && ex.args[i].args[1] isa Symbol && (prevOp[i] = ex.args[i].args[1])
-                ex.args[i] = recurseexp!(ex.args[i])
-            elseif ex.args[i] isa AbstractArray
-                ex.args[i] = latexraw(ex.args[i]; kwargs...)
-            end
-        end
-        return latexoperation(ex, prevOp; convert_unicode=convert_unicode, kwargs...)
-    end
-    ex = deepcopy(inputex)
-    str = recurseexp!(ex)
-    convert_unicode && (str = unicode2latex(str))
-    return LaTeXString(str)
-end
+_latexraw(ex::Expr; kwargs...) = _latextree(ex; kwargs...)
+_latexraw(ex; kwargs...) = nested(ex) ? _latextree(ex; kwargs...) : throw(ArgumentError("Unsupported type $(typeof(ex)) to Latexify._latexraw")) 
 
 
 function _latexraw(args...; kwargs...)
