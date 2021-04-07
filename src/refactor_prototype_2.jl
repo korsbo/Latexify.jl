@@ -45,7 +45,7 @@ end
 # decend(x, prevop) = string(x)
 # decend(x::Expr, prevop::Symbol) = decend(x, Val{prevop}())
 function decend(e, prevop=Val(:_nothing))::String
-  if nested(e)
+  # if nested(e)
     # nested(e) || return Latexify.latexraw(e; kwargs...)
     for f in MATCHING_FUNCTIONS[end:-1:1]
         call_result = f(e, prevop, CONFIG) 
@@ -55,9 +55,9 @@ function decend(e, prevop=Val(:_nothing))::String
         end
     end
     throw(ArgumentError("No matching expression conversion function for $e"))
-  else
-    return _latexraw(e; CONFIG...)
-  end
+  # else
+    # return _latexraw(e; CONFIG...)
+  # end
 end
 
 
@@ -68,12 +68,41 @@ surround(x) = "\\left( $x \\right)"
     # "$(latexify(value(lhs_val))) = $(latexify(first(rhs_array)))" :
     # nothing
 
-function default_matcher()
-return [
-function report_bad_call(expr, prevop, config)
-   println("Unsupported input with \nexpr=$expr\nand prevop=$prevop\n")
-   return nothing
-end,
+# function default_matcher()
+# return 
+const MATCHING_FUNCTIONS = [
+  function report_bad_call(expr, prevop, config)
+     println("""
+     Unsupported input with
+     expr=$expr
+     prevop=$prevop
+     and config=$config
+     """)
+     return nothing
+  end,
+  function _block(x, args...)
+    if head(x) == :block && length(filter(x->!(x isa LineNumberNode), arguments(x))) == 1
+      return decend(arguments(x)[end])
+    end
+  end,
+  function number(x, args...) 
+    x isa Number ? string(x) : nothing
+  end,
+  function symbol(x, args...) 
+    x isa Symbol ? string(x) : nothing
+  end,
+  function array(x, args...) 
+    x isa AbstractArray ? _latexarray(x) : nothing
+  end,
+  function tuple(x, args...) 
+    x isa Tuple ? _latexarray(x) : nothing
+  end,
+  function vect_exp(x, args...) 
+    head(x)==:vect ? _latexarray(vcat(operation(x), arguments(x))) : nothing
+  end,
+  function hcat_exp(x, args...) 
+    head(x)==:hcat ? _latexarray(permutedims(vcat(operation(x), arguments(x)))) : nothing
+  end,
    (expr, prevop, config) -> begin
    h, op, args = unpack(expr)
   #  if (expr isa LatexifyOperation || h == :LatexifyOperation) && op == :merge
@@ -96,7 +125,7 @@ end,
   function plusminus(expr, prevop, config)
     h, op, args = unpack(expr)
     if h == :call && op == :±
-      return "$(args[1]) \\pm $(args[2])"
+      return "$(decend(args[1], op)) \\pm $(decend(args[2], op))"
     end
   end,
   function division(expr, prevop, config)
@@ -115,18 +144,22 @@ end,
     h, op, args = unpack(expr)
     if h == :call && op == :+
       str = join(decend.(args, op), " + ") 
+      str = replace(str, "+ -"=>"-")
       prevop ∈ [:*, :^] && (str = surround(str))
       return str
     end
   end,
   function subtraction(expr, prevop, config)
+    # this one is so gnarly because it tries to fix stuff like - - or -(-(x-y))
+    # -(x) is also a bit different to -(x, y) which does not make things simpler
     h, op, args = unpack(expr)
     if h == :call && op == :-
       if length(args) == 1
         if operation(args[1]) == :- && length(arguments(args[1])) == 1
           return decend(arguments(args[1])[1], prevop)
         elseif args[1] isa Number && sign(args[1]) == -1
-          return _latexraw(-args[1])
+          # return _latexraw(-args[1]; config...)
+          return decend(-args[1]; config...)
         else
           _arg = operation(args[1]) ∈ [:-, :+, :±] ? surround(args[1]) : args[1]
           return "$op$_arg"
@@ -138,6 +171,9 @@ end,
         end
         if operation(args[2]) == :- && length(arguments(args[2])) == 1
           return "$(decend(args[1], :+)) + $(decend(arguments(args[2])[1], :+))"
+        end
+        if operation(args[2]) ∈ [:-, :.-, :+, :.+]
+          return "$(decend(args[1], op)) - $(surround(decend(args[2], op)))"
         end
         str = join(decend.(args, op), " - ") 
         prevop ∈ [:*, :^] && (str = surround(str))
@@ -158,7 +194,7 @@ end,
     end
   end,
   function equals(expr, prevop, config)
-    if expr.head == :(=) 
+    if head(expr) == :(=) 
       return "$(decend(expr.args[1], expr.head)) = $(decend(expr.args[2], expr.head))"
     end
   end, 
@@ -169,6 +205,6 @@ end,
     end
   end,
 ]
-end
+# end
 
-const MATCHING_FUNCTIONS = default_matcher()
+# const MATCHING_FUNCTIONS = default_matcher()
