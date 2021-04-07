@@ -12,6 +12,7 @@ function latexify(args...; kwargs...)
 
     COPY_TO_CLIPBOARD && clipboard(result)
     AUTO_DISPLAY && display(result)
+    get(kwargs, :render, false) && render(result)
     return result
 end
 
