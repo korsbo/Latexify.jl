@@ -55,7 +55,8 @@ latexraw(symExpr)
 "2 \\cdot x + x \\cdot y^{2}"
 ```
 """
-latexraw(args...; kwargs...) = latexify(args...; kwargs..., env=:raw)
+# latexraw(args...; kwargs...) = latexify(args...; kwargs..., env=:raw)
+latexraw(args...; kwargs...) = _latexraw(args...; kwargs...)
 
 _latexraw(ex::Expr; kwargs...) = _latextree(ex; kwargs...)
 _latexraw(ex; kwargs...) = nested(ex) ? _latextree(ex; kwargs...) : throw(ArgumentError("Unsupported type $(typeof(ex)) to Latexify._latexraw")) 
@@ -77,7 +78,7 @@ _latexraw(str::LaTeXStrings.LaTeXString; kwargs...) = str
 function _latexraw(i::Number; fmt=PlainNumberFormatter(), kwargs...)
     try isinf(i) && return LaTeXString("\\infty") catch; end
     fmt isa String && (fmt = PrintfNumberFormatter(fmt))
-    return fmt(i)
+    return LaTeXString(fmt(i))
 end
 
 function _latexraw(i::Char; convert_unicode=true, kwargs...)
