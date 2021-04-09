@@ -34,7 +34,7 @@ unpack(x) = (head(x), operation(x), arguments(x))
 function decend(e, prevop=Val(:_nothing))::String
     for f in MATCHING_FUNCTIONS[end:-1:1]
         call_result = f(e, prevop, CONFIG) 
-        if !isnothing(call_result) 
+        if !(call_result === nothing)
             return call_result
             break
         end

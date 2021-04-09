@@ -163,7 +163,7 @@ const MATCHING_FUNCTIONS = [
     end
   end,
   function _nothing(x, prevop, config)
-    isnothing(x) ? "" : nothing
+    x === nothing ? "" : nothing
   end,
   function symbol(sym, _, config)
     if sym isa Symbol
