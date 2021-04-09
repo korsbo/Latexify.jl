@@ -103,11 +103,18 @@ const MATCHING_FUNCTIONS = [
   function call(expr, prevop, config)
     if expr isa Expr && head(expr) == :call 
       h, op, args = unpack(expr)
+
       if op isa Symbol
-        return string(get(Latexify.function2latex, op, replace(string(op), "_"=>"\\_"))) * "\\left( " * join(decend.(args, op), ", ") * " \\right)"
+        funcname = string(get(Latexify.function2latex, op, replace(string(op), "_"=>"\\_")))
       else
-        return decend(op) * "\\left( " * join(decend.(args), ",") * " \\right)"
+        funcname = decend(op)
       end
+      if head(args[1]) == :parameter
+        _arg = "\\left( " * join(decend.(args), ",") * " \\right)"
+      else
+        _arg = "\\left( $(join(decend.(args[2:end]), ",")); $(decend(args[1])) \\right)"
+      end
+        return  funcname * _arg
     end
   end,
   function _sqrt(ex, prevop, config)
