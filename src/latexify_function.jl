@@ -3,6 +3,8 @@ function latexify(args...; kwargs...)
     ## Let potential recipes transform the arguments.
     args, kwargs = apply_recipe(args...; default_kwargs..., kwargs...)
 
+    empty!(CONFIG)
+    merge!(CONFIG, DEFAULT_CONFIG, kwargs)
     ## If the environment is unspecified, use auto inference.
     env = get(kwargs, :env, :auto)
 

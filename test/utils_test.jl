@@ -29,10 +29,11 @@ Latexify._writetex(xdoty_tex; name=name)
 tex = open("$(name).tex") do f
     read(f, String)
 end
-@test tex == replace(raw"""
-\documentclass[varwidth=100cm]{standalone}
+@test tex == replace(
+raw"\documentclass[varwidth=100cm]{standalone}
 \usepackage{amssymb}
 \usepackage{amsmath}
+
 
 \begin{document}
 {
@@ -40,21 +41,22 @@ end
     $x \cdot y$
 }
 \end{document}
-""", "\r\n"=>"\n")
+", "\r\n"=>"\n")
 
 Latexify._writetex(L"\ce{ 2 P_1 &<=>[k_{+}][k_{-}] D_{1}}"; name=name)
 tex = open("$(name).tex") do f
     read(f, String)
 end
-@test tex == replace(raw"""
-\documentclass[varwidth=100cm]{standalone}
+@test tex == replace(
+raw"\documentclass[varwidth=100cm]{standalone}
 \usepackage{amssymb}
 \usepackage{amsmath}
-\usepackage{mhchem}
+\usepackage[version=3]{mhchem}
+
 \begin{document}
 {
     \Large
     $\ce{ 2 P_1 &<=>[k_{+}][k_{-}] D_{1}}$
 }
 \end{document}
-""", "\r\n"=>"\n")
+", "\r\n"=>"\n")

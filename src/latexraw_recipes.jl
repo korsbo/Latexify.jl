@@ -18,7 +18,7 @@ const MATCHING_FUNCTIONS = [
       else
         funcname = decend(op)
       end
-      if head(args[1]) == :parameters
+      if length(args) >= 1 && head(args[1]) == :parameters
         _arg = "\\left( $(join(decend.(args[2:end]), ", ")); $(decend(args[1])) \\right)"
       else
         _arg = "\\left( " * join(decend.(args), ", ") * " \\right)"
@@ -105,7 +105,7 @@ const MATCHING_FUNCTIONS = [
   function _indexing(x, prevop, config)
     if head(x) == :ref
         if getconfig(:index) == :subscript
-            return "$(operation(x))_{$(join(arguments(x), ", "))}"
+            return "$(operation(x))_{$(join(arguments(x), ","))}"
         elseif getconfig(:index) == :bracket
             argstring = join(decend.(arguments(x)), ", ")
             return "$(decend(operation(x)))\\left[$argstring\\right]"
@@ -173,6 +173,9 @@ const MATCHING_FUNCTIONS = [
       return str
     end
   end,
+  function _char(c, args...)
+    c isa Char ? string(c) : nothing
+  end,
   function array(x, args...) 
     x isa AbstractArray ? _latexarray(x) : nothing
   end,
@@ -217,6 +220,9 @@ const MATCHING_FUNCTIONS = [
             """)
       end
     end
+  end,
+  function _pass_through_LaTeXString(str, args...)
+    str isa LaTeXString ? str.s : nothing
   end,
   function _tuple_expr(expr, prevop, config)
     head(expr) == :tuple ? join(vcat(operation(expr), arguments(expr)), ", ") : nothing

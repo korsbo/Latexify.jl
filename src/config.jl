@@ -7,6 +7,10 @@ const DEFAULT_CONFIG = Dict{Symbol, Any}(
   :ifstr => "\\text{if }",
   :elseifstr => "\\text{elseif }",
   :elsestr => "\\text{otherwise}",
+  :adjustment => "c",
+  :transpose => false,
+  :double_linebreak => false,
+  :starred => false,
 )
 
 ## MODULE_CONFIG can store defaults specified in other modules. E.g. from recipes.
