@@ -78,6 +78,15 @@ const MATCHING_FUNCTIONS = [
         return str
     end
   end,
+  function _type_annotation(ex, prevop, config)
+    if head(ex) == :(::)
+      if length(arguments(ex)) == 0 
+        return "::$(operation(ex))"
+      elseif length(arguments(ex)) == 1 
+       return "$(operation(ex))::$(arguments(ex)[1])" 
+      end
+    end
+  end,
   function _wedge(ex, prevop, config)
     head(ex) == :(&&) && length(arguments(ex)) == 1 ? "$(decend(operation(ex))) \\wedge $(decend(arguments(ex)[1]))" : nothing
   end,
