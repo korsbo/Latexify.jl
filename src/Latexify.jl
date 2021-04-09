@@ -45,28 +45,15 @@ include("mdtext.jl")
 include("md.jl")
 
 include("utils.jl")
+include("config.jl")
+include("latexraw_recipes.jl")
 
 include("numberformatters.jl")
 
 include("latexify_function.jl")
-include("refactor_prototype_2.jl")
-export decend, unpack, head, operation, arguments, nested, default_matcher, LatexifyOperation
+# include("refactor_prototype_2.jl")
+export decend, unpack, head, operation, arguments, nested 
 
-### Add support for additional packages without adding them as dependencies.
-function __init__()
-    @require DiffEqBase = "2b5f629d-d688-5b77-993f-72d75c75574e" begin
-        include("plugins/ParameterizedFunctions.jl")
-    end
-    @require DiffEqBiological = "eb300fae-53e8-50a0-950c-e21f52c2b7e0" begin
-        include("plugins/DiffEqBiological.jl")
-    end
-    @require SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8" begin
-        include("plugins/SymEngine.jl")
-    end
-    @require DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0" begin
-        include("plugins/DataFrames.jl")
-    end
-end
 
 macro generate_test(expr)
     return :(clipboard("@test $($(string(expr))) == replace(\nraw\"$($(esc(expr)))\", \"\\r\\n\"=>\"\\n\")\n"))
@@ -127,4 +114,31 @@ macro append_test!(fname, str)
     )
 end
 
+# const _ex = :(a+w*c/d-b+1+1. + [1,x/y^2] * [1 2. 2im] .* x ± x = l_Huge(y))
+latexify(:(a+w*c/d-b+1+1. + [1,x/y^2] * [1 2. 2im] .* x ± x = l_Huge(y)))
+# Latexify._latextree(:(a+w*c/d-b+1+1. + [1,x/y^2] * [1 2. 2im] .* x ± x = l_Huge(y)))
+# latexify(:(a+w*c/d-b+1+1. + [1,x/y^2] * [1 2. 2im] .* x ± x = l_Huge(y)))
+# latexify(:(a+w*c/d-b+1+1. + [1,x/y^2] * [1 2. 2im] .* x ± x = l_Huge(y)))
+# latexify(_ex)
+# latexify(_ex)
+# @assert precompile(latexify, (Expr,))
+
+### Add support for additional packages without adding them as dependencies.
+function __init__()
+    @require DiffEqBase = "2b5f629d-d688-5b77-993f-72d75c75574e" begin
+        include("plugins/ParameterizedFunctions.jl")
+    end
+    @require DiffEqBiological = "eb300fae-53e8-50a0-950c-e21f52c2b7e0" begin
+        include("plugins/DiffEqBiological.jl")
+    end
+    @require SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8" begin
+        include("plugins/SymEngine.jl")
+    end
+    @require DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0" begin
+        include("plugins/DataFrames.jl")
+    end
+    # Latexify._latextree(:(a+w*c/d-b+1+1. + [1,x/y^2] * [1 2. 2im] .* x ± x = l_Huge(y)))
+    # Latexify.latexify(:(a+w*c/d-b+1+1. + [1,x/y^2] * [1 2. 2im] .* x ± x = l_Huge(y)))
 end
+end
+

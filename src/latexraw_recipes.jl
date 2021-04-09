@@ -1,95 +1,4 @@
 
-
-add_matcher(f) = push!(MATCHING_FUNCTIONS, f)
-
-_check_call_match(e, op::Symbol) = e isa Expr && e.head === :call && e.args[1] === op
-_check_call_match(e, op::AbstractArray) = e isa Expr && e.head === :call && e.args[1] ∈ op
-
-# User would write:
-#   text_color_latexify(e) = "\\textcolor{$(args[1])}{$(latexify(args[2]))}"
-#   add_call_matcher(text_color_latexify, :textcolor)
-function add_call_matcher(op, f::Function)
-    push!(MATCHING_FUNCTIONS, (expr, prevop, config) -> _check_call_match(expr, op) ? f(expr, prevop, config) : nothing)
-end
-
-
-nested(::Any) = false
-arguments(::Any) = nothing
-operation(::Any) = nothing
-head(::Any) = nothing
-
-unpack(x) = (head(x), operation(x), arguments(x))
-
-nested(::Expr) = true
-arguments(ex::Expr) = ex.args[2:end]
-operation(ex::Expr) = ex.args[1]
-head(ex::Expr) = ex.head
-
-
-const DEFAULT_CONFIG = Dict{Symbol, Any}(
-  :mulsym => " \\cdot ",
-  :convert_unicode => true,
-  :strip_broadcast => true,
-  :fmt => identity,
-  :index => :bracket,
-  :ifstr => "\\text{if }",
-  :elseifstr => "\\text{elseif }",
-  :elsestr => "\\text{otherwise}",
-)
-const CONFIG = Dict{Symbol, Any}()
-
-getconfig(key::Symbol) = CONFIG[key]
-function _latextree(expr; kwargs...)
-  empty!(CONFIG)
-  merge!(CONFIG, DEFAULT_CONFIG, kwargs)
-  str = decend(expr)
-  CONFIG[:convert_unicode] && (str = unicode2latex(str))
-  return LaTeXString(str)
-end
-# decend(x, prevop) = string(x)
-# decend(x::Expr, prevop::Symbol) = decend(x, Val{prevop}())
-function decend(e, prevop=Val(:_nothing))::String
-  # if nested(e)
-    # nested(e) || return Latexify.latexraw(e; kwargs...)
-    for f in MATCHING_FUNCTIONS[end:-1:1]
-        call_result = f(e, prevop, CONFIG) 
-        if !isnothing(call_result) 
-            return call_result
-            break
-        end
-    end
-    throw(ArgumentError("No matching expression conversion function for $e"))
-  # else
-    # return _latexraw(e; CONFIG...)
-  # end
-end
-
-
-### Overloadable formatting functions
-surround(x) = "\\left( $x \\right)"
-
-# match_equals(e) = (e isa Expr && e.head === :=) ? 
-    # "$(latexify(value(lhs_val))) = $(latexify(first(rhs_array)))" :
-    # nothing
-
-# function default_matcher()
-# return 
-
-const comparison_operators = Dict(
-        :< => "<",
-        :.< => "<",
-        :> => ">",
-        :.> => ">",
-        Symbol("==") => "=",
-        Symbol(".==") => "=",
-        :<= => "\\leq",
-        :.<= => "\\leq",
-        :>= => "\\geq",
-        :.>= => "\\geq",
-        :!= => "\\neq",
-        :.!= => "\\neq",
-        )
-
 const MATCHING_FUNCTIONS = [
   function report_bad_call(expr, prevop, config)
      println("""
@@ -109,10 +18,10 @@ const MATCHING_FUNCTIONS = [
       else
         funcname = decend(op)
       end
-      if head(args[1]) == :parameter
-        _arg = "\\left( " * join(decend.(args), ",") * " \\right)"
+      if head(args[1]) == :parameters
+        _arg = "\\left( $(join(decend.(args[2:end]), ", ")); $(decend(args[1])) \\right)"
       else
-        _arg = "\\left( $(join(decend.(args[2:end]), ",")); $(decend(args[1])) \\right)"
+        _arg = "\\left( " * join(decend.(args), ", ") * " \\right)"
       end
         return  funcname * _arg
     end
@@ -187,7 +96,7 @@ const MATCHING_FUNCTIONS = [
   function _indexing(x, prevop, config)
     if head(x) == :ref
         if getconfig(:index) == :subscript
-            return "$(operation(x))_{$(join(arguments(x), ","))}"
+            return "$(operation(x))_{$(join(arguments(x), ", "))}"
         elseif getconfig(:index) == :bracket
             argstring = join(decend.(arguments(x)), ", ")
             return "$(decend(operation(x)))\\left[$argstring\\right]"
@@ -244,10 +153,13 @@ const MATCHING_FUNCTIONS = [
       "\\textrm{NA}"
     end
   end,
+  function _nothing(x, prevop, config)
+    isnothing(x) ? "" : nothing
+  end,
   function symbol(sym, _, config)
     if sym isa Symbol
       str = string(sym == :Inf ? :∞ : sym)
-      str = convertSubscript(str)
+      str = convert_subscript(str)
       getconfig(:convert_unicode) && (str = unicode2latex(str))
       return str
     end
@@ -297,14 +209,6 @@ const MATCHING_FUNCTIONS = [
       end
     end
   end,
-  # function symbol(sym, _, config)
-  #   if sym isa Symbol
-  #     str = string(sym == :Inf ? :∞ : sym)
-  #     str = convertSubscript(str)
-  #     convert_unicode && (str = unicode2latex(str))
-  #     return str
-  #   end
-  # end,
   function _tuple_expr(expr, prevop, config)
     head(expr) == :tuple ? join(vcat(operation(expr), arguments(expr)), ", ") : nothing
   end,
@@ -403,9 +307,6 @@ const MATCHING_FUNCTIONS = [
     end
   end,
 ]
-# end
-
-# const MATCHING_FUNCTIONS = default_matcher()
 
 
 function build_if_else_body(args, ifstr, elseifstr, elsestr)

@@ -24,7 +24,7 @@ const OUTPUTFUNCTIONS = Dict(
                              :inline    => _latexinline,
                              :tabular   => _latextabular,
                              :table     => _latextabular,
-                             :raw       => _latexraw,
+                             :raw       => latexraw,
                              :array     => _latexarray,
                              :align     => _latexalign,
                              :aligned   => (args...; kwargs...) -> _latexbracket(_latexalign(args...; kwargs..., aligned=true, starred=false); kwargs...),

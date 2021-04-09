@@ -193,6 +193,30 @@ function render(s::LaTeXString, ::MIME"image/svg"; debug=false, name=tempname(),
 end
 
 
+function convert_subscript!(ex::Expr)
+    for i in 1:length(ex.args)
+        arg = ex.args[i]
+        if arg isa Symbol
+            ex.args[i] = convert_subscript(arg)
+        end
+    end
+    return nothing
+end
+
+function convert_subscript(str::String)
+    if occursin("_", str)
+        subscript_list = split(str, "_")
+        subscript = join(subscript_list[2:end], "\\_")
+        result = "$(subscript_list[1])_{$subscript}"
+    else
+        result = str
+    end
+    return result
+end
+
+convert_subscript(sym::Symbol) = convert_subscript(string(sym))
+
+
 function expr_to_array(ex)
     ex.head == :typed_vcat && (ex = Expr(:vcat, ex.args[2:end]...))
     ex.head == :typed_hcat && (ex = Expr(:hcat, ex.args[2:end]...))

@@ -1,17 +1,3 @@
-
-"""
-    latexarray{T}(arr::AbstractArray{T, 2})
-Create a LaTeX array environment using [`latexraw`](@ref).
-
-# Examples
-```julia
-arr = [1 2; 3 4]
-latexarray(arr)
-```
-```math
-"\\begin{equation}\n\\left[\n\\begin{array}{cc}\n1 & 2\\\\ \n3 & 4\\\\ \n\\end{array}\n\\right]\n\\end{equation}\n"
-```
-"""
 latexarray(args...; kwargs...) = latexify(args...;kwargs...,env=:array)
 
 function _latexarray(arr::AbstractArray; adjustment::Symbol=:c, transpose=false, double_linebreak=false,
@@ -25,7 +11,7 @@ function _latexarray(arr::AbstractArray; adjustment::Symbol=:c, transpose=false,
     str = "\\left[\n"
     str *= "\\begin{array}{" * "$(adjustment)"^columns * "}\n"
 
-    arr = latexraw.(arr; kwargs...)
+    arr = decend.(arr)
     for i=1:rows, j=1:columns
         str *= arr[i,j]
         j==columns ? (str *= eol) : (str *= " & ")
