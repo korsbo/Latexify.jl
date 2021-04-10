@@ -11,19 +11,18 @@ test_array = ["x/y * d" :x ; :( (t_sub_sub - x)^(2*p) ) 3//4 ]
 @test latexify("x * y") == 
 raw"$x \cdot y$"
 
-set_default(cdot = false)
-
+set_default(mulsym = " ")
 @test latexify("x * y") == 
 raw"$x y$"
 
-@test get_default() == Dict{Symbol,Any}(:cdot => false)
+@test get_default() == Dict{Symbol,Any}(:mulsym => " ")
 
-set_default(cdot = true, transpose = true)
+set_default(mulsym = " \\cdot ", transpose = true)
 
-@test get_default() == Dict{Symbol,Any}(:cdot => true,:transpose => true)
-@test get_default(:cdot) == true
-@test get_default(:cdot, :transpose) == (true, true)
-@test get_default([:cdot, :transpose]) == Bool[1, 1]
+@test get_default() == Dict{Symbol,Any}(:mulsym => " \\cdot ",:transpose => true)
+@test get_default(:mulsym) == " \\cdot "
+@test get_default(:mulsym, :transpose) == (" \\cdot ", true)
+@test get_default([:mulsym, :transpose]) == [" \\cdot ", true]
 
 reset_default()
 @test get_default() == Dict{Symbol,Any}()

@@ -3,6 +3,8 @@ function latexify(args...; kwargs...)
     ## Let potential recipes transform the arguments.
     args, kwargs = apply_recipe(args...; default_kwargs..., kwargs...)
 
+    empty!(CONFIG)
+    merge!(CONFIG, DEFAULT_CONFIG, kwargs)
     ## If the environment is unspecified, use auto inference.
     env = get(kwargs, :env, :auto)
 
@@ -12,6 +14,7 @@ function latexify(args...; kwargs...)
 
     COPY_TO_CLIPBOARD && clipboard(result)
     AUTO_DISPLAY && display(result)
+    get(kwargs, :render, false) && render(result)
     return result
 end
 
@@ -23,7 +26,7 @@ const OUTPUTFUNCTIONS = Dict(
                              :inline    => _latexinline,
                              :tabular   => _latextabular,
                              :table     => _latextabular,
-                             :raw       => _latexraw,
+                             :raw       => latexraw,
                              :array     => _latexarray,
                              :align     => _latexalign,
                              :aligned   => (args...; kwargs...) -> _latexbracket(_latexalign(args...; kwargs..., aligned=true, starred=false); kwargs...),
