@@ -221,8 +221,11 @@ const MATCHING_FUNCTIONS = [
       end
     end
   end,
+  function _pass_through_LaTeXString_substrings(str, args...)
+    str isa SubString{LaTeXString} ? String(str) : nothing
+  end,
   function _pass_through_LaTeXString(str, args...)
-    str isa LaTeXString ? str.s : nothing
+    str isa LaTeXString  ? str.s : nothing
   end,
   function _tuple_expr(expr, prevop, config)
     head(expr) == :tuple ? join(vcat(operation(expr), arguments(expr)), ", ") : nothing
