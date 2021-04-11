@@ -1,27 +1,34 @@
-function latexify(args...; kwargs...)
-
+function latexify(args...; env=:auto, kwargs...)
     ## Let potential recipes transform the arguments.
-    args, kwargs = apply_recipe(args...; default_kwargs..., kwargs...)
+    # kwargs = merge(default_kwargs, kwargs)
 
     empty!(CONFIG)
-    merge!(CONFIG, DEFAULT_CONFIG, kwargs)
-    ## If the environment is unspecified, use auto inference.
-    env = get(kwargs, :env, :auto)
+    merge!(CONFIG, DEFAULT_CONFIG, default_kwargs, kwargs)
+  
+  if env==:auto
+    call_result = iterate_top_matcher(args, CONFIG)
+  else
+    func = OUTPUTFUNCTIONS[env]
+    call_result = func(args...; CONFIG...)
+  end
+    COPY_TO_CLIPBOARD && clipboard(call_result)
+    AUTO_DISPLAY && display(call_result)
+    get(CONFIG, :render, false) && render(call_result)
+    return call_result
+end
 
-    latex_function = infer_output(env, args...)
-
-    result = latex_function(args...; kwargs...)
-
-    COPY_TO_CLIPBOARD && clipboard(result)
-    AUTO_DISPLAY && display(result)
-    get(kwargs, :render, false) && render(result)
-    return result
+function iterate_top_matcher(args, kwargs)
+    for f in TOP_LEVEL_MATCHERS[end:-1:1]
+        call_result = f(args, kwargs)
+        if !(call_result === nothing)
+            return call_result
+        end
+    end
+    throw(ArgumentError("No top-level matching expression for \a$args \n$kwargs"))
 end
 
 apply_recipe(args...; kwargs...) = (args, kwargs)
 
-# These functions should only be called from inside `latexify()`, so that
-# `apply_recipe` gets a chance to change args
 const OUTPUTFUNCTIONS = Dict(
                              :inline    => _latexinline,
                              :tabular   => _latextabular,
@@ -36,33 +43,39 @@ const OUTPUTFUNCTIONS = Dict(
                              :mdtable   => mdtable,
                              :mdtext    => mdtext,
                             )
-function infer_output(env, args...)
-    env === :auto && return get_latex_function(args...)
-    # Must be like this, because items in OUTPUTFUNCTIONS must be defined
-    env in [:arrows, :chem, :chemical, :arrow] && return _chemical_arrows
-    return OUTPUTFUNCTIONS[env]
-end
 
-"""
-    get_latex_function(args...)
-
-Use overloading to determine which latex environment to output.
-
-This determines the default behaviour of `latexify()` for different inputs.
-"""
-get_latex_function(args...) = _latexinline
-get_latex_function(args::AbstractArray...) = _latexequation
-get_latex_function(args::AbstractDict) = (args...; kwargs...) -> _latexequation(_latexarray(args...; kwargs...); kwargs...)
-get_latex_function(args::Tuple...) = (args...; kwargs...) -> _latexequation(_latexarray(args...; kwargs...); kwargs...)
-get_latex_function(arg::LaTeXString) = (arg; kwargs...) -> arg
-
-function get_latex_function(x::AbstractArray{T}) where T <: AbstractArray
-    try
-        x = reduce(hcat, x)
-        return (args...; kwargs...) -> _latexequation(_latexarray(args...; kwargs...); kwargs...)
-    catch
-        return _latexinline
-    end
-end
-
-get_latex_function(lhs::AbstractVector, rhs::AbstractVector) = _latexalign
+const TOP_LEVEL_MATCHERS = [
+    function _inline_fallback(args, kwargs)
+      return latexstring(latexraw(args...; kwargs...))
+    end,
+    function _equation_array(args, kwargs)
+      if eltype(args) <: AbstractArray || eltype(args) <: Tuple
+          return _latexequation(args...; kwargs...)
+      end
+    end,
+    function _align(args, kwargs)
+      if length(args) == 2 && (eltype(args) <: AbstractVector)
+          return _latexalign(args...; kwargs...)
+      end
+    end,
+    function _dicts(args, kwargs)
+      if length(args) == 1 && (args[1] isa AbstractDict || args[1] isa NamedTuple)
+        _latexalign(collect(keys(args[1])), collect(values(args[1])); kwargs...)
+      end
+    end,
+    function _equation(args, kwargs)
+      if length(args) == 1 && args[1] isa AbstractArray && eltype(args[1]) <: AbstractArray
+        try
+            x = reduce(hcat, args[1])
+            return _latexequation(args...; kwargs...)
+        catch
+            return _latexinline(args...; kwargs...)
+        end
+      end
+    end,
+    function _latexstring_passthrough(args, kwargs)
+      if length(args) == 1 && args[1] isa LaTeXString
+          return args[1]
+      end
+    end,
+]
