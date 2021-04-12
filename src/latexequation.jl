@@ -1,5 +1,5 @@
 
-latexequation(args...; kwargs...) = latexify(args...; kwargs..., env=:equation)
+latexequation(args...; kwargs...) = _latexequation(args...; kwargs...)
 
 function _latexequation(eq; starred=false, kwargs...)
     latexstr = latexraw(eq; kwargs...)

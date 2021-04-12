@@ -1,4 +1,5 @@
-latexarray(args...; kwargs...) = latexify(args...;kwargs...,env=:array)
+# latexarray(args...; kwargs...) = latexify(args...;kwargs...,env=:array)
+latexarray(args...; kwargs...) = _latexarray(args...;kwargs...)
 
 function _latexarray(arr::AbstractArray)
     adjustment = getconfig(:adjustment)

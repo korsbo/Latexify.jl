@@ -1,47 +1,49 @@
 
-@doc doc"""
-    latexalign()
-Generate a ``LaTeX`` align environment from an input.
+# @doc doc"""
+#     latexalign()
+# Generate a ``LaTeX`` align environment from an input.
 
-# Examples
-## use with arrays
+# # Examples
+# ## use with arrays
 
-```julia
-lhs = [:(dx/dt), :(dy/dt), :(dz/dt)]
-rhs = [:(y-x), :(x*z-y), :(-z)]
-latexalign(lhs, rhs)
-```
+# ```julia
+# lhs = [:(dx/dt), :(dy/dt), :(dz/dt)]
+# rhs = [:(y-x), :(x*z-y), :(-z)]
+# latexalign(lhs, rhs)
+# ```
 
-```LaTeX
-\begin{align}
-\frac{dx}{dt} =& y - x \\\\
-\frac{dy}{dt} =& x \cdot z - y \\\\
-\frac{dz}{dt} =& - z \\\\
-\end{align}
-```
+# ```LaTeX
+# \begin{align}
+# \frac{dx}{dt} =& y - x \\\\
+# \frac{dy}{dt} =& x \cdot z - y \\\\
+# \frac{dz}{dt} =& - z \\\\
+# \end{align}
+# ```
 
-## use with ParameterizedFunction
+# ## use with ParameterizedFunction
 
-```julia-repl
-julia> using DifferentialEquations
-julia> ode = @ode_def foldChangeDetection begin
-    dm = r_m * (i - m)
-    dy = r_y * (p_y * i/m - y)
-end i r_m r_y p_y
+# ```julia-repl
+# julia> using DifferentialEquations
+# julia> ode = @ode_def foldChangeDetection begin
+#     dm = r_m * (i - m)
+#     dy = r_y * (p_y * i/m - y)
+# end i r_m r_y p_y
 
-julia> latexalign(ode)
-```
-```LaTeX
-\begin{align}
-\frac{dm}{dt} =& r_{m} \cdot \left( i - m \right) \\\\
-\frac{dy}{dt} =& r_{y} \cdot \left( \frac{p_{y} \cdot i}{m} - y \right) \\\\
-\end{align}
-```
+# julia> latexalign(ode)
+# ```
+# ```LaTeX
+# \begin{align}
+# \frac{dm}{dt} =& r_{m} \cdot \left( i - m \right) \\\\
+# \frac{dy}{dt} =& r_{y} \cdot \left( \frac{p_{y} \cdot i}{m} - y \right) \\\\
+# \end{align}
+# ```
 
-"""
-latexalign(args...; kwargs...) = latexify(args...; kwargs..., env=:align)
+# """
+# latexalign(args...; kwargs...) = latexify(args...; kwargs..., env=:align)
+latexalign(args...; kwargs...) = _latexalign(args...; kwargs...)
 
-function _latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=false, starred=false, rows=:all, aligned=false, kwargs...)
+# function _latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=false, starred=false, rows=:all, aligned=false, kwargs...)
+function _latexalign(arr; separator=" =& ", double_linebreak=false, starred=false, rows=:all, aligned=false, kwargs...)
     eol = double_linebreak ? " \\\\\\\\\n" : " \\\\\n"
     arr = latexraw.(arr; kwargs...)
     separator isa String && (separator = fill(separator, size(arr)[1]))
