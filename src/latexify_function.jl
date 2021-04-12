@@ -4,6 +4,8 @@ function latexify(args...; env=:auto, kwargs...)
 
     empty!(CONFIG)
     merge!(CONFIG, DEFAULT_CONFIG, default_kwargs, kwargs)
+    ((_args,), _kwargs) = apply_recipe(args...; kwargs...)
+    merge!(CONFIG, _kwargs)
   
   if env==:auto
     call_result = iterate_top_matcher(args, CONFIG)
@@ -11,6 +13,7 @@ function latexify(args...; env=:auto, kwargs...)
     func = OUTPUTFUNCTIONS[env]
     call_result = func(args...; CONFIG...)
   end
+#   call_result = latexraw((length(args) == 1 ? args[1] : args...); CONFIG...)
     COPY_TO_CLIPBOARD && clipboard(call_result)
     AUTO_DISPLAY && display(call_result)
     get(CONFIG, :render, false) && render(call_result)
