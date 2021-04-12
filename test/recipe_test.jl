@@ -71,7 +71,7 @@ end
 
 end
 
-using .MyModule
+# using .MyModule
 t = MyModule.MyType([:A, :B, 3.], [1., 2, 3])
 t2 = MyModule.MyType([:X, :Y, :(x/y)], Number[1.23434534, 232423.42345, 12//33])
 
@@ -202,4 +202,82 @@ raw"\begin{equation}
 \end{equation}
 ", "\r\n"=>"\n")
 
+struct MyType
+    val
+end
+push!(Latexify.MATCHING_FUNCTIONS,
+function _mytype(x, prevop, config)
+  if x isa MyType
+    decend(x.val)
+  end
+end
+)
 
+struct MyArray
+  val
+end
+push!(Latexify.MATCHING_FUNCTIONS,
+function _myarray(x, prevop, config)
+  if x isa MyArray
+    decend(x.val)
+  end
+end
+)
+
+struct MyDoubleArray
+    arr1
+    arr2
+end
+push!(Latexify.MATCHING_FUNCTIONS,
+function _mydoublearray(x, prevop, config)
+  if x isa MyDoubleArray
+    m = decend.(hcat(x.arr1, x.arr2))
+    """
+    \\begin{aligned}
+    $(join(join.(eachrow(m), " &= "), "\\\\\n"))
+    \\end{aligned}"""
+  end
+end
+)
+
+function _align(m::AbstractMatrix; decend=false, starred=false, rows=:all, eol = "\\\\\n", config...)
+    _m = rows == :all ? m : m[rows, :]
+    """
+    \\begin{align$(starred ? "*" : "")}
+    $(join(join.(eachrow(_m), " &= "), eol))
+    \\end{align$(starred ? "*" : "")}"""
+end
+
+m = [1 2; 8 9; 11 12]
+_align(m; rows=1:2, starred=true) |> println
+
+
+t = MyType(:(x/y))
+a = MyArray([:(x/y), 1//2])
+d = MyDoubleArray([:(x/y), 1//2], [:hello, "x^2"])
+
+latexify(t)
+latexify(a)
+latexify(d; env=:raw)
+latexify(d)
+render(latexify(d; env=:raw), MIME("application/pdf"))
+render(latexify(d), MIME("application/pdf"))
+latexify(d; env=:table)
+
+latexify(hcat(d.arr1, d.arr2); env=:align)
+
+
+
+Latexify.set_default(render=true)
+latexify([1, 2//3, t])
+
+using MacroTools
+ex = @macroexpand @latexrecipe function f(x::MyType; hello=:hi)
+  env --> :equation
+  transpose --> true
+  return x.val
+end 
+MacroTools.striplines(ex)
+
+t = MyType(:(x/y))
+@time latexify(t)
