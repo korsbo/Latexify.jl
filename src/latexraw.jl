@@ -1,8 +1,10 @@
 function latexraw(expr; kwargs...)
   empty!(CONFIG)
   merge!(CONFIG, DEFAULT_CONFIG, kwargs)
-  str = decend(expr)
-  CONFIG[:convert_unicode] && (str = unicode2latex(str))
+  io = IOBuffer(; append=true)
+  decend(io, expr)
+  str = String(take!(io))
+#   CONFIG[:convert_unicode] && (str = unicode2latex(str))
   return LaTeXString(str)
 end
 
@@ -31,11 +33,11 @@ head(ex::Expr) = ex.head
 
 unpack(x) = (head(x), operation(x), arguments(x))
 
-function decend(e, prevop=Val(:_nothing))::String
-    for f in MATCHING_FUNCTIONS[end:-1:1]
-        call_result = f(e, prevop, CONFIG) 
+function decend(io::IO, e, prevop=Val(:_nothing))::Nothing
+    for f in MATCHING_FUNCTIONS_TEST[end:-1:1]
+        call_result = f(io, e, prevop, CONFIG) 
         if !(call_result === nothing)
-            return call_result
+            return nothing
             break
         end
     end
@@ -43,3 +45,11 @@ function decend(e, prevop=Val(:_nothing))::String
 end
 
 surround(x) = "\\left( $x \\right)"
+
+function join_decend(io::IO, args, delim; prevop=nothing) 
+  for arg in args[1:end-1]
+    decend(io, arg, prevop)
+    write(io, delim)
+  end
+  decend(io, args[end], prevop)
+end

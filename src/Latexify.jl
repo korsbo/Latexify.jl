@@ -38,6 +38,7 @@ include("latextabular.jl")
 include("default_kwargs.jl")
 include("recipes.jl")
 include("macros.jl")
+include("matching_functions_test.jl")
 
 include("mdtable.jl")
 include("mdtext.jl")
@@ -114,7 +115,7 @@ macro append_test!(fname, str)
 end
 
 # const _ex = :(a+w*c/d-b+1+1. + [1,x/y^2] * [1 2. 2im] .* x ± x = l_Huge(y))
-latexify(:(a+w*c/d-b+1+1. + [1,x/y^2] * [1 2. 2im] .* x ± x = l_Huge(y)))
+# latexify(:(a+w*c/d-b+1+1. + [1,x/y^2] * [1 2. 2im] .* x ± x = l_Huge(y)))
 # Latexify._latextree(:(a+w*c/d-b+1+1. + [1,x/y^2] * [1 2. 2im] .* x ± x = l_Huge(y)))
 # latexify(:(a+w*c/d-b+1+1. + [1,x/y^2] * [1 2. 2im] .* x ± x = l_Huge(y)))
 # latexify(:(a+w*c/d-b+1+1. + [1,x/y^2] * [1 2. 2im] .* x ± x = l_Huge(y)))
