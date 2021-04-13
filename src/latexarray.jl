@@ -39,7 +39,7 @@ function _latexarray(arr::AbstractArray; adjustment::Symbol=:c, transpose=false,
 end
 
 
-_latexarray(args::AbstractArray...; kwargs...) = _latexarray(reduce(hcat, args); kwargs...)
+_latexarray(args::AbstractArray...; kwargs...) = _latexarray(safereduce(hcat, args); kwargs...)
 _latexarray(arg::AbstractDict; kwargs...) = _latexarray(collect(keys(arg)), collect(values(arg)); kwargs...)
 _latexarray(arg::Tuple...; kwargs...) = _latexarray([collect(i) for i in arg]...; kwargs...)
 

@@ -4,7 +4,7 @@ function _latextabular(arr::AbstractMatrix; latex::Bool=true, booktabs::Bool=fal
     transpose && (arr = permutedims(arr, [2,1]))
 
     if !isempty(head)
-        arr = vcat(reduce(hcat, head), arr)
+        arr = vcat(safereduce(hcat, head), arr)
         @assert length(head) == size(arr, 2) "The length of the head does not match the shape of the input matrix."
     end
     if !isempty(side)
@@ -51,6 +51,6 @@ function _latextabular(arr::AbstractMatrix; latex::Bool=true, booktabs::Bool=fal
 end
 
 
-_latextabular(vec::AbstractVector; kwargs...) = latextabular(reduce(hcat, vec); kwargs...)
-_latextabular(vectors::AbstractVector...; kwargs...) = latextabular(reduce(hcat, vectors); kwargs...)
+_latextabular(vec::AbstractVector; kwargs...) = latextabular(safereduce(hcat, vec); kwargs...)
+_latextabular(vectors::AbstractVector...; kwargs...) = latextabular(safereduce(hcat, vectors); kwargs...)
 _latextabular(dict::AbstractDict; kwargs...) = latextabular(hcat(collect(keys(dict)), collect(values(dict))); kwargs...)

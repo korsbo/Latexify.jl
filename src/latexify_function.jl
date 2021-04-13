@@ -55,7 +55,7 @@ get_latex_function(arg::LaTeXString) = (arg; kwargs...) -> arg
 
 function get_latex_function(x::AbstractArray{T}) where T <: AbstractArray
     try
-        x = reduce(hcat, x)
+        x = safereduce(hcat, x)
         return (args...; kwargs...) -> _latexequation(_latexarray(args...; kwargs...); kwargs...)
     catch
         return _latexinline

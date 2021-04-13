@@ -3,6 +3,13 @@ using Test
 
 arr = [1 2; 3 4]
 
+@test latexify(:([x])) == replace(
+raw"$\left[
+\begin{array}{c}
+x \\
+\end{array}
+\right]$", "\r\n"=>"\n")
+
 @test latexify(arr) == replace(
 raw"\begin{equation}
 \left[

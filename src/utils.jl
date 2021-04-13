@@ -191,6 +191,7 @@ function render(s::LaTeXString, ::MIME"image/svg"; debug=false, name=tempname(),
     return nothing
 end
 
+safereduce(f, args) = length(args) == 1 ? f(args[1]) : reduce(f, args)
 
 function expr_to_array(ex)
     ex.head == :typed_vcat && (ex = Expr(:vcat, ex.args[2:end]...))
@@ -201,9 +202,9 @@ function expr_to_array(ex)
         return eval(ex.head)(map(y -> permutedims(y.args), ex.args)...)
     else 
         if ex.head == :hcat
-            return reduce(hcat, ex.args)
+            return safereduce(hcat, ex.args)
         elseif ex.head in [:vcat, :vect]
-            return reduce(vcat, ex.args)
+            return safereduce(vcat, ex.args)
         end
     end
 end
