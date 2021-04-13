@@ -16,3 +16,5 @@ l4 = @latexify dummyfunc2(::Number; y=1, z=3) = x^2/y + z
 @test l4 == raw"$\mathrm{dummyfunc2}\left( ::Number; y = 1, z = 3 \right) = \frac{x^{2}}{y} + z$"
 
 
+@test latexify(:(@hi(x / y))) == replace(
+raw"$\mathrm{@hi}\left( \frac{x}{y} \right)$", "\r\n"=>"\n")
