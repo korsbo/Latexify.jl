@@ -8,6 +8,7 @@ a parenthesis is needed.
 """
 function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, index=:bracket, kwargs...)::String
     op = ex.args[1]
+    filter!(x -> !(x isa LineNumberNode), ex.args)
     args = map(i -> typeof(i) ∉ (String, LineNumberNode) ? latexraw(i; kwargs...) : i, ex.args)
 
     # Remove math italics for variables (i.e. words) longer than 2 characters.
@@ -140,6 +141,10 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, index=:brack
 
     if ex.head == :macrocall && ex.args[1] == Symbol("@__dot__")
         return string(ex.args[end])
+    end
+
+    if ex.head == :macrocall 
+        ex.head = :call
     end
 
     if ex.head == :call
