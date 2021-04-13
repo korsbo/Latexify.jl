@@ -12,6 +12,13 @@ raw"\begin{tabular}{ccc}
 \end{tabular}
 ", "\r\n"=>"\n")
 
+# Latexify.@generate_test latexify([1.]; env=:table)
+@test latexify([1.0]; env = :table) == replace(
+raw"\begin{tabular}{c}
+$1.0$\\
+\end{tabular}
+", "\r\n"=>"\n")
+
 arr = ["x/(y-1)", 1.0, 3//2, :(x-y), :symb]
 
 M = vcat(reduce(hcat, arr), reduce(hcat, arr))

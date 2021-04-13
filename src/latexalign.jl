@@ -82,12 +82,12 @@ function _latexalign(lhs::Tuple, rhs::Tuple; kwargs...)
     return latexalign(hcat(collect(lhs), collect(rhs)); kwargs...)
 end
 
-_latexalign(args::Tuple...; kwargs...) = latexalign(reduce(hcat, [collect(i) for i in args]); kwargs...)
+_latexalign(args::Tuple...; kwargs...) = latexalign(safereduce(hcat, [collect(i) for i in args]); kwargs...)
 
-_latexalign(arg::Tuple; kwargs...) = latexalign(reduce(hcat, [collect(i) for i in arg]); kwargs...)
+_latexalign(arg::Tuple; kwargs...) = latexalign(safereduce(hcat, [collect(i) for i in arg]); kwargs...)
 
 function _latexalign(nested::AbstractVector{AbstractVector}; kwargs...)
-    return latexalign(reduce(hcat, nested); kwargs...)
+    return latexalign(safereduce(hcat, nested); kwargs...)
 end
 
 function _latexalign(d::AbstractDict; kwargs...)
@@ -102,9 +102,9 @@ Go through the elements, split at any = sign, pass on as a matrix.
 function _latexalign(vec::AbstractVector; kwargs...)
     lvec = _latexraw.(vec; kwargs...)
     ## turn the array into a matrix
-    lmat = reduce(hcat, split.(lvec, " = "))
+    lmat = safereduce(hcat, split.(lvec, " = "))
     ## turn the matrix ito arrays of left-hand-side, right-hand-side.
     larr = [lmat[i,:] for i in 1:size(lmat, 1)]
     length(larr) < 2 && error("Invalid intput to _latexalign().")
-    return latexalign( reduce(hcat, larr) ; kwargs...)
+    return latexalign( safereduce(hcat, larr) ; kwargs...)
 end
