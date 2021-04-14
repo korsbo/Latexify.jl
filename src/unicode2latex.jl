@@ -2488,9 +2488,6 @@ function merge_superscripts(str)
     while match(r, str) !== nothing
         str = replace(str, r => s"{^{\1 \2}}")
     end
-    #str = replace(str, r"{\\\^(\d+)}{{\\\^(\d)}}" => s"{\\^\1\2}")
-    #str = replace(str, r"{\\\^(\d)}" => s"{^\1}")
-    #str = replace(str, r"{\\\^(\d\d+)}" => s"{^{\1}}")
     r = r"{\^[{]*([^{}]*)[}]*}"
     str = replace(str, r => s"^{\1}")
     str
@@ -2509,9 +2506,6 @@ function merge_subscripts(str)
     while match(r, str) !== nothing
         str = replace(str, r => s"{_{\1 \2}}")
     end
-    #str = replace(str, r"{\\_(\d+)}{{\\_(\d)}}" => s"{\\_\1\2}")
-    #str = replace(str, r"{\\_(\d)}" => s"{_\1}")
-    #str = replace(str, r"{\\_(\d+)}" => s"{_{\1}}")
     r = r"{_[{]*([^{}]*)[}]*}"
     str = replace(str, r => s"_{\1}")
     return str
