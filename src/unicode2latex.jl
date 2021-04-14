@@ -2469,10 +2469,7 @@ function unicode2latex(str::String)
     str = merge_subscripts(str)
     str = merge_superscripts(str)
 
-    ## neaten up combinations of sub- and superscripts
-    str = replace(str, r"{_([{]*\d+[}]*)}{\^([{]*\d+[}]*)}" => s"{_\1^\2}")
-    str = replace(str, r"{\^([{]*\d+[}]*)}{_([{]*\d+[}]*)}" => s"{^\1_\2}")
-    str
+    return str
 end
 
 """
@@ -2480,33 +2477,60 @@ end
 
 Merge sequential superscripts to a better representation.
 
-Returns a string where sequences like "{\\^1}{\\^3}" are replaced by "^{13}".
+Returns a string where sequences like "{^1}{^3}" are replaced by "^{1 3}".
 """
 function merge_superscripts(str)
-    ## replace multiple superscripts with a single one.
-    r = r"{\^[{]*([^{}]*)[}]*}{\^[{]*([^{}]*)[}]*}"
+    # pair {^q}{^q}{^q}{^q}{^q} --> {^{q q}}{^{q q}}{^q}
+    str = replace(str, r"{\^([^{}]*)}{\^([^{}]*)}" => s"{^{\1 \2}}")
+    # collect ends if needed   {^{q q}}{^{q q}}{^q} --> {^{q q}}{^{q q q}}
+    str = replace(str, r"{\^{([^{}]*)}}{\^([^{}]*)}" => s"{^{\1 \2}}")
+    str = replace(str, r"{\^{([^{}]*)}}{{\^([^{}]*)}}" => s"{^{\1 \2}}") # if last one was protected by extra {}
+
+    # complete merge  {^{q q}}{^{q q q}} --> {^{q q q q q}}
+    r = r"{\^{([^{}]*)}}{\^{([^{}]*)}}"
     while match(r, str) !== nothing
         str = replace(str, r => s"{^{\1 \2}}")
     end
-    r = r"{\^[{]*([^{}]*)[}]*}"
-    str = replace(str, r => s"^{\1}")
-    str
+
+    # remove external braces
+    str = replace(str, r"{\^{([^{}]*)}}" => s"^{\1}")
+
+    # deal with superscripts that did not need to be merged
+    str = replace(str, r"{{\^([^{}]*)}}" => s"^{\1}")
+    str = replace(str, r"{\^([^{}]*)}" => s"^\1")
+    return str
 end
+
+
+
 
 """
     merge_superscripts(str)
 
 Merge sequential subscripts to a better representation.
 
-Returns a string where sequences like "{\\_1}{\\_3}" are replaced by "_{13}".
+Returns a string where sequences like "{_1}{_3}" are replaced by "_{1 3}".
 """
 function merge_subscripts(str)
-    ## Replace multiple subscripts with single one, e.g. {_1}{_2} to _{12}
-    r = r"{_[{]*([^{}]*)[}]*}{_[{]*([^{}]*)[}]*}"
+    # pair
+    str = replace(str, r"{_([^{}]*)}{_([^{}]*)}" => s"{_{\1 \2}}")
+    # collect ends if needed
+    str = replace(str, r"{_{([^{}]*)}}{_([^{}]*)}" => s"{_{\1 \2}}")
+    str = replace(str, r"{_{([^{}]*)}}{{_([^{}]*)}}" => s"{_{\1 \2}}") # if last one was protected by extra {}
+
+    # complete merge
+    r = r"{_{([^{}]*)}}{_{([^{}]*)}}"
     while match(r, str) !== nothing
         str = replace(str, r => s"{_{\1 \2}}")
     end
-    r = r"{_[{]*([^{}]*)[}]*}"
-    str = replace(str, r => s"_{\1}")
+
+    # remove external braces
+    str = replace(str, r"{_{([^{}]*)}}" => s"_{\1}")
+
+    # deal with subscripts that did not need to be merged
+    str = replace(str, r"{{_([^{}]*)}}" => s"_{\1}")
+    str = replace(str, r"{_([^{}]*)}" => s"_\1")
     return str
+
 end
+
