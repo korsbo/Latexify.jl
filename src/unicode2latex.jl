@@ -2480,7 +2480,7 @@ end
 
 Merge sequential superscripts to a better representation.
 
-Returns a string where sequences like "{^1}{^3}" are replaced by "{^{13}}".
+Returns a string where sequences like "{\\^1}{\\^3}" are replaced by "^{13}".
 """
 function merge_superscripts(str)
     ## replace multiple superscripts with a single one.
@@ -2488,7 +2488,12 @@ function merge_superscripts(str)
     while match(r, str) !== nothing
         str = replace(str, r => s"{^{\1 \2}}")
     end
-    return str
+    #str = replace(str, r"{\\\^(\d+)}{{\\\^(\d)}}" => s"{\\^\1\2}")
+    #str = replace(str, r"{\\\^(\d)}" => s"{^\1}")
+    #str = replace(str, r"{\\\^(\d\d+)}" => s"{^{\1}}")
+    r = r"{\^[{]*([^{}]*)[}]*}"
+    str = replace(str, r => s"^{\1}")
+    str
 end
 
 """
@@ -2496,7 +2501,7 @@ end
 
 Merge sequential subscripts to a better representation.
 
-Returns a string where sequences like "{_1}{_3}" are replaced by "{_{13}}".
+Returns a string where sequences like "{\\_1}{\\_3}" are replaced by "_{13}".
 """
 function merge_subscripts(str)
     ## Replace multiple subscripts with single one, e.g. {_1}{_2} to _{12}
@@ -2504,5 +2509,10 @@ function merge_subscripts(str)
     while match(r, str) !== nothing
         str = replace(str, r => s"{_{\1 \2}}")
     end
+    #str = replace(str, r"{\\_(\d+)}{{\\_(\d)}}" => s"{\\_\1\2}")
+    #str = replace(str, r"{\\_(\d)}" => s"{_\1}")
+    #str = replace(str, r"{\\_(\d+)}" => s"{_{\1}}")
+    r = r"{_[{]*([^{}]*)[}]*}"
+    str = replace(str, r => s"_{\1}")
     return str
 end
