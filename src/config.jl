@@ -1,4 +1,4 @@
-const DEFAULT_CONFIG = Dict{Symbol, Any}(
+const DEFAULT_CONFIG = (;
   :mulsym => " \\cdot ",
   :convert_unicode => true,
   :strip_broadcast => true,
@@ -19,12 +19,7 @@ const MODULE_CONFIG = Dict{Symbol, Any}()
 ## USE_CONFIG can store user-specified defaults
 const USER_CONFIG = Dict{Symbol, Any}()
 
-## CONFIG is reset every latexify call. 
-const CONFIG = Dict{Symbol, Any}() 
-getconfig(key::Symbol) = CONFIG[key]
-
-
-const comparison_operators = Dict(
+const comparison_operators = (;
         :< => "<",
         :.< => "<",
         :> => ">",

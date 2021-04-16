@@ -1,15 +1,25 @@
 
-const MATCHING_FUNCTIONS_TEST = [
-  function report_bad_call(io::IO, expr, prevop, config)
+const DEFAULT_INSTRUCTIONS = [
+  function report_bad_call(io::IO, config, expr, prevop)
      println("""
      Unsupported input with
      expr=$expr
      prevop=$prevop
      and config=$config
      """)
-     return nothing
+     return false
+  return false
   end,
-  function call(io::IO, expr, prevop, config)
+  # function _unpack_args(io::IO, config, args, prevop)
+  # ### If no function has claimed the tuple, unpack it and try again. 
+  # ### This is mainly to unpack the args to `latexify(args...)`. 
+  # if args isa Tuple && length(args) == 1
+  #   descend(io, config, args[1], prevop)
+  #   return true
+  # end
+  # return false
+  # end,
+  function call(io::IO, config, expr, prevop)
     if expr isa Expr && head(expr) == :call 
       h, op, args = unpack(expr)
 
@@ -17,77 +27,91 @@ const MATCHING_FUNCTIONS_TEST = [
         funcname = string(get(Latexify.function2latex, op, replace(string(op), "_"=>"\\_")))
         write(io, funcname)
       else
-        decend(io, op)
+        descend(io, config, op)
       end
       if length(args) >= 1 && head(args[1]) == :parameters
         write(io, "\\left( ")
-        join_decend(io, args[2:end], ", ")
+        join_descend(io, config, args[2:end], ", ")
         write(io, "; ")
-        decend(io, args[1])
+        descend(io, config, args[1])
         write(io, " \\right)")
-        # _arg = "\\left( $(join(decend.(args[2:end]), ", ")); $(decend(args[1])) \\right)"
+        # _arg = "\\left( $(join(descend.(args[2:end]), ", ")); $(descend(args[1])) \\right)"
       else
         write(io, "\\left( ")
-        join_decend(io, args, ", ")
+        join_descend(io, config, args, ", ")
         write(io, " \\right)")
-        # _arg = "\\left( " * join(decend.(args), ", ") * " \\right)"
+        # _arg = "\\left( " * join(descend.(args), ", ") * " \\right)"
       end
         return  true
     end
+  return false
   end,
-  # function _sqrt(io::IO, ex, prevop, config)
+  function _aligned(io::IO, config, expr, prevop)
+    expr isa Tuple{T, T} where T <: AbstractArray || return false
+    display("here")
+    return false
+  end,
+  # function _sqrt(io::IO, config, ex, prevop)
   #   operation(ex) == :sqrt ? "\\$(operation(ex)){$(arguments(ex)[1])}" : nothing
+  # return false
   # end,
-  # function _abs(io::IO, ex, prevop, config)
+  # function _abs(io::IO, config, ex, prevop)
   #   operation(ex) == :abs ? "\\left\\|$(arguments(ex)[1])\\right\\|" : nothing
+  # return false
   # end,
-  # function _single_comparison(io::IO, ex, args...)
+  # function _single_comparison(io::IO, config, ex, args...)
   #   if operation(ex) ∈ keys(comparison_operators) && length(arguments(ex)) == 2
   #       str = "$(arguments(ex)[1]) $(comparison_operators[operation(ex)]) $(arguments(ex)[2])"
   #       str = "\\left( $str \\right)"
   #       return str
   #   end
+  # return false
   # end,
-  # function _if(io::IO, ex, prevop, config)
+  # function _if(io::IO, config, ex, prevop)
   #   if ex isa Expr && head(ex) == :if
   #     str = build_if_else_body(
   #       ex.args,
-  #       getconfig(:ifstr),
-  #       getconfig(:elseifstr),
-  #       getconfig(:elsestr)
+  #       config[:ifstr],
+  #       config[:elseifstr],
+  #       config[:elsestr]
   #     )
   #     return """
   #       \\begin{cases}
   #       $str
   #       \\end{cases}"""
   #   end
+  # return false
   # end,
-  # function _elseif(io::IO, ex, prevop, config)
+  # function _elseif(io::IO, config, ex, prevop)
   #   if ex isa Expr && head(ex) == :elseif
   #     str = build_if_else_body(
   #       ex.args,
-  #       getconfig(:elseifstr),
-  #       getconfig(:elseifstr),
-  #       getconfig(:elsestr)
+  #       config[:elseifstr],
+  #       config[:elseifstr],
+  #       config[:elsestr]
   #     )
   #   end
+  # return false
   # end,
-  # function _oneline_function(io::IO, ex, prevop, config)
+  # function _oneline_function(io::IO, config, ex, prevop)
   #   if head(ex) == :function && length(arguments(ex)) == 1
-  #     return "$(decend(operation(ex), head(ex))) = $(decend(arguments(ex)[1], head(ex)))"
+  #     return "$(descend(operation(ex), head(ex))) = $(descend(arguments(ex)[1], head(ex)))"
   #   end
+  # return false
   # end,
-  # function _return(io::IO, ex, prevop, config)
-  #   head(ex) == :return && length(arguments(ex)) == 0 ? decend(operation(ex)) : nothing
+  # function _return(io::IO, config, ex, prevop)
+  #   head(ex) == :return && length(arguments(ex)) == 0 ? descend(operation(ex)) : nothing
+  # return false
   # end,
-  # function _chained_comparisons(io::IO, ex, _...)
+  # function _chained_comparisons(io::IO, config, ex, _...)
   #   if head(ex) == :comparison && Symbol.(arguments(ex)[1:2:end]) ⊆ keys(comparison_operators)
-  #       str = join([isodd(i) ? "$var" : comparison_operators[Symbol(var)] for (i, var) in enumerate(decend.(vcat(operation(ex), arguments(ex))))], " ")
+  #       str = join([isodd(i) ? "$var" : comparison_operators[Symbol(var)] for (i, var) in enumerate(descend.(vcat(operation(ex), arguments(ex))))], " ")
   #       str = "\\left( $str \\right)"
   #       return str
   #   end
+  # return false
   # end,
-  # function _type_annotation(io::IO, ex, prevop, config)
+  # function _type_annotation(io::IO, config, ex, prevop)
   #   if head(ex) == :(::)
   #     if length(arguments(ex)) == 0 
   #       return "::$(operation(ex))"
@@ -95,123 +119,145 @@ const MATCHING_FUNCTIONS_TEST = [
   #      return "$(operation(ex))::$(arguments(ex)[1])" 
   #     end
   #   end
+  # return false
   # end,
-  # function _wedge(io::IO, ex, prevop, config)
-  #   head(ex) == :(&&) && length(arguments(ex)) == 1 ? "$(decend(operation(ex))) \\wedge $(decend(arguments(ex)[1]))" : nothing
+  # function _wedge(io::IO, config, ex, prevop)
+  #   head(ex) == :(&&) && length(arguments(ex)) == 1 ? "$(descend(operation(ex))) \\wedge $(descend(arguments(ex)[1]))" : nothing
+  # return false
   # end,
-  # function _vee(io::IO, ex, prevop, config)
-  #   head(ex) == :(||) && length(arguments(ex)) == 1 ? "$(decend(operation(ex))) \\vee $(decend(arguments(ex)[1]))" : nothing
+  # function _vee(io::IO, config, ex, prevop)
+  #   head(ex) == :(||) && length(arguments(ex)) == 1 ? "$(descend(operation(ex))) \\vee $(descend(arguments(ex)[1]))" : nothing
+  # return false
   # end,
-  # function _negation(io::IO, ex, prevop, config)
+  # function _negation(io::IO, config, ex, prevop)
   #   operation(ex) == :(!) ? "\\neg $(arguments(ex)[1])" : nothing
+  # return false
   # end,
-  # function _kw(io::IO, x, args...)
-  #   head(x) == :kw ? "$(decend(operation(x))) = $(decend(arguments(x)[1]))" : nothing
+  # function _kw(io::IO, config, x, args...)
+  #   head(x) == :kw ? "$(descend(operation(x))) = $(descend(arguments(x)[1]))" : nothing
+  # return false
   # end,
-  # function _parameters(io::IO, x, args...)
-  #   head(x) == :parameters ? join(decend.(vcat(operation(x), arguments(x))), ", ") : nothing
+  # function _parameters(io::IO, config, x, args...)
+  #   head(x) == :parameters ? join(descend.(vcat(operation(x), arguments(x))), ", ") : nothing
+  # return false
   # end,
-  # function _indexing(io::IO, x, prevop, config)
+  # function _indexing(io::IO, config, x, prevop)
   #   if head(x) == :ref
-  #       if getconfig(:index) == :subscript
+  #       if config[:index] == :subscript
   #           return "$(operation(x))_{$(join(arguments(x), ","))}"
-  #       elseif getconfig(:index) == :bracket
-  #           argstring = join(decend.(arguments(x)), ", ")
-  #           return "$(decend(operation(x)))\\left[$argstring\\right]"
+  #       elseif config[:index] == :bracket
+  #           argstring = join(descend.(arguments(x)), ", ")
+  #           return "$(descend(operation(x)))\\left[$argstring\\right]"
   #       else
   #           throw(ArgumentError("Incorrect `index` keyword argument to latexify. Valid values are :subscript and :bracket"))
   #       end
   #   end
+  # return false
   # end,
-  # function _broadcast_macro(io::IO, ex, prevop, config)
+  # function _broadcast_macro(io::IO, config, ex, prevop)
   #   if head(ex) == :macrocall && operation(ex) == Symbol("@__dot__")
-  #       return decend(arguments(ex)[end])
+  #       return descend(arguments(ex)[end])
   #   end
+  # return false
   # end,
-  # function _block(io::IO, x, args...)
+  # function _block(io::IO, config, x, args...)
   #   if head(x) == :block 
-  #     return decend(vcat(operation(x), arguments(x))[end])
+  #     return descend(vcat(operation(x), arguments(x))[end])
   #   end
+  # return false
   # end,
-  function number(io::IO, x, prevop, config) 
+  function number(io::IO, config, x, prevop) 
     if x isa Number
       try isinf(x) && write(io, "\\infty") && return true; catch; end
-      fmt = getconfig(:fmt)
+      fmt = config[:fmt]
       fmt isa String && (fmt = PrintfNumberFormatter(fmt))
       str = string(fmt(x))
       sign(x) == -1 && prevop == :^ && (str = surround(str))
       write(io, str)
       return true
     end
+  return false
   end,
-  # function rational_expr(io::IO, x, prevop, config) 
+  # function rational_expr(io::IO, config, x, prevop) 
   #   if operation(x) == ://
   #     if arguments(x)[2] == 1 
-  #       return decend(arguments[1], prevop)
+  #       return descend(arguments[1], prevop)
   #     else
-  #       decend:($(arguments(x)[1])/$(arguments(x)[2])), prevop)
+  #       descend:($(arguments(x)[1])/$(arguments(x)[2])), prevop)
   #     end
   #   end
+  # return false
   # end,
-  # function rational(io::IO, x, prevop, config) 
+  # function rational(io::IO, config, x, prevop) 
   #   if x isa Rational
-  #     str = x.den == 1 ? decend(x.num, prevop) : decend(:($(x.num)/$(x.den)), prevop)
+  #     str = x.den == 1 ? descend(x.num, prevop) : descend(:($(x.num)/$(x.den)), prevop)
   #     prevop ∈ [:*, :^] && (str = surround(str))
   #     return str
   #   end
+  # return false
   # end,
-  # function complex(io::IO, z, prevop, config) 
+  # function complex(io::IO, config, z, prevop) 
   #   if z isa Complex
-  #     str = "$(decend(z.re))$(z.im < 0 ? "-" : "+" )$(decend(abs(z.im)))\\textit{i}"
+  #     str = "$(descend(z.re))$(z.im < 0 ? "-" : "+" )$(descend(abs(z.im)))\\textit{i}"
   #     prevop ∈ [:*, :^] && (str = surround(str))
   #     return str
   #   end
+  # return false
   # end,
-  # function _missing(io::IO, x, prevop, config) 
+  # function _missing(io::IO, config, x, prevop) 
   #   if ismissing(x)
   #     "\\textrm{NA}"
   #   end
+  # return false
   # end,
-  # function _nothing(io::IO, x, prevop, config)
+  # function _nothing(io::IO, config, x, prevop)
   #   x === nothing ? "" : nothing
+  # return false
   # end,
-  function symbol(io::IO, sym, _, config)
+  function symbol(io::IO, config, sym, _)
     if sym isa Symbol
       str = string(sym == :Inf ? :∞ : sym)
       str = convert_subscript(str)
-      getconfig(:convert_unicode) && (str = unicode2latex(str))
+      config[:convert_unicode] && (str = unicode2latex(str))
       write(io, str)
       return true
     end
+  return false
   end,
-  # function _char(io::IO, c, args...)
+  # function _char(io::IO, config, c, args...)
   #   c isa Char ? string(c) : nothing
+  # return false
   # end,
-  # function array(io::IO, x, args...) 
+  # function array(io::IO, config, x, args...) 
   #   x isa AbstractArray ? _latexarray(x) : nothing
+  # return false
   # end,
-  # function tuple(io::IO, x, args...) 
+  # function tuple(io::IO, config, x, args...) 
   #   x isa Tuple ? _latexarray(x) : nothing
+  # return false
   # end,
-  # function vect_exp(io::IO, x, args...) 
+  # function vect_exp(io::IO, config, x, args...) 
   #   head(x) ∈ [:vect, :vcat] ? _latexarray(expr_to_array(x)) : nothing
+  # return false
   # end,
-  # function hcat_exp(io::IO, x, args...) 
+  # function hcat_exp(io::IO, config, x, args...) 
   #   # head(x)==:hcat ? _latexarray(permutedims(vcat(operation(x), arguments(x)))) : nothing
   #   head(x)==:hcat ? _latexarray(expr_to_array(x)) : nothing
+  # return false
   # end,
   #  (expr, prevop, config) -> begin
   #  h, op, args = unpack(expr)
   # #  if (expr isa LatexifyOperation || h == :LatexifyOperation) && op == :merge
   #  if h == :call && op == :latexifymerge
-  #    join(decend.(args), "")
+  #    join(descend.(args), "")
   #  end
+  # return false
   # end,
-  # function parse_string(io::IO, str, prevop, config)
+  # function parse_string(io::IO, config, str, prevop)
   #   if str isa AbstractString
   #     try
   #         ex = Meta.parse(str)
-  #         return decend(ex, prevop)
+  #         return descend(ex, prevop)
   #     catch ParseError
   #         error("""
   #           in Latexify.jl:
@@ -231,75 +277,87 @@ const MATCHING_FUNCTIONS_TEST = [
   #           """)
   #     end
   #   end
+  # return false
   # end,
-  # function _pass_through_LaTeXString_substrings(io::IO, str, args...)
+  # function _pass_through_LaTeXString_substrings(io::IO, config, str, args...)
   #   str isa SubString{LaTeXString} ? String(str) : nothing
+  # return false
   # end,
-  # function _pass_through_LaTeXString(io::IO, str, args...)
+  # function _pass_through_LaTeXString(io::IO, config, str, args...)
   #   str isa LaTeXString  ? str.s : nothing
+  # return false
   # end,
-  # function _tuple_expr(io::IO, expr, prevop, config)
+  # function _tuple_expr(io::IO, config, expr, prevop)
   #   head(expr) == :tuple ? join(vcat(operation(expr), arguments(expr)), ", ") : nothing
+  # return false
   # end,
-  # function strip_broadcast_dot(io::IO, expr, prevop, config)
+  # function strip_broadcast_dot(io::IO, config, expr, prevop)
   #   h, op, args = unpack(expr)
   #   if expr isa Expr && config[:strip_broadcast] && h == :call && startswith(string(op), '.')
-  #     return string(decend(Expr(h, Symbol(string(op)[2:end]), args...), prevop))
+  #     return string(descend(Expr(h, Symbol(string(op)[2:end]), args...), prevop))
   #   end
+  # return false
   # end,
-  # function strip_broadcast_dot_call(io::IO, expr, prevop, config)
+  # function strip_broadcast_dot_call(io::IO, config, expr, prevop)
   #   h, op, args = unpack(expr)
   #   if expr isa Expr && config[:strip_broadcast] && h == :. 
-  #     return decend(Expr(:call, op, args[1].args...), prevop)
+  #     return descend(Expr(:call, op, args[1].args...), prevop)
   #   end
+  # return false
   # end,
-  # function plusminus(io::IO, expr, prevop, config)
+  # function plusminus(io::IO, config, expr, prevop)
   #   h, op, args = unpack(expr)
   #   if h == :call && op == :±
-  #     return "$(decend(args[1], op)) \\pm $(decend(args[2], op))"
+  #     return "$(descend(args[1], op)) \\pm $(descend(args[2], op))"
   #   end
+  # return false
   # end,
-  function division(io::IO, expr, prevop, config)
+  function division(io::IO, config, expr, prevop)
     h, op, args = unpack(expr)
     if h == :call && op == :/
       write(io, "\\frac{")
-      decend(io, args[1], op)
+      descend(io, config, args[1], op)
       write(io, "}{")
-      decend(io, args[2], op)
+      descend(io, config, args[2], op)
       write(io, "}")
-      # "\\frac{$(decend(args[1], op))}{$(decend(args[2], op))}"
+      # "\\frac{$(descend(args[1], op))}{$(descend(args[2], op))}"
       return true
     end
+  return false
   end,
-  # function multiplication(io::IO, expr, prevop, config)
-  #   h, op, args = unpack(expr)
-  #   if h == :call && op == :*
-  #     join(decend.(args, op), "$(config[:mulsym])")
-  #   end
-  # end,
-  function addition(io::IO, expr, prevop, config)
+  function multiplication(io::IO, config, expr, prevop)
+    h, op, args = unpack(expr)
+    if h == :call && op == :*
+      # join(descend.(args, op), "$(config[:mulsym])")
+      join_descend(io, config, args, config[:mulsym])
+      return true
+    end
+  return false
+  end,
+  function addition(io::IO, config, expr, prevop)
     h, op, args = unpack(expr)
     if h == :call && op == :+
       prevop ∈ [:*, :^] && write(io, "\\left( ")
-      str = join_decend(io, args, " + ") 
+      str = join_descend(io, config, args, " + ") 
       # str = replace(str, "+ -"=>"-")
       # prevop ∈ [:*, :^] && (str = surround(str))
       prevop ∈ [:*, :^] && write(io, " \\right)")
       # write()
       return true
     end
+  return false
   end,
-  # function subtraction(io::IO, expr, prevop, config)
+  # function subtraction(io::IO, config, expr, prevop)
   #   # this one is so gnarly because it tries to fix stuff like - - or -(-(x-y))
   #   # -(x) is also a bit different to -(x, y) which does not make things simpler
   #   h, op, args = unpack(expr)
   #   if h == :call && op == :-
   #     if length(args) == 1
   #       if operation(args[1]) == :- && length(arguments(args[1])) == 1
-  #         return decend(arguments(args[1])[1], prevop)
+  #         return descend(arguments(args[1])[1], prevop)
   #       elseif args[1] isa Number && sign(args[1]) == -1
   #         # return _latexraw(-args[1]; config...)
-  #         return decend(-args[1], op)
+  #         return descend(-args[1], op)
   #       else
   #         _arg = operation(args[1]) ∈ [:-, :+, :±] ? surround(args[1]) : args[1]
   #         return prevop == :^ ? surround("$op$_arg") : "$op$_arg"
@@ -307,49 +365,52 @@ const MATCHING_FUNCTIONS_TEST = [
         
   #     elseif length(args) == 2
   #       if args[2] isa Number && sign(args[2]) == -1
-  #         return "$(decend(args[1], :+)) + $(decend(-args[2], :+))"
+  #         return "$(descend(args[1], :+)) + $(descend(-args[2], :+))"
   #       end
   #       if operation(args[2]) == :- && length(arguments(args[2])) == 1
-  #         return "$(decend(args[1], :+)) + $(decend(arguments(args[2])[1], :+))"
+  #         return "$(descend(args[1], :+)) + $(descend(arguments(args[2])[1], :+))"
   #       end
   #       if operation(args[2]) ∈ [:-, :.-, :+, :.+]
-  #         return "$(decend(args[1], op)) - $(surround(decend(args[2], op)))"
+  #         return "$(descend(args[1], op)) - $(surround(descend(args[2], op)))"
   #       end
-  #       str = join(decend.(args, op), " - ") 
+  #       str = join(descend.(args, op), " - ") 
   #       prevop ∈ [:*, :^] && (str = surround(str))
   #       return str
   #     end
   #   end
+  # return false
   # end,
-  # function pow(io::IO, expr, prevop, config)
+  # function pow(io::IO, config, expr, prevop)
   #   h, op, args = unpack(expr)
   #   if h == :call && op == :^
   #       if operation(args[1]) in Latexify.trigonometric_functions
   #           fsym = operation(args[1])
   #           fstring = get(Latexify.function2latex, fsym, "\\$(fsym)")
-  #           "$fstring^{$(decend(args[2], op))}\\left( $(join(decend.(arguments(args[1]), operation(args[1])), ", ")) \\right)"
+  #           "$fstring^{$(descend(args[2], op))}\\left( $(join(descend.(arguments(args[1]), operation(args[1])), ", ")) \\right)"
   #       else
-  #           "$(decend(args[1], op))^{$(decend(args[2], Val{:NoSurround}()))}"
+  #           "$(descend(args[1], op))^{$(descend(args[2], Val{:NoSurround}()))}"
   #       end
   #   end
+  # return false
   # end,
-  # function equals(io::IO, expr, prevop, config)
+  # function equals(io::IO, config, expr, prevop)
   #   if head(expr) == :(=) 
-  #     return "$(decend(expr.args[1], expr.head)) = $(decend(expr.args[2], expr.head))"
+  #     return "$(descend(expr.args[1], expr.head)) = $(descend(expr.args[2], expr.head))"
   #   end
   # end, 
-  # function l_funcs(io::IO, ex, prevop, config)
+  # function l_funcs(io::IO, config, ex, prevop)
   #   if head(ex) == :call && startswith(string(operation(ex)), "l_")
   #     l_func = string(operation(ex))[3:end]
-  #     return "\\$(l_func){$(join(decend.(arguments(ex), prevop), "}{"))}"
+  #     return "\\$(l_func){$(join(descend.(arguments(ex), prevop), "}{"))}"
   #   end
+  # return false
   # end,
 ]
 
 
-function build_if_else_body(io::IO, args, ifstr, elseifstr, elsestr)
+function build_if_else_body(io::IO, config, args, ifstr, elseifstr, elsestr)
       _args = filter(x -> !(x isa LineNumberNode), args)
-      dargs = decend.(_args)
+      dargs = descend.(_args)
       str = if length(_args) == 2
         """
         $(dargs[2]) & $ifstr $(dargs[1])"""

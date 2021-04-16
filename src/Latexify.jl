@@ -1,4 +1,5 @@
 module Latexify
+# Base.Experimental.@compiler_options optimize=0 compile=min infer=no
 using Requires
 using LaTeXStrings
 using InteractiveUtils
@@ -52,7 +53,7 @@ include("numberformatters.jl")
 
 include("latexify_function.jl")
 # include("refactor_prototype_2.jl")
-export decend, unpack, head, operation, arguments, nested 
+export descend, unpack, head, operation, arguments, nested 
 
 
 macro generate_test(expr)
@@ -122,6 +123,18 @@ end
 # latexify(_ex)
 # latexify(_ex)
 # @assert precompile(latexify, (Expr,))
+
+latexify(:(z/y*s+1.2+1//2))
+for f in DEFAULT_INSTRUCTIONS
+    for op in [Expr, Symbol, Float64, Int, Rational, ComplexF64]
+        for config in [Dict, NamedTuple]
+            for prevop in [Symbol, Nothing]
+                precompile(f, (IOBuffer, config, op, prevop ))
+            end
+        end
+    end
+end
+
 
 ### Add support for additional packages without adding them as dependencies.
 function __init__()

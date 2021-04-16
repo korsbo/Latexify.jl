@@ -16,12 +16,12 @@ const MATCHING_FUNCTIONS = [
       if op isa Symbol
         funcname = string(get(Latexify.function2latex, op, replace(string(op), "_"=>"\\_")))
       else
-        funcname = decend(op)
+        funcname = descend(op)
       end
       if length(args) >= 1 && head(args[1]) == :parameters
-        _arg = "\\left( $(join(decend.(args[2:end]), ", ")); $(decend(args[1])) \\right)"
+        _arg = "\\left( $(join(descend.(args[2:end]), ", ")); $(descend(args[1])) \\right)"
       else
-        _arg = "\\left( " * join(decend.(args), ", ") * " \\right)"
+        _arg = "\\left( " * join(descend.(args), ", ") * " \\right)"
       end
         return  funcname * _arg
     end
@@ -65,15 +65,15 @@ const MATCHING_FUNCTIONS = [
   end,
   function _oneline_function(ex, prevop, config)
     if head(ex) == :function && length(arguments(ex)) == 1
-      return "$(decend(operation(ex), head(ex))) = $(decend(arguments(ex)[1], head(ex)))"
+      return "$(descend(operation(ex), head(ex))) = $(descend(arguments(ex)[1], head(ex)))"
     end
   end,
   function _return(ex, prevop, config)
-    head(ex) == :return && length(arguments(ex)) == 0 ? decend(operation(ex)) : nothing
+    head(ex) == :return && length(arguments(ex)) == 0 ? descend(operation(ex)) : nothing
   end,
   function _chained_comparisons(ex, _...)
     if head(ex) == :comparison && Symbol.(arguments(ex)[1:2:end]) ⊆ keys(comparison_operators)
-        str = join([isodd(i) ? "$var" : comparison_operators[Symbol(var)] for (i, var) in enumerate(decend.(vcat(operation(ex), arguments(ex))))], " ")
+        str = join([isodd(i) ? "$var" : comparison_operators[Symbol(var)] for (i, var) in enumerate(descend.(vcat(operation(ex), arguments(ex))))], " ")
         str = "\\left( $str \\right)"
         return str
     end
@@ -88,27 +88,27 @@ const MATCHING_FUNCTIONS = [
     end
   end,
   function _wedge(ex, prevop, config)
-    head(ex) == :(&&) && length(arguments(ex)) == 1 ? "$(decend(operation(ex))) \\wedge $(decend(arguments(ex)[1]))" : nothing
+    head(ex) == :(&&) && length(arguments(ex)) == 1 ? "$(descend(operation(ex))) \\wedge $(descend(arguments(ex)[1]))" : nothing
   end,
   function _vee(ex, prevop, config)
-    head(ex) == :(||) && length(arguments(ex)) == 1 ? "$(decend(operation(ex))) \\vee $(decend(arguments(ex)[1]))" : nothing
+    head(ex) == :(||) && length(arguments(ex)) == 1 ? "$(descend(operation(ex))) \\vee $(descend(arguments(ex)[1]))" : nothing
   end,
   function _negation(ex, prevop, config)
     operation(ex) == :(!) ? "\\neg $(arguments(ex)[1])" : nothing
   end,
   function _kw(x, args...)
-    head(x) == :kw ? "$(decend(operation(x))) = $(decend(arguments(x)[1]))" : nothing
+    head(x) == :kw ? "$(descend(operation(x))) = $(descend(arguments(x)[1]))" : nothing
   end,
   function _parameters(x, args...)
-    head(x) == :parameters ? join(decend.(vcat(operation(x), arguments(x))), ", ") : nothing
+    head(x) == :parameters ? join(descend.(vcat(operation(x), arguments(x))), ", ") : nothing
   end,
   function _indexing(x, prevop, config)
     if head(x) == :ref
         if getconfig(:index) == :subscript
             return "$(operation(x))_{$(join(arguments(x), ","))}"
         elseif getconfig(:index) == :bracket
-            argstring = join(decend.(arguments(x)), ", ")
-            return "$(decend(operation(x)))\\left[$argstring\\right]"
+            argstring = join(descend.(arguments(x)), ", ")
+            return "$(descend(operation(x)))\\left[$argstring\\right]"
         else
             throw(ArgumentError("Incorrect `index` keyword argument to latexify. Valid values are :subscript and :bracket"))
         end
@@ -116,12 +116,12 @@ const MATCHING_FUNCTIONS = [
   end,
   function _broadcast_macro(ex, prevop, config)
     if head(ex) == :macrocall && operation(ex) == Symbol("@__dot__")
-        return decend(arguments(ex)[end])
+        return descend(arguments(ex)[end])
     end
   end,
   function _block(x, args...)
     if head(x) == :block 
-      return decend(vcat(operation(x), arguments(x))[end])
+      return descend(vcat(operation(x), arguments(x))[end])
     end
   end,
   function number(x, prevop, config) 
@@ -137,22 +137,22 @@ const MATCHING_FUNCTIONS = [
   function rational_expr(x, prevop, config) 
     if operation(x) == ://
       if arguments(x)[2] == 1 
-        return decend(arguments[1], prevop)
+        return descend(arguments[1], prevop)
       else
-        decend(:($(arguments(x)[1])/$(arguments(x)[2])), prevop)
+        descend(:($(arguments(x)[1])/$(arguments(x)[2])), prevop)
       end
     end
   end,
   function rational(x, prevop, config) 
     if x isa Rational
-      str = x.den == 1 ? decend(x.num, prevop) : decend(:($(x.num)/$(x.den)), prevop)
+      str = x.den == 1 ? descend(x.num, prevop) : descend(:($(x.num)/$(x.den)), prevop)
       prevop ∈ [:*, :^] && (str = surround(str))
       return str
     end
   end,
   function complex(z, prevop, config) 
     if z isa Complex
-      str = "$(decend(z.re))$(z.im < 0 ? "-" : "+" )$(decend(abs(z.im)))\\textit{i}"
+      str = "$(descend(z.re))$(z.im < 0 ? "-" : "+" )$(descend(abs(z.im)))\\textit{i}"
       prevop ∈ [:*, :^] && (str = surround(str))
       return str
     end
@@ -193,14 +193,14 @@ const MATCHING_FUNCTIONS = [
    h, op, args = unpack(expr)
   #  if (expr isa LatexifyOperation || h == :LatexifyOperation) && op == :merge
    if h == :call && op == :latexifymerge
-     join(decend.(args), "")
+     join(descend.(args), "")
    end
   end,
   function parse_string(str, prevop, config)
     if str isa AbstractString
       try
           ex = Meta.parse(str)
-          return decend(ex, prevop)
+          return descend(ex, prevop)
       catch ParseError
           error("""
             in Latexify.jl:
@@ -233,37 +233,37 @@ const MATCHING_FUNCTIONS = [
   function strip_broadcast_dot(expr, prevop, config)
     h, op, args = unpack(expr)
     if expr isa Expr && config[:strip_broadcast] && h == :call && startswith(string(op), '.')
-      return string(decend(Expr(h, Symbol(string(op)[2:end]), args...), prevop))
+      return string(descend(Expr(h, Symbol(string(op)[2:end]), args...), prevop))
     end
   end,
   function strip_broadcast_dot_call(expr, prevop, config)
     h, op, args = unpack(expr)
     if expr isa Expr && config[:strip_broadcast] && h == :. 
-      return decend(Expr(:call, op, args[1].args...), prevop)
+      return descend(Expr(:call, op, args[1].args...), prevop)
     end
   end,
   function plusminus(expr, prevop, config)
     h, op, args = unpack(expr)
     if h == :call && op == :±
-      return "$(decend(args[1], op)) \\pm $(decend(args[2], op))"
+      return "$(descend(args[1], op)) \\pm $(descend(args[2], op))"
     end
   end,
   function division(expr, prevop, config)
     h, op, args = unpack(expr)
     if h == :call && op == :/
-      "\\frac{$(decend(args[1], op))}{$(decend(args[2], op))}"
+      "\\frac{$(descend(args[1], op))}{$(descend(args[2], op))}"
     end
   end,
   function multiplication(expr, prevop, config)
     h, op, args = unpack(expr)
     if h == :call && op == :*
-      join(decend.(args, op), "$(config[:mulsym])")
+      join(descend.(args, op), "$(config[:mulsym])")
     end
   end,
   function addition(expr, prevop, config)
     h, op, args = unpack(expr)
     if h == :call && op == :+
-      str = join(decend.(args, op), " + ") 
+      str = join(descend.(args, op), " + ") 
       str = replace(str, "+ -"=>"-")
       prevop ∈ [:*, :^] && (str = surround(str))
       return str
@@ -276,10 +276,10 @@ const MATCHING_FUNCTIONS = [
     if h == :call && op == :-
       if length(args) == 1
         if operation(args[1]) == :- && length(arguments(args[1])) == 1
-          return decend(arguments(args[1])[1], prevop)
+          return descend(arguments(args[1])[1], prevop)
         elseif args[1] isa Number && sign(args[1]) == -1
           # return _latexraw(-args[1]; config...)
-          return decend(-args[1], op)
+          return descend(-args[1], op)
         else
           _arg = operation(args[1]) ∈ [:-, :+, :±] ? surround(args[1]) : args[1]
           return prevop == :^ ? surround("$op$_arg") : "$op$_arg"
@@ -287,15 +287,15 @@ const MATCHING_FUNCTIONS = [
         
       elseif length(args) == 2
         if args[2] isa Number && sign(args[2]) == -1
-          return "$(decend(args[1], :+)) + $(decend(-args[2], :+))"
+          return "$(descend(args[1], :+)) + $(descend(-args[2], :+))"
         end
         if operation(args[2]) == :- && length(arguments(args[2])) == 1
-          return "$(decend(args[1], :+)) + $(decend(arguments(args[2])[1], :+))"
+          return "$(descend(args[1], :+)) + $(descend(arguments(args[2])[1], :+))"
         end
         if operation(args[2]) ∈ [:-, :.-, :+, :.+]
-          return "$(decend(args[1], op)) - $(surround(decend(args[2], op)))"
+          return "$(descend(args[1], op)) - $(surround(descend(args[2], op)))"
         end
-        str = join(decend.(args, op), " - ") 
+        str = join(descend.(args, op), " - ") 
         prevop ∈ [:*, :^] && (str = surround(str))
         return str
       end
@@ -307,21 +307,21 @@ const MATCHING_FUNCTIONS = [
         if operation(args[1]) in Latexify.trigonometric_functions
             fsym = operation(args[1])
             fstring = get(Latexify.function2latex, fsym, "\\$(fsym)")
-            "$fstring^{$(decend(args[2], op))}\\left( $(join(decend.(arguments(args[1]), operation(args[1])), ", ")) \\right)"
+            "$fstring^{$(descend(args[2], op))}\\left( $(join(descend.(arguments(args[1]), operation(args[1])), ", ")) \\right)"
         else
-            "$(decend(args[1], op))^{$(decend(args[2], Val{:NoSurround}()))}"
+            "$(descend(args[1], op))^{$(descend(args[2], Val{:NoSurround}()))}"
         end
     end
   end,
   function equals(expr, prevop, config)
     if head(expr) == :(=) 
-      return "$(decend(expr.args[1], expr.head)) = $(decend(expr.args[2], expr.head))"
+      return "$(descend(expr.args[1], expr.head)) = $(descend(expr.args[2], expr.head))"
     end
   end, 
   function l_funcs(ex, prevop, config)
     if head(ex) == :call && startswith(string(operation(ex)), "l_")
       l_func = string(operation(ex))[3:end]
-      return "\\$(l_func){$(join(decend.(arguments(ex), prevop), "}{"))}"
+      return "\\$(l_func){$(join(descend.(arguments(ex), prevop), "}{"))}"
     end
   end,
 ]
@@ -329,7 +329,7 @@ const MATCHING_FUNCTIONS = [
 
 function build_if_else_body(args, ifstr, elseifstr, elsestr)
       _args = filter(x -> !(x isa LineNumberNode), args)
-      dargs = decend.(_args)
+      dargs = descend.(_args)
       str = if length(_args) == 2
         """
         $(dargs[2]) & $ifstr $(dargs[1])"""

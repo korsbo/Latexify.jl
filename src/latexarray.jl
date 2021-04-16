@@ -16,7 +16,7 @@ function _latexarray(arr::AbstractArray)
     str = "\\left[\n"
     str *= "\\begin{array}{" * "$(adjustment)"^columns * "}\n"
 
-    arr = decend.(arr)
+    arr = descend.(arr)
     for i=1:rows, j=1:columns
         str *= arr[i,j]
         j==columns ? (str *= eol) : (str *= " & ")

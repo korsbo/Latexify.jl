@@ -1,14 +1,59 @@
-function latexraw(expr; kwargs...)
-  empty!(CONFIG)
-  merge!(CONFIG, DEFAULT_CONFIG, kwargs)
-  io = IOBuffer(; append=true)
-  decend(io, expr)
-  str = String(take!(io))
-#   CONFIG[:convert_unicode] && (str = unicode2latex(str))
-  return LaTeXString(str)
+const INSTRUCTIONS = Function[]
+const USER_INSTRUCTIONS = Function[]
+const USER_ENV_INSTRUCTIONS = Function[]
+
+# function latexraw(io::IO, config::NamedTuple, expr)
+#   # empty!(CONFIG)
+#   # merge!(CONFIG, DEFAULT_CONFIG, kwargs)
+#   empty!(INSTRUCTIONS)
+#   append!(INSTRUCTIONS, DEFAULT_INSTRUCTIONS, USER_INSTRUCTIONS, ENV_INSTRUCTIONS)
+#   descend(io, config, expr)
+# #   CONFIG[:convert_unicode] && (str = unicode2latex(str))
+#   return nothing
+# end
+
+
+function capture_function_signature(ex)
+  ex.head ∉ [:function, :(=)] && throw(ArgumentError("Malformed function signature to latexify recipe macro."))
+  annotated_args = ex.args[1].args[2:end]
+  types = Tuple(getindex.(getfield.(annotated_args, :args), 2))
+  vars = Tuple(getindex.(getfield.(annotated_args, :args), 1))
+  return vars, types
 end
 
-add_matcher(f) = push!(MATCHING_FUNCTIONS, f)
+function capture_function_body(ex)
+    if ex.head == :function
+    elseif ex.head == :(=)
+       return ex.args[2]
+    else
+      throw(ArgumentError("Malformed function signature to latexify recipe macro."))
+    end
+end
+
+macro latextype(expr)
+  vars, types = capture_function_signature(expr)
+  body = esc(capture_function_body(expr))
+  io, x, prevop, config = gensym(:io), gensym(:x), gensym(:prevop), gensym(:config)
+  body = MacroTools.postwalk(x -> x isa Expr && x.head == :call && x.args[1] == :descend ? Expr(x.head, x.args[1], io, x.args[2], prevop, config) : x, body)
+
+  fname = gensym(:recipe_fn)
+  return esc(quote
+    push!(USER_INSTRUCTIONS, 
+       function $(fname)($io, $x, $prevop, $config)
+         $x isa Tuple && length($x) == $(length(vars)) || return false
+         types = $types
+        for i in $(eachindex(vars))
+          typeof($x[i]) <: types[i] || return false 
+        end
+         $(vars) = $x
+         $x[1] isa $(types[1]) || return false
+         $body
+         return true
+       end
+    )
+  end)
+end
+# add_matcher(f) = push!(MATCHING_FUNCTIONS, f)
 
 # _check_call_match(e, op::Symbol) = e isa Expr && e.head === :call && e.args[1] === op
 # _check_call_match(e, op::AbstractArray) = e isa Expr && e.head === :call && e.args[1] ∈ op
@@ -33,10 +78,11 @@ head(ex::Expr) = ex.head
 
 unpack(x) = (head(x), operation(x), arguments(x))
 
-function decend(io::IO, e, prevop=Val(:_nothing))::Nothing
-    for f in MATCHING_FUNCTIONS_TEST[end:-1:1]
-        call_result = f(io, e, prevop, CONFIG) 
-        if !(call_result === nothing)
+function descend(io::IO, config::NamedTuple, e, prevop=:(_nothing))::Nothing
+    config[:descend_counter][1] += 1
+    for f in INSTRUCTIONS[end:-1:1]
+        call_matched = f(io, config, e, prevop)::Bool
+        if call_matched
             return nothing
             break
         end
@@ -46,10 +92,10 @@ end
 
 surround(x) = "\\left( $x \\right)"
 
-function join_decend(io::IO, args, delim; prevop=nothing) 
+function join_descend(io::IO, config, args, delim; prevop=nothing) 
   for arg in args[1:end-1]
-    decend(io, arg, prevop)
+    descend(io, config, arg, prevop)
     write(io, delim)
   end
-  decend(io, args[end], prevop)
+  descend(io, config, args[end], prevop)
 end
