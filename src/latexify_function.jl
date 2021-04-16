@@ -28,7 +28,7 @@ function latexify(io::IO, args...; kwargs...)
   # end
     # _args = length(args) == 1 ? args[1] : args
     empty!(INSTRUCTIONS)
-    append!(INSTRUCTIONS, DEFAULT_INSTRUCTIONS, USER_INSTRUCTIONS, ENV_INSTRUCTIONS)
+    append!(INSTRUCTIONS, DEFAULT_INSTRUCTIONS, ENV_INSTRUCTIONS, USER_INSTRUCTIONS)
     
     # iterate_top_matcher(io, config, args, :_nothing)
 
@@ -104,7 +104,7 @@ const ENV_INSTRUCTIONS = [
       _default_env = x isa Tuple{AutoEnv} ? x[1].env : :_nothing
       env = get(config, :env, _default_env)
       if haskey(OUTPUTFUNCTIONS, env) 
-        descend(io, config, OUTPUTFUNCTIONS[env](x.args), prevop) 
+        descend(io, config, (OUTPUTFUNCTIONS[env](args),), prevop) 
       elseif args isa Tuple{Vector, Vector}
         descend(io, config, (Align(hcat(args[1], args[2])),))
       elseif length(args) == 1
