@@ -10,6 +10,11 @@ function latexify(args...; kwargs...)
 
     result = latex_function(args...; kwargs...)
 
+    should_render = get(kwargs, :render, false)
+    should_render isa Bool || throw(ArgumentError(
+        "The keyword argument `render` must be either `true` or `false`. Got $should_render"
+        ))
+    should_render && render(result)
     COPY_TO_CLIPBOARD && clipboard(result)
     AUTO_DISPLAY && display(result)
     return result
