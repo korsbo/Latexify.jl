@@ -39,7 +39,7 @@ julia> latexalign(ode)
 ```
 
 """
-latexalign(args...; kwargs...) = latexify(args...; kwargs..., env=:align)
+latexalign(args...; kwargs...) = process_latexify(args...; kwargs..., env=:align)
 
 function _latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=false, starred=false, rows=:all, aligned=false, kwargs...)
     eol = double_linebreak ? " \\\\\\\\\n" : " \\\\\n"

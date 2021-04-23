@@ -1,4 +1,4 @@
-latexbracket(args...; kwargs...) = latexify(args...; kwargs..., env=:bracket)
+latexbracket(args...; kwargs...) = process_latexify(args...; kwargs..., env=:bracket)
 
 function _latexbracket(x; kwargs...)
     latexstr = LaTeXString( "\\[\n" * latexraw(x; kwargs...) * "\\]\n")

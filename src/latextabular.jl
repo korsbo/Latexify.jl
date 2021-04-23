@@ -1,4 +1,4 @@
-latextabular(args...; kwargs...) = latexify(args...; kwargs..., env=:tabular)
+latextabular(args...; kwargs...) = process_latexify(args...; kwargs..., env=:tabular)
 
 function _latextabular(arr::AbstractMatrix; latex::Bool=true, booktabs::Bool=false, head=[], side=[], adjustment::Symbol=:c, transpose=false, kwargs...)
     transpose && (arr = permutedims(arr, [2,1]))

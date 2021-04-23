@@ -55,7 +55,7 @@ latexraw(symExpr)
 "2 \\cdot x + x \\cdot y^{2}"
 ```
 """
-latexraw(args...; kwargs...) = latexify(args...; kwargs..., env=:raw)
+latexraw(args...; kwargs...) = process_latexify(args...; kwargs..., env=:raw)
 
 function _latexraw(inputex::Expr; convert_unicode=true, kwargs...)
     ## Pass all arrays or matrices in the expr to latexarray
