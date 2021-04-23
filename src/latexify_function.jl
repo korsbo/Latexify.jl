@@ -1,14 +1,5 @@
 function latexify(args...; kwargs...)
-
-    ## Let potential recipes transform the arguments.
-    args, kwargs = apply_recipe(args...; default_kwargs..., kwargs...)
-
-    ## If the environment is unspecified, use auto inference.
-    env = get(kwargs, :env, :auto)
-
-    latex_function = infer_output(env, args...)
-
-    result = latex_function(args...; kwargs...)
+    result = process_latexify(args...; kwargs...)
 
     should_render = get(kwargs, :render, false)
     should_render isa Bool || throw(ArgumentError(
@@ -18,6 +9,18 @@ function latexify(args...; kwargs...)
     COPY_TO_CLIPBOARD && clipboard(result)
     AUTO_DISPLAY && display(result)
     return result
+end
+
+function process_latexify(args...; kwargs...)
+    ## Let potential recipes transform the arguments.
+    args, kwargs = apply_recipe(args...; default_kwargs..., kwargs...)
+
+    ## If the environment is unspecified, use auto inference.
+    env = get(kwargs, :env, :auto)
+
+    latex_function = infer_output(env, args...)
+
+    result = latex_function(args...; kwargs...)
 end
 
 apply_recipe(args...; kwargs...) = (args, kwargs)

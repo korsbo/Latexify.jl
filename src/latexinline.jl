@@ -1,4 +1,4 @@
-latexinline(args...;kwargs...) = latexify(args...;kwargs...,env=:inline)
+latexinline(args...;kwargs...) = process_latexify(args...;kwargs...,env=:inline)
 
 function _latexinline(x; kwargs...)
     latexstr = latexstring( latexify(x; kwargs...,env=:raw) )
