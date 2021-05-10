@@ -1,10 +1,12 @@
 function latexify(args...; kwargs...)
+    kwargs = merge(default_kwargs, kwargs)
     result = process_latexify(args...; kwargs...)
 
     should_render = get(kwargs, :render, false)
     should_render isa Bool || throw(ArgumentError(
         "The keyword argument `render` must be either `true` or `false`. Got $should_render"
         ))
+
     should_render && render(result)
     COPY_TO_CLIPBOARD && clipboard(result)
     AUTO_DISPLAY && display(result)
@@ -13,7 +15,7 @@ end
 
 function process_latexify(args...; kwargs...)
     ## Let potential recipes transform the arguments.
-    args, kwargs = apply_recipe(args...; default_kwargs..., kwargs...)
+    args, kwargs = apply_recipe(args...; kwargs...)
 
     ## If the environment is unspecified, use auto inference.
     env = get(kwargs, :env, :auto)
