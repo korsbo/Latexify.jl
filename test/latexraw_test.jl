@@ -93,6 +93,7 @@ array_test = [ex, str]
 @test latexraw(Inf) == raw"\infty"
 @test latexraw(:Inf) == raw"\infty"
 @test latexraw("Inf") == raw"\infty"
+@test latexraw(-Inf) == raw"-\infty"
 
 
 @test latexify(:((-1) ^ 2)) == replace(
