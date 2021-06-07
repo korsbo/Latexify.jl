@@ -22,7 +22,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, index=:brack
         end
     end
 
-    if op in [:/, :./]
+    if op in [:/, :./, ://, :.//]
         return "\\frac{$(args[2])}{$(args[3])}"
 
     elseif op in [:*, :.*]
