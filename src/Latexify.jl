@@ -61,6 +61,9 @@ function __init__()
     @require SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8" begin
         include("plugins/SymEngine.jl")
     end
+    @require SymPy = "24249f21-da20-56a4-8eb1-6a02cf4ae2e6" begin
+        include("plugins/SymPy.jl")
+    end
     @require DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0" begin
         include("plugins/DataFrames.jl")
     end
@@ -73,7 +76,7 @@ end
 """
     @append_latexify_test!(fname, expr)
 
-Generate a Latexify test and append it to the file `fname`. 
+Generate a Latexify test and append it to the file `fname`.
 
 The expression `expr` should return a string when evaluated.
 
@@ -83,7 +86,7 @@ Latexify.@append_latexify_test!("./tests/latexify_tests.jl", latexify(:(x/y)))
 ```
 
 The macro returns the output of the expression and can often be rendered
-for a visual check that the test itself is ok. 
+for a visual check that the test itself is ok.
 ```
 Latexify.@append_latexify_test!("./tests/latexify_tests.jl", latexify(:(x/y))) |> render
 ```
@@ -93,7 +96,7 @@ macro append_latexify_test!(fname, expr)
     return :(
     str = "@test $($(string(expr))) == replace(\nraw\"$($(esc(expr)))\", \"\\r\\n\"=>\"\\n\")\n\n";
     open($fname, "a") do f
-        write(f,str) 
+        write(f,str)
     end;
     $(esc(expr))
     )

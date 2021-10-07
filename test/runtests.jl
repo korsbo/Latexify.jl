@@ -19,6 +19,7 @@ using Test
 @testset "latextabular tests" begin include("latextabular_test.jl") end
 @testset "mdtable tests" begin include("mdtable_test.jl") end
 @testset "DataFrame Plugin" begin include("plugins/DataFrames.jl") end
+@testset "SymPy Plugin" begin include("plugins/SymPy.jl") end
 @testset "unocode2latex" begin include("unicode2latex.jl") end
 @testset "cdot test" begin include("cdot_test.jl") end
 @testset "numberformatters" begin include("numberformatters_test.jl") end
