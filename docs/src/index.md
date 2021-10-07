@@ -1,6 +1,8 @@
 # Latexify.jl
 
-Latexify.jl is a package which supplies functions for producing ``\LaTeX`` formatted strings from Julia objects. The package allows for latexification of a many different kinds of Julia object and it can output several different ``\LaTeX`` or Markdown environments.
+[Latexify.jl](https://github.com/korsbo/Latexify.jl) is a package which supplies functions for producing ``\LaTeX`` 
+formatted strings from Julia objects. The package allows for latexification of a many different kinds of Julia object
+and it can output several different ``\LaTeX`` or Markdown environments.
 
 A small teaser:
 
