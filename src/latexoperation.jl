@@ -6,7 +6,14 @@ This uses the information about the previous operations to decide if
 a parenthesis is needed.
 
 """
-function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, index=:bracket, kwargs...)::String
+function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
+    # If we used `cdot` and `index` as keyword arguments before `kwargs...`
+    # and they are indeed contained in `kwargs`, they would get lost when
+    # passing `kwargs...` to `latexraw`below. Thus, we need to set default
+    # values as follows.
+    cdot = get(kwargs, :cdot, true)
+    index = get(kwargs, :index, :bracket)
+
     op = ex.args[1]
     filter!(x -> !(x isa LineNumberNode), ex.args)
     args = map(i -> typeof(i) ∉ (String, LineNumberNode) ? latexraw(i; kwargs...) : i, ex.args)
@@ -143,7 +150,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; cdot=true, index=:brack
         return string(ex.args[end])
     end
 
-    if ex.head == :macrocall 
+    if ex.head == :macrocall
         ex.head = :call
     end
 
