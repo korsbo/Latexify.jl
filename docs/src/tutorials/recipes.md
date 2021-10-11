@@ -67,7 +67,11 @@ end
 ```
 
 Here, the function name is unimportant, but the type signature is key. 
-There must also be a return statement which returns something that base Latexify already works with (Arrays, Tuples, Numbers, Symbols, Strings, etc.)
+There must also be an explicit `return` statement which returns something that 
+base Latexify already works with (Arrays, Tuples, Numbers, Symbols, Strings, etc.).
+In particular, you can not rely on Julia's default to return the value of the 
+last expression evaluated in a function body.
+
 The special notation `kwarg --> value` resets the default value of a keyword argument for your specific inputs. This will be overridden if the keyword argument in quesion is specified in a call to `latexify`. 
 To disallow this overriding, use `kwarg := value` instead.
 
