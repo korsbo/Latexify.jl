@@ -138,4 +138,5 @@ raw"$x = \left[
 \end{array}
 \right]$", "\r\n"=>"\n")
 
-
+using OffsetArrays
+@test latexify(OffsetArray(arr, -1:0, 3:4)) == latexify(arr)

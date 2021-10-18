@@ -17,18 +17,17 @@ latexarray(args...; kwargs...) = process_latexify(args...;kwargs...,env=:array)
 function _latexarray(arr::AbstractArray; adjustment::Symbol=:c, transpose=false, double_linebreak=false,
     starred=false, kwargs...)
     transpose && (arr = permutedims(arr))
-    rows = first(size(arr))
-    columns = length(size(arr)) > 1 ? size(arr)[2] : 1
+    rows, columns = axes(arr, 1), axes(arr, 2)
 
     eol = double_linebreak ? " \\\\\\\\\n" : " \\\\\n"
 
     str = "\\left[\n"
-    str *= "\\begin{array}{" * "$(adjustment)"^columns * "}\n"
+    str *= "\\begin{array}{" * "$(adjustment)"^length(columns) * "}\n"
 
     arr = latexraw.(arr; kwargs...)
-    for i=1:rows, j=1:columns
+    for i in rows, j in columns
         str *= arr[i,j]
-        j==columns ? (str *= eol) : (str *= " & ")
+        j == last(columns) ? (str *= eol) : (str *= " & ")
     end
 
     str *= "\\end{array}\n"

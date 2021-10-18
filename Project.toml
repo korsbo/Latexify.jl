@@ -24,9 +24,10 @@ julia = "1"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 DiffEqBase = "2b5f629d-d688-5b77-993f-72d75c75574e"
 DiffEqBiological = "eb300fae-53e8-50a0-950c-e21f52c2b7e0"
+OffsetArrays = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
 ParameterizedFunctions = "65888b18-ceab-5e60-b2b9-181511a3b968"
 SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test", "DataFrames"]
+test = ["Test", "DataFrames", "OffsetArrays"]
