@@ -84,7 +84,7 @@ end
 @latexrecipe function f(x::Ket)
     return Expr(:latexifymerge, "\\left|", x.x, "\\right>")
 end
-latexify(:($(Ket(:a)) + $(Ket(3))))
+latexify(:($(Ket(:a)) + $(Ket(:b))))
 ```
 
 ![ket](/assets/demo_ket.png)
