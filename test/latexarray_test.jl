@@ -62,6 +62,9 @@ raw"\left[
 \end{array}
 \right]", "\r\n"=>"\n")
 
+using OffsetArrays
+@test latexify(OffsetArray(arr, -1:0, 3:4)) == latexify(arr)
+
 arr = [1,2,:(x/y),4]
 
 @test latexify(arr) == replace(
@@ -137,6 +140,3 @@ raw"$x = \left[
 4 \\
 \end{array}
 \right]$", "\r\n"=>"\n")
-
-using OffsetArrays
-@test latexify(OffsetArray(arr, -1:0, 3:4)) == latexify(arr)
