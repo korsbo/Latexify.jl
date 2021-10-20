@@ -94,7 +94,8 @@ array_test = [ex, str]
 @test latexraw(:Inf) == raw"\infty"
 @test latexraw("Inf") == raw"\infty"
 @test latexraw(-Inf) == raw"-\infty"
-
+@test latexraw(:($(3+4im)*a)) == raw"\left( 3+4\textit{i} \right) \cdot a"
+@test latexraw(:(a*$(3+4im))) == raw"a \cdot \left( 3+4\textit{i} \right)"
 
 @test latexify(:((-1) ^ 2)) == replace(
 raw"$\left( -1 \right)^{2}$", "\r\n"=>"\n")
@@ -121,6 +122,8 @@ raw"$\left( \frac{3}{2} \right)^{2}$", "\r\n"=>"\n")
 @test latexraw("1 - 2 - (- 3 - 4)") == raw"1 - 2 - \left(  - 3 - 4 \right)"
 @test latexraw("1 - 2 - (- 3 -(2) + 4)") == raw"1 - 2 - \left(  - 3 - 2 + 4 \right)"
 @test latexraw("1 - 2 - (- 3 -(2 - 8) + 4)") == raw"1 - 2 - \left(  - 3 - \left( 2 - 8 \right) + 4 \right)"
+@test latexraw(:(-$(3+5im))) == raw" - \left( 3+5\textit{i} \right)"
+@test latexraw(:($(3+4im)-$(3+5im))) == raw"3+4\textit{i} - \left( 3+5\textit{i} \right)"
 
 # @test_throws ErrorException latexify("x/y"; env=:raw, bad_kwarg="should error")
 
