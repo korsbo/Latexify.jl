@@ -9,7 +9,18 @@ function latexify(args...; kwargs...)
   return call_result
 end
 
-function latexify(io::IO, args...; rules = vcat(DEFAULT_INSTRUCTIONS, ENV_INSTRUCTIONS, USER_INSTRUCTIONS), kwargs...)
+function latextrace(args...; kwargs...)
+  tio = TracedIO(Function[], IOBuffer(; append=true, read=true))
+  config = (; DEFAULT_CONFIG..., MODULE_CONFIG..., USER_CONFIG..., default_kwargs..., kwargs...)
+  latexify(tio, args...; kwargs...)
+  call_result = LaTeXString(read(tio.io, String))
+  COPY_TO_CLIPBOARD && clipboard(call_result)
+  AUTO_DISPLAY && display(call_result)
+  get(config, :render, false) && render(call_result)
+  return TracedResult(tio.trace, call_result)
+end
+
+function latexify(io::IO, args...; rules = vcat(DEFAULT_INSTRUCTIONS, USER_INSTRUCTIONS, ENV_INSTRUCTIONS, USER_INSTRUCTIONS), kwargs...)
     config = (; descend_counter = [0], DEFAULT_CONFIG..., MODULE_CONFIG..., USER_CONFIG..., default_kwargs..., kwargs...)
     descend(io, config, args, rules)
 end

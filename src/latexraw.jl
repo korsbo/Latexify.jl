@@ -80,7 +80,9 @@ unpack(x) = (head(x), operation(x), arguments(x))
 
 function descend(io::IO, config::NamedTuple, e, rules::Vector{Function}, prevop=:(_nothing))::Nothing
     config[:descend_counter][1] += 1
+    io isa TracedIO && push!(io.trace, x->nothing)
     for rule in rules[end:-1:1]
+        io isa TracedIO && (io.trace[end] = rule) ## Inefficient to overwrite so much but should I care?
         call_matched = rule(io, config, e, rules, prevop)::Bool
         if call_matched
             return nothing

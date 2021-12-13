@@ -46,6 +46,7 @@ include("mdtext.jl")
 include("md.jl")
 
 include("utils.jl")
+include("TracedIO.jl")
 include("config.jl")
 include("latexraw_recipes.jl")
 
