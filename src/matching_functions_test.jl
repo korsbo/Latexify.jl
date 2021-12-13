@@ -1,6 +1,6 @@
 
-const DEFAULT_INSTRUCTIONS = [
-  function report_bad_call(io::IO, config, expr, prevop)
+DEFAULT_INSTRUCTIONS = [
+  function report_bad_call(io::IO, config, expr, rules, prevop)
      println("""
      Unsupported input with
      expr=$expr
@@ -10,7 +10,7 @@ const DEFAULT_INSTRUCTIONS = [
      return false
   return false
   end,
-  # function _unpack_args(io::IO, config, args, prevop)
+  # function _unpack_args(io::IO, config, args, rules, prevop)
   # ### If no function has claimed the tuple, unpack it and try again. 
   # ### This is mainly to unpack the args to `latexify(args...)`. 
   # if args isa Tuple && length(args) == 1
@@ -19,7 +19,7 @@ const DEFAULT_INSTRUCTIONS = [
   # end
   # return false
   # end,
-  function call(io::IO, config, expr, prevop)
+  function call(io::IO, config, expr, rules, prevop)
     if expr isa Expr && head(expr) == :call 
       h, op, args = unpack(expr)
 
@@ -27,18 +27,18 @@ const DEFAULT_INSTRUCTIONS = [
         funcname = string(get(Latexify.function2latex, op, replace(string(op), "_"=>"\\_")))
         write(io, funcname)
       else
-        descend(io, config, op)
+        descend(io, config, op, rules)
       end
       if length(args) >= 1 && head(args[1]) == :parameters
         write(io, "\\left( ")
-        join_descend(io, config, args[2:end], ", ")
+        join_descend(io, config, args[2:end], rules, ", ")
         write(io, "; ")
-        descend(io, config, args[1])
+        descend(io, config, args[1], rules)
         write(io, " \\right)")
         # _arg = "\\left( $(join(descend.(args[2:end]), ", ")); $(descend(args[1])) \\right)"
       else
         write(io, "\\left( ")
-        join_descend(io, config, args, ", ")
+        join_descend(io, config, args, rules, ", ")
         write(io, " \\right)")
         # _arg = "\\left( " * join(descend.(args), ", ") * " \\right)"
       end
@@ -46,16 +46,16 @@ const DEFAULT_INSTRUCTIONS = [
     end
   return false
   end,
-  function _aligned(io::IO, config, expr, prevop)
+  function _aligned(io::IO, config, expr, rules, prevop)
     expr isa Tuple{T, T} where T <: AbstractArray || return false
     display("here")
     return false
   end,
-  # function _sqrt(io::IO, config, ex, prevop)
+  # function _sqrt(io::IO, config, ex, rules, prevop)
   #   operation(ex) == :sqrt ? "\\$(operation(ex)){$(arguments(ex)[1])}" : nothing
   # return false
   # end,
-  # function _abs(io::IO, config, ex, prevop)
+  # function _abs(io::IO, config, ex, rules, prevop)
   #   operation(ex) == :abs ? "\\left\\|$(arguments(ex)[1])\\right\\|" : nothing
   # return false
   # end,
@@ -67,7 +67,7 @@ const DEFAULT_INSTRUCTIONS = [
   #   end
   # return false
   # end,
-  # function _if(io::IO, config, ex, prevop)
+  # function _if(io::IO, config, ex, rules, prevop)
   #   if ex isa Expr && head(ex) == :if
   #     str = build_if_else_body(
   #       ex.args,
@@ -82,7 +82,7 @@ const DEFAULT_INSTRUCTIONS = [
   #   end
   # return false
   # end,
-  # function _elseif(io::IO, config, ex, prevop)
+  # function _elseif(io::IO, config, ex, rules, prevop)
   #   if ex isa Expr && head(ex) == :elseif
   #     str = build_if_else_body(
   #       ex.args,
@@ -93,13 +93,13 @@ const DEFAULT_INSTRUCTIONS = [
   #   end
   # return false
   # end,
-  # function _oneline_function(io::IO, config, ex, prevop)
+  # function _oneline_function(io::IO, config, ex, rules, prevop)
   #   if head(ex) == :function && length(arguments(ex)) == 1
   #     return "$(descend(operation(ex), head(ex))) = $(descend(arguments(ex)[1], head(ex)))"
   #   end
   # return false
   # end,
-  # function _return(io::IO, config, ex, prevop)
+  # function _return(io::IO, config, ex, rules, prevop)
   #   head(ex) == :return && length(arguments(ex)) == 0 ? descend(operation(ex)) : nothing
   # return false
   # end,
@@ -111,7 +111,7 @@ const DEFAULT_INSTRUCTIONS = [
   #   end
   # return false
   # end,
-  # function _type_annotation(io::IO, config, ex, prevop)
+  # function _type_annotation(io::IO, config, ex, rules, prevop)
   #   if head(ex) == :(::)
   #     if length(arguments(ex)) == 0 
   #       return "::$(operation(ex))"
@@ -121,15 +121,15 @@ const DEFAULT_INSTRUCTIONS = [
   #   end
   # return false
   # end,
-  # function _wedge(io::IO, config, ex, prevop)
+  # function _wedge(io::IO, config, ex, rules, prevop)
   #   head(ex) == :(&&) && length(arguments(ex)) == 1 ? "$(descend(operation(ex))) \\wedge $(descend(arguments(ex)[1]))" : nothing
   # return false
   # end,
-  # function _vee(io::IO, config, ex, prevop)
+  # function _vee(io::IO, config, ex, rules, prevop)
   #   head(ex) == :(||) && length(arguments(ex)) == 1 ? "$(descend(operation(ex))) \\vee $(descend(arguments(ex)[1]))" : nothing
   # return false
   # end,
-  # function _negation(io::IO, config, ex, prevop)
+  # function _negation(io::IO, config, ex, rules, prevop)
   #   operation(ex) == :(!) ? "\\neg $(arguments(ex)[1])" : nothing
   # return false
   # end,
@@ -141,7 +141,7 @@ const DEFAULT_INSTRUCTIONS = [
   #   head(x) == :parameters ? join(descend.(vcat(operation(x), arguments(x))), ", ") : nothing
   # return false
   # end,
-  # function _indexing(io::IO, config, x, prevop)
+  # function _indexing(io::IO, config, x, rules, prevop)
   #   if head(x) == :ref
   #       if config[:index] == :subscript
   #           return "$(operation(x))_{$(join(arguments(x), ","))}"
@@ -154,7 +154,7 @@ const DEFAULT_INSTRUCTIONS = [
   #   end
   # return false
   # end,
-  # function _broadcast_macro(io::IO, config, ex, prevop)
+  # function _broadcast_macro(io::IO, config, ex, rules, prevop)
   #   if head(ex) == :macrocall && operation(ex) == Symbol("@__dot__")
   #       return descend(arguments(ex)[end])
   #   end
@@ -166,7 +166,7 @@ const DEFAULT_INSTRUCTIONS = [
   #   end
   # return false
   # end,
-  function number(io::IO, config, x, prevop) 
+  function number(io::IO, config, x, rules, prevop) 
     if x isa Number
       try isinf(x) && write(io, "\\infty") && return true; catch; end
       fmt = config[:fmt]
@@ -178,25 +178,28 @@ const DEFAULT_INSTRUCTIONS = [
     end
   return false
   end,
-  # function rational_expr(io::IO, config, x, prevop) 
-  #   if operation(x) == ://
-  #     if arguments(x)[2] == 1 
-  #       return descend(arguments[1], prevop)
-  #     else
-  #       descend:($(arguments(x)[1])/$(arguments(x)[2])), prevop)
-  #     end
-  #   end
-  # return false
-  # end,
-  # function rational(io::IO, config, x, prevop) 
-  #   if x isa Rational
-  #     str = x.den == 1 ? descend(x.num, prevop) : descend(:($(x.num)/$(x.den)), prevop)
-  #     prevop ∈ [:*, :^] && (str = surround(str))
-  #     return str
-  #   end
-  # return false
-  # end,
-  # function complex(io::IO, config, z, prevop) 
+  function rational_expr(io::IO, config, x, rules, prevop) 
+    if operation(x) == ://
+      if arguments(x)[2] == 1 
+        descend(io, config, arguments(x)[1], rules, prevop)
+        return true
+      else
+        descend(io, config, :($(arguments(x)[1])/$(arguments(x)[2])), rules, prevop)
+        return true
+      end
+    end
+  return false
+  end,
+  function rational(io::IO, config, x, rules, prevop) 
+    if x isa Rational
+      prevop ∈ [:*, :^] && write(io, "\\left( ")
+      x.den == 1 ? descend(io, config, x.num, rules, prevop) : descend(io, config, :($(x.num)/$(x.den)), rules, prevop)
+      prevop ∈ [:*, :^] && write(io, " \\right)")
+      return true
+    end
+  return false
+  end,
+  # function complex(io::IO, config, z, rules, prevop) 
   #   if z isa Complex
   #     str = "$(descend(z.re))$(z.im < 0 ? "-" : "+" )$(descend(abs(z.im)))\\textit{i}"
   #     prevop ∈ [:*, :^] && (str = surround(str))
@@ -204,17 +207,17 @@ const DEFAULT_INSTRUCTIONS = [
   #   end
   # return false
   # end,
-  # function _missing(io::IO, config, x, prevop) 
+  # function _missing(io::IO, config, x, rules, prevop) 
   #   if ismissing(x)
   #     "\\textrm{NA}"
   #   end
   # return false
   # end,
-  # function _nothing(io::IO, config, x, prevop)
+  # function _nothing(io::IO, config, x, rules, prevop)
   #   x === nothing ? "" : nothing
   # return false
   # end,
-  function symbol(io::IO, config, sym, _)
+  function symbol(io::IO, config, sym, rules, _)
     if sym isa Symbol
       str = string(sym == :Inf ? :∞ : sym)
       str = convert_subscript(str)
@@ -224,7 +227,7 @@ const DEFAULT_INSTRUCTIONS = [
     end
   return false
   end,
-  # function _char(io::IO, config, c, args...)
+  # function _char(io::IO, config, c, rules, args...)
   #   c isa Char ? string(c) : nothing
   # return false
   # end,
@@ -253,7 +256,7 @@ const DEFAULT_INSTRUCTIONS = [
   #  end
   # return false
   # end,
-  # function parse_string(io::IO, config, str, prevop)
+  # function parse_string(io::IO, config, str, rules, prevop)
   #   if str isa AbstractString
   #     try
   #         ex = Meta.parse(str)
@@ -287,58 +290,58 @@ const DEFAULT_INSTRUCTIONS = [
   #   str isa LaTeXString  ? str.s : nothing
   # return false
   # end,
-  # function _tuple_expr(io::IO, config, expr, prevop)
+  # function _tuple_expr(io::IO, config, expr, rules, prevop)
   #   head(expr) == :tuple ? join(vcat(operation(expr), arguments(expr)), ", ") : nothing
   # return false
   # end,
-  # function strip_broadcast_dot(io::IO, config, expr, prevop)
+  # function strip_broadcast_dot(io::IO, config, expr, rules, prevop)
   #   h, op, args = unpack(expr)
   #   if expr isa Expr && config[:strip_broadcast] && h == :call && startswith(string(op), '.')
   #     return string(descend(Expr(h, Symbol(string(op)[2:end]), args...), prevop))
   #   end
   # return false
   # end,
-  # function strip_broadcast_dot_call(io::IO, config, expr, prevop)
+  # function strip_broadcast_dot_call(io::IO, config, expr, rules, prevop)
   #   h, op, args = unpack(expr)
   #   if expr isa Expr && config[:strip_broadcast] && h == :. 
   #     return descend(Expr(:call, op, args[1].args...), prevop)
   #   end
   # return false
   # end,
-  # function plusminus(io::IO, config, expr, prevop)
+  # function plusminus(io::IO, config, expr, rules, prevop)
   #   h, op, args = unpack(expr)
   #   if h == :call && op == :±
   #     return "$(descend(args[1], op)) \\pm $(descend(args[2], op))"
   #   end
   # return false
   # end,
-  function division(io::IO, config, expr, prevop)
+  function division(io::IO, config, expr, rules, prevop)
     h, op, args = unpack(expr)
     if h == :call && op == :/
       write(io, "\\frac{")
-      descend(io, config, args[1], op)
+      descend(io, config, args[1], rules, op)
       write(io, "}{")
-      descend(io, config, args[2], op)
+      descend(io, config, args[2], rules, op)
       write(io, "}")
       # "\\frac{$(descend(args[1], op))}{$(descend(args[2], op))}"
       return true
     end
   return false
   end,
-  function multiplication(io::IO, config, expr, prevop)
+  function multiplication(io::IO, config, expr, rules, prevop)
     h, op, args = unpack(expr)
     if h == :call && op == :*
       # join(descend.(args, op), "$(config[:mulsym])")
-      join_descend(io, config, args, config[:mulsym])
+      join_descend(io, config, args, rules, config[:mulsym])
       return true
     end
   return false
   end,
-  function addition(io::IO, config, expr, prevop)
+  function addition(io::IO, config, expr, rules, prevop)
     h, op, args = unpack(expr)
     if h == :call && op == :+
       prevop ∈ [:*, :^] && write(io, "\\left( ")
-      str = join_descend(io, config, args, " + ") 
+      str = join_descend(io, config, args, rules, " + ") 
       # str = replace(str, "+ -"=>"-")
       # prevop ∈ [:*, :^] && (str = surround(str))
       prevop ∈ [:*, :^] && write(io, " \\right)")
@@ -347,7 +350,7 @@ const DEFAULT_INSTRUCTIONS = [
     end
   return false
   end,
-  # function subtraction(io::IO, config, expr, prevop)
+  # function subtraction(io::IO, config, expr, rules, prevop)
   #   # this one is so gnarly because it tries to fix stuff like - - or -(-(x-y))
   #   # -(x) is also a bit different to -(x, y) which does not make things simpler
   #   h, op, args = unpack(expr)
@@ -380,7 +383,7 @@ const DEFAULT_INSTRUCTIONS = [
   #   end
   # return false
   # end,
-  # function pow(io::IO, config, expr, prevop)
+  # function pow(io::IO, config, expr, rules, prevop)
   #   h, op, args = unpack(expr)
   #   if h == :call && op == :^
   #       if operation(args[1]) in Latexify.trigonometric_functions
@@ -393,12 +396,13 @@ const DEFAULT_INSTRUCTIONS = [
   #   end
   # return false
   # end,
-  # function equals(io::IO, config, expr, prevop)
-  #   if head(expr) == :(=) 
-  #     return "$(descend(expr.args[1], expr.head)) = $(descend(expr.args[2], expr.head))"
+  #     write(io, " = ")
+  #     descend(io, config, args[1], h)
+  #     return true
   #   end
+  #   return false
   # end, 
-  # function l_funcs(io::IO, config, ex, prevop)
+  # function l_funcs(io::IO, config, ex, rules, prevop)
   #   if head(ex) == :call && startswith(string(operation(ex)), "l_")
   #     l_func = string(operation(ex))[3:end]
   #     return "\\$(l_func){$(join(descend.(arguments(ex), prevop), "}{"))}"
@@ -406,7 +410,6 @@ const DEFAULT_INSTRUCTIONS = [
   # return false
   # end,
 ]
-
 
 function build_if_else_body(io::IO, config, args, ifstr, elseifstr, elsestr)
       _args = filter(x -> !(x isa LineNumberNode), args)

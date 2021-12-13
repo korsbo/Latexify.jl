@@ -8,39 +8,10 @@ function latexify(args...; kwargs...)
   get(config, :render, false) && render(call_result)
   return call_result
 end
-function latexify(io::IO, args...; kwargs...)
-    ## Let potential recipes transform the arguments.
-    # kwargs = merge(default_kwargs, kwargs)
 
-    # empty!(CONFIG)
-    # merge!(CONFIG, DEFAULT_CONFIG, default_kwargs, kwargs)
-    # ((_args,), _kwargs) = apply_recipe(args...; kwargs...)
-    # merge!(CONFIG, _kwargs)
+function latexify(io::IO, args...; rules = vcat(DEFAULT_INSTRUCTIONS, ENV_INSTRUCTIONS, USER_INSTRUCTIONS), kwargs...)
     config = (; descend_counter = [0], DEFAULT_CONFIG..., MODULE_CONFIG..., USER_CONFIG..., default_kwargs..., kwargs...)
-    
-    
-  
-  # if env==:auto
-  #   call_result = iterate_top_matcher(args, CONFIG)
-  # else
-  #   func = OUTPUTFUNCTIONS[env]
-  #   call_result = func(args...; CONFIG...)
-  # end
-    # _args = length(args) == 1 ? args[1] : args
-    empty!(INSTRUCTIONS)
-    append!(INSTRUCTIONS, DEFAULT_INSTRUCTIONS, ENV_INSTRUCTIONS, USER_INSTRUCTIONS)
-    
-    # iterate_top_matcher(io, config, args, :_nothing)
-
-    # for f in env_instructions[end:-1:1]
-    #     call_matched = f(io, config, e, prevop)::Bool
-    #     if call_matched ## then we're done and io is populated!
-    #         return nothing
-    #     end
-    # end
-    # call_matched || throw(ArgumentError("No suitable environment found for $e"))
-    descend(io, config, args)
-    # latexraw(io, config, args)
+    descend(io, config, args, rules)
 end
 
 function iterate_top_matcher(io, config, args, prevop=:_nothing)
@@ -98,17 +69,17 @@ const OUTPUTFUNCTIONS = (;
                             )
                             
 const ENV_INSTRUCTIONS = [
-  function _auto_environment(io::IO, config, x, prevop)
+  function _auto_environment(io::IO, config, x, rules, prevop)
     if x isa Tuple{AutoEnv} || (x isa Tuple && config[:descend_counter] == [1])
       args = x isa Tuple{AutoEnv} ? x[1].args : x
       _default_env = x isa Tuple{AutoEnv} ? x[1].env : :_nothing
       env = get(config, :env, _default_env)
       if haskey(OUTPUTFUNCTIONS, env) 
-        descend(io, config, (OUTPUTFUNCTIONS[env](args),), prevop) 
+        descend(io, config, (OUTPUTFUNCTIONS[env](args),), rules, prevop) 
       elseif args isa Tuple{Vector, Vector}
-        descend(io, config, (Align(hcat(args[1], args[2])),))
+        descend(io, config, (Align(hcat(args[1], args[2])),), rules)
       elseif length(args) == 1
-        descend(io, config, (Inline(args[1]),))
+        descend(io, config, (Inline(args[1]),), rules)
       else
         throw(MethodError("Unspported argument to `latexify`: $args"))
       end
@@ -116,35 +87,35 @@ const ENV_INSTRUCTIONS = [
     end
     return false
   end,
-  function _no_env(io::IO, config, x, prevop)
+  function _no_env(io::IO, config, x, rules, prevop)
     if x isa Tuple{NoEnv}
-      descend(io, config, x[1].args, prevop)
+      descend(io, config, x[1].args, rules, prevop)
       return true
     end
     return false
   end,
-  function _inline(io::IO, config, x, prevop)
+  function _inline(io::IO, config, x, rules, prevop)
     if x isa Tuple{Inline}
       write(io, "\$")
-      descend(io, config, x[1].args, prevop)
+      descend(io, config, x[1].args, rules, prevop)
       write(io, "\$")
       return true
     end
     return false
   end,
-  function _align(io::IO, config, x, prevop)
+  function _align(io::IO, config, x, rules, prevop)
     if x isa Tuple{Align}
       write(io, "\\begin{align}\n")
-      join_matrix(io, config, x[1].args, " &= ")
+      join_matrix(io, config, x[1].args, " &= ", rules)
       write(io, "\n\\end{align}")
       return true
     end
     return false
   end,
-  function _equation(io::IO, config, x, prevop)
+  function _equation(io::IO, config, x, rules, prevop)
     if x isa Tuple{Equation}
       write(io, "\\begin{equation}\n")
-      descend(io, config, x[1].args, prevop)
+      descend(io, config, x[1].args, rules, prevop)
       write(io, "\n\\end{equation}")
       return true
     end
@@ -152,15 +123,15 @@ const ENV_INSTRUCTIONS = [
   end,
 ]
 
-function join_matrix(io, config, m, delim = " & ", eol="\\\\\n")
+function join_matrix(io, config, m, rules, delim = " & ", eol="\\\\\n")
    nrows, ncols = size(m)
    mime = MIME("text/latexify")
    for (i, row) in enumerate(eachrow(m))
        for x in row[1:end-1]
-            descend(io, config, x)
+            descend(io, config, x, rules)
             write(io, delim)
        end
-       descend(io, config, row[end])
+       descend(io, config, row[end], rules)
        i != nrows ? write(io, eol) : write(io, "\n")
     end
     return nothing

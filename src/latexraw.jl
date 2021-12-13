@@ -78,10 +78,10 @@ head(ex::Expr) = ex.head
 
 unpack(x) = (head(x), operation(x), arguments(x))
 
-function descend(io::IO, config::NamedTuple, e, prevop=:(_nothing))::Nothing
+function descend(io::IO, config::NamedTuple, e, rules::Vector{Function}, prevop=:(_nothing))::Nothing
     config[:descend_counter][1] += 1
-    for f in INSTRUCTIONS[end:-1:1]
-        call_matched = f(io, config, e, prevop)::Bool
+    for rule in rules[end:-1:1]
+        call_matched = rule(io, config, e, rules, prevop)::Bool
         if call_matched
             return nothing
             break
@@ -92,10 +92,10 @@ end
 
 surround(x) = "\\left( $x \\right)"
 
-function join_descend(io::IO, config, args, delim; prevop=nothing) 
+function join_descend(io::IO, config, args, rules, delim; prevop=nothing) 
   for arg in args[1:end-1]
-    descend(io, config, arg, prevop)
+    descend(io, config, arg, rules, rules)
     write(io, delim)
   end
-  descend(io, config, args[end], prevop)
+  descend(io, config, args[end], rules, prevop)
 end
