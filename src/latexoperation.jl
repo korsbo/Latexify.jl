@@ -125,10 +125,11 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
         return "$(function2latex[op])\\left( $(join(args[2:end], ", ")) \\right)"
     end
 
-    op == :sqrt && return "\\$op{$(args[2])}"
-    op == :√ && return "$op{$(args[2])}"
     op == :abs && return "\\left\\|$(args[2])\\right\\|"
     op == :exp && return "e^{$(args[2])}"
+    op in (:sqrt, :√) && return "\\sqrt{$(args[2])}"
+    op == :∛ && return "\\sqrt[3]{$(args[2])}"
+    op == :∜ && return "\\sqrt[4]{$(args[2])}"
 
     ## Leave math italics for single-character operator names (e.g., f(x)).
     opname = replace(string(op), '_'=>raw"\_")
