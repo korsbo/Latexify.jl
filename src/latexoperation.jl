@@ -126,6 +126,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
     end
 
     op == :sqrt && return "\\$op{$(args[2])}"
+    op == :√ && return "$op{$(args[2])}"
     op == :abs && return "\\left\\|$(args[2])\\right\\|"
     op == :exp && return "e^{$(args[2])}"
 
