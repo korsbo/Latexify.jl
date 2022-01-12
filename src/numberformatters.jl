@@ -29,7 +29,7 @@ end
 (f::StyledNumberFormatter)(x) = string(x)
 function (f::StyledNumberFormatter)(x::AbstractFloat)
     s = @eval @sprintf $(f.fmt) $x
-    return replace(s, float_regex => s"\g<mantissa> \\mathrm{\g<e_or_E>} \g<sign_exp>\g<mag_exp>")
+    return replace(s, float_regex => s"\g<mantissa> \\mathrm{\g<e_or_E>}{\g<sign_exp>\g<mag_exp>}")
 end
 
 (f::StyledNumberFormatter)(x::Unsigned) = "\\mathtt{0x$(string(x; base=16, pad=2sizeof(x)))}"
