@@ -68,15 +68,35 @@ function _latexraw(inputex::Expr; convert_unicode=true, kwargs...)
     function recurseexp!(ex)
         prevOp = Vector{Symbol}(undef, length(ex.args))
         fill!(prevOp, :none)
-        for i in 1:length(ex.args)
-            if isa(ex.args[i], Expr)
-                length(ex.args[i].args) > 1 && ex.args[i].args[1] isa Symbol && (prevOp[i] = ex.args[i].args[1])
-                ex.args[i] = recurseexp!(ex.args[i])
-            elseif ex.args[i] isa AbstractArray
-                ex.args[i] = latexraw(ex.args[i]; kwargs...)
+        if ex.head==:call && ex.args[1] in (:sum, :prod) && ex.args[2] isa Expr && ex.args[2].head == :generator
+            op = ex.args[1]
+            term = latexraw(ex.args[2].args[1])
+            gen = ex.args[2].args[2]
+            itervar = latexraw(gen.args[1])
+            if gen.args[2] isa Expr && gen.args[2].head == :call && gen.args[2].args[1] == :(:)
+                # sum(x_n for n in n_0:N) => \sum_{n=n_0}^{N} x_n
+                lower = latexraw(gen.args[2].args[2])
+                upper = latexraw(gen.args[2].args[end])
+                return "\\$(op)_{$(itervar) = $(lower)}^{$(upper)} $term"
+            elseif gen.args[2] in (:_, :(:))
+                # sum(x_n for n in :) => \sum_{n} x_n
+                return "\\$(op)_{$(itervar)} $term"
+            else
+                # sum(x_n for n in N) => \sum_{n \in N} x_n
+                set = latexraw(gen.args[2])
+                return "\\$(op)_{$(itervar) \\in $set} $term"
             end
+        else
+            for i in 1:length(ex.args)
+                if isa(ex.args[i], Expr)
+                    length(ex.args[i].args) > 1 && ex.args[i].args[1] isa Symbol && (prevOp[i] = ex.args[i].args[1])
+                    ex.args[i] = recurseexp!(ex.args[i])
+                elseif ex.args[i] isa AbstractArray
+                    ex.args[i] = latexraw(ex.args[i]; kwargs...)
+                end
+            end
+            return latexoperation(ex, prevOp; convert_unicode=convert_unicode, kwargs...)
         end
-        return latexoperation(ex, prevOp; convert_unicode=convert_unicode, kwargs...)
     end
     ex = deepcopy(inputex)
     str = recurseexp!(ex)

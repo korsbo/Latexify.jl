@@ -130,6 +130,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
     op in (:sqrt, :√) && return "\\sqrt{$(args[2])}"
     op == :∛ && return "\\sqrt[3]{$(args[2])}"
     op == :∜ && return "\\sqrt[4]{$(args[2])}"
+    op in (:sum, :prod) && return "\\$(op) $(args[2])"
 
     ## Leave math italics for single-character operator names (e.g., f(x)).
     opname = replace(string(op), '_'=>raw"\_")

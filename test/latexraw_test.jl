@@ -103,6 +103,17 @@ array_test = [ex, str]
 @test latexraw(:($(3+4im)*a)) == raw"\left( 3+4\textit{i} \right) \cdot a"
 @test latexraw(:(a*$(3+4im))) == raw"a \cdot \left( 3+4\textit{i} \right)"
 
+@test latexraw(:(sum(x_n))) == raw"\sum x_{n}"
+@test latexraw(:(sum(x_n for n in _))) == raw"\sum_{n} x_{n}"
+@test latexraw(:(sum(x_n for n in :))) == raw"\sum_{n} x_{n}"
+@test latexraw(:(sum(x_n for n in N))) == raw"\sum_{n \in N} x_{n}"
+@test latexraw(:(sum(x_n for n in n_0:N))) == raw"\sum_{n = n_{0}}^{N} x_{n}"
+@test latexraw(:(prod(x_n))) == raw"\prod x_{n}"
+@test latexraw(:(prod(x_n for n in _))) == raw"\prod_{n} x_{n}"
+@test latexraw(:(prod(x_n for n in :))) == raw"\prod_{n} x_{n}"
+@test latexraw(:(prod(x_n for n in N))) == raw"\prod_{n \in N} x_{n}"
+@test latexraw(:(prod(x_n for n in n_0:N))) == raw"\prod_{n = n_{0}}^{N} x_{n}"
+
 @test latexify(:((-1) ^ 2)) == replace(
 raw"$\left( -1 \right)^{2}$", "\r\n"=>"\n")
 @test latexify(:($(1 + 2im) ^ 2)) == replace(
@@ -110,9 +121,8 @@ raw"$\left( 1+2\textit{i} \right)^{2}$", "\r\n"=>"\n")
 @test latexify(:($(3 // 2) ^ 2)) == replace(
 raw"$\left( \frac{3}{2} \right)^{2}$", "\r\n"=>"\n")
 
-
 ### Test broadcasting
-@test latexraw(:(sum.((a, b)))) == raw"\mathrm{sum}\left( a, b \right)"
+@test latexraw(:(fun.((a, b)))) == raw"\mathrm{fun}\left( a, b \right)"
 
 
 
