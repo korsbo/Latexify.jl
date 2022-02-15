@@ -179,6 +179,16 @@ They can for example be useful for latexifying simple mathsy functions like
 lstr = @latexrun f(x; y=2) = x/y
 ```
 
+The arguments to the macro can be interpolated with `$` to use the actual
+value, instead of the representation:
+```julia
+julia> @latexify x = abs2(-3)
+L"$x = \mathrm{abs2}\left( -3 \right)$"
+
+julia> @latexify x = $(abs2(-3))
+L"$x = 9$"
+```
+
 ## External rendering
 While LaTeXStrings already render nicely in many IDEs or in Jupyter, they do not render in the REPL. Therefore, we provide a function `render(str)` which generates a standalone PDF using LuaLaTeX and opens that file in your default PDF viewer.
 
