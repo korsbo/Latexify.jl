@@ -21,5 +21,13 @@ l5 = @latexify x = abs2(-3)
 l6 = @latexify x = $(abs2(-3))
 @test l6 == raw"$x = 9$"
 
+l7 = @latexrun x = abs2(-3)
+@test l7 == raw"$x = \mathrm{abs2}\left( -3 \right)$"
+@test x == 9
+
+l8 = @latexrun x = $(abs2(-3))
+@test l8 == raw"$x = 9$"
+@test x == 9
+
 @test latexify(:(@hi(x / y))) == replace(
 raw"$\mathrm{@hi}\left( \frac{x}{y} \right)$", "\r\n"=>"\n")
