@@ -36,7 +36,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
         str=""
         for i in 2:length(args)
             arg = args[i]
-            (prevOp[i] in [:+, :-, :±] || ex.args[i] isa Complex) && (arg = "\\left( $arg \\right)")
+            (prevOp[i] in [:+, :-, :±] || (ex.args[i] isa Complex && !iszero(ex.args[i].re))) && (arg = "\\left( $arg \\right)")
             str = string(str, arg)
             i != length(args) && (str *= cdot ? " \\cdot " : " ")
         end
@@ -57,12 +57,12 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
                 return " + " * string(args[2])[2:end]
             elseif prevOp[2] == :none && string(args[2])[1] == '+'
                 return " - " * string(args[2])[2:end]
-            elseif prevOp[2] in [:+, :-, :±] || (ex.args[2] isa Complex)
+            elseif prevOp[2] in [:+, :-, :±] || (ex.args[2] isa Complex && !iszero(ex.args[2].re))
                 return " - \\left( $(args[2]) \\right)"
             end
             return " - $(args[2])"
         end
-        (prevOp[3] in [:+, :-, :±] || ex.args[3] isa Complex) && (args[3] = "\\left( $(args[3]) \\right)")
+        (prevOp[3] in [:+, :-, :±] || (ex.args[3] isa Complex && !iszero(ex.args[3].re))) && (args[3] = "\\left( $(args[3]) \\right)")
 
         if prevOp[3] == :none && string(args[3])[1] == '-'
             return "$(args[2]) + " * string(args[3])[2:end]
@@ -75,7 +75,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
             str = get(function2latex, prevOp[2], "\\$(prevOp[2])")
             return replace(args[2], str => "$(str)^{$(args[3])}")
         end
-        if (prevOp[2] != :none) || (ex.args[2] isa Real && sign(ex.args[2]) == -1) || (ex.args[2] isa Complex) || (ex.args[2] isa Rational)
+        if (prevOp[2] != :none) || (ex.args[2] isa Real && sign(ex.args[2]) == -1) || (ex.args[2] isa Complex && !iszero(ex.args[2].re)) || (ex.args[2] isa Rational)
             args[2]="\\left( $(args[2]) \\right)"
         end
         return "$(args[2])^{$(args[3])}"

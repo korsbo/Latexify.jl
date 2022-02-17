@@ -80,7 +80,10 @@ array_test = [ex, str]
 @test latexraw(:(∛(π + 1))) == raw"\sqrt[3]{\pi + 1}"
 @test latexraw(:(∜(x))) == raw"\sqrt[4]{x}"
 @test latexraw(:(∜(π + 1))) == raw"\sqrt[4]{\pi + 1}"
-@test latexraw(complex(1,-1)) == raw"1-1\textit{i}"
+@test latexraw(complex(1,-1)) == raw"1-1\mathit{i}"
+@test latexraw(im) == raw"\mathit{i}"
+@test latexraw(-im) == raw"-\mathit{i}"
+@test latexraw(2im) == raw"2\mathit{i}"
 @test latexraw(1//2) == raw"\frac{1}{2}"
 @test latexraw(missing) == raw"\textrm{NA}"
 @test latexraw("x[2]") == raw"x\left[2\right]"
@@ -100,8 +103,8 @@ array_test = [ex, str]
 @test latexraw(:Inf) == raw"\infty"
 @test latexraw("Inf") == raw"\infty"
 @test latexraw(-Inf) == raw"-\infty"
-@test latexraw(:($(3+4im)*a)) == raw"\left( 3+4\textit{i} \right) \cdot a"
-@test latexraw(:(a*$(3+4im))) == raw"a \cdot \left( 3+4\textit{i} \right)"
+@test latexraw(:($(3+4im)*a)) == raw"\left( 3+4\mathit{i} \right) \cdot a"
+@test latexraw(:(a*$(3+4im))) == raw"a \cdot \left( 3+4\mathit{i} \right)"
 
 @test latexraw(:(sum(x_n))) == raw"\sum x_{n}"
 @test latexraw(:(sum(x_n for n in _))) == raw"\sum_{n} x_{n}"
@@ -117,7 +120,7 @@ array_test = [ex, str]
 @test latexify(:((-1) ^ 2)) == replace(
 raw"$\left( -1 \right)^{2}$", "\r\n"=>"\n")
 @test latexify(:($(1 + 2im) ^ 2)) == replace(
-raw"$\left( 1+2\textit{i} \right)^{2}$", "\r\n"=>"\n")
+raw"$\left( 1+2\mathit{i} \right)^{2}$", "\r\n"=>"\n")
 @test latexify(:($(3 // 2) ^ 2)) == replace(
 raw"$\left( \frac{3}{2} \right)^{2}$", "\r\n"=>"\n")
 
@@ -138,8 +141,8 @@ raw"$\left( \frac{3}{2} \right)^{2}$", "\r\n"=>"\n")
 @test latexraw("1 - 2 - (- 3 - 4)") == raw"1 - 2 - \left(  - 3 - 4 \right)"
 @test latexraw("1 - 2 - (- 3 -(2) + 4)") == raw"1 - 2 - \left(  - 3 - 2 + 4 \right)"
 @test latexraw("1 - 2 - (- 3 -(2 - 8) + 4)") == raw"1 - 2 - \left(  - 3 - \left( 2 - 8 \right) + 4 \right)"
-@test latexraw(:(-$(3+5im))) == raw" - \left( 3+5\textit{i} \right)"
-@test latexraw(:($(3+4im)-$(3+5im))) == raw"3+4\textit{i} - \left( 3+5\textit{i} \right)"
+@test latexraw(:(-$(3+5im))) == raw" - \left( 3+5\mathit{i} \right)"
+@test latexraw(:($(3+4im)-$(3+5im))) == raw"3+4\mathit{i} - \left( 3+5\mathit{i} \right)"
 
 # @test_throws ErrorException latexify("x/y"; env=:raw, bad_kwarg="should error")
 
@@ -148,6 +151,8 @@ raw"$\left( \frac{3}{2} \right)^{2}$", "\r\n"=>"\n")
 raw"3 \cdot \left( a < b \leq c < d \leq e > f \leq g \leq h < i = j = k \neq l \neq m \right)"
 
 
+#### Test the imaginary_unit keyword option
+@test latexraw(5im; imaginary_unit="\\textit{i}") == raw"5\textit{i}"
 
 #### Test the fmt keyword option
 @test latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:align, fmt="%.2e") == replace(
