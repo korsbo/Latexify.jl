@@ -16,13 +16,13 @@ l4 = @latexify dummyfunc2(::Number; y=1, z=3) = x^2/y + z
 @test l4 == raw"$\mathrm{dummyfunc2}\left( ::Number; y = 1, z = 3 \right) = \frac{x^{2}}{y} + z$"
 
 l5 = @latexify x = abs2(-3)
-@test l5 == raw"$x = \mathrm{abs2}\left( -3 \right)$"
+@test l5 == raw"$x = \left|-3\right|^{2}$"
 
 l6 = @latexify x = $(abs2(-3))
 @test l6 == raw"$x = 9$"
 
 l7 = @latexrun x = abs2(-3)
-@test l7 == raw"$x = \mathrm{abs2}\left( -3 \right)$"
+@test l7 == raw"$x = \left|-3\right|^{2}$"
 @test x == 9
 
 l8 = @latexrun x = $(abs2(-3))
