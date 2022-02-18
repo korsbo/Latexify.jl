@@ -114,7 +114,14 @@ _latexraw(i::Nothing; kwargs...) = ""
 _latexraw(i::SubString; kwargs...) = latexraw(Meta.parse(i); kwargs...)
 _latexraw(i::SubString{LaTeXStrings.LaTeXString}; kwargs...) = i
 _latexraw(i::Rational; kwargs...) = i.den == 1 ? latexraw(i.num; kwargs...) : latexraw(:($(i.num)/$(i.den)); kwargs...)
-_latexraw(z::Complex; kwargs...) = LaTeXString("$(latexraw(z.re;kwargs...))$(z.im < 0 ? "-" : "+" )$(latexraw(abs(z.im);kwargs...))\\textit{i}")
+function _latexraw(z::Complex; kwargs...)
+    if iszero(z.re)
+        isone(z.im) && return LaTeXString(get(kwargs, :imaginary_unit, "\\mathit{i}"))
+        isone(-z.im) && return LaTeXString("-$(get(kwargs, :imaginary_unit, "\\mathit{i}"))")
+        return LaTeXString("$(latexraw(z.im))$(get(kwargs, :imaginary_unit, "\\mathit{i}"))")
+    end
+    return LaTeXString("$(latexraw(z.re;kwargs...))$(z.im < 0 ? "-" : "+" )$(latexraw(abs(z.im);kwargs...))$(get(kwargs, :imaginary_unit, "\\mathit{i}"))")
+end
 #latexraw(i::DataFrames.DataArrays.NAtype) = "\\textrm{NA}"
 _latexraw(str::LaTeXStrings.LaTeXString; kwargs...) = str
 
