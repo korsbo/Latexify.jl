@@ -105,8 +105,6 @@ array_test = [ex, str]
 @test latexraw(-Inf) == raw"-\infty"
 @test latexraw(:($(3+4im)*a)) == raw"\left( 3+4\mathit{i} \right) \cdot a"
 @test latexraw(:(a*$(3+4im))) == raw"a \cdot \left( 3+4\mathit{i} \right)"
-@test latexraw(:($(3+4im)*a)) == raw"\left( 3+4\textit{i} \right) \cdot a"
-@test latexraw(:(a*$(3+4im))) == raw"a \cdot \left( 3+4\textit{i} \right)"
 @test latexraw(:(abs(x))) == raw"\left|x\right|"
 @test latexraw(:(abs2(x))) == raw"\left|x\right|^{2}"
 @test latexraw(:(norm(x))) == raw"\left\|x\right\|"
