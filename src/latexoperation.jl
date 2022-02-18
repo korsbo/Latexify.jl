@@ -125,7 +125,15 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
         return "$(function2latex[op])\\left( $(join(args[2:end], ", ")) \\right)"
     end
 
-    op == :abs && return "\\left\\|$(args[2])\\right\\|"
+    op == :abs && return "\\left|$(args[2])\\right|"
+    op == :abs2 && return "\\left|$(args[2])\\right|^{2}"
+    op == :floor && return "\\left\\lfloor $(last(args))\\right\\rfloor "
+    op == :ceil && return "\\left\\lceil $(last(args))\\right\\rceil "
+    op == :round && return "\\left\\lfloor $(last(args))\\right\\rceil "
+    if op == :norm
+        length(args) == 2 && return "\\left\\|$(args[2])\\right\\|"
+        return "\\left\\|$(args[2])\\right\\|_{$(args[3])}"
+    end
     op == :exp && return "e^{$(args[2])}"
     op in (:sqrt, :√) && return "\\sqrt{$(args[2])}"
     op == :∛ && return "\\sqrt[3]{$(args[2])}"
