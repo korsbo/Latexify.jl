@@ -33,7 +33,6 @@ end
 \documentclass[varwidth=100cm]{standalone}
 \usepackage{amssymb}
 \usepackage{amsmath}
-
 \begin{document}
 {
     \Large
@@ -58,3 +57,22 @@ end
 }
 \end{document}
 """, "\r\n"=>"\n")
+
+Latexify._writetex(L"\qty{135}{nm}"; name=name, documentclass=("article", "a4paper"), packages=("siunitx",))
+tex = open("$(name).tex") do f
+    read(f, String)
+end
+@test tex == replace(raw"""
+\documentclass[a4paper]{article}
+\usepackage{siunitx}
+\begin{document}
+{
+    \Large
+    $\qty{135}{nm}$
+}
+\end{document}
+""", "\r\n"=>"\n")
+
+@test Latexify._packagename("hi") == "{hi}"
+@test Latexify._packagename(("hi", "x=5")) == "[x=5]{hi}"
+@test Latexify._packagename(("hi", "x=5", "y")) == "[x=5, y]{hi}"

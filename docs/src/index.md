@@ -218,6 +218,17 @@ latexify(:(x/y)) |> s -> render(s, MIME("image/png"))
 
 PNG and SVG outputs rely on [dvipng](http://www.nongnu.org/dvipng/) and [dvisvgm](https://dvisvgm.de/), respectively.
 
+If your code requires specific packages or document classes to render
+correctly, you can supply those as keyword arguments:
+
+```julia
+L"\qty{1.25}{nm}" |> render(s, MIME("image/png"); documentclass="article", packages=("microtype", ("siunitx", exponent-product="\cdot"))
+```
+
+The arguments to these are either strings, or tuples of strings where the first
+one is the name of the package or class, and any further are optional
+arguments.
+
 ## Legacy support
 
 Latexify.jl has stopped supporting Julia versions older than 0.7. This does not mean that you cannot use Latexify with earlier versions, just that these will not get new features. Latexify.jl's release v0.4.1 was the last which supported Julia 0.6. Choose that release in the dropdown menu if you want to see that documentation.
