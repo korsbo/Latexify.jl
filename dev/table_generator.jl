@@ -34,6 +34,7 @@ keyword_arguments = [
     KeywordArgument(:head, [:mdtable, :tabular], "`Array`", "`[]`", "Add a header to the table. It will error if it is not of the right length (unless empty). ", [:Any]),
     KeywordArgument(:side, [:mdtable, :tabular], "`Array`", "`[]`", "Add a leftmost column to the table. It will error if it is not of the right length (unless empty). ", [:Any]),
     KeywordArgument(:fmt, [:mdtable, :tabular, :align, :array, :raw, :inline], "format string", "`\"\"`", "Format number output in accordence with Printf. Example: \"%.2e\"", [:Any]),
+    KeywordArgument(:imaginary_unit, [:mdtable, :tabular, :align, :array, :raw, :inline], "`String`", "`\"\\\\mathit{i}\"`", "The symbol to use to represent the imaginary unit", [:Any]),
     KeywordArgument(:escape_underscores, [:mdtable, :mdtext], "`Bool`", "`false`", "Prevent underscores from being interpreted as formatting.", [:Any]),
     KeywordArgument(:convert_unicode, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Bool`", "`true`", "Convert unicode characters to latex commands, for example `α` to `\\alpha`", [:Any]),
     KeywordArgument(:cdot, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Bool`", "`true`", "Toggle between using `\\cdot` or just a space to represent multiplication.", [:Any]),
@@ -60,7 +61,7 @@ keyword_arguments = [
 
 #=     if any(x->x.types != [:Any], list) && types =#
 #=         head --> ["Keyword", "Values", "Default", "Applicable types", "Description"] =#
-#=         return hcat(keys, values, defaults, applicable_types, descriptions) =# 
+#=         return hcat(keys, values, defaults, applicable_types, descriptions) =#
 #=     else =#
 #=         head --> ["Keyword", "Values", "Default", "Description"] =#
 #=         return hcat(keys, values, defaults, descriptions) =#
