@@ -9,7 +9,7 @@ using Printf
 using Formatting
 
 export latexify, md, copy_to_clipboard, auto_display, set_default, get_default,
-    reset_default, @latexrecipe, render, @latexify, @latexrun
+    reset_default, @latexrecipe, render, @latexify, @latexrun, @latexdefine
 
 ## Allow some backwards compatibility until its time to deprecate.
 export latexequation, latexarray, latexalign, latexraw, latexinline, latextabular, mdtable
@@ -73,7 +73,7 @@ end
 """
     @append_latexify_test!(fname, expr)
 
-Generate a Latexify test and append it to the file `fname`. 
+Generate a Latexify test and append it to the file `fname`.
 
 The expression `expr` should return a string when evaluated.
 
@@ -83,7 +83,7 @@ Latexify.@append_latexify_test!("./tests/latexify_tests.jl", latexify(:(x/y)))
 ```
 
 The macro returns the output of the expression and can often be rendered
-for a visual check that the test itself is ok. 
+for a visual check that the test itself is ok.
 ```
 Latexify.@append_latexify_test!("./tests/latexify_tests.jl", latexify(:(x/y))) |> render
 ```
@@ -93,7 +93,7 @@ macro append_latexify_test!(fname, expr)
     return :(
     str = "@test $($(string(expr))) == replace(\nraw\"$($(esc(expr)))\", \"\\r\\n\"=>\"\\n\")\n\n";
     open($fname, "a") do f
-        write(f,str) 
+        write(f,str)
     end;
     $(esc(expr))
     )
