@@ -115,6 +115,10 @@ array_test = [ex, str]
 @test latexraw(:(floor(Int64, x))) == raw"\left\lfloor x\right\rfloor "
 @test latexraw(:(round(x))) == raw"\left\lfloor x\right\rceil "
 @test latexraw(:(round(Int64, x))) == raw"\left\lfloor x\right\rceil "
+@test latexraw(:(1*(1 .+ 1))) == raw"1 \cdot \left( 1 + 1 \right)"
+@test latexraw(:(1*(1 .- 1))) == raw"1 \cdot \left( 1 - 1 \right)"
+@test latexraw(:(1-(1 .+ 1))) == raw"1 - \left( 1 + 1 \right)"
+@test latexraw(:(1-(1 .- 1))) == raw"1 - \left( 1 - 1 \right)"
 
 @test latexraw(:(sum(x_n))) == raw"\sum x_{n}"
 @test latexraw(:(sum(x_n for n in _))) == raw"\sum_{n} x_{n}"
