@@ -30,7 +30,7 @@ l8 = @latexrun x = $(abs2(-3))
 @test x == 9
 
 l9 = @latexdefine x = abs2(-2)
-@test l9 == raw"$x = \left|-2\right|^{2} = 4"
+@test l9 == raw"$x = \left|-2\right|^{2} = 4$"
 @test x == 4
 
 @test latexify(:(@hi(x / y))) == replace(
