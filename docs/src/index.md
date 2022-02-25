@@ -169,21 +169,34 @@ and to reset your changes, use
 reset_default()
 ```
 ## Macros
-Two macros are exported. 
+Three macros are exported. 
 
 - `@latexify` simply latexifies the expression that you provide to it, similar to `latexify(:(...))`.
 - `@latexrun` both executes and latexifies the given expression. 
+- `@latexdefine` executes the expression, and latexifies the expression together with the its value
 
 They can for example be useful for latexifying simple mathsy functions like
 ```julia
-lstr = @latexrun f(x; y=2) = x/y
+julia> lstr = @latexrun f(x; y=2) = x/y
+L"$f\left( x; y = 2 \right) = \frac{x}{y}$"
+
+julia> f(1)
+0.5
+```
+
+```julia
+julia> @latexdefine x = 1/2
+L"$x = \frac{1}{2} = 0.5
+
+julia> x
+0.5
 ```
 
 The arguments to the macro can be interpolated with `$` to use the actual
 value, instead of the representation:
 ```julia
 julia> @latexify x = abs2(-3)
-L"$x = \mathrm{abs2}\left( -3 \right)$"
+L"$x = \left|-3\right|^{2}$"
 
 julia> @latexify x = $(abs2(-3))
 L"$x = 9$"
