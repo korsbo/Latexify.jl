@@ -33,5 +33,9 @@ l9 = @latexdefine x = abs2(-2)
 @test l9 == raw"$x = \left|-2\right|^{2} = 4$"
 @test x == 4
 
+l10 = @latexdefine x = $(abs2(-2))
+@test l10 == raw"$x = 4 = 4$"
+@test x == 4
+
 @test latexify(:(@hi(x / y))) == replace(
 raw"$\mathrm{@hi}\left( \frac{x}{y} \right)$", "\r\n"=>"\n")
