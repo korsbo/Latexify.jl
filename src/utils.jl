@@ -71,7 +71,7 @@ function best_displayable()
     for mime_type in priority_list
         displayable(mime_type) && return mime_type
     end
-    return MIME("image/pdf")
+    return MIME("application/pdf")
 end
 
 
