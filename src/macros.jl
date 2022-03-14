@@ -15,8 +15,12 @@ L"\$x^{2} + 1.5\$"
 
 See also [`latexify`](@ref), [`@latexrun`](@ref), [`@latexdefine`](@ref).
 """
-macro latexify(expr)
-    return esc(:(latexify($(Meta.quot(expr)))))
+macro latexify(expr, kwargs...)
+    return esc(
+        Expr(
+            :call, :latexify, Expr(:parameters, _extractparam.(kwargs)...), Meta.quot(expr)
+        ),
+    )
 end
 
 """
@@ -34,18 +38,18 @@ julia> y
 ```
 See also [`@latexify`](@ref), [`@latexdefine`](@ref).
 """
-macro latexrun(expr)
+macro latexrun(expr, kwargs...)
     return esc(
         Expr(
             :block,
-            postwalk(expr) do ex
-                if ex isa Expr && ex.head == :$
-                    return ex.args[1]
-                end
-                return ex
-            end,
-            :(latexify($(Meta.quot(expr)))),
-        )
+            _executable(expr),
+            Expr(
+                :call,
+                :latexify,
+                Expr(:parameters, _extractparam.(kwargs)...),
+                Meta.quot(expr),
+            ),
+        ),
     )
 end
 
@@ -65,19 +69,25 @@ julia> y
 ```
 See also [`@latexify`](@ref), [`@latexrun`](@ref).
 """
-macro latexdefine(expr)
+macro latexdefine(expr, kwargs...) # Currently broken
     return esc(
-        :(latexify(
-            Expr(
-                 :(=),
-                $(Meta.quot(expr)),
-                $(postwalk(expr) do ex
-                    if ex isa Expr && ex.head == :$
-                        return ex.args[1]
-                    end
-                    return ex
-                end),
-            )
-        )),
+        Expr(
+            :call,
+            :latexify,
+            Expr(:parameters, _extractparam.(kwargs)...),
+            Expr(:(=), Meta.quot(expr), _executable(expr)),
+        ),
     )
 end
+
+function _executable(expr)
+    return postwalk(expr) do ex
+        if ex isa Expr && ex.head == :$
+            return ex.args[1]
+        end
+        return ex
+    end
+end
+
+_extractparam(arg::Symbol) = arg
+_extractparam(arg::Expr) = Expr(:kw, arg.args[1], arg.args[2])
