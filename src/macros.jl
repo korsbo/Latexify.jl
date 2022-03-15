@@ -69,13 +69,13 @@ julia> y
 ```
 See also [`@latexify`](@ref), [`@latexrun`](@ref).
 """
-macro latexdefine(expr, kwargs...) # Currently broken
+macro latexdefine(expr, kwargs...)
     return esc(
         Expr(
             :call,
             :latexify,
             Expr(:parameters, _extractparam.(kwargs)...),
-            Expr(:(=), Meta.quot(expr), _executable(expr)),
+            Expr(:call, :Expr, QuoteNode(:(=)), Meta.quot(expr), _executable(expr)),
         ),
     )
 end
