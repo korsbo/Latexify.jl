@@ -37,5 +37,18 @@ l10 = @latexdefine x = $(abs2(-2))
 @test l10 == raw"$x = 4 = 4$"
 @test x == 4
 
+l11 = @latexify x = 1 env=:raw
+@test l11 == raw"x = 1"
+
+l12 = @latexrun x = 1 env=:raw
+@test l12 == raw"x = 1"
+
+l13 = @latexdefine y = x env=:raw
+@test l13 == raw"y = x = 1"
+
+env = :raw
+l14 = @latexdefine y env
+@test l14 == raw"y = 1"
+
 @test latexify(:(@hi(x / y))) == replace(
 raw"$\mathrm{@hi}\left( \frac{x}{y} \right)$", "\r\n"=>"\n")
