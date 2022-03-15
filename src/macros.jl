@@ -3,6 +3,7 @@
 
 Create `LaTeXString` representing `expression`.
 Variables and expressions can be interpolated with `\$`.
+Keyword arguments can be supplied to `latexify` by appending to the argument.
 
 # Examples
 ```julia-repl
@@ -11,6 +12,9 @@ L"\$x^{2} + \\frac{3}{2}\$"
 
 julia> @latexify x^2 + \$(3/2)
 L"\$x^{2} + 1.5\$"
+
+julia> @latexify x^2 + 3/2 env=:raw
+L"x^{2} + \\frac{3}{2}"
 ```
 
 See also [`latexify`](@ref), [`@latexrun`](@ref), [`@latexdefine`](@ref).
@@ -61,8 +65,11 @@ Any side effects of the expression, like assignments, are evaluated as well.
 
 # Examples
 ```julia-repl
-julia> @latexdefine y = 3/2 + \$(3/2)
-L"\$y = \\frac{3}{2} + 1.5 = 3.0\$"
+julia> @latexdefine y = 3/2 + \$(3/2) env=:equation
+L"\\begin{equation}
+y = \\frac{3}{2} + 1.5 = 3.0
+\\end{equation}
+"
 
 julia> y
 3.0
