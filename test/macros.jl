@@ -46,13 +46,11 @@ l12 = @latexrun x = 1 env=:raw
 l13 = @latexdefine y = x env=:raw
 @test l13 == raw"y = x = 1"
 
+#= # Loading a file with this in it doesn't work on VERSION < v"1.5.0"
 env = :raw
-if VERSION > v"1.5.0" # Use 1.5 syntax if available
-    l14 = @latexdefine y env
-    @test l14 == raw"y = 1"
-else
-    @test_throws LoadError @latexdefine y env
-end
+l14 = @latexdefine y env
+@test l14 == raw"y = 1"
+=#
 
 @test latexify(:(@hi(x / y))) == replace(
 raw"$\mathrm{@hi}\left( \frac{x}{y} \right)$", "\r\n"=>"\n")
