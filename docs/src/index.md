@@ -202,6 +202,15 @@ julia> @latexify x = $(abs2(-3))
 L"$x = 9$"
 ```
 
+Keyword arguments can be supplied after these macros:
+```julia
+julia> @latexdefine x env=:equation
+L"\begin{equation}
+x = 0.5
+\end{equation}
+"
+```
+
 ## External rendering
 While LaTeXStrings already render nicely in many IDEs or in Jupyter, they do not render in the REPL. Therefore, we provide a function `render(str)` which generates a standalone PDF using LuaLaTeX and opens that file in your default PDF viewer.
 
