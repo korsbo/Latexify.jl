@@ -3,6 +3,7 @@
 
 Create `LaTeXString` representing `expression`.
 Variables and expressions can be interpolated with `\$`.
+Keyword arguments can be supplied to `latexify` by appending to the argument.
 
 # Examples
 ```julia-repl
@@ -11,12 +12,19 @@ L"\$x^{2} + \\frac{3}{2}\$"
 
 julia> @latexify x^2 + \$(3/2)
 L"\$x^{2} + 1.5\$"
+
+julia> @latexify x^2 + 3/2 env=:raw
+L"x^{2} + \\frac{3}{2}"
 ```
 
 See also [`latexify`](@ref), [`@latexrun`](@ref), [`@latexdefine`](@ref).
 """
-macro latexify(expr)
-    return esc(:(latexify($(Meta.quot(expr)))))
+macro latexify(expr, kwargs...)
+    return esc(
+        Expr(
+            :call, :latexify, Expr(:parameters, _extractparam.(kwargs)...), Meta.quot(expr)
+        ),
+    )
 end
 
 """
@@ -34,18 +42,18 @@ julia> y
 ```
 See also [`@latexify`](@ref), [`@latexdefine`](@ref).
 """
-macro latexrun(expr)
+macro latexrun(expr, kwargs...)
     return esc(
         Expr(
             :block,
-            postwalk(expr) do ex
-                if ex isa Expr && ex.head == :$
-                    return ex.args[1]
-                end
-                return ex
-            end,
-            :(latexify($(Meta.quot(expr)))),
-        )
+            _executable(expr),
+            Expr(
+                :call,
+                :latexify,
+                Expr(:parameters, _extractparam.(kwargs)...),
+                Meta.quot(expr),
+            ),
+        ),
     )
 end
 
@@ -57,27 +65,36 @@ Any side effects of the expression, like assignments, are evaluated as well.
 
 # Examples
 ```julia-repl
-julia> @latexdefine y = 3/2 + \$(3/2)
-L"\$y = \\frac{3}{2} + 1.5 = 3.0\$"
+julia> @latexdefine y = 3/2 + \$(3/2) env=:equation
+L"\\begin{equation}
+y = \\frac{3}{2} + 1.5 = 3.0
+\\end{equation}
+"
 
 julia> y
 3.0
 ```
 See also [`@latexify`](@ref), [`@latexrun`](@ref).
 """
-macro latexdefine(expr)
+macro latexdefine(expr, kwargs...)
     return esc(
-        :(latexify(
-            Expr(
-                 :(=),
-                $(Meta.quot(expr)),
-                $(postwalk(expr) do ex
-                    if ex isa Expr && ex.head == :$
-                        return ex.args[1]
-                    end
-                    return ex
-                end),
-            )
-        )),
+        Expr(
+            :call,
+            :latexify,
+            Expr(:parameters, _extractparam.(kwargs)...),
+            Expr(:call, :Expr, QuoteNode(:(=)), Meta.quot(expr), _executable(expr)),
+        ),
     )
 end
+
+function _executable(expr)
+    return postwalk(expr) do ex
+        if ex isa Expr && ex.head == :$
+            return ex.args[1]
+        end
+        return ex
+    end
+end
+
+_extractparam(arg::Symbol) = arg
+_extractparam(arg::Expr) = Expr(:kw, arg.args[1], arg.args[2])
