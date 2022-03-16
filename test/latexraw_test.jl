@@ -133,6 +133,10 @@ array_test = [ex, str]
 @test latexraw(:(prod(x_n for n in N))) == raw"\prod_{n \in N} x_{n}"
 @test latexraw(:(prod(x_n for n in n_0:N))) == raw"\prod_{n = n_{0}}^{N} x_{n}"
 
+@test latexraw("Aᵢᵏ"; safescripts=true) == raw"A{_i}{^k}"
+@test latexraw("Aᵢⱼᵏˡ"; safescripts=true) == raw"A{_{i j}}{^{k l}}"
+@test latexraw("hello_world"; snakecase=true) == raw"hello\_world"
+
 @test latexify(:((-1) ^ 2)) == replace(
 raw"$\left( -1 \right)^{2}$", "\r\n"=>"\n")
 @test latexify(:($(1 + 2im) ^ 2)) == replace(

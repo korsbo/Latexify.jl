@@ -2452,7 +2452,7 @@ const unicodedict = Dict{Char, String}(
     '•' => raw"\bullet",
     )
 
-function unicode2latex(str::String)
+function unicode2latex(str::String; safescripts=false)
     isascii(str) && return str
     str_array = [get(unicodedict, char, char) for char in str]
     str_length = length(str_array)
@@ -2466,20 +2466,23 @@ function unicode2latex(str::String)
     end
 
     str = join(str_array)
-    str = merge_subscripts(str)
-    str = merge_superscripts(str)
+    str = merge_subscripts(str; safescripts=safescripts)
+    str = merge_superscripts(str; safescripts=safescripts)
 
     return str
 end
 
 """
-    merge_superscripts(str)
+    merge_superscripts(str; safescripts=false)
 
 Merge sequential superscripts to a better representation.
 
 Returns a string where sequences like "{^1}{^3}" are replaced by "^{1 3}".
+
+If `safescripts` is `true`, makes `{^{1 3}}`, which is less aesthetic but might succeed with
+certain combinations where `false` would not.
 """
-function merge_superscripts(str)
+function merge_superscripts(str; safescripts=false)
     # pair {^q}{^q}{^q}{^q}{^q} --> {^{q q}}{^{q q}}{^q}
     str = replace(str, r"{\^([^{}]*)}{\^([^{}]*)}" => s"{^{\1 \2}}")
     # collect ends if needed   {^{q q}}{^{q q}}{^q} --> {^{q q}}{^{q q q}}
@@ -2492,12 +2495,14 @@ function merge_superscripts(str)
         str = replace(str, r => s"{^{\1 \2}}")
     end
 
-    # remove external braces
-    str = replace(str, r"{\^{([^{}]*)}}" => s"^{\1}")
+    if ~safescripts
+        # remove external braces
+        str = replace(str, r"{\^{([^{}]*)}}" => s"^{\1}")
 
-    # deal with superscripts that did not need to be merged
-    str = replace(str, r"{{\^([^{}]*)}}" => s"^{\1}")
-    str = replace(str, r"{\^([^{}]*)}" => s"^\1")
+        # deal with superscripts that did not need to be merged
+        str = replace(str, r"{{\^([^{}]*)}}" => s"^{\1}")
+        str = replace(str, r"{\^([^{}]*)}" => s"^\1")
+    end
     return str
 end
 
@@ -2505,13 +2510,16 @@ end
 
 
 """
-    merge_superscripts(str)
+    merge_subscripts(str; safescripts=false)
 
 Merge sequential subscripts to a better representation.
 
 Returns a string where sequences like "{_1}{_3}" are replaced by "_{1 3}".
+
+If `safescripts` is `true`, makes `{_{1 3}}`, which is less aesthetic but might succeed with
+certain combinations where `false` would not.
 """
-function merge_subscripts(str)
+function merge_subscripts(str; safescripts=false)
     # pair
     str = replace(str, r"{_([^{}]*)}{_([^{}]*)}" => s"{_{\1 \2}}")
     # collect ends if needed
@@ -2524,12 +2532,14 @@ function merge_subscripts(str)
         str = replace(str, r => s"{_{\1 \2}}")
     end
 
-    # remove external braces
-    str = replace(str, r"{_{([^{}]*)}}" => s"_{\1}")
+    if ~safescripts
+        # remove external braces
+        str = replace(str, r"{_{([^{}]*)}}" => s"_{\1}")
 
-    # deal with subscripts that did not need to be merged
-    str = replace(str, r"{{_([^{}]*)}}" => s"_{\1}")
-    str = replace(str, r"{_([^{}]*)}" => s"_\1")
+        # deal with subscripts that did not need to be merged
+        str = replace(str, r"{{_([^{}]*)}}" => s"_{\1}")
+        str = replace(str, r"{_([^{}]*)}" => s"_\1")
+    end
     return str
 
 end

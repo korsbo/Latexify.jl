@@ -238,15 +238,15 @@ function convertSubscript!(ex::Expr)
     return nothing
 end
 
-function convertSubscript(str::String)
-    if occursin("_", str)
-        subscriptList = split(str, "_")
-        subscript = join(subscriptList[2:end], "\\_")
-        result = "$(subscriptList[1])_{$subscript}"
+function convertSubscript(str::String; snakecase=false)
+    occursin("_", str) || return str
+    subscriptList = split(str, "_")
+    if snakecase
+        return join(subscriptList, "\\_")
     else
-        result = str
+        subscript = join(subscriptList[2:end], "\\_")
+        return "$(subscriptList[1])_{$subscript}"
     end
-    return result
 end
 
 convertSubscript(sym::Symbol) = convertSubscript(string(sym))
