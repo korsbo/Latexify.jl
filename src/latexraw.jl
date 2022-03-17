@@ -135,10 +135,10 @@ function _latexraw(i::Char; convert_unicode=true, kwargs...)
     LaTeXString(convert_unicode ? unicode2latex(string(i)) : string(i))
 end
 
-function _latexraw(i::Symbol; convert_unicode=true, kwargs...)
+function _latexraw(i::Symbol; convert_unicode=true, snakecase=false, safescripts=false, kwargs...)
     str = string(i == :Inf ? :∞ : i)
-    str = convertSubscript(str)
-    convert_unicode && (str = unicode2latex(str))
+    str = convertSubscript(str; snakecase=snakecase)
+    convert_unicode && (str = unicode2latex(str; safescripts=safescripts))
     return LaTeXString(str)
 end
 
