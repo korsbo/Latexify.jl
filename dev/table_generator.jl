@@ -43,6 +43,8 @@ keyword_arguments = [
     KeywordArgument(:rows, [:align], "Iterable or symol", ":all", "Which rows to include in the output.", [:Any]),
     KeywordArgument(:booktabs, [:tabular], "`Bool`", "`false`", "Add top, mid and bottom booktabs rule", [:Any]),
     KeywordArgument(:index, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Symb`", "`:bracket`", "Represent index specification with `:bracket` (`u[1]`) or `:subscript` (`u_1`). ", [:Any]),
+    KeyWordArgument(:snakecase, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Bool`", "`false`", "Treat underscores as literal underscores (if not, treat first underscore as subscript).", [:Any]),
+    KeyWordArgument(:safescripts, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Bool`", "`false`", "Put scripts inside brackets (`a{_b}`), sometimes making them uglier, but making alternating scripts possible.", [:Any]),
 #     KeywordArgument(:template, [:array], "`Bool`", "`false`", "description", [:Any]),
     ]
 
