@@ -62,6 +62,28 @@ raw"\left[
 \end{array}
 \right]", "\r\n"=>"\n")
 
+@test latexify(arr; adjustment=:r) == replace(
+raw"\begin{equation}
+\left[
+\begin{array}{rr}
+1 & 2 \\
+3 & 4 \\
+\end{array}
+\right]
+\end{equation}
+", "\r\n"=>"\n")
+
+@test latexify(arr; adjustment=[:l, :r]) == replace(
+raw"\begin{equation}
+\left[
+\begin{array}{lr}
+1 & 2 \\
+3 & 4 \\
+\end{array}
+\right]
+\end{equation}
+", "\r\n"=>"\n")
+
 using OffsetArrays
 @test latexify(OffsetArray(arr, -1:0, 3:4)) == latexify(arr)
 
@@ -140,3 +162,6 @@ raw"$x = \left[
 4 \\
 \end{array}
 \right]$", "\r\n"=>"\n")
+
+
+

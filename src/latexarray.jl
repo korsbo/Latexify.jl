@@ -14,15 +14,21 @@ latexarray(arr)
 """
 latexarray(args...; kwargs...) = process_latexify(args...;kwargs...,env=:array)
 
-function _latexarray(arr::AbstractArray; adjustment::Symbol=:c, transpose=false, double_linebreak=false,
+function _latexarray(arr::AbstractArray; adjustment=:c, transpose=false, double_linebreak=false,
     starred=false, kwargs...)
     transpose && (arr = permutedims(arr))
     rows, columns = axes(arr, 1), axes(arr, 2)
 
     eol = double_linebreak ? " \\\\\\\\\n" : " \\\\\n"
 
+    if adjustment isa AbstractArray
+        adjustmentstring = join(adjustment)
+    else
+        adjustmentstring = string(adjustment)^length(columns)
+    end
+
     str = "\\left[\n"
-    str *= "\\begin{array}{" * "$(adjustment)"^length(columns) * "}\n"
+    str *= "\\begin{array}{$adjustmentstring}\n"
 
     arr = latexraw.(arr; kwargs...)
     for i in rows, j in columns

@@ -71,6 +71,18 @@ side = ["row$i" for i in 1:size(M, 1)]
 | $\frac{x}{y - 1}$ | $1.0$ | $\frac{3}{2}$ | $x - y$ | $symb$ |
 "
 
+@test mdtable(M; adjustment=:c) == Markdown.md"
+| $\frac{x}{y - 1}$ | $1.0$ | $\frac{3}{2}$ | $x - y$ | $symb$ |
+| :----------------:| :----:| :------------:| :------:| :-----:|
+| $\frac{x}{y - 1}$ | $1.0$ | $\frac{3}{2}$ | $x - y$ | $symb$ |
+"
+
+@test mdtable(M; adjustment=[:l :c :r :l nothing]) == Markdown.md"
+| $\frac{x}{y - 1}$ | $1.0$ | $\frac{3}{2}$ | $x - y$ | $symb$ |
+| :-----------------| :----:| -------------:| :-------| ------:|
+| $\frac{x}{y - 1}$ | $1.0$ | $\frac{3}{2}$ | $x - y$ | $symb$ |
+"
+
 @test mdtable(M, head=head) == Markdown.md"
 |              col1 |  col2 |          col3 |    col4 |   col5 |
 | -----------------:| -----:| -------------:| -------:| ------:|

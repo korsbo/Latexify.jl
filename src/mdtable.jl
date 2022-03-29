@@ -55,7 +55,7 @@ julia> mdtable(M; head=latexinline(head))
 """
 function mdtable end
 
-function mdtable(M::AbstractMatrix; latex::Bool=true, escape_underscores=false, head=[], side=[], transpose=false, kwargs...)
+function mdtable(M::AbstractMatrix; latex::Bool=true, escape_underscores=false, head=[], side=[], transpose=false, adjustment=nothing, kwargs...)
     transpose && (M = permutedims(M, [2,1]))
     if latex
         M = _latexinline.(M; kwargs...)
@@ -74,9 +74,14 @@ function mdtable(M::AbstractMatrix; latex::Bool=true, escape_underscores=false, 
         M = hcat(side, M)
     end
 
+    if adjustment isa AbstractArray
+        headerrules = get_header_rule.(adjustment)
+    else
+        headerrules = fill(get_header_rule(adjustment), size(M, 2))
+    end
 
     t = "| " * join(M[1,:], " | ") * " |\n"
-    size(M, 1) > 1 && (t *= "| ---  "^(size(M,2)-1) * "| --- |\n")
+    size(M, 1) > 1 && (t *= "| " * join(headerrules, " | ") * " |\n")
     for i in 2:size(M,1)
         t *= "| " * join(M[i,:], " | ") * " |\n"
     end
@@ -91,3 +96,12 @@ mdtable(v::AbstractArray; kwargs...) = mdtable(reshape(v, (length(v), 1)); kwarg
 mdtable(v::AbstractArray...; kwargs...) = mdtable(safereduce(hcat, v); kwargs...)
 mdtable(d::AbstractDict; kwargs...) = mdtable(collect(keys(d)), collect(values(d)); kwargs...)
 mdtable(arg::Tuple; kwargs...) = mdtable(safereduce(hcat, [collect(i) for i in arg]); kwargs...)
+
+get_header_rule(::Nothing) = "-------"
+function get_header_rule(adjustment::Symbol)
+    adjustment === :c && return ":----:"
+    adjustment === :l && return ":-----"
+    adjustment === :r && return "-----:"
+    error("Unknown `adjustment` argument \"$adjustment\"")
+end
+

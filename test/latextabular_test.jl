@@ -37,6 +37,16 @@ symb & symb\\
 \end{tabular}
 ", "\r\n"=>"\n")
 
+@test latexify(M; env=:table, head=1:2, adjustment=[:c, :r], latex=false, transpose=true) == replace(
+raw"\begin{tabular}{cr}
+1 & 2\\
+x/(y-1) & x/(y-1)\\
+1.0 & 1.0\\
+3//2 & 3//2\\
+x - y & x - y\\
+symb & symb\\
+\end{tabular}
+", "\r\n"=>"\n")
 
 @test latexify(M; env=:table, head=1:2, adjustment=:l, transpose=true) == replace(
 raw"\begin{tabular}{ll}
