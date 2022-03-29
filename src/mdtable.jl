@@ -97,17 +97,11 @@ mdtable(v::AbstractArray...; kwargs...) = mdtable(safereduce(hcat, v); kwargs...
 mdtable(d::AbstractDict; kwargs...) = mdtable(collect(keys(d)), collect(values(d)); kwargs...)
 mdtable(arg::Tuple; kwargs...) = mdtable(safereduce(hcat, [collect(i) for i in arg]); kwargs...)
 
-function get_header_rule(adjustment)
-    if isnothing(adjustment)
-        headerrule = "------"
-    elseif adjustment === :c
-        headerrule = ":----:"
-    elseif adjustment === :l
-        headerrule = ":-----"
-    elseif adjustment === :r
-        headerrule = "-----:"
-    else
-        error("Unknown `adjustment` argument \"$adjustment\"")
-    end
+get_header_rule(::Nothing) = "-------"
+function get_header_rule(adjustment::Symbol)
+    adjustment === :c && return ":----:"
+    adjustment === :l && return ":-----"
+    adjustment === :r && return "-----:"
+    error("Unknown `adjustment` argument \"$adjustment\"")
 end
 
