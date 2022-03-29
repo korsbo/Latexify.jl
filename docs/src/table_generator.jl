@@ -27,7 +27,7 @@ keyword_arguments = [
     KeywordArgument(:double_linebreak, [:array, :align, :arrow], "`Bool`", "`false`", "Add an extra `\\\\` to the end of the line.", [:Any]),
     KeywordArgument(:bracket, [:align], "`Bool`", "`false`", "Surround variables with square brackets.", [:ParameterizedFunction, :ReactionNetwork]),
     KeywordArgument(:noise, [:align], "`Bool`", "`false`", "Display the noise function instead of the deterministic one.", [:ReactionNetwork]),
-    KeywordArgument(:adjustment, [:tabular, :array], "`:c` for centered, `:l` for left, `:r` for right", "`:c`", "Set the adjustment of text within the table cells.", [:Any]),
+    KeywordArgument(:adjustment, [:tabular, :array, :mdtable], "`:c` for centered, `:l` for left, `:r` for right, or a vector with one such symbol per column.", "`:c`", "Set the adjustment of text within the table cells.", [:Any]),
     KeywordArgument(:expand, [:arrow, :align], "`Bool`", "`true`", "Expand functions such as `hill(x, v, k, n)` to their mathematical expression.", [:ReactionNetwork]),
     KeywordArgument(:mathjax, [:arrow], "`Bool`", "`true`", "Add `\\require{mhchem}` to tell MathJax to load the required module.", [:ReactionNetwork]),
     KeywordArgument(:latex, [:mdtable, :tabular], "`Bool`", "`true`", "Toggle latexification of the table elements.", [:Any]),

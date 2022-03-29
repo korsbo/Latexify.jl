@@ -1,6 +1,6 @@
 latextabular(args...; kwargs...) = process_latexify(args...; kwargs..., env=:tabular)
 
-function _latextabular(arr::AbstractMatrix; latex::Bool=true, booktabs::Bool=false, head=[], side=[], adjustment::Symbol=:c, transpose=false, kwargs...)
+function _latextabular(arr::AbstractMatrix; latex::Bool=true, booktabs::Bool=false, head=[], side=[], adjustment=:c, transpose=false, kwargs...)
     transpose && (arr = permutedims(arr, [2,1]))
 
     if !isempty(head)
@@ -14,7 +14,13 @@ function _latextabular(arr::AbstractMatrix; latex::Bool=true, booktabs::Bool=fal
     end
 
     (rows, columns) = size(arr)
-    str = "\\begin{tabular}{" * "$(adjustment)"^columns * "}\n"
+
+    if adjustment isa AbstractArray
+        adjustmentstring = join(adjustment)
+    else
+        adjustmentstring = string(adjustment)^columns
+    end
+    str = "\\begin{tabular}{$adjustmentstring}\n"
 
     if booktabs
         str *= "\\toprule\n"
