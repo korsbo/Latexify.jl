@@ -141,10 +141,9 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
     op in (:sum, :prod) && return "\\$(op) $(args[2])"
 
     ## Leave math italics for single-character operator names (e.g., f(x)).
-    opname = replace(string(op), '_'=>raw"\_")
-    if length(opname) > 1
-        opname = "\\mathrm{$opname}"
-    end
+    # convert subscript symbols to \_ if necessary, and make long function names
+    # upright
+    opname = convert_subscript(string(op); function_name=true, kwargs...)
 
     if ex.head == :ref
         if index == :subscript
@@ -228,25 +227,32 @@ end
 latexoperation(sym::Symbol, prevOp::AbstractArray; kwargs...) = "$sym"
 
 
-function convertSubscript!(ex::Expr)
+function convert_subscript!(ex::Expr, kwargs...)
     for i in 1:length(ex.args)
         arg = ex.args[i]
         if arg isa Symbol
-            ex.args[i] = convertSubscript(arg)
+            ex.args[i] = convert_subscript(arg, kwargs...)
         end
     end
     return nothing
 end
 
-function convertSubscript(str::String; snakecase=false)
-    occursin("_", str) || return str
-    subscriptList = split(str, "_")
+function convert_subscript(str::String; snakecase=false, function_name=false, kwargs...)
+    subscript_list = split(str, "_")
     if snakecase
-        return join(subscriptList, "\\_")
+        return join(subscript_list, "\\_")
     else
-        subscript = join(subscriptList[2:end], "\\_")
-        return "$(subscriptList[1])_{$subscript}"
+        if function_name
+            for k in eachindex(subscript_list)
+                if length(subscript_list[k]) > 1
+                    subscript_list[k] = "\\mathrm{$(subscript_list[k])}"
+                end
+            end
+        end
+        length(subscript_list) == 1 && return string(subscript_list[1])
+        subscript = join(subscript_list[2:end], "\\_")
+        return "$(subscript_list[1])_{$subscript}"
     end
 end
 
-convertSubscript(sym::Symbol) = convertSubscript(string(sym))
+convert_subscript(sym::Symbol, kwargs...) = convert_subscript(string(sym), kwargs...)

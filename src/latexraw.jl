@@ -137,7 +137,7 @@ end
 
 function _latexraw(i::Symbol; convert_unicode=true, snakecase=false, safescripts=false, kwargs...)
     str = string(i == :Inf ? :∞ : i)
-    str = convertSubscript(str; snakecase=snakecase)
+    str = convert_subscript(str; snakecase=snakecase)
     convert_unicode && (str = unicode2latex(str; safescripts=safescripts))
     return LaTeXString(str)
 end
