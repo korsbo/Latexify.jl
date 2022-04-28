@@ -46,11 +46,9 @@ l12 = @latexrun x = 1 env=:raw
 l13 = @latexdefine y = x env=:raw
 @test l13 == raw"y = x = 1"
 
-#= # Loading a file with this in it doesn't work on VERSION < v"1.5.0"
 env = :raw
 l14 = @latexdefine y env
 @test l14 == raw"y = 1"
-=#
 
 l15 = @latexdefine y = x post=float
 @test l15 == raw"$y = x = 1.0$"
