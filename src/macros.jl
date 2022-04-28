@@ -62,6 +62,7 @@ end
 
 Latexify `expression`, followed by an equals sign and the return value of its evaluation.
 Any side effects of the expression, like assignments, are evaluated as well.
+The RHS can be formatted or otherwise transformed by supplying a function as kwarg `post`.
 
 # Examples
 ```julia-repl
@@ -73,16 +74,32 @@ y = \\frac{3}{2} + 1.5 = 3.0
 
 julia> y
 3.0
+
+julia> @latexdefine y=π post=round
+L"\$x = \\pi = 3.0\$"
 ```
 See also [`@latexify`](@ref), [`@latexrun`](@ref).
 """
 macro latexdefine(expr, kwargs...)
+    params = _extractparam.(kwargs)
+    post = :identity
+    for param in params
+        if param === :post
+            post = :post
+            break
+        end
+        if param isa Expr && param.args[1] === :post
+            post = param.args[2]
+            break
+        end
+    end
+
     return esc(
         Expr(
             :call,
             :latexify,
             Expr(:parameters, _extractparam.(kwargs)...),
-            Expr(:call, :Expr, QuoteNode(:(=)), Meta.quot(expr), _executable(expr)),
+            Expr(:call, :Expr, QuoteNode(:(=)), Meta.quot(expr), Expr(:call, post, _executable(expr))),
         ),
     )
 end

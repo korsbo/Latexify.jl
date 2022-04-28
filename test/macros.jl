@@ -52,5 +52,9 @@ l14 = @latexdefine y env
 @test l14 == raw"y = 1"
 =#
 
+l15 = @latexdefine y = x post=float
+@test l15 == raw"$y = x = 1.0$"
+@test y isa Integer
+
 @test latexify(:(@hi(x / y))) == replace(
 raw"$\mathrm{@hi}\left( \frac{x}{y} \right)$", "\r\n"=>"\n")
