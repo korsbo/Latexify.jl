@@ -56,5 +56,10 @@ l15 = @latexdefine y = x post=float
 @test l15 == raw"$y = x = 1.0$"
 @test y isa Integer
 
+post = x->round(x; sigdigits=3)
+l16 = @latexdefine y = π post
+@test l16 == raw"$y = \pi = 3.14$"
+@test y == π
+
 @test latexify(:(@hi(x / y))) == replace(
 raw"$\mathrm{@hi}\left( \frac{x}{y} \right)$", "\r\n"=>"\n")
