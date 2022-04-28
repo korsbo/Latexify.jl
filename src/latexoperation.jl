@@ -242,16 +242,13 @@ function convert_subscript(str::String; snakecase=false, function_name=false, kw
     if snakecase
         return join(subscript_list, "\\_")
     else
-        if function_name
-            for k in eachindex(subscript_list)
-                if length(subscript_list[k]) > 1
-                    subscript_list[k] = "\\mathrm{$(subscript_list[k])}"
-                end
-            end
+        mainscript = subscript_list[1]
+        if function_name && length(mainscript) > 1
+            mainscript = "\\mathrm{$mainscript}"
         end
-        length(subscript_list) == 1 && return string(subscript_list[1])
+        length(subscript_list) == 1 && return string(mainscript)
         subscript = join(subscript_list[2:end], "\\_")
-        return "$(subscript_list[1])_{$subscript}"
+        return "$(mainscript)_{$subscript}"
     end
 end
 

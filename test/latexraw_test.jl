@@ -75,7 +75,7 @@ array_test = [ex, str]
 @test latexraw(:(f_a(x))) == raw"f_{a}\left( x \right)"
 @test latexraw(:(fun_a(x))) == raw"\mathrm{fun}_{a}\left( x \right)"
 @test latexraw(:(fun_a_b(x))) == raw"\mathrm{fun}_{a\_b}\left( x \right)"
-@test latexraw(:(fun_ab_c(x))) == raw"\mathrm{fun}_{\mathrm{ab}\_c}\left( x \right)"
+@test latexraw(:(fun_ab_c(x))) == raw"\mathrm{fun}_{ab\_c}\left( x \right)"
 @test latexraw("x = 4*y") == raw"x = 4 \cdot y"
 @test latexraw(:(sqrt(x))) == raw"\sqrt{x}"
 @test latexraw(:(√(x))) == raw"\sqrt{x}"
