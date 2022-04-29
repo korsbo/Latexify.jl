@@ -46,11 +46,18 @@ l12 = @latexrun x = 1 env=:raw
 l13 = @latexdefine y = x env=:raw
 @test l13 == raw"y = x = 1"
 
-#= # Loading a file with this in it doesn't work on VERSION < v"1.5.0"
 env = :raw
 l14 = @latexdefine y env
 @test l14 == raw"y = 1"
-=#
+
+l15 = @latexdefine y = x post=float
+@test l15 == raw"$y = x = 1.0$"
+@test y isa Integer
+
+post = x->round(x; sigdigits=3)
+l16 = @latexdefine y = π post
+@test l16 == raw"$y = \pi = 3.14$"
+@test y == π
 
 @test latexify(:(@hi(x / y))) == replace(
 raw"$\mathrm{@hi}\left( \frac{x}{y} \right)$", "\r\n"=>"\n")

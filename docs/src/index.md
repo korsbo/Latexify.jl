@@ -211,6 +211,18 @@ x = 0.5
 "
 ```
 
+A special keyword `post` can be supplied to `@latexdefine`, which is a
+function that will be called on the final right hand sign before
+latexification. This is merely formatting and will not affect any assignments.
+
+```julia
+julia> @latexdefine x=π  post=round
+L"$x = \pi = 3.0$"
+
+julia> @latexdefine x
+L"$x = \pi$"
+```
+
 ## External rendering
 While LaTeXStrings already render nicely in many IDEs or in Jupyter, they do not render in the REPL. Therefore, we provide a function `render(str)` which generates a standalone PDF using LuaLaTeX and opens that file in your default PDF viewer.
 
