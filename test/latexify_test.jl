@@ -31,4 +31,4 @@ reset_default()
 @test latexify("x * y") == 
 raw"$x \cdot y$"
 
-
+@test latexify("Plots.jl") isa LaTeXString
