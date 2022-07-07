@@ -157,7 +157,7 @@ function _latexraw(::Val{true}, i::String; kwargs...)
         error("""
 in Latexify.jl:
 You are trying to create latex-maths from a `String` that cannot be parsed as
-an expression.
+an expression: `$i`.
 
 `latexify` will, by default, try to parse any string inputs into expressions
 and this parsing has just failed.
