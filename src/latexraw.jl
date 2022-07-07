@@ -111,9 +111,11 @@ function _latexraw(args...; kwargs...)
 end
 _latexraw(arr::Union{AbstractArray, Tuple}; kwargs...) = _latexarray(arr; kwargs...)
 _latexraw(i::Nothing; kwargs...) = ""
-_latexraw(i::SubString; kwargs...) = latexraw(Meta.parse(i); kwargs...)
+_latexraw(i::SubString; parse=true, kwargs...) = latexraw(parse ? Meta.parse(i) : i; kwargs...)
 _latexraw(i::SubString{LaTeXStrings.LaTeXString}; kwargs...) = i
 _latexraw(i::Rational; kwargs...) = i.den == 1 ? latexraw(i.num; kwargs...) : latexraw(:($(i.num)/$(i.den)); kwargs...)
+_latexraw(i::QuoteNode; kwargs...) = _latexraw(i.value)
+
 function _latexraw(z::Complex; kwargs...)
     if iszero(z.re)
         isone(z.im) && return LaTeXString(get(kwargs, :imaginary_unit, "\\mathit{i}"))
@@ -142,7 +144,12 @@ function _latexraw(i::Symbol; convert_unicode=true, snakecase=false, safescripts
     return LaTeXString(str)
 end
 
-function _latexraw(i::String; kwargs...)
+_latexraw(i::String; parse=true, kwargs...) = _latexraw(Val(parse), i; kwargs...)
+
+_latexraw(::Val{false}, i::String; convert_unicode=true, kwargs...) =
+    LaTeXString(convert_unicode ? unicode2latex(i) : i)
+
+function _latexraw(::Val{true}, i::String; kwargs...)
     try
         ex = Meta.parse(i)
         return latexraw(ex; kwargs...)
