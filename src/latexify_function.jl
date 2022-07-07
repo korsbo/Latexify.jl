@@ -1,3 +1,27 @@
+@doc doc"""
+    latexify(args...; kwargs...)
+
+Latexify a string, an expression, an array or other complex types.
+
+```julia-repl
+julia> latexify("x+y/(b-2)^2")
+L"$x + \frac{y}{\left( b - 2 \right)^{2}}$"
+
+julia> latexify(:(x/(y+x)^2))
+L"$\frac{x}{\left( y + x \right)^{2}}$"
+
+julia> latexify(["x/y" 3//7 2+3im; 1 :P_x :(gamma(3))])
+L"\begin{equation}
+\left[
+\begin{array}{ccc}
+\frac{x}{y} & \frac{3}{7} & 2+3\mathit{i} \\
+1 & P_{x} & \Gamma\left( 3 \right) \\
+\end{array}
+\right]
+\end{equation}
+"
+```
+"""
 function latexify(args...; kwargs...)
     kwargs = merge(default_kwargs, kwargs)
     result = process_latexify(args...; kwargs...)
