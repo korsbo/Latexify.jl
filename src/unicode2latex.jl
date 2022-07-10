@@ -21,7 +21,6 @@ import Base.Unicode
 """
 function latex_diacritics(c::Char)
     c = lowercase(c)
-    @assert length(c) == 1
     out = []
     for p in (
         # en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped_codes
