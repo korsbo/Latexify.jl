@@ -42,10 +42,11 @@ function latex_diacritics(c::Char)
     )
         latex_escape, mark = p.first, Char(p.second)
         lower, upper = c * mark, uppercase(c) * mark
-        # e.g. ('y' * Char(0x30A) == "ẙ") != (Char(0x1e99) == 'ẙ')
+        # e.g. ('y' * Char(0x30a) == "ẙ") != (Char(0x1e99) == 'ẙ'), although they look the same
         for p in (lower => "\\textrm{\\$latex_escape{$c}}", upper => "\\textrm{\\$latex_escape{$(uppercase(c))}}")
             push!(out, p)
-            if (alias = length(p.first) == 1 ? p.first : Unicode.normalize(p.first)) != p.first
+            alias = length(p.first) == 1 ? p.first : Unicode.normalize(p.first)
+            if alias != p.first
                 push!(out, (length(alias) == 1 ? first(alias) : alias) => p.second)
             end
         end
