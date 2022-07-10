@@ -59,7 +59,7 @@ latexraw(args...; kwargs...) = process_latexify(args...; kwargs..., env=:raw)
 
 function _latexraw(inputex::Expr; convert_unicode=true, kwargs...)
     ## Pass all arrays or matrices in the expr to latexarray
-    inputex = postwalk(x -> x isa Expr && x.head in [:hcat, :vcat, :vect, :typed_vcat, :typed_hcat] ?
+    inputex = postwalk(x -> Meta.isexpr(x, [:hcat, :vcat, :vect, :typed_vcat, :typed_hcat]) ?
                        latexarray(expr_to_array(x); kwargs...)
                        : x,
                        inputex)
@@ -68,12 +68,12 @@ function _latexraw(inputex::Expr; convert_unicode=true, kwargs...)
     function recurseexp!(ex)
         prevOp = Vector{Symbol}(undef, length(ex.args))
         fill!(prevOp, :none)
-        if ex.head==:call && ex.args[1] in (:sum, :prod) && ex.args[2] isa Expr && ex.args[2].head == :generator
+        if Meta.isexpr(ex, :call) && ex.args[1] in (:sum, :prod) && Meta.isexpr(ex.args[2], :generator)
             op = ex.args[1]
             term = latexraw(ex.args[2].args[1])
             gen = ex.args[2].args[2]
             itervar = latexraw(gen.args[1])
-            if gen.args[2] isa Expr && gen.args[2].head == :call && gen.args[2].args[1] == :(:)
+            if Meta.isexpr(gen.args[2], :call) && gen.args[2].args[1] == :(:)
                 # sum(x_n for n in n_0:N) => \sum_{n=n_0}^{N} x_n
                 lower = latexraw(gen.args[2].args[2])
                 upper = latexraw(gen.args[2].args[end])
