@@ -1,8 +1,10 @@
 import Base.Unicode
 
 """
-- generate latex escape codes for diacritics of the latin alphabet (see https://en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped_codes)
-- `@upper_lower` is used to generate a subset of the following sequence (uppercase and lowercase characters):
+    latex_diacritics(c::Char)
+
+- generate latex escape codes for diacritics of the latin alphabet (upper and lower case), see https://en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped_codes
+- also generate a subset of the following sequence, when the single char normalization is available:
     - 'à' => "\\`{a}"  # grave
     - 'á' => "\\'{a}"  # acute
     - 'ä' => "\\"{a}"  # umlaut (trema, dieresis)
@@ -23,8 +25,7 @@ function latex_diacritics(c::Char)
     c = lowercase(c)
     out = []
     for p in (
-        # en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped_codes
-        '`' => 0x300,  # latex \`{c} maps to 'c' * Char(0x300)
+        '`' => 0x300,  # latex sequence \`{c} maps to 'c' * Char(0x300) := "c̀"
         "'" => 0x301,
         '^' => 0x302,
         '~' => 0x303,
