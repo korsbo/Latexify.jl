@@ -1,4 +1,61 @@
-const unicodedict = Dict{Char, String}(
+import Base.Unicode
+
+"""
+    latex_diacritics(c::Char)
+
+- generate latex escape codes for diacritics of the latin alphabet (upper and lower case), see https://en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped_codes
+- also generate a subset of the following sequence, when the single char normalization is available:
+    - 'à' => "\\`{a}"  # grave
+    - 'á' => "\\'{a}"  # acute
+    - 'ä' => "\\"{a}"  # umlaut (trema, dieresis)
+    - 'a̋' => "\\H{a}"  # hungarian umlaut (double acute)
+    - 'ã' => "\\~{a}"  # tilde
+    - 'â' => "\\^{a}"  # circumflex
+    - 'a̧' => "\\c{a}"  # cedilla
+    - 'ą' => "\\k{a}"  # ogonek
+    - 'ā' => "\\={a}"  # macron (bar above)
+    - 'a̱' => "\\b{a}"  # bar under
+    - 'ȧ' => "\\.{a}"  # dot above
+    - 'ạ' => "\\d{a}"  # dot under
+    - 'å' => "\\r{a}"  # ring
+    - 'ă' => "\\u{a}"  # breve
+    - 'ǎ' => "\\v{a}"  # caron (háček)
+"""
+function latex_diacritics(c::Char)
+    c = lowercase(c)
+    out = []
+    for p in (
+        '`' => 0x300,  # latex sequence \`{c} maps to 'c' * Char(0x300) := "c̀"
+        "'" => 0x301,
+        '^' => 0x302,
+        '~' => 0x303,
+        '=' => 0x304,
+        'u' => 0x306,
+        '.' => 0x307,
+        '"' => 0x308,
+        'r' => 0x30a,
+        'H' => 0x30b,
+        'v' => 0x30c,
+        'd' => 0x323,
+        'c' => 0x327,
+        'k' => 0x328,
+        'b' => 0x331,
+    )
+        latex_escape, mark = p.first, Char(p.second)
+        lower, upper = c * mark, uppercase(c) * mark
+        # e.g. ('y' * Char(0x30a) == "ẙ") != (Char(0x1e99) == 'ẙ'), although they look the same
+        for p in (lower => "\\textrm{\\$latex_escape{$c}}", upper => "\\textrm{\\$latex_escape{$(uppercase(c))}}")
+            push!(out, p)
+            alias = length(p.first) == 1 ? p.first : Unicode.normalize(p.first)
+            if alias != p.first
+                push!(out, (length(alias) == 1 ? first(alias) : alias) => p.second)
+            end
+        end
+    end
+    out
+end
+
+const unicodedict = Dict{Union{Char,String}, String}(
     '𝑅' => raw"\mathit{R}",
     '▐' => raw"\blockrighthalf",
     '♥' => raw"\varheartsuit",
@@ -2450,26 +2507,39 @@ const unicodedict = Dict{Char, String}(
     'Χ' => raw"\Chi",
     '⤮' => raw"\neovsearrow",
     '•' => raw"\bullet",
-    )
+    (latex_diacritics.('a':'z')...)...,
+)
 
 function unicode2latex(str::String; safescripts=false)
     isascii(str) && return str
-    str_array = [get(unicodedict, char, char) for char in str]
-    str_length = length(str_array)
 
-    for (i, char) in enumerate(str)
-        if str_array[i] isa String
-            if i < str_length && str_array[i+1] isa Char && (isletter(str_array[i+1]) || isdigit(str_array[i+1]))
-                str_array[i] = "{$(str_array[i])}"
+    c_or_s = sizehint!(Union{Char,String}[], length(str))
+
+    it = Iterators.Stateful(str)
+    while !isempty(it)
+        c = popfirst!(it)
+        push!(
+            c_or_s,  # see en.wikipedia.org/wiki/Combining_character
+            if Unicode.category_code(something(peek(it), '0')) == Unicode.UTF8PROC_CATEGORY_MN
+                c * popfirst!(it)
+            else
+                c
+            end
+        )
+    end
+    str_array = map(k -> get(unicodedict, k, k), c_or_s)
+
+    it = Iterators.Stateful(str_array)
+    while !isempty(it)
+        if (x = popfirst!(it)) isa String
+            if (xx = peek(it)) isa Char && (isletter(xx) || isdigit(xx))
+                str_array[it.taken] = "{$x}"
             end
         end
     end
 
-    str = join(str_array)
-    str = merge_subscripts(str; safescripts=safescripts)
-    str = merge_superscripts(str; safescripts=safescripts)
-
-    return str
+    str = merge_subscripts(join(str_array); safescripts=safescripts)
+    return merge_superscripts(str; safescripts=safescripts)
 end
 
 """

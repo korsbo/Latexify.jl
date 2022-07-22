@@ -250,11 +250,11 @@ end
 safereduce(f, args) = length(args) == 1 ? f(args[1]) : reduce(f, args)
 
 function expr_to_array(ex)
-    ex.head == :typed_vcat && (ex = Expr(:vcat, ex.args[2:end]...))
-    ex.head == :typed_hcat && (ex = Expr(:hcat, ex.args[2:end]...))
-    ex.head == :ref && (ex = Expr(:vect, ex.args[2:end]...))
+    ex.head === :typed_vcat && (ex = Expr(:vcat, ex.args[2:end]...))
+    ex.head === :typed_hcat && (ex = Expr(:hcat, ex.args[2:end]...))
+    ex.head === :ref && (ex = Expr(:vect, ex.args[2:end]...))
     ## If it is a matrix
-    if ex.args[1] isa Expr && ex.args[1].head == :row
+    if Meta.isexpr(ex.args[1], :row)
         return eval(ex.head)(map(y -> permutedims(y.args), ex.args)...)
     else
         if ex.head == :hcat

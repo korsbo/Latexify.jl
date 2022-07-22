@@ -59,7 +59,7 @@ latexraw(args...; kwargs...) = process_latexify(args...; kwargs..., env=:raw)
 
 function _latexraw(inputex::Expr; convert_unicode=true, kwargs...)
     ## Pass all arrays or matrices in the expr to latexarray
-    inputex = postwalk(x -> x isa Expr && x.head in [:hcat, :vcat, :vect, :typed_vcat, :typed_hcat] ?
+    inputex = postwalk(x -> Meta.isexpr(x, [:hcat, :vcat, :vect, :typed_vcat, :typed_hcat]) ?
                        latexarray(expr_to_array(x); kwargs...)
                        : x,
                        inputex)
@@ -68,12 +68,12 @@ function _latexraw(inputex::Expr; convert_unicode=true, kwargs...)
     function recurseexp!(ex)
         prevOp = Vector{Symbol}(undef, length(ex.args))
         fill!(prevOp, :none)
-        if ex.head==:call && ex.args[1] in (:sum, :prod) && ex.args[2] isa Expr && ex.args[2].head == :generator
+        if Meta.isexpr(ex, :call) && ex.args[1] in (:sum, :prod) && Meta.isexpr(ex.args[2], :generator)
             op = ex.args[1]
             term = latexraw(ex.args[2].args[1])
             gen = ex.args[2].args[2]
             itervar = latexraw(gen.args[1])
-            if gen.args[2] isa Expr && gen.args[2].head == :call && gen.args[2].args[1] == :(:)
+            if Meta.isexpr(gen.args[2], :call) && gen.args[2].args[1] == :(:)
                 # sum(x_n for n in n_0:N) => \sum_{n=n_0}^{N} x_n
                 lower = latexraw(gen.args[2].args[2])
                 upper = latexraw(gen.args[2].args[end])
@@ -111,9 +111,11 @@ function _latexraw(args...; kwargs...)
 end
 _latexraw(arr::Union{AbstractArray, Tuple}; kwargs...) = _latexarray(arr; kwargs...)
 _latexraw(i::Nothing; kwargs...) = ""
-_latexraw(i::SubString; kwargs...) = latexraw(Meta.parse(i); kwargs...)
+_latexraw(i::SubString; parse=true, kwargs...) = latexraw(parse ? Meta.parse(i) : i; kwargs...)
 _latexraw(i::SubString{LaTeXStrings.LaTeXString}; kwargs...) = i
 _latexraw(i::Rational; kwargs...) = i.den == 1 ? latexraw(i.num; kwargs...) : latexraw(:($(i.num)/$(i.den)); kwargs...)
+_latexraw(i::QuoteNode; kwargs...) = _latexraw(i.value)
+
 function _latexraw(z::Complex; kwargs...)
     if iszero(z.re)
         isone(z.im) && return LaTeXString(get(kwargs, :imaginary_unit, "\\mathit{i}"))
@@ -142,7 +144,12 @@ function _latexraw(i::Symbol; convert_unicode=true, snakecase=false, safescripts
     return LaTeXString(str)
 end
 
-function _latexraw(i::String; kwargs...)
+_latexraw(i::String; parse=true, kwargs...) = _latexraw(Val(parse), i; kwargs...)
+
+_latexraw(::Val{false}, i::String; convert_unicode=true, kwargs...) =
+    LaTeXString(convert_unicode ? unicode2latex(i) : i)
+
+function _latexraw(::Val{true}, i::String; kwargs...)
     try
         ex = Meta.parse(i)
         return latexraw(ex; kwargs...)
@@ -150,7 +157,7 @@ function _latexraw(i::String; kwargs...)
         error("""
 in Latexify.jl:
 You are trying to create latex-maths from a `String` that cannot be parsed as
-an expression.
+an expression: `$i`.
 
 `latexify` will, by default, try to parse any string inputs into expressions
 and this parsing has just failed.
