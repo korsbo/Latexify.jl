@@ -198,7 +198,7 @@ function render(s::LaTeXString, ::MIME"image/png";
     )
     render(s, MIME("application/x-dvi"); debug=debug, name=name, command=command, open=false, documentclass=documentclass, packages=packages)
 
-    cmd = `dvipng -bg Transparent -D $(dpi) -T tight -o $(name).png $(name).dvi`
+    cmd = `dvipng $(debug ? "" : "-q") -bg Transparent -D $(dpi) -T tight -o $(name).png $(name).dvi`
     debug || (cmd = pipeline(cmd, devnull))
     run(cmd)
 
