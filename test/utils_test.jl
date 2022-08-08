@@ -1,4 +1,3 @@
-name = tempname()
 xdoty_tex = L"x \cdot y"
 
 #= This test fails after updating dvisvgm, can this functionality be tested in a less dependant way?
@@ -25,14 +24,13 @@ if Sys.islinux()
 end
 # =#
 
-Latexify._writetex(xdoty_tex; name=name)
-tex = open("$(name).tex") do f
-    read(f, String)
-end
+filename = Latexify._writetex(xdoty_tex)
+tex = read(filename, String)
 @test tex == replace(raw"""
 \documentclass[varwidth=100cm]{standalone}
 \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{unicode-math}
 \begin{document}
 {
     \Large
@@ -41,14 +39,13 @@ end
 \end{document}
 """, "\r\n"=>"\n")
 
-Latexify._writetex(L"\ce{ 2 P_1 &<=>[k_{+}][k_{-}] D_{1}}"; name=name)
-tex = open("$(name).tex") do f
-    read(f, String)
-end
+filename = Latexify._writetex(L"\ce{ 2 P_1 &<=>[k_{+}][k_{-}] D_{1}}")
+tex = read(filename, String)
 @test tex == replace(raw"""
 \documentclass[varwidth=100cm]{standalone}
 \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{unicode-math}
 \usepackage{mhchem}
 \begin{document}
 {
@@ -58,10 +55,8 @@ end
 \end{document}
 """, "\r\n"=>"\n")
 
-Latexify._writetex(L"\qty{135}{nm}"; name=name, documentclass=("article", "a4paper"), packages=("siunitx",))
-tex = open("$(name).tex") do f
-    read(f, String)
-end
+filename = Latexify._writetex(L"\qty{135}{nm}"; documentclass=("article", "a4paper"), packages=("siunitx",))
+tex = read(filename, String)
 @test tex == replace(raw"""
 \documentclass[a4paper]{article}
 \usepackage{siunitx}
