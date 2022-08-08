@@ -143,6 +143,11 @@ There are more stuff that you can do, but for that I will refer you to the
 [docs](https://korsbo.github.io/Latexify.jl/stable).
 
 
+### Display equations in a terminal
+
+One can use [`ImageInTerminal`](https://github.com/JuliaImages/ImageInTerminal.jl) with the [`Sixel`](https://github.com/JuliaIO/Sixel.jl) backend in order to display rendered `latexify`ed [equations](https://github.com/JuliaImages/ImageInTerminal.jl#display-equations).
+
+
 ## Convenience functions
 
 - `copy_to_clipboard(::Bool)`, toggle automatic copying of the resulting LaTeX

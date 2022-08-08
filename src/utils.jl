@@ -1,31 +1,20 @@
 
-
-
+add_brackets(ex::Expr, vars) = postwalk(x -> x in vars ? "\\left[ $(convert_subscript(x)) \\right]" : x, ex)
 add_brackets(arr::AbstractArray, vars) = [add_brackets(element, vars) for element in arr]
+add_brackets(s::Any, vars) = s
 
-add_brackets(s::Any, vars) = return s
-
-function add_brackets(ex::Expr, vars)
-    ex = postwalk(x -> x in vars ? "\\left[ $(convert_subscript(x)) \\right]" : x, ex)
-    return ex
-end
-
+default_packages(s) = vcat(["amssymb", "amsmath", "unicode-math"], occursin("\\ce{", s) ? ["mhchem"] : [])
 
 function _writetex(s::LaTeXString;
         name=tempname(),
         command="\\Large",
         documentclass=("standalone", "varwidth=100cm"),
-        packages=occursin("\\ce{", s) ? (
-                                         "amssymb","amsmath","mhchem"
-                                        ) : (
-                                             "amssymb","amsmath"
-                                            ),
+        packages=default_packages(s),
+        preamble=""
     )
     doc = """
     \\documentclass$(_packagename(documentclass))
-    """*prod(
-                                                          "\\usepackage$(_packagename(k))\n" for k in packages
-                                                         )*"""
+    """ * prod(map(p -> "\\usepackage$(_packagename(p))\n", packages)) * preamble * """
     \\begin{document}
     {
         $command
@@ -36,23 +25,21 @@ function _writetex(s::LaTeXString;
     doc = replace(doc, "\\begin{align}"=>"\\[\n\\begin{aligned}")
     doc = replace(doc, "\\end{align}"=>"\\end{aligned}\n\\]")
     doc = replace(doc, "\\require{mhchem}\n"=>"")
-    open("$(name).tex", "w") do f
-        write(f, doc)
-    end
-
-    return nothing
+    texfile = name * ".tex"
+    write(texfile, doc)
+    texfile
 end
 
 
 function _openfile(name; ext="pdf")
     if Sys.iswindows()
-        run(`cmd /c "start $(name).$(ext)"`, wait=false)
+        run(`cmd /c "start $name.$ext"`, wait=false)
     elseif Sys.islinux()
-        run(`xdg-open $(name).$(ext)`, wait=false)
+        run(`xdg-open $name.$ext`, wait=false)
     elseif Sys.isapple()
-        run(`open $(name).$(ext)`, wait=false)
+        run(`open $name.$ext`, wait=false)
     elseif Sys.isbsd()
-        run(`xdg-open $(name).$(ext)`, wait=false)
+        run(`xdg-open $name.$ext`, wait=false)
     end
 
     return nothing
@@ -65,9 +52,7 @@ end
 Display a standalone document with the given input. Supported MIME-type strings are
 "application/pdf" (default), "application/x-dvi", "image/png" and "image/svg".
 """
-function render(s::LaTeXString; kwargs...)
-    return render(s, best_displayable(); kwargs...)
-end
+render(s::LaTeXString; kwargs...) = render(s, best_displayable(); kwargs...)
 
 function best_displayable()
     priority_list = [
@@ -107,27 +92,18 @@ function html_wrap(s::LaTeXString; scale=1.1, kwargs...)
 end
 
 # render(s::LaTeXString, mime::MIME"juliavscode/html"; kwargs...) = render(stdout, mime; kwargs...)
-function render(s::LaTeXString, mime::MIME"juliavscode/html"; kwargs...)
-      display(mime, html_wrap(s; kwargs...))
-end
-
+render(s::LaTeXString, mime::MIME"juliavscode/html"; kwargs...) = display(mime, html_wrap(s; kwargs...))
 
 function render(s::LaTeXString, ::MIME"application/pdf";
         debug=false,
         name=tempname(),
-        command="\\Large",
         open=true,
-        documentclass=("standalone", "varwidth=100cm"),
-        packages=occursin("\\ce{", s) ? (
-                                         "amssymb","amsmath","mhchem"
-                                        ) : (
-                                             "amssymb","amsmath"
-                                            ),
+        kw...
     )
-    _writetex(s; name=name, command=command, documentclass=documentclass, packages=packages)
+    _writetex(s; name=name, kw...)
 
     cd(dirname(name)) do
-        cmd = `lualatex --interaction=batchmode $(name).tex`
+        cmd = `lualatex --interaction=batchmode $name.tex`
         debug || (cmd = pipeline(cmd, devnull))
         run(cmd)
     end
@@ -150,19 +126,13 @@ end
 function render(s::LaTeXString, ::MIME"application/x-dvi";
         debug=false,
         name=tempname(),
-        command="\\Large",
         open=true,
-        documentclass=("standalone", "varwidth=100cm"),
-        packages=occursin("\\ce{", s) ? (
-                                         "amssymb","amsmath","mhchem"
-                                        ) : (
-                                             "amssymb","amsmath"
-                                            ),
+        kw...
     )
-    _writetex(s; name=name, command=command, documentclass=documentclass, packages=packages)
+    _writetex(s; name=name, kw...)
 
     cd(dirname(name)) do
-        cmd = `dvilualatex --interaction=batchmode $(name).tex`
+        cmd = `dvilualatex --interaction=batchmode $name.tex`
         debug || (cmd = pipeline(cmd, devnull))
         run(cmd)
     end
@@ -185,20 +155,14 @@ end
 function render(s::LaTeXString, ::MIME"image/png";
         debug=false,
         name=tempname(),
-        command="\\Large",
         callshow=true,
         open=true,
         dpi=300,
-        documentclass=("standalone", "varwidth=100cm"),
-        packages=occursin("\\ce{", s) ? (
-                                         "amssymb","amsmath","mhchem"
-                                        ) : (
-                                             "amssymb","amsmath"
-                                            ),
+        kw...
     )
-    render(s, MIME("application/x-dvi"); debug=debug, name=name, command=command, open=false, documentclass=documentclass, packages=packages)
+    render(s, MIME("application/x-dvi"); debug=debug, name=name, open=false, kw...)
 
-    cmd = `dvipng $(debug ? "" : "-q") -bg Transparent -D $(dpi) -T tight -o $(name).png $(name).dvi`
+    cmd = `dvipng $(debug ? "" : "-q") -bg Transparent -D $dpi -T tight -o $name.png $name.dvi`
     debug || (cmd = pipeline(cmd, devnull))
     run(cmd)
 
@@ -217,19 +181,13 @@ end
 function render(s::LaTeXString, ::MIME"image/svg";
         debug=false,
         name=tempname(),
-        command="\\Large",
         callshow=true,
         open=true,
-        documentclass=("standalone", "varwidth=100cm"),
-        packages=occursin("\\ce{", s) ? (
-                                         "amssymb","amsmath","mhchem"
-                                        ) : (
-                                             "amssymb","amsmath"
-                                            ),
+        kw...
     )
-    render(s, MIME("application/x-dvi"); debug=debug, name=name, command=command, open=false, documentclass=documentclass, packages=packages)
+    render(s, MIME("application/x-dvi"); debug=debug, name=name, open=false, kw...)
 
-    cmd = `dvisvgm -n -v 0 -o $(name).svg $(name).dvi`
+    cmd = `dvisvgm -n -v 0 -o $name.svg $name.dvi`
     debug || (cmd = pipeline(cmd, devnull))
     run(cmd)
 
@@ -259,16 +217,11 @@ function expr_to_array(ex)
     else
         if ex.head == :hcat
             return safereduce(hcat, ex.args)
-        elseif ex.head in [:vcat, :vect]
+        elseif ex.head in (:vcat, :vect)
             return safereduce(vcat, ex.args)
         end
     end
 end
 
-function _packagename(x::AbstractString)
-    return "{$x}"
-end
-
-function _packagename(x::Tuple)
-    return "[$(join(x[2:end], ", "))]{$(first(x))}"
-end
+_packagename(x::AbstractString) = "{$x}"
+_packagename(x::Tuple) = "[$(join(x[2:end], ", "))]{$(first(x))}"
