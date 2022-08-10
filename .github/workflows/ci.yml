@@ -15,8 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         version:
-          - '1.0'  # lowest julia declared compat in `Project.toml`
-          - '1.6'  # LTS
+          - '1.6'  # lowest julia declared compat in `Project.toml`
           - '1'
           - 'nightly'
         os: [ubuntu-latest]
