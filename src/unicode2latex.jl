@@ -1,61 +1,6 @@
 import OrderedCollections: OrderedDict
 import Base.Unicode
 
-"""
-    latex_diacritics(c::Char)
-
-- generate latex escape codes for diacritics of the latin alphabet (upper and lower case), see https://en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped_codes
-- also generate a subset of the following sequence, when the single char normalization is available:
-    - 'à' => "\\`{a}"  # grave
-    - 'á' => "\\'{a}"  # acute
-    - 'ä' => "\\"{a}"  # umlaut (trema, dieresis)
-    - 'a̋' => "\\H{a}"  # hungarian umlaut (double acute)
-    - 'ã' => "\\~{a}"  # tilde
-    - 'â' => "\\^{a}"  # circumflex
-    - 'a̧' => "\\c{a}"  # cedilla
-    - 'ą' => "\\k{a}"  # ogonek
-    - 'ā' => "\\={a}"  # macron (bar above)
-    - 'a̱' => "\\b{a}"  # bar under
-    - 'ȧ' => "\\.{a}"  # dot above
-    - 'ạ' => "\\d{a}"  # dot under
-    - 'å' => "\\r{a}"  # ring
-    - 'ă' => "\\u{a}"  # breve
-    - 'ǎ' => "\\v{a}"  # caron (háček)
-"""
-function latex_diacritics(c::Char)
-    c = lowercase(c)
-    out = []
-    for p in (
-        '`' => 0x300,  # latex sequence \`{c} maps to 'c' * Char(0x300) := "c̀"
-        "'" => 0x301,
-        '^' => 0x302,
-        '~' => 0x303,
-        '=' => 0x304,
-        'u' => 0x306,
-        '.' => 0x307,
-        '"' => 0x308,
-        'r' => 0x30a,
-        'H' => 0x30b,
-        'v' => 0x30c,
-        'd' => 0x323,
-        'c' => 0x327,
-        'k' => 0x328,
-        'b' => 0x331,
-    )
-        latex_escape, mark = p.first, Char(p.second)
-        lower, upper = c * mark, uppercase(c) * mark
-        # e.g. ('y' * Char(0x30a) == "ẙ") != (Char(0x1e99) == 'ẙ'), although they look the same
-        for p in (lower => "\\text{\\$latex_escape{$c}}", upper => "\\text{\\$latex_escape{$(uppercase(c))}}")
-            push!(out, p)
-            alias = length(p.first) == 1 ? p.first : Unicode.normalize(p.first)
-            if alias != p.first
-                push!(out, (length(alias) == 1 ? first(alias) : alias) => p.second)
-            end
-        end
-    end
-    out
-end
-
 mathup(c::Char, bold) = Char(
     UInt32(c) + if isuppercase(c)
         (bold ? #='𝐀'=#0x1d400 : #='A'=#0x0041) - #='A'=#0x0041  # Mathematical (Bold) Capital
@@ -129,9 +74,85 @@ mathbb(c::Char) = Char(
     end
 )
 
-filt(seq) = filter(p -> isprint(p.first), seq)
+const emphases = (
+    # ("mathup", ("textup",)) => identity,
+    ("", ("textnormal",)) => identity,
+    ("mathbf", ("textbf",)) => c -> mathup(c, true),
+    ("mathit", ("textit",)) => c -> mathit(c, false),
+    ("mathbfit", ("textit", "textbf")) => c -> mathit(c, true),
+    ("mathscr", ()) => c -> mathscr(c, false),
+    ("mathbfscr", ()) => c -> mathscr(c, true),
+    ("mathfrak", ()) => c -> mathfrak(c, false),
+    ("mathbffrak", ()) => c -> mathfrak(c, true),
+    ("mathsfup", ()) => c -> mathsfup(c, false),
+    ("mathbfsfup", ()) => c -> mathsfup(c, true),
+    ("mathsfit", ()) => c -> mathsfit(c, false),
+    ("mathbfsfit", ()) => c -> mathsfit(c, true),
+    ("mathbb", ()) => mathbb,
+    ("mathtt", ("texttt",)) => mathtt,
+)
 
-const latin = vcat('A':'Z', 'a':'z', '0':'9')
+"""
+    latex_diacritics(c::Char)
+
+- generate latex escape codes for diacritics of the latin alphabet (upper and lower case), see https://en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped_codes
+- also generate a subset of the following sequence, when the single char normalization is available:
+    - 'à' => "\\`{a}"  # grave
+    - 'á' => "\\'{a}"  # acute
+    - 'ä' => "\\"{a}"  # umlaut (trema, dieresis)
+    - 'a̋' => "\\H{a}"  # hungarian umlaut (double acute)
+    - 'ã' => "\\~{a}"  # tilde
+    - 'â' => "\\^{a}"  # circumflex
+    - 'a̧' => "\\c{a}"  # cedilla
+    - 'ą' => "\\k{a}"  # ogonek
+    - 'ā' => "\\={a}"  # macron (bar above)
+    - 'a̱' => "\\b{a}"  # bar under
+    - 'ȧ' => "\\.{a}"  # dot above
+    - 'ạ' => "\\d{a}"  # dot under
+    - 'å' => "\\r{a}"  # ring
+    - 'ă' => "\\u{a}"  # breve
+    - 'ǎ' => "\\v{a}"  # caron (háček)
+"""
+function latex_diacritics(chars::AbstractVector)
+    out = []
+    for c ∈ chars, (mod, mark) ∈ (
+        '`' => Char(0x300),  # latex sequence \`{c} maps to 'c' * Char(0x300) := "c̀"
+        "'" => Char(0x301),
+        '^' => Char(0x302),
+        '~' => Char(0x303),
+        '=' => Char(0x304),
+        'u' => Char(0x306),
+        '.' => Char(0x307),
+        '"' => Char(0x308),
+        'r' => Char(0x30a),
+        'H' => Char(0x30b),
+        'v' => Char(0x30c),
+        'd' => Char(0x323),
+        'c' => Char(0x327),
+        'k' => Char(0x328),
+        'b' => Char(0x331),
+    )
+        for ((_, et), func) ∈ emphases
+            isempty(et) && continue
+            repl = "\\$mod{$c}"
+            for emph ∈ et
+                isempty(emph) && continue
+                repl = "\\$emph{$repl}"
+            end
+            dia = func(c) * mark
+            # e.g. ('y' * Char(0x30a) == "ẙ") != (Char(0x1e99) == 'ẙ'), although they look the same
+            push!(out, dia => repl)
+            alias = length(dia) == 1 ? dia : Unicode.normalize(dia)
+            if alias != dia
+                push!(out, (length(alias) == 1 ? first(alias) : alias) => repl)
+            end
+        end
+    end
+    out
+end
+
+latex_emphasis(chars::AbstractVector) =
+    filter(p -> isprint(p.first), [f(c) => isempty(em) ? "$c" : "\\$em{$c}" for c ∈ chars, ((em, _), f) ∈ emphases])
 
 const greek_seq = (  # contiguous unicode sequence
     raw"\Alpha",
@@ -221,51 +242,51 @@ const greek_seq = (  # contiguous unicode sequence
 
 const unicodedict = OrderedDict{Union{Char,String}, String}(
     # ↓↓↓ unicode, in increasing order (see https://docs.julialang.org/en/v1/manual/unicode-input)
-    '¡' => raw"\text{\textexclamdown}",  # \exclamdown
+    '¡' => raw"\textnormal{\textexclamdown}",  # \exclamdown
     '£' => raw"\mathsterling",  # \sterling
     '¥' => raw"\mathyen",  # \yen
-    '¦' => raw"\text{\textbrokenbar}",  # \brokenbar
+    '¦' => raw"\textnormal{\textbrokenbar}",  # \brokenbar
     '§' => raw"\S",
     '©' => raw"\copyright",
-    'ª' => raw"\text{\textordfeminine}",  # \ordfeminine
+    'ª' => raw"\textnormal{\textordfeminine}",  # \ordfeminine
     '¬' => raw"\neg",  # \lnot
     '®' => raw"\circledR",
     # '¯' => raw"\highminus",
-    '°' => raw"\text{\textdegree}",  # {^{\circ}}, \degree
+    '°' => raw"\textnormal{\textdegree}",  # {^{\circ}}, \degree
     '±' => raw"\pm",
     '²' => raw"{^2}",
     '³' => raw"{^3}",
     '¶' => raw"\P",
     '·' => raw"\cdotp",
     '¹' => raw"{^1}",
-    'º' => raw"\text{\textordmasculine}",  # \ordmasculine
+    'º' => raw"\textnormal{\textordmasculine}",  # \ordmasculine
     '¼' => raw"\tfrac{1}{4}",
     '½' => raw"\tfrac{1}{2}",
     '¾' => raw"\tfrac{3}{4}",
-    '¿' => raw"\text{\textquestiondown}",  # \questiondown
-    'Å' => raw"\text{\AA}",
-    'Æ' => raw"\text{\AE}",
-    'Ð' => raw"\text{\DH}",
+    '¿' => raw"\textnormal{\textquestiondown}",  # \questiondown
+    'Å' => raw"\textnormal{\AA}",
+    'Æ' => raw"\textnormal{\AE}",
+    'Ð' => raw"\textnormal{\DH}",
     '×' => raw"\times",
-    'Ø' => raw"\text{\O}",
-    'Þ' => raw"\text{\TH}",
-    'ß' => raw"\text{\ss}",
-    'å' => raw"\text{\aa}",
-    'æ' => raw"\text{\ae}",
+    'Ø' => raw"\textnormal{\O}",
+    'Þ' => raw"\textnormal{\TH}",
+    'ß' => raw"\textnormal{\ss}",
+    'å' => raw"\textnormal{\aa}",
+    'æ' => raw"\textnormal{\ae}",
     'ð' => raw"\eth",  # \dh
     '÷' => raw"\div",
     'ø' => raw"\emptyset",
-    'þ' => raw"\text{\th}",
-    'Đ' => raw"\text{\DJ}",
-    'đ' => raw"\text{\dj}",
+    'þ' => raw"\textnormal{\th}",
+    'Đ' => raw"\textnormal{\DJ}",
+    'đ' => raw"\textnormal{\dj}",
     'ħ' => raw"\hslash",  # \hbar
     'ı' => raw"\imath",
-    'Ł' => raw"\text{\L}",
-    'ł' => raw"\text{\l}",
-    'Ŋ' => raw"\text{\NG}",
-    'ŋ' => raw"\text{\ng}",
-    'Œ' => raw"\text{\OE}",
-    'œ' => raw"\text{\oe}",
+    'Ł' => raw"\textnormal{\L}",
+    'ł' => raw"\textnormal{\l}",
+    'Ŋ' => raw"\textnormal{\NG}",
+    'ŋ' => raw"\textnormal{\ng}",
+    'Œ' => raw"\textnormal{\OE}",
+    'œ' => raw"\textnormal{\oe}",
     # 'ƕ' => raw"\hvlig",
     # 'ƞ' => raw"\nrleg",
     'Ƶ' => raw"\Zbar",
@@ -325,8 +346,8 @@ const unicodedict = OrderedDict{Union{Char,String}, String}(
     # '˓' => raw"\sblhr",
     # '˔' => raw"\rais",  # \textraised
     # '˕' => raw"\low",  # \textlowered
-    '˘' => raw"\text{\u{}}",
-    '˜' => raw"\text{\texttildelow}",  # \tildelow
+    '˘' => raw"\textnormal{\u{}}",
+    '˜' => raw"\textnormal{\texttildelow}",  # \tildelow
     'ˡ' => raw"{^l}",
     'ˢ' => raw"{^s}",
     'ˣ' => raw"{^x}",
@@ -484,28 +505,28 @@ const unicodedict = OrderedDict{Union{Char,String}, String}(
     ' ' => raw"\thickspace",  # \;
     ' ' => raw"\thinspace",  # \,
     ' ' => raw"\hspace{0.08333em}",  # hair space
-    '–' => raw"\text{\textendash}",  # \endash
-    '—' => raw"\text{\textemdash}",  # \emdash
+    '–' => raw"\textnormal{\textendash}",  # \endash
+    '—' => raw"\textnormal{\textemdash}",  # \emdash
     '‖' => raw"\Vert",  # \|
-    '‘' => raw"\text{\textquoteleft}",  # \lq
-    '’' => raw"\text{\textquoteright}",  # \rq
+    '‘' => raw"\textnormal{\textquoteleft}",  # \lq
+    '’' => raw"\textnormal{\textquoteright}",  # \rq
     # '‛' => raw"\reapos",
-    '“' => raw"\text{\textquotedblleft}",  # \ldq
-    '”' => raw"\text{\textquotedblright}",  # \rdq
+    '“' => raw"\textnormal{\textquotedblleft}",  # \ldq
+    '”' => raw"\textnormal{\textquotedblright}",  # \rdq
     '†' => raw"\dagger",
     '‡' => raw"\ddagger",
     '•' => raw"\bullet",
     '…' => raw"\dots",  # \ldots
-    '‰' => raw"\text{\textperthousand}",  # \perthousand
-    '‱' => raw"\text{\textpertenthousand}",  # \pertenthousand
+    '‰' => raw"\textnormal{\textperthousand}",  # \perthousand
+    '‱' => raw"\textnormal{\textpertenthousand}",  # \pertenthousand
     '′' => raw"\prime",
     '″' => raw"\dprime",  # \pprime
     '‴' => raw"\trprime",  # \ppprime
     '‵' => raw"\backprime",
     '‶' => raw"\backdprime",  # \backpprime
     '‷' => raw"\backtrprime",  # \backppprime
-    '‹' => raw"\text{\guilsinglleft}",
-    '›' => raw"\text{\guilsinglright}",
+    '‹' => raw"\textnormal{\guilsinglleft}",
+    '›' => raw"\textnormal{\guilsinglright}",
     '⁀' => raw"\tieconcat",
     '⁗' => raw"\qprime",  # \pppprime
     # '⁝' => raw"\tricolon",
@@ -587,15 +608,15 @@ const unicodedict = OrderedDict{Union{Char,String}, String}(
     'ℒ' => raw"\mathscr{L}",
     'ℓ' => raw"\ell",
     'ℕ' => raw"\mathbb{N}",
-    '№' => raw"\text{\textnumero}",  # \numero
+    '№' => raw"\textnormal{\textnumero}",  # \numero
     '℘' => raw"\wp",
     'ℙ' => raw"\mathbb{P}",
     'ℚ' => raw"\mathbb{Q}",
     'ℛ' => raw"\mathscr{R}",
     'ℜ' => raw"\Re",  # \mathfrak{R}
     'ℝ' => raw"\mathbb{R}",
-    '℞' => raw"\text{\textrecipe}",  # \xrat
-    '™' => raw"\text{\texttrademark}",  # \trademark
+    '℞' => raw"\textnormal{\textrecipe}",  # \xrat
+    '™' => raw"\textnormal{\texttrademark}",  # \trademark
     'ℤ' => raw"\mathbb{Z}",
     'Ω' => raw"\Omega",  # \ohm
     '℧' => raw"\mho",
@@ -1709,21 +1730,8 @@ const unicodedict = OrderedDict{Union{Char,String}, String}(
     'ꜛ' => raw"{^\uparrow}",
     'ꜜ' => raw"{^\downarrow}",
     'ꜝ' => raw"{^!}",
-    # filt(map(c -> mathup(c, false) => "\\mathup{$c}", latin))...,  # regular ASCII characters, no need to wrap them in \mathup
-    filt(map(c -> mathup(c, true) => "\\mathbf{$c}", latin))...,
-    filt(map(c -> mathit(c, false) => "\\mathit{$c}", latin))...,  # 51 / 52
-    filt(map(c -> mathit(c, true) => "\\mathbfit{$c}", latin))...,
-    filt(map(c -> mathscr(c, false) => "\\mathscr{$c}", latin))...,  # 41 / 52
-    filt(map(c -> mathscr(c, true) => "\\mathbfscr{$c}", latin))...,
-    filt(map(c -> mathfrak(c, false) => "\\mathfrak{$c}", latin))...,  # 47 / 52
-    filt(map(c -> mathbb(c) => "\\mathbb{$c}", latin))...,  # 55 / 62
-    filt(map(c -> mathfrak(c, true) => "\\mathbffrak{$c}", latin))...,
-    filt(map(c -> mathsfup(c, false) => "\\mathsfup{$c}", latin))...,
-    filt(map(c -> mathsfup(c, true) => "\\mathbfsfup{$c}", latin))...,
-    filt(map(c -> mathsfit(c, false) => "\\mathsfit{$c}", latin))...,
-    filt(map(c -> mathsfit(c, true) => "\\mathbfsfit{$c}", latin))..., 
-    filt(map(c -> mathtt(c) => "\\mathtt{$c}", latin))...,
     '𝚤' => raw"\mathit{\imath}",
+    latex_emphasis(vcat('A':'Z', 'a':'z', '0':'9'))...,
     '𝚥' => raw"\mathit{\jmath}",
     map(x -> x[2] => "\\mathbf{$(greek_seq[x[1]])}", enumerate('𝚨':'𝛡'))...,  # greek with bold emphasis (x58)
     map(x -> x[2] => "\\mathit{$(greek_seq[x[1]])}", enumerate('𝛢':'𝜛'))...,  # greek with italic emphasis
@@ -1732,7 +1740,7 @@ const unicodedict = OrderedDict{Union{Char,String}, String}(
     map(x -> x[2] => "\\mathbfsfit{$(greek_seq[x[1]])}", enumerate('𝞐':'𝟉'))...,  # greek sans-serif with bold+italic emphasis
     '𝟊' => raw"\mbfDigamma",  # \Digamma
     '𝟋' => raw"\mbfdigamma",  # \digamm
-    (latex_diacritics.('a':'z')...)...,
+    latex_diacritics(vcat('a':'z', 'A':'Z'))...,
 )
 
 unicode2latex(c::Char) = unicode2latex(string(c))
