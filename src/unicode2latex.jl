@@ -74,6 +74,67 @@ mathbb(c::Char) = Char(
     end
 )
 
+const greek_seq = (  # contiguous unicode sequence
+    raw"\Alpha",
+    raw"\Beta",
+    raw"\Gamma",
+    raw"\Delta",
+    raw"\Epsilon",
+    raw"\Zeta",
+    raw"\Eta",
+    raw"\Theta",
+    raw"\Iota",
+    raw"\Kappa",
+    raw"\Lambda",
+    raw"\Mu",
+    raw"\Nu",
+    raw"\Xi",
+    raw"\Omicron",
+    raw"\Pi",
+    raw"\Rho",
+    raw"\varTheta",
+    raw"\Sigma",
+    raw"\Tau",
+    raw"\Upsilon",
+    raw"\Phi",
+    raw"\Chi",
+    raw"\Psi",
+    raw"\Omega",
+    raw"\nabla",
+    raw"\alpha",
+    raw"\beta",
+    raw"\gamma",
+    raw"\delta",
+    raw"\varepsilon",
+    raw"\zeta",
+    raw"\eta",
+    raw"\theta",
+    raw"\iota",
+    raw"\kappa",
+    raw"\lambda",
+    raw"\mu",
+    raw"\nu",
+    raw"\xi",
+    raw"\omicron",
+    raw"\pi",
+    raw"\rho",
+    raw"\varsigma",
+    raw"\sigma",
+    raw"\tau",
+    raw"\upsilon",
+    raw"\varphi",
+    raw"\chi",
+    raw"\psi",
+    raw"\omega",
+    raw"\partial",
+    raw"\epsilon",
+    raw"\vartheta",
+    raw"\varkappa",
+    raw"\phi",
+    raw"\varrho",
+    raw"\varpi",
+)
+
 const emphases = (
     # ("mathup", ("textup",)) => identity,
     ("", ("textnormal",)) => identity,
@@ -151,69 +212,16 @@ function latex_diacritics(chars::AbstractVector)
     out
 end
 
-latex_emphasis(chars::AbstractVector) =
-    filter(p -> isprint(p.first), [f(c) => isempty(em) ? "$c" : "\\$em{$c}" for c ∈ chars, ((em, _), f) ∈ emphases])
-
-const greek_seq = (  # contiguous unicode sequence
-    raw"\Alpha",
-    raw"\Beta",
-    raw"\Gamma",
-    raw"\Delta",
-    raw"\Epsilon",
-    raw"\Zeta",
-    raw"\Eta",
-    raw"\Theta",
-    raw"\Iota",
-    raw"\Kappa",
-    raw"\Lambda",
-    raw"\Mu",
-    raw"\Nu",
-    raw"\Xi",
-    raw"\Omicron",
-    raw"\Pi",
-    raw"\Rho",
-    raw"\varTheta",
-    raw"\Sigma",
-    raw"\Tau",
-    raw"\Upsilon",
-    raw"\Phi",
-    raw"\Chi",
-    raw"\Psi",
-    raw"\Omega",
-    raw"\nabla",
-    raw"\alpha",
-    raw"\beta",
-    raw"\gamma",
-    raw"\delta",
-    raw"\varepsilon",
-    raw"\zeta",
-    raw"\eta",
-    raw"\theta",
-    raw"\iota",
-    raw"\kappa",
-    raw"\lambda",
-    raw"\mu",
-    raw"\nu",
-    raw"\xi",
-    raw"\omicron",
-    raw"\pi",
-    raw"\rho",
-    raw"\varsigma",
-    raw"\sigma",
-    raw"\tau",
-    raw"\upsilon",
-    raw"\varphi",
-    raw"\chi",
-    raw"\psi",
-    raw"\omega",
-    raw"\partial",
-    raw"\epsilon",
-    raw"\vartheta",
-    raw"\varkappa",
-    raw"\phi",
-    raw"\varrho",
-    raw"\varpi",
-)
+function latex_emphasis(chars::AbstractVector)
+    out = []
+    for ((em, _), f) ∈ emphases
+        isempty(em) && continue
+        for c ∈ chars
+            push!(out, f(c) => isempty(em) ? c : "\\$em{$c}")
+        end
+    end
+    filter(p -> isprint(p.first), out)
+end
 
 # [`LaTeX`] https://tug.ctan.org/info/symbols/comprehensive/symbols-a4.pdf
 # \mathrm: normal upright Roman font 
@@ -242,6 +250,8 @@ const greek_seq = (  # contiguous unicode sequence
 
 const unicodedict = OrderedDict{Union{Char,String}, String}(
     # ↓↓↓ unicode, in increasing order (see https://docs.julialang.org/en/v1/manual/unicode-input)
+    # commented lines are either unsupported in `LaTeX` (or only through a package such as `marvosym` for e.g. `\jupiter`)
+    # or don't make sense here (letter modifiers such as `\enclosecircle`)
     '¡' => raw"\textnormal{\textexclamdown}",  # \exclamdown
     '£' => raw"\mathsterling",  # \sterling
     '¥' => raw"\mathyen",  # \yen
@@ -651,7 +661,6 @@ const unicodedict = OrderedDict{Union{Char,String}, String}(
     'ⅉ' => raw"\mathbbit{j}",
     '⅊' => raw"\PropertyLine",
     '⅋' => raw"\upand",
-    # fractions
     '⅐' => raw"\tfrac{1}{7}",
     '⅑' => raw"\tfrac{1}{9}",
     '⅒' => raw"\tfrac{1}{10}",
@@ -917,9 +926,9 @@ const unicodedict = OrderedDict{Union{Char,String}, String}(
     '⊈' => raw"\nsubseteq",
     '⊉' => raw"\nsupseteq",
     '⊊' => raw"\subsetneq",
-    '+' => raw"0FE00",
+    "⊊︀" => raw"\varsubsetneqq",
     '⊋' => raw"\supsetneq",
-    '+' => raw"0FE00",
+    "⊋︀" => raw"\varsupsetneq",
     '⊍' => raw"\cupdot",
     '⊎' => raw"\uplus",
     '⊏' => raw"\sqsubset",
@@ -1731,8 +1740,8 @@ const unicodedict = OrderedDict{Union{Char,String}, String}(
     'ꜜ' => raw"{^\downarrow}",
     'ꜝ' => raw"{^!}",
     '𝚤' => raw"\mathit{\imath}",
-    latex_emphasis(vcat('A':'Z', 'a':'z', '0':'9'))...,
     '𝚥' => raw"\mathit{\jmath}",
+    latex_emphasis(vcat('A':'Z', 'a':'z', '0':'9'))...,
     map(x -> x[2] => "\\mathbf{$(greek_seq[x[1]])}", enumerate('𝚨':'𝛡'))...,  # greek with bold emphasis (x58)
     map(x -> x[2] => "\\mathit{$(greek_seq[x[1]])}", enumerate('𝛢':'𝜛'))...,  # greek with italic emphasis
     map(x -> x[2] => "\\mathbfit{$(greek_seq[x[1]])}", enumerate('𝜜':'𝝕'))...,  # greek with bold+italic emphasis
@@ -1740,7 +1749,7 @@ const unicodedict = OrderedDict{Union{Char,String}, String}(
     map(x -> x[2] => "\\mathbfsfit{$(greek_seq[x[1]])}", enumerate('𝞐':'𝟉'))...,  # greek sans-serif with bold+italic emphasis
     '𝟊' => raw"\mbfDigamma",  # \Digamma
     '𝟋' => raw"\mbfdigamma",  # \digamm
-    latex_diacritics(vcat('a':'z', 'A':'Z'))...,
+    latex_diacritics(vcat('A':'Z', 'a':'z'))...,
 )
 
 unicode2latex(c::Char) = unicode2latex(string(c))
@@ -1766,12 +1775,14 @@ function unicode2latex(str::String; safescripts=false)
     it = Iterators.Stateful(str_array)
     while !isempty(it)
         if (x = popfirst!(it)) isa String
-            if (xx = peek(it)) isa Char && (isletter(xx) || isdigit(xx))
-                str_array[it.taken] = "{$x}"
+            if (next = peek(it)) !== nothing && length(next) == 1
+                c = next isa Char ? next : first(next)
+                if isletter(c) || isdigit(c)
+                    str_array[it.taken] = "{$x}"
+                end
             end
         end
     end
-
     str = merge_subscripts(join(str_array); safescripts=safescripts)
     return merge_superscripts(str; safescripts=safescripts)
 end
