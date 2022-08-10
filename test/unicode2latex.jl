@@ -40,19 +40,19 @@ s = 'I' * Char(0x308) * 'Z' * Char(0x304) * 'E' * Char(0x306)
   L"$i\hslash \cdot \frac{\partial\Psi\left( \mathbf{r}, t \right)}{{\partial}t} = \frac{ - \hslash^{2}}{2 \cdot m} \cdot \Delta\Psi\left( \mathbf{r}, t \right) + V \cdot \Psi\left( \mathbf{r}, t \right)$"
 
 if Sys.islinux()
-  mktempdir() do dn
-    name = tempname()
-    str = map(
-      chunk -> string("\\[", join(chunk, " "), "\\]\n"),
-      Iterators.partition(values(Latexify.unicodedict), 40)
-    ) |> prod
-    Latexify._writetex(
-      LaTeXString(str),
-      name=name,
-      documentclass="article",
-      preamble="\\usepackage[margin=2cm]{geometry}"
-    )
-    # should compile, even if some glyphs aren't found in the default font face
-    @test pipeline(`latexmk -output-directory=$dn -quiet -pdflatex=lualatex -pdf $name.tex`, stdout=devnull) |> run |> success
-  end
+    mktempdir() do dn
+        name = tempname()
+        str = map(
+            chunk -> string("\\[", join(chunk, " "), "\\]\n"),
+            Iterators.partition(values(Latexify.unicodedict), 40)
+        ) |> prod
+        Latexify._writetex(
+            LaTeXString(str),
+            name=name,
+            documentclass="article",
+            preamble="\\usepackage[margin=2cm]{geometry}"
+        )
+        # should compile, even if some glyphs aren't found in the default font face
+        @test pipeline(`latexmk -output-directory=$dn -quiet -pdflatex=lualatex -pdf $name.tex`, stdout=devnull) |> run |> success
+    end
 end
