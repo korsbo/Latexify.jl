@@ -27,7 +27,7 @@ end
 filename = Latexify._writetex(xdoty_tex)
 tex = read(filename, String)
 @test tex == replace(raw"""
-\documentclass[varwidth=100cm]{standalone}
+\documentclass[varwidth=true]{standalone}
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{unicode-math}
@@ -42,7 +42,7 @@ tex = read(filename, String)
 filename = Latexify._writetex(L"\ce{ 2 P_1 &<=>[k_{+}][k_{-}] D_{1}}")
 tex = read(filename, String)
 @test tex == replace(raw"""
-\documentclass[varwidth=100cm]{standalone}
+\documentclass[varwidth=true]{standalone}
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{unicode-math}

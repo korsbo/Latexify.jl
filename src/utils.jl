@@ -8,7 +8,7 @@ default_packages(s) = vcat(["amssymb", "amsmath", "unicode-math"], occursin("\\c
 function _writetex(s::LaTeXString;
         name=tempname(),
         command="\\Large",
-        documentclass=("standalone", "varwidth=100cm"),
+        documentclass=("standalone", "varwidth=true"),
         packages=default_packages(s),
         preamble=""
     )
@@ -151,7 +151,6 @@ function render(s::LaTeXString, ::MIME"application/x-dvi";
     return nothing
 end
 
-
 function render(s::LaTeXString, ::MIME"image/png";
         debug=false,
         name=tempname(),
@@ -160,9 +159,16 @@ function render(s::LaTeXString, ::MIME"image/png";
         dpi=300,
         kw...
     )
-    render(s, MIME("application/x-dvi"); debug=debug, name=name, open=false, kw...)
-
-    cmd = `dvipng $(debug ? "" : "-q") -bg Transparent -D $dpi -T tight -o $name.png $name.dvi`
+    
+    # tex -> dvi -> png is notoriously bad for font scaling (see tex.stackexchange.com/a/331901), prefer tex -> pdf -> png
+    if (convert = something(Sys.which.(["convert", "imgconvert", "magick"])..., missing)) !== missing
+        mime = MIME("application/pdf")
+        cmd = `$convert -colorspace RGB -density $dpi -transparent white $name.pdf $name.png`
+    else
+        mime = MIME("application/x-dvi")
+        cmd = `dvipng $(debug ? "" : "-q") -bg Transparent -D $dpi -T tight -o $name.png $name.dvi`
+    end
+    render(s, mime; debug=debug, name=name, open=false, kw...)
     debug || (cmd = pipeline(cmd, devnull))
     run(cmd)
 

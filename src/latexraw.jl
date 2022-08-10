@@ -101,7 +101,6 @@ function _latexraw(inputex::Expr; convert_unicode=true, kwargs...)
     ex = deepcopy(inputex)
     str = recurseexp!(ex)
     convert_unicode && (str = unicode2latex(str))
-    @show str
     return LaTeXString(str)
 end
 
