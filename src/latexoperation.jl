@@ -243,7 +243,7 @@ function convert_subscript(str::String; snakecase=false, function_name=false, kw
         return join(subscript_list, "\\_")
     else
         mainscript = subscript_list[1]
-        if function_name && length(mainscript) > 1
+        if function_name && length(mainscript) > 1 && isascii(mainscript)
             mainscript = "\\mathrm{$mainscript}"
         end
         length(subscript_list) == 1 && return string(mainscript)
