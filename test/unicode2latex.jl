@@ -55,4 +55,23 @@ if Sys.islinux()
         # should compile, even if some glyphs aren't found in the default font face
         @test pipeline(`latexmk -output-directory=$dn -quiet -pdflatex=lualatex -pdf $name.tex`, stdout=devnull) |> run |> success
     end
+
+    # not checked for correctness, only for rendering without errors
+    eq = latexify(:(sin(α) / (β + 1)))
+
+    name = tempname()
+    render(eq, MIME("application/pdf"); name=name, open=false)
+    @test filesize("$name.pdf") > 100
+
+    name = tempname()
+    render(eq, MIME("application/x-dvi"); name=name, open=false)
+    @test filesize("$name.dvi") > 100
+
+    name = tempname()
+    render(eq, MIME("image/png"); name=name, open=false)
+    @test filesize("$name.png") > 100
+
+    name = tempname()
+    render(eq, MIME("image/svg"); name=name, open=false)
+    @test filesize("$name.svg") > 100
 end
