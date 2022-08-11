@@ -26,6 +26,8 @@ function auto_display(x::Bool)
     global AUTO_DISPLAY = x
 end
 
+const DEFAULT_DPI = Ref(300)
+
 include("unicode2latex.jl")
 include("function2latex.jl")
 include("latexraw.jl")

@@ -157,7 +157,7 @@ function render(s::LaTeXString, ::MIME"image/png";
         name=tempname(),
         callshow=true,
         open=true,
-        dpi=300,
+        dpi=DEFAULT_DPI[],
         kw...
     )
     
