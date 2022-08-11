@@ -153,6 +153,7 @@ end
 
 function render(s::LaTeXString, ::MIME"image/png";
         debug=false,
+        convert = :gs,
         name=tempname(),
         callshow=true,
         open=true,
@@ -161,12 +162,15 @@ function render(s::LaTeXString, ::MIME"image/png";
     )
     
     # tex -> dvi -> png is notoriously bad for font scaling (see tex.stackexchange.com/a/331901), prefer tex -> pdf -> png
-    if (convert = something(Sys.which.(["convert", "imgconvert", "magick"])..., missing)) !== missing
+    if convert === :gs
         mime = MIME("application/pdf")
-        cmd = `$convert -colorspace RGB -density $dpi -transparent white $name.pdf $name.png`
-    else
+        cmd = `gs -sDEVICE=pngalpha -dTextAlphaBits=4 -r$dpi -o $name.png $name.pdf`
+    elseif convert === :dvipng
         mime = MIME("application/x-dvi")
-        cmd = `dvipng $(debug ? "" : "-q") -bg Transparent -D $dpi -T tight -o $name.png $name.dvi`
+        deb = debug ? [] : ["-q"]
+        cmd = `dvipng $(deb...) -bg Transparent -D $dpi -T tight $name.dvi -o $name.png`
+    else
+        error("$convert program not understood")
     end
     render(s, mime; debug=debug, name=name, open=false, kw...)
     debug || (cmd = pipeline(cmd, devnull))
@@ -186,14 +190,23 @@ end
 
 function render(s::LaTeXString, ::MIME"image/svg";
         debug=false,
+        convert = :pdf2svg,
         name=tempname(),
         callshow=true,
         open=true,
         kw...
     )
-    render(s, MIME("application/x-dvi"); debug=debug, name=name, open=false, kw...)
-
-    cmd = `dvisvgm -n -v 0 -o $name.svg $name.dvi`
+    if convert === :pdf2svg
+        mime = MIME("application/pdf")
+        cmd = `pdf2svg $name.pdf $name.svg`
+    elseif convert === :dvisvgm
+        mime = MIME("application/x-dvi")
+        verb = debug ? 7 : 0
+        cmd = `dvisvgm --no-fonts -v $verb $name.dvi -o $name.svg`
+    else
+        error("$convert program not understood")
+    end
+    render(s, mime; debug=debug, name=name, open=false, kw...)
     debug || (cmd = pipeline(cmd, devnull))
     run(cmd)
 

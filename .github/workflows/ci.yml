@@ -38,7 +38,7 @@ jobs:
         if: startsWith(matrix.os,'ubuntu')
         run: |
           sudo apt-get -y update
-          sudo apt-get -y install latexmk imagemagick texlive-{latex-base,latex-extra,luatex}
+          sudo apt-get -y install latexmk pdf2svg ghostscript texlive-{latex-base,latex-extra,luatex}
           sudo fc-cache -vr
       - uses: julia-actions/julia-buildpkg@latest
       - uses: julia-actions/julia-runtest@latest
