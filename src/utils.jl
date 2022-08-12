@@ -161,7 +161,8 @@ function render(s::LaTeXString, ::MIME"image/png";
         kw...
     )
     
-    # tex -> dvi -> png is notoriously bad for font scaling (see tex.stackexchange.com/a/331901), prefer tex -> pdf -> png
+    # tex -> dvi -> png is notoriously bad for fonts (not OTF support), see e.g. tex.stackexchange.com/q/537281
+    # prefer tex -> pdf -> png instead
     if convert === :gs
         mime = MIME("application/pdf")
         cmd = `gs -sDEVICE=pngalpha -dTextAlphaBits=4 -r$dpi -o $name.png $name.pdf`
@@ -190,23 +191,21 @@ end
 
 function render(s::LaTeXString, ::MIME"image/svg";
         debug=false,
-        convert = :pdf2svg,
+        convert = :dvisvgm,
         name=tempname(),
         callshow=true,
         open=true,
         kw...
     )
-    if convert === :pdf2svg
-        mime = MIME("application/pdf")
-        cmd = `pdf2svg $name.pdf $name.svg`
-    elseif convert === :dvisvgm
-        mime = MIME("application/x-dvi")
+    if convert === :dvisvgm
         verb = debug ? 7 : 0
-        cmd = `dvisvgm --no-fonts -v $verb $name.dvi -o $name.svg`
+        cmd = `dvisvgm --no-fonts --pdf -v $verb $name.pdf -o $name.svg`
+    elseif convert === :pdf2svg
+        cmd = `pdf2svg $name.pdf $name.svg`
     else
         error("$convert program not understood")
     end
-    render(s, mime; debug=debug, name=name, open=false, kw...)
+    render(s, MIME("application/pdf"); debug=debug, name=name, open=false, kw...)
     debug || (cmd = pipeline(cmd, devnull))
     run(cmd)
 
