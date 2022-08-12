@@ -36,8 +36,9 @@ s = 'i' * Char(0x308) * 'z' * Char(0x304) * 'e' * Char(0x306)
 s = 'I' * Char(0x308) * 'Z' * Char(0x304) * 'E' * Char(0x306)
 @test latexify(s; parse=false).s == raw"$\textnormal{\\\"{I}}\textnormal{\={Z}}\textnormal{\u{E}}$"
 
-@test latexify(:(iħ * (∂Ψ(𝐫, t) / ∂t) = -ħ^2 / 2m * ΔΨ(𝐫, t) + V * Ψ(𝐫, t))) ==
-  L"$i\hslash \cdot \frac{\partial\Psi\left( \mathbf{r}, t \right)}{{\partial}t} = \frac{ - \hslash^{2}}{2 \cdot m} \cdot \Delta\Psi\left( \mathbf{r}, t \right) + V \cdot \Psi\left( \mathbf{r}, t \right)$"
+@test latexify(:(iħ * (∂Ψ(𝐫, t) / ∂t) = -ħ^2 / 2m * ΔΨ(𝐫, t) + V * Ψ(𝐫, t))).s ==
+    raw"$i\hslash \cdot \frac{\partial\Psi\left( \mathbf{r}, t \right)}{{\partial}t} = " * 
+    raw"\frac{ - \hslash^{2}}{2 \cdot m} \cdot \Delta\Psi\left( \mathbf{r}, t \right) + V \cdot \Psi\left( \mathbf{r}, t \right)$"
 
 if Sys.islinux()
     mktempdir() do dn
