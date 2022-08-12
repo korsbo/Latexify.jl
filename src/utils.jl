@@ -112,9 +112,8 @@ function render(s::LaTeXString, ::MIME"application/pdf";
     # `displayable(MIME("application/pdf")` returns `true`.
     #
     # if callshow && displayable(MIME("application/pdf"))
-    #     Base.open("$name.pdf") do f
-    #         display(MIME("application/pdf"), read(f, String))
-    #     end
+    #     display(MIME("application/pdf"), read("$name.pdf"))
+    # end
     if open
         _openfile(name; ext="pdf")
     end
@@ -141,9 +140,8 @@ function render(s::LaTeXString, ::MIME"application/x-dvi";
     # `displayable(MIME("application/x-dvi")` returns `true`.
     #
     # if callshow && displayable(MIME("application/x-dvi"))
-    #     Base.open("$name.dvi") do f
-    #         display(MIME("application/x-dvi"), read(f, String))
-    #     end
+    #     display(MIME("application/x-dvi"), read("$name.dvi"))
+    # end
     if open
         _openfile(name; ext="dvi")
     end
@@ -178,9 +176,7 @@ function render(s::LaTeXString, ::MIME"image/png";
     run(cmd)
 
     if callshow && displayable(MIME("image/png"))
-        Base.open("$name.png") do f
-            display(MIME("image/png"), read(f))
-        end
+        display(MIME("image/png"), read("$name.png"))
     elseif open
         _openfile(name; ext="png")
     end
@@ -213,9 +209,7 @@ function render(s::LaTeXString, ::MIME"image/svg";
     # context (e.g., in the REPL), but `display(MIME("image/svg+xml"), ...)`
     # is the one normally defined.
     if callshow && displayable(MIME("image/svg"))
-        Base.open("$name.svg") do f
-            display(MIME("image/svg+xml"), read(f, String))
-        end
+        display(MIME("image/svg+xml"), read("$name.svg"))
     elseif open
         _openfile(name; ext="svg")
     end
