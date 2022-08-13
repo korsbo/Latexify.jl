@@ -71,3 +71,6 @@ tex = read(filename, String)
 @test Latexify._packagename("hi") == "{hi}"
 @test Latexify._packagename(("hi", "x=5")) == "[x=5]{hi}"
 @test Latexify._packagename(("hi", "x=5", "y")) == "[x=5, y]{hi}"
+
+@test occursin("MathJax", Latexify.html_wrap(latexify(:(sin(α)))))
+@test Latexify.best_displayable() isa MIME
