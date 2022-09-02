@@ -21,6 +21,7 @@ makedocs(
             "tutorials/parameterizedfunctions.md",
             "tutorials/DiffEqBiological.md"
         ],
+        "tutorials/notebooks.md",
         "arguments.md",
         "tutorials/inner_workings.md",
     ],
