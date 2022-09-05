@@ -167,3 +167,40 @@ macro latexrecipe(funcexpr)
     return funcdef
 end
 
+
+macro latexruletest(typename, expr)
+  x = expr.args[1].args[3]
+  io = expr.args[1].args[2]
+  return quote 
+      if !haskey(Latexify.MODULE_INSTRUCTIONS, Symbol($__module__)) 
+        Latexify.MODULE_INSTRUCTIONS[Symbol($__module__)]=Function[]
+      end
+      push!(
+        Latexify.MODULE_INSTRUCTIONS[Symbol($__module__)], 
+        function $((Symbol("type_recipe_", typename)))($io, config, $x, rules, prevop)
+          if $x isa $(esc(typename))
+            $(expand_descend(expr.args[end]))
+            return true
+          end
+          return false
+        end
+      )
+    end
+end
+
+using MacroTools
+
+function expand_descend(ex)
+  MacroTools.postwalk(x->head(x)==:call && operation(x)==:descend ? :(descend(io, config, $(x.args[end]), rules, prevop)) : x, ex)
+end
+
+
+# Example usage
+# f = @latexruletest TestModule1.TestType1 function f(io, x)
+#     write(io, "hello")
+#     descend(x.args)
+#     write(io, "bye")
+#     descend(x.args)
+#     write(io, "Just kidding!")
+#     descend(x.args)
+# end

@@ -1,5 +1,6 @@
 const INSTRUCTIONS = Function[]
 const USER_INSTRUCTIONS = Function[]
+const MODULE_INSTRUCTIONS = Dict{Symbol, Vector{Function}}()
 const USER_ENV_INSTRUCTIONS = Function[]
 
 # function latexraw(io::IO, config::NamedTuple, expr)
@@ -78,12 +79,12 @@ head(ex::Expr) = ex.head
 
 unpack(x) = (head(x), operation(x), arguments(x))
 
-function descend(io::IO, config::NamedTuple, e, rules::Vector{Function}, prevop=:(_nothing))::Nothing
+function descend(io::IO, e, config::NamedTuple, rules::Vector{Function}, prevop=:(_nothing))::Nothing
     config[:descend_counter][1] += 1
     io isa TracedIO && push!(io.trace, x->nothing)
     for rule in rules[end:-1:1]
         io isa TracedIO && (io.trace[end] = rule) ## Inefficient to overwrite so much but should I care?
-        call_matched = rule(io, config, e, rules, prevop)::Bool
+        call_matched = rule(io, e, config, rules, prevop)::Bool
         if call_matched
             return nothing
             break
@@ -94,10 +95,10 @@ end
 
 surround(x) = "\\left( $x \\right)"
 
-function join_descend(io::IO, config, args, rules, delim; prevop=nothing) 
+function join_descend(io::IO, args, config, rules, delim; prevop=nothing) 
   for arg in args[1:end-1]
-    descend(io, config, arg, rules, rules)
+    descend(io, arg, config, rules, prevop)
     write(io, delim)
   end
-  descend(io, config, args[end], rules, prevop)
+  descend(io, args[end], config, rules, prevop)
 end

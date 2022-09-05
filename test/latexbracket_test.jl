@@ -8,8 +8,8 @@ x = \left[
 1 \\
 2 \\
 \end{array}
-\right]\]
-", "\r\n"=>"\n")
+\right]
+\]", "\r\n"=>"\n")
 
 
 # Latexify.@generate_test latexify([1, 2], env=:bracket)
@@ -20,5 +20,5 @@ raw"\[
 1 \\
 2 \\
 \end{array}
-\right]\]
-", "\r\n"=>"\n")
+\right]
+\]", "\r\n"=>"\n")

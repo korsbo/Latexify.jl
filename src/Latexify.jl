@@ -17,12 +17,12 @@ export latexequation, latexarray, latexalign, latexraw, latexinline, latextabula
 
 export StyledNumberFormatter, FancyNumberFormatter
 
-COPY_TO_CLIPBOARD = false
+const COPY_TO_CLIPBOARD = false
 function copy_to_clipboard(x::Bool)
     global COPY_TO_CLIPBOARD = x
 end
 
-AUTO_DISPLAY = false
+const AUTO_DISPLAY = false
 function auto_display(x::Bool)
     global AUTO_DISPLAY = x
 end

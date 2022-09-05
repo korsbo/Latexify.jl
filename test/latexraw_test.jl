@@ -1,6 +1,11 @@
 using Latexify
+using Latexify: @generate_test, latextrace
 using Test
 using Markdown
+function latexraw(args...; kwargs... ) 
+  latexify(args...; kwargs...)
+  latexify(Latexify.NoEnv(args...); kwargs..., render=false)
+end
 
 str = "2*x^2 - y/c_2"
 ex = :(2*x^2 - y/c_2)
@@ -38,8 +43,9 @@ raw"$a = \left[
 \end{array}
 \right]$", "\r\n"=>"\n")
 
-@test latexify(:(x < y < x)) == replace(
-raw"$\left( x < y < x \right)$", "\r\n"=>"\n")
+# @generate_test latexify(:(x<y<=z))
+@test latexify(:(x < y <= x)) == replace(
+raw"$x < y \leq x$", "\r\n"=>"\n")
 
 :(f(x; k=3))
 latexify(
@@ -48,9 +54,9 @@ latexify(
 
 
 @test latexify(:(x <= y)) == replace(
-raw"$\left( x \leq y \right)$", "\r\n"=>"\n")
+raw"$x \leq y$", "\r\n"=>"\n")
 
-@test latexraw(str) == latexraw(ex)
+@test latexify(str) == latexify(ex)
 @test latexraw(ex) == desired_output
 
 @test latexify(:(u[1, 2]); index = :bracket) == raw"$u\left[1, 2\right]$"
@@ -60,7 +66,11 @@ array_test = [ex, str]
 @test all(latexraw.(array_test) .== desired_output)
 
 @test latexraw(:(@__dot__(x / y))) == raw"\frac{x}{y}"
+latexify(:(@. x/y), env=:raw)
+latexraw(:(@. x/y))
+latexify(Latexify.NoEnv((:(@. x/y),)))
 @test latexraw(:(@. x / y)) == raw"\frac{x}{y}"
+latexraw(:(f()))
 @test latexraw(:(eps())) == raw"eps\left(  \right)"
 
 @test latexraw(:y_c_a) == "y_{c\\_a}"
@@ -70,6 +80,7 @@ array_test = [ex, str]
 @test latexraw(:(log10(x))) == "\\log_{10}\\left( x \\right)"
 @test latexraw(:(sin(x))) ==  "\\sin\\left( x \\right)"
 @test latexraw(:(sin(x)^2)) ==  "\\sin^{2}\\left( x \\right)"
+latexraw(:(sin(x)^2))
 @test latexraw(:(asin(x))) ==  "\\arcsin\\left( x \\right)"
 @test latexraw(:(asinh(x))) ==  "\\mathrm{arcsinh}\\left( x \\right)"
 @test latexraw(:(sinc(x))) ==  "\\mathrm{sinc}\\left( x \\right)"
@@ -91,11 +102,12 @@ array_test = [ex, str]
 @test latexraw(:(f(x))) ==  "f\\left( x \\right)"
 @test latexify(:(hello_there_hi(x))) == replace(
 raw"$hello\_there\_hi\left( x \right)$", "\r\n"=>"\n")
+latexify(:((hi(hello))(x)))
 @test latexify(:((hi(hello_there_hi))(x))) == replace(
 raw"$hi\left( hello_{there\_hi} \right)\left( x \right)$", "\r\n"=>"\n")
 @test latexraw("x = 4*y") == "x = 4 \\cdot y"
 @test latexraw(:(sqrt(x))) == "\\sqrt{x}"
-@test latexraw(:(abs(x))) == raw"\left\|x\right\|"
+@test latexraw(:(abs(x))) == "\\left\\| x \\right\\|"
 @test latexraw(complex(1,-1)) == "1-1\\textit{i}"
 @test latexraw(1//2) == "\\frac{1}{2}"
 @test latexraw(:(1//2)) == "\\frac{1}{2}"
@@ -116,7 +128,7 @@ raw"$x\left[\frac{2}{3}, \frac{x}{y}\right]$", "\r\n"=>"\n")
 @test latexraw("β¹⁴₃") == raw"\beta{^{14}_3}"
 @test latexraw("β¹⁴") == raw"\beta{^{14}}"
 @test latexraw("β⁴") == raw"\beta{^4}"
-@test latexraw(Inf) == raw"\infty"
+@test latexraw(Inf) == "\\infty"
 @test latexraw(:Inf) == raw"\infty"
 @test latexraw("Inf") == raw"\infty"
 :((-1) ^ 2).args
@@ -130,6 +142,10 @@ raw"$\left( 1+2\textit{i} \right)^{2}$", "\r\n"=>"\n")
 raw"$\left( \frac{3}{2} \right)^{2}$", "\r\n"=>"\n")
 
 ### Test broadcasting
+latexify((3, 2))
+latexify(:((3, 2)))
+dump(:((2,2)))
+# latexraw(3, 2)
 @test latexraw(:(sum.((a, b)))) == raw"sum\left( a, b \right)"
 @test latexraw(:(sum.(a, b))) == raw"sum\left( a, b \right)"
 
@@ -184,16 +200,16 @@ raw"$-x - \left( y - x \right)$", "\r\n"=>"\n")
 raw"$-\left( 1 + 1 \right)$", "\r\n"=>"\n")
 # Latexify.@generate_test latexify(:(1 + (-(2))))
 @test latexify(:(1 + -2)) == replace(
-raw"$1 -2$", "\r\n"=>"\n")
+raw"$1 - 2$", "\r\n"=>"\n")
 # Latexify.@generate_test latexify(:(1 + (-2)))
-@test latexify(:(1 + -2)) == replace(
-raw"$1 -2$", "\r\n"=>"\n")
+@test latexify(:(1 + (-2))) == replace(
+raw"$1 - 2$", "\r\n"=>"\n")
 # Latexify.@generate_test latexify(:(1 + -2))
-@test latexify(:(1 + -2)) == replace(
-raw"$1 -2$", "\r\n"=>"\n")
+# @test latexify(:(1 + (-(2)))) == replace(
+# raw"$1 -2$", "\r\n"=>"\n")
 # Latexify.@generate_test latexify(:(1 + (-2 -3 -4)))
 @test latexify(:(1 + ((-2 - 3) - 4))) == replace(
-raw"$1 -2 - 3 - 4$", "\r\n"=>"\n")
+raw"$1 - 2 - 3 - 4$", "\r\n"=>"\n")
 # Latexify.@generate_test latexify(:(1 + 1*(-2 -3 -4)))
 @test latexify(:(1 + 1 * ((-2 - 3) - 4))) == replace(
 raw"$1 + 1 \cdot \left( -2 - 3 - 4 \right)$", "\r\n"=>"\n")
@@ -221,8 +237,10 @@ raw"$-1$", "\r\n"=>"\n")
 @test latexraw("-(+1)") == raw"-1"
 @test latexraw("-(1+1)") == raw"-\left( 1 + 1 \right)"
 @test latexraw("1-(-2)") == raw"1 + 2"
-@test latexraw("1 + (-(2))") == raw"1 -2"
-@test latexraw("1 + (-2 -3 -4)") == raw"1 -2 - 3 - 4"
+@test latexraw("1 .-(-2)") == raw"1 + 2"
+@test latexraw("1 + (-(2))") == raw"1 - 2"
+@test latexraw("1 .+ (-2 -3 -4)") == raw"1 - 2 - 3 - 4"
+@test latexraw("1 + (+2 -3 -4)") == raw"1 + 2 - 3 - 4"
 @test latexraw("1 - 2 - (- 3 - 4)") == raw"1 - 2 - \left( -3 - 4 \right)"
 @test latexraw("1 - 2 - (- 3 -(2) + 4)") == raw"1 - 2 - \left( -3 - 2 + 4 \right)"
 @test latexraw("1 - 2 - (- 3 -(2 - 8) + 4)") == raw"1 - 2 - \left( -3 - \left( 2 - 8 \right) + 4 \right)"
@@ -254,19 +272,17 @@ raw"\begin{equation}
 \frac{x}{y} & 1.00e+10 & 1.29e+03 \\
 \end{array}
 \right]
-\end{equation}
-", "\r\n"=>"\n")
+\end{equation}", "\r\n"=>"\n")
 
 
 @test latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:table, fmt="%.2e") == replace(
 raw"\begin{tabular}{ccc}
-$3.29e+07$ & $1.23e+00$ & $P_{1}$\\
-$\frac{x}{y}$ & $1.00e+10$ & $1.29e+03$\\
-\end{tabular}
-", "\r\n"=>"\n")
+$3.29e+07$ & $1.23e+00$ & $P_{1}$ \\
+$\frac{x}{y}$ & $1.00e+10$ & $1.29e+03$
+\end{tabular}", "\r\n"=>"\n")
 
-
-@test latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:mdtable, fmt="%.2e") ==
+# latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:mdtable, fmt="%.2e")
+@test_broken latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:mdtable, fmt="%.2e") ==
 Markdown.md"|    $3.29e+07$ | $1.23e+00$ |    $P_{1}$ |
 | -------------:| ----------:| ----------:|
 | $\frac{x}{y}$ | $1.00e+10$ | $1.29e+03$ |
@@ -291,8 +307,7 @@ test_functions = [:sinh, :alpha, :Theta, :cosc, :acoth, :acot, :asech, :lambda,
 
 # Latexify.@generate_test latexify(["3*$(func)(x)^2/4 -1" for func = test_functions])
 @test latexify(["3*$(func)(x)^2/4 -1" for func = test_functions]) == replace(
-raw"\begin{equation}
-\left[
+raw"$\left[
 \begin{array}{c}
 \frac{3 \cdot \sinh^{2}\left( x \right)}{4} - 1 \\
 \frac{3 \cdot \alpha\left( x \right)^{2}}{4} - 1 \\
@@ -359,9 +374,7 @@ raw"\begin{equation}
 \frac{3 \cdot \Sigma\left( x \right)^{2}}{4} - 1 \\
 \frac{3 \cdot \sin^{2}\left( x \right)}{4} - 1 \\
 \end{array}
-\right]
-\end{equation}
-", "\r\n"=>"\n")
+\right]$", "\r\n"=>"\n")
 
 
 ## Test logical operators
@@ -371,17 +384,21 @@ raw"\begin{equation}
 
 ## Test {cases} enviroment
 @test latexraw(:(R(p,e,d) = e ? 0 : log(p) - d)) == replace(
-raw"R\left( p, e, d \right) = \begin{cases}
-0 & \text{if } e\\
+raw"R\left( p, e, d \right) = 
+\begin{cases}
+0 & \text{if } \quad e \\
 \log\left( p \right) - d & \text{otherwise}
-\end{cases}", "\r\n"=>"\n")
+\end{cases}
+", "\r\n"=>"\n")
 
 @test latexraw(:(R(p,e,d,t) = if (t && e); 0 elseif (t && !e); d else log(p) end)) == replace(
-raw"R\left( p, e, d, t \right) = \begin{cases}
-0 & \text{if } t \wedge e\\
-d & \text{elseif } t \wedge \neg e\\
+raw"R\left( p, e, d, t \right) = 
+\begin{cases}
+0 & \text{if } \quad t \wedge e \\
+d & \text{elseif } \quad t \wedge \neg e \\
 \log\left( p \right) & \text{otherwise}
-\end{cases}", "\r\n"=>"\n")
+\end{cases}
+", "\r\n"=>"\n")
 
 @test latexraw(:(function reward(p,e,d,t)
     if t && e
@@ -396,13 +413,16 @@ d & \text{elseif } t \wedge \neg e\\
         return log(p)
     end
 end)) == replace(
-raw"reward\left( p, e, d, t \right) = \begin{cases}
-0 & \text{if } t \wedge e\\
--1 \cdot d & \text{elseif } t \wedge \neg e\\
--2 \cdot d & \text{elseif } 2 \cdot t \wedge e\\
--3 \cdot d & \text{elseif } 3 \cdot t \wedge e\\
+raw"reward\left( p, e, d, t \right) = 
+\begin{cases}
+0 & \text{if } \quad t \wedge e \\
+-1 \cdot d & \text{elseif } \quad t \wedge \neg e \\
+-2 \cdot d & \text{elseif } \quad 2 \cdot t \wedge e \\
+-3 \cdot d & \text{elseif } \quad 3 \cdot t \wedge e \\
 \log\left( p \right) & \text{otherwise}
-\end{cases}", "\r\n"=>"\n")
+\end{cases}
+", "\r\n"=>"\n")
+
 
 @test latexify(:(f(x; y = 2))) == replace(
 raw"$f\left( x; y = 2 \right)$", "\r\n"=>"\n")

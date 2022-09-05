@@ -1,18 +1,17 @@
 using Latexify
 using Test
 
+# Latexify.set_default(;render=true)
 arr = [1 2; 3 4]
 
+latexify(arr; env=:equation)
 @test latexify(arr) == replace(
-raw"\begin{equation}
-\left[
+raw"$\left[
 \begin{array}{cc}
 1 & 2 \\
 3 & 4 \\
 \end{array}
-\right]
-\end{equation}
-", "\r\n"=>"\n")
+\right]$", "\r\n"=>"\n")
 
 # Latexify.@generate_test latexify(arr; env=:inline)
 @test latexify(arr; env = :inline) == replace(
@@ -32,8 +31,7 @@ raw"\begin{equation}
 3 & 4 \\
 \end{array}
 \right]
-\end{equation}
-", "\r\n"=>"\n")
+\end{equation}", "\r\n"=>"\n")
 
 # Latexify.@generate_test latexify(arr; env=:bracket)
 @test latexify(arr; env = :bracket) == replace(
@@ -43,8 +41,8 @@ raw"\[
 1 & 2 \\
 3 & 4 \\
 \end{array}
-\right]\]
-", "\r\n"=>"\n")
+\right]
+\]", "\r\n"=>"\n")
 
 # Latexify.@generate_test latexify(arr; env=:raw)
 @test latexify(arr; env = :raw) == replace(
@@ -58,49 +56,21 @@ raw"\left[
 arr = [1,2,:(x/y),4]
 
 @test latexify(arr) == replace(
-raw"\begin{equation}
-\left[
+raw"$\left[
 \begin{array}{c}
 1 \\
 2 \\
 \frac{x}{y} \\
 4 \\
 \end{array}
-\right]
-\end{equation}
-", "\r\n"=>"\n")
+\right]$", "\r\n"=>"\n")
 
 @test latexify(arr; transpose=true) == replace(
-raw"\begin{equation}
-\left[
+raw"$\left[
 \begin{array}{cccc}
 1 & 2 & \frac{x}{y} & 4 \\
 \end{array}
-\right]
-\end{equation}
-", "\r\n"=>"\n")
-
-@test latexify((1.0, 2), (3, 4)) == replace(
-raw"\begin{equation}
-\left[
-\begin{array}{cc}
-1.0 & 3 \\
-2 & 4 \\
-\end{array}
-\right]
-\end{equation}
-", "\r\n"=>"\n")
-
-@test latexify(((1.0, 2), (3, 4))) == replace(
-raw"\begin{equation}
-\left[
-\begin{array}{cc}
-1.0 & 3 \\
-2 & 4 \\
-\end{array}
-\right]
-\end{equation}
-", "\r\n"=>"\n")
+\right]$", "\r\n"=>"\n")
 
 
 @test latexify(:(x = [1 2] * [1, 2] * [1 2; 3 4])) == replace(

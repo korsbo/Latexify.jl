@@ -30,4 +30,4 @@ reset_default()
 @test latexify("x * y") == 
 raw"$x \cdot y$"
 
-
+@test_throws ArgumentError latexify(1.2; env=:invalid_env)
