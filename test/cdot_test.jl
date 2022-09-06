@@ -33,8 +33,7 @@ raw"\begin{equation}
 x y & x \left( y + z \right) y \left( z + a \right) \left( z + b \right) \\
 \end{array}
 \right]
-\end{equation}
-", "\r\n"=>"\n")
+\end{equation}", "\r\n"=>"\n")
 
 @test latexify( [:(x*y), :(x*(y+z)*y*(z+a)*(z+b))]; env=:equation, transpose=true, mulsym=" \\cdot ") == replace(
 raw"\begin{equation}
@@ -43,8 +42,7 @@ raw"\begin{equation}
 x \cdot y & x \cdot \left( y + z \right) \cdot y \cdot \left( z + a \right) \cdot \left( z + b \right) \\
 \end{array}
 \right]
-\end{equation}
-", "\r\n"=>"\n")
+\end{equation}", "\r\n"=>"\n")
 
 
 

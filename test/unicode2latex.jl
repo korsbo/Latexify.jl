@@ -2,13 +2,10 @@
 
 
 @test latexify(['α', :β, "γ/η"], transpose=true, convert_unicode=false) == replace(
-raw"\begin{equation}
-\left[
+raw"$\left[
 \begin{array}{ccc}
 α & β & \frac{γ}{η} \\
 \end{array}
-\right]
-\end{equation}
-", "\r\n"=>"\n")
+\right]$", "\r\n"=>"\n")
 
 @test latexify("αaβ") == raw"${\alpha}a\beta$"

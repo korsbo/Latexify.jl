@@ -15,3 +15,6 @@ x = -23.4728979e7
 y = 0xf43
 
 @test StyledNumberFormatter()(y) == FancyNumberFormatter()(y) == "\\mathtt{0x0f43}"
+
+@test latexify(1.2342343523458901e6, fmt = FancyNumberFormatter(2)) == replace(
+raw"$1.2 \cdot 10^{6}$", "\r\n"=>"\n")
