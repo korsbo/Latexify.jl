@@ -1,6 +1,6 @@
 module Latexify
 # Base.Experimental.@compiler_options optimize=0 compile=min infer=no
-using Requires
+# using Requires
 using LaTeXStrings
 using InteractiveUtils
 using Markdown
@@ -9,11 +9,9 @@ import MacroTools
 using Printf
 using Formatting
 
-export latexify, md, copy_to_clipboard, auto_display, set_default, get_default,
+export latexify, copy_to_clipboard, auto_display, set_default, get_default,
     reset_default, @latexrecipe, render, @latexify, @latexrun
 
-## Allow some backwards compatibility until its time to deprecate.
-export latexequation, latexarray, latexalign, latexraw, latexinline, latextabular, mdtable
 
 export StyledNumberFormatter, FancyNumberFormatter
 
@@ -30,25 +28,18 @@ end
 include("unicode2latex.jl")
 include("function2latex.jl")
 include("latexraw.jl")
-include("latexarray.jl")
-include("latexalign.jl")
-include("latexbracket.jl")
-include("latexinline.jl")
-include("latexequation.jl")
-include("latextabular.jl")
 include("default_kwargs.jl")
 include("recipes.jl")
 include("macros.jl")
 include("matching_functions_test.jl")
 
-include("mdtable.jl")
-include("mdtext.jl")
-include("md.jl")
+# include("mdtable.jl")
+# include("mdtext.jl")
+# include("md.jl")
 
 include("utils.jl")
 include("TracedIO.jl")
 include("config.jl")
-include("latexraw_recipes.jl")
 
 include("numberformatters.jl")
 
@@ -137,22 +128,23 @@ for f in DEFAULT_INSTRUCTIONS
 end
 
 
-### Add support for additional packages without adding them as dependencies.
-function __init__()
-    @require DiffEqBase = "2b5f629d-d688-5b77-993f-72d75c75574e" begin
-        include("plugins/ParameterizedFunctions.jl")
-    end
-    @require DiffEqBiological = "eb300fae-53e8-50a0-950c-e21f52c2b7e0" begin
-        include("plugins/DiffEqBiological.jl")
-    end
-    @require SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8" begin
-        include("plugins/SymEngine.jl")
-    end
-    @require DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0" begin
-        include("plugins/DataFrames.jl")
-    end
-    # Latexify._latextree(:(a+w*c/d-b+1+1. + [1,x/y^2] * [1 2. 2im] .* x ± x = l_Huge(y)))
-    # Latexify.latexify(:(a+w*c/d-b+1+1. + [1,x/y^2] * [1 2. 2im] .* x ± x = l_Huge(y)))
-end
+# ### Add support for additional packages without adding them as dependencies.
+# function __init__()
+#     @require DiffEqBase = "2b5f629d-d688-5b77-993f-72d75c75574e" begin
+#         include("plugins/ParameterizedFunctions.jl")
+#     end
+#     @require DiffEqBiological = "eb300fae-53e8-50a0-950c-e21f52c2b7e0" begin
+#         include("plugins/DiffEqBiological.jl")
+#     end
+#     @require SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8" begin
+#         include("plugins/SymEngine.jl")
+#     end
+#     @require DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0" begin
+#         include("plugins/DataFrames.jl")
+#     end
+#     # Latexify._latextree(:(a+w*c/d-b+1+1. + [1,x/y^2] * [1 2. 2im] .* x ± x = l_Huge(y)))
+#     # Latexify.latexify(:(a+w*c/d-b+1+1. + [1,x/y^2] * [1 2. 2im] .* x ± x = l_Huge(y)))
+# end
+
 end
 
