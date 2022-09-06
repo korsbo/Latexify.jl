@@ -17,7 +17,7 @@ using Test
 @testset "latexbracket tests" begin include("latexbracket_test.jl") end
 @testset "latexinline tests" begin include("latexinline_test.jl") end
 @testset "latextabular tests" begin include("latextabular_test.jl") end
-@testset "mdtable tests" begin include("mdtable_test.jl") end
+# @testset "mdtable tests" begin include("mdtable_test.jl") end
 @testset "DataFrame Plugin" begin include("plugins/DataFrames.jl") end
 @testset "unicode2latex" begin include("unicode2latex.jl") end
 @testset "cdot test" begin include("cdot_test.jl") end
