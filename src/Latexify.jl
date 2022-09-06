@@ -31,7 +31,7 @@ include("latexraw.jl")
 include("default_kwargs.jl")
 include("recipes.jl")
 include("macros.jl")
-include("matching_functions_test.jl")
+include("instructions.jl")
 
 # include("mdtable.jl")
 # include("mdtext.jl")
