@@ -237,18 +237,26 @@ Alternatively, `render(str, mime)` can also be used to generate and display DVI,
 latexify(:(x/y)) |> s -> render(s, MIME("image/png"))
 ```
 
-PNG and SVG outputs rely on [dvipng](http://www.nongnu.org/dvipng/) and [dvisvgm](https://dvisvgm.de/), respectively.
+PNG output relies on [ghostscript](https://www.ghostscript.com) or alternatively on [dvipng](http://www.nongnu.org/dvipng) (use the `convert` argument).
 
-If your code requires specific packages or document classes to render
-correctly, you can supply those as keyword arguments:
+SVG output relies on [dvisvgm](https://dvisvgm.de) or alternatively on [pdf2svg](https://github.com/dawbarton/pdf2svg).
+
+If your code requires specific packages or document classes to render correctly, you can supply those as keyword arguments:
 
 ```julia
-L"\qty{1.25}{nm}" |> render(s, MIME("image/png"); documentclass="article", packages=("microtype", ("siunitx", exponent-product="\cdot"))
+L"\qty{1.25}{nm}" |> render(s, MIME("image/png"); documentclass="article", packages=("microtype", ("siunitx", exponent-product="\cdot")))
 ```
 
 The arguments to these are either strings, or tuples of strings where the first
-one is the name of the package or class, and any further are optional
-arguments.
+one is the name of the package or class, and any further are optional arguments.
+
+One can use `Latexify` together with `ImageInTerminal` to render equations in a [sixel compatible](https://github.com/JuliaIO/Sixel.jl#terminals-that-support-sixel) terminal, where the size of the sixel encoded image can be controlled using `dpi`:
+
+```julia
+using ImageInTerminal, Latexify
+
+latexify(:(iħ * (∂Ψ(𝐫, t) / ∂t) = -ħ^2 / 2m * ΔΨ(𝐫, t) + V * Ψ(𝐫, t))) |> s -> render(s, dpi=200)
+```
 
 ## Legacy support
 
