@@ -19,6 +19,22 @@ DEFAULT_INSTRUCTIONS = Function[
   end
   return false
   end,
+  function macrocall(io, expr, config, rules, prevop)
+    expr isa Expr && head(expr) == :macrocall || return false
+    h, op, args = unpack(expr)
+    if op isa Symbol
+      funcname = replace(string(op), "_"=>"\\_")
+      # funcname = string(get(Latexify.function2latex, op, replace(string(op), "_"=>"\\_")))
+      write(io, funcname)
+    else
+      descend(io,  op, config, rules, nothing)
+    end
+    write(io, "\\left( ")
+    !isempty(args) && join_descend(io,  args, config, rules, ", ")
+    write(io, " \\right)")
+      # _arg = "\\left( " * join(descend.(args), ", ") * " \\right)"
+    return  true
+  end,
   function call(io::IO,  expr, config, rules, prevop)
     if expr isa Expr && head(expr) == :call 
       h, op, args = unpack(expr)
@@ -213,6 +229,7 @@ DEFAULT_INSTRUCTIONS = Function[
   function number(io::IO,  x, config, rules, prevop) 
     if x isa Number
       if hasmethod(isinf, Tuple{typeof(x)}) && isinf(x)
+        sign(x) == -1 && write(io, "-")
         write(io, "\\infty")
         return true
       end
@@ -540,6 +557,12 @@ DEFAULT_INSTRUCTIONS = Function[
       return true
     end
     return false
+  end,
+  function strip_linenumbernode(io, expr, config, rules, prevop)
+    h, op, args = unpack(expr)
+    expr isa Expr && any(map(x->x isa LineNumberNode, args)) || return false
+    descend(io, Expr(head(expr), op, filter(x->!(x isa LineNumberNode), args)...), config, rules, prevop)
+    return true
   end,
 ]
 
