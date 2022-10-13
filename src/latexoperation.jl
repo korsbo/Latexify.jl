@@ -139,6 +139,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
     op == :∛ && return "\\sqrt[3]{$(args[2])}"
     op == :∜ && return "\\sqrt[4]{$(args[2])}"
     op in (:sum, :prod) && return "\\$(op) $(args[2])"
+    op == :binomial && return "\\binom{$(args[2])}{$(args[3])}"
 
     ## Leave math italics for single-character operator names (e.g., f(x)).
     # convert subscript symbols to \_ if necessary, and make long function names
