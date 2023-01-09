@@ -70,7 +70,7 @@ mathbb(c::Char) = Char(
     elseif islowercase(c)
         #='𝕒'=#0x1d552 - #='a'=#0x0061  # Mathematical Double-Struck Small
     else
-        #='𝟘'=#0x1d7d8 - #='0'=#0x0030  # Mathematical Double-Struck Digit 
+        #='𝟘'=#0x1d7d8 - #='0'=#0x0030  # Mathematical Double-Struck Digit
     end
 )
 
@@ -224,7 +224,7 @@ function latex_emphasis(chars::AbstractVector)
 end
 
 # [`LaTeX`] https://tug.ctan.org/info/symbols/comprehensive/symbols-a4.pdf
-# \mathrm: normal upright Roman font 
+# \mathrm: normal upright Roman font
 # \mathnormal: normal math italic font
 # \mathbf: upright Roman boldface letters
 # \mathsf: upright sans serif letters
@@ -1773,12 +1773,13 @@ function unicode2latex(str::String; safescripts=false)
     str_array = map(k -> get(unicodedict, k, k), c_or_s)
 
     it = Iterators.Stateful(str_array)
+    originallength = length(it)
     while !isempty(it)
         if (x = popfirst!(it)) isa String
             if (next = peek(it)) !== nothing && length(next) == 1
                 c = next isa Char ? next : first(next)
                 if isletter(c) || isdigit(c)
-                    str_array[it.taken] = "{$x}"
+                    str_array[originallength - length(it)] = "{$x}"
                 end
             end
         end
