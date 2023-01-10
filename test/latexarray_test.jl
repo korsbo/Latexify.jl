@@ -87,6 +87,66 @@ raw"\begin{equation}
 using OffsetArrays
 @test latexify(OffsetArray(arr, -1:0, 3:4)) == latexify(arr)
 
+@test latexify(arr; arraystyle = :square) == replace(
+raw"\begin{equation}
+\left[
+\begin{array}{cc}
+1 & 2 \\
+3 & 4 \\
+\end{array}
+\right]
+\end{equation}
+", "\r\n"=>"\n")
+
+@test latexify(arr; arraystyle = :round) == replace(
+raw"\begin{equation}
+\left(
+\begin{array}{cc}
+1 & 2 \\
+3 & 4 \\
+\end{array}
+\right)
+\end{equation}
+", "\r\n"=>"\n")
+
+@test latexify(arr; arraystyle = :curly) == replace(
+raw"\begin{equation}
+\left\{
+\begin{array}{cc}
+1 & 2 \\
+3 & 4 \\
+\end{array}
+\right\}
+\end{equation}
+", "\r\n"=>"\n")
+
+@test latexify(arr; arraystyle = :pmatrix) == replace(
+raw"\begin{equation}
+\begin{pmatrix}{cc}
+1 & 2 \\
+3 & 4 \\
+\end{pmatrix}
+\end{equation}
+", "\r\n"=>"\n")
+
+@test latexify(arr; arraystyle = :bmatrix) == replace(
+raw"\begin{equation}
+\begin{bmatrix}{cc}
+1 & 2 \\
+3 & 4 \\
+\end{bmatrix}
+\end{equation}
+", "\r\n"=>"\n")
+
+@test latexify(arr; arraystyle = "smatrix") == replace(
+raw"\begin{equation}
+\begin{smatrix}{cc}
+1 & 2 \\
+3 & 4 \\
+\end{smatrix}
+\end{equation}
+", "\r\n"=>"\n")
+
 arr = [1,2,:(x/y),4]
 
 @test latexify(arr) == replace(
@@ -162,6 +222,5 @@ raw"$x = \left[
 4 \\
 \end{array}
 \right]$", "\r\n"=>"\n")
-
 
 
