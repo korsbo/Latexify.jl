@@ -1,30 +1,37 @@
+module DataFramesExt
+
+using Latexify
+isdefined(Base, :get_extension) ? (using DataFrames) : (using ..DataFrames)
+
 ##################################################
 #   Override default handling (default = inline) #
 ##################################################
 
-get_latex_function(r::DataFrames.DataFrame) = mdtable
-get_md_function(args::DataFrames.DataFrame) = mdtable
+Latexify.get_latex_function(r::DataFrames.DataFrame) = mdtable
+Latexify.get_md_function(args::DataFrames.DataFrame) = mdtable
 
 ###############################################
 #         Overload environment functions      #
 ###############################################
 
 
-function mdtable(d::DataFrames.DataFrame; kwargs...)
+function Latexify.mdtable(d::DataFrames.DataFrame; kwargs...)
     body = Matrix(d)
     head = propertynames(d)
     mdtable(body; head=head, kwargs...)
 end
 
-function _latextabular(d::DataFrames.DataFrame; kwargs...)
+function Latexify._latextabular(d::DataFrames.DataFrame; kwargs...)
     body = Matrix(d)
     head = propertynames(d)
-    _latextabular(body; head=head, kwargs...)
+    Latexify._latextabular(body; head=head, kwargs...)
 end
 
-function _latexarray(d::DataFrames.DataFrame; kwargs...)
+function Latexify._latexarray(d::DataFrames.DataFrame; kwargs...)
     body = Matrix(d)
     head = permutedims(propertynames(d))
     result = vcat(head, body)
-    _latexarray(result; kwargs...)
+    Latexify._latexarray(result; kwargs...)
+end
+
 end
