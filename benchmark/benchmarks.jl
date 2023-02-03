@@ -26,3 +26,6 @@ end
 @latexrecipe f(b::BType) = :($(b.a)/2)
 
 SUITE["user types"] = @benchmarkable latexify(BType(AType(x))) setup = (x=rand())
+
+SUITE["expression"] = @benchmarkable latexify(:(2x + 3 ∈ 25/4 + y - z^2^4α ? 8 : 9))
+
