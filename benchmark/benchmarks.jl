@@ -22,8 +22,13 @@ struct BType
     a
 end
 
-@latexrecipe f(a::AType) = :($(a.x) + 1)
-@latexrecipe f(b::BType) = :($(b.a)/2)
+@latexrecipe function f(a::AType)
+    return :($(a.x) + 1)
+end
+@latexrecipe function f(b::BType)
+    return :($(b.a)/2)
+end
+
 
 SUITE["user types"] = @benchmarkable latexify(BType(AType(x))) setup = (x=rand())
 
