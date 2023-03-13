@@ -1,10 +1,22 @@
+module LatexifyDiffEqBiologicalExt
+
+if isdefined(Base, :get_extension)
+    using DiffEqBiological
+    using Latexify
+    using LaTeXStrings
+else
+    using ..DiffEqBiological
+    using ..Latexify
+    using ..LaTeXStrings
+end
+
 ##################################################
 #   Override default handling (default = inline) #
 ##################################################
 
-get_latex_function(r::DiffEqBase.AbstractReactionNetwork) = latexalign
+Latexify.get_latex_function(r::DiffEqBase.AbstractReactionNetwork) = latexalign
 
-get_md_function(args::DiffEqBase.AbstractReactionNetwork) = mdalign
+Latexify.get_md_function(args::DiffEqBase.AbstractReactionNetwork) = mdalign
 
 
 ###############################################
@@ -22,7 +34,7 @@ Generate an align environment from a reaction network.
 - bracket::Bool - Surround the variables with square brackets to denote concentrations.
 - clean::Bool - Clean out redundant "1*". Only useful for DiffEqBiological@v3.4.2 or earlier.
 """
-function latexalign(r::DiffEqBase.AbstractReactionNetwork; bracket=false, noise=false, symbolic=false, clean=false, kwargs...)
+function Latexify.latexalign(r::DiffEqBase.AbstractReactionNetwork; bracket=false, noise=false, symbolic=false, clean=false, kwargs...)
     lhs = [Meta.parse("d$x/dt") for x in r.syms]
     if !noise
         if symbolic
@@ -53,10 +65,10 @@ function latexalign(r::DiffEqBase.AbstractReactionNetwork; bracket=false, noise=
         rhs = add_brackets(rhs, r.syms)
         lhs = [:(d[$x]/dt) for x in r.syms]
     end
-    return latexalign(lhs, rhs; kwargs...)
+    return Latexify.latexalign(lhs, rhs; kwargs...)
 end
 
-chemical_arrows(args...; kwargs...) = process_latexify(args...;kwargs..., env=:arrows)
+chemical_arrows(args...; kwargs...) = Latexify.process_latexify(args...;kwargs..., env=:arrows)
 
 function _chemical_arrows(rn::DiffEqBase.AbstractReactionNetwork;
     expand = true, double_linebreak=false, mathjax=true, starred=false, kwargs...)
@@ -158,4 +170,6 @@ end
 function clean_subtractions(arg)
     @warn "It appears that you are using a version of DiffEqBiological which does not require the latexify `clean` keyword argument. The `clean=true` specification will be ignored."
     return arg
+end
+
 end

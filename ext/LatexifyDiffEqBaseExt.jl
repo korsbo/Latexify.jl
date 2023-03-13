@@ -1,14 +1,26 @@
+module LatexifyDiffEqBaseExt
+
+if isdefined(Base, :get_extension)
+    using DiffEqBase
+    using Latexify
+    using LaTeXStrings
+else
+    using ..DiffEqBase
+    using ..Latexify
+    using ..LaTeXStrings
+end
+
 ##################################################
 #   Override default handling (default = inline) #
 ##################################################
 
-get_latex_function(ode::DiffEqBase.AbstractParameterizedFunction) = latexalign
-function get_latex_function(x::AbstractArray{T}) where T <: DiffEqBase.AbstractParameterizedFunction
+Latexify.get_latex_function(ode::DiffEqBase.AbstractParameterizedFunction) = latexalign
+function Latexify.get_latex_function(x::AbstractArray{T}) where T <: DiffEqBase.AbstractParameterizedFunction
     return latexalign
 end
 
-get_md_function(args::DiffEqBase.AbstractParameterizedFunction) = mdalign
-function get_md_function(x::AbstractArray{T}) where T <: DiffEqBase.AbstractParameterizedFunction
+Latexify.get_md_function(args::DiffEqBase.AbstractParameterizedFunction) = mdalign
+function Latexify.get_md_function(x::AbstractArray{T}) where T <: DiffEqBase.AbstractParameterizedFunction
     return mdalign
 end
 
@@ -16,27 +28,27 @@ end
 #         Overload environment functions      #
 ###############################################
 
-function latexraw(ode::DiffEqBase.AbstractParameterizedFunction; kwargs...)
+function Latexify.latexraw(ode::DiffEqBase.AbstractParameterizedFunction; kwargs...)
     lhs = ["\\frac{d$x}{dt} = " for x in ode.syms]
-    rhs = latexraw(ode.funcs; kwargs...)
+    rhs = Latexify.latexraw(ode.funcs; kwargs...)
     return lhs .* rhs
 end
 
 
-function latexinline(ode::DiffEqBase.AbstractParameterizedFunction; kwargs...)
+function Latexify.latexinline(ode::DiffEqBase.AbstractParameterizedFunction; kwargs...)
     lhs = ["\\frac{d$x}{dt} = " for x in ode.syms]
-    rhs = latexraw(ode.funcs; kwargs...)
-    return latexstring.( lhs .* rhs )
+    rhs = Latexify.latexraw(ode.funcs; kwargs...)
+    return Latexify.latexstring.( lhs .* rhs )
 end
 
-function latexalign(ode::DiffEqBase.AbstractParameterizedFunction; field::Symbol=:funcs, bracket=false, kwargs...)
+function Latexify.latexalign(ode::DiffEqBase.AbstractParameterizedFunction; field::Symbol=:funcs, bracket=false, kwargs...)
     lhs = [Meta.parse("d$x/dt") for x in ode.syms]
     rhs = getfield(ode, field)
     if bracket
-        rhs = add_brackets(rhs, ode.syms)
+        rhs = Latexify.add_brackets(rhs, ode.syms)
         lhs = [:(d[$x]/dt) for x in ode.syms]
     end
-    return latexalign(lhs, rhs; kwargs...)
+    return Latexify.latexalign(lhs, rhs; kwargs...)
 end
 
 """
@@ -44,7 +56,7 @@ latexalign(odearray; field=:funcs)
 
 Display ODEs side-by-side.
 """
-function latexalign(odearray::AbstractVector{T}; field::Symbol=:funcs, kwargs...) where T<:DiffEqBase.AbstractParameterizedFunction
+function Latexify.latexalign(odearray::AbstractVector{T}; field::Symbol=:funcs, kwargs...) where T<:DiffEqBase.AbstractParameterizedFunction
     a = []
     maxrows = maximum(length.(getfield.(odearray, :syms)))
 
@@ -66,6 +78,8 @@ function latexalign(odearray::AbstractVector{T}; field::Symbol=:funcs, kwargs...
 
         append!(a, [lhs, first_separator, rhs, second_separator])
     end
-    a = safereduce(hcat, a)
-    return latexalign(a; separator=" ", kwargs...)
+    a = Latexify.safereduce(hcat, a)
+    return Latexify.latexalign(a; separator=" ", kwargs...)
+end
+
 end

@@ -7,7 +7,6 @@ if isdefined(Base, :Experimental) && isdefined(Base.Experimental, Symbol("@max_m
     @eval Base.Experimental.@max_methods 1
 end
 
-using Requires
 using LaTeXStrings
 using InteractiveUtils
 using Markdown
@@ -60,20 +59,26 @@ include("numberformatters.jl")
 
 include("latexify_function.jl")
 
+if !isdefined(Base, :get_extension)
+using Requires
+end
+
+@static if !isdefined(Base, :get_extension)
 ### Add support for additional packages without adding them as dependencies.
 function __init__()
     @require DiffEqBase = "2b5f629d-d688-5b77-993f-72d75c75574e" begin
-        include("plugins/ParameterizedFunctions.jl")
+        include("../ext/LatexifyDiffEqBaseExt.jl")
     end
     @require DiffEqBiological = "eb300fae-53e8-50a0-950c-e21f52c2b7e0" begin
-        include("plugins/DiffEqBiological.jl")
+        include("../ext/LatexifyDiffEqBiologicalExt.jl")
     end
     @require SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8" begin
-        include("plugins/SymEngine.jl")
+        include("../ext/LatexifySymEngineExt.jl")
     end
     @require DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0" begin
-        include("plugins/DataFrames.jl")
+        include("../ext/LatexifyDataFramesExt.jl")
     end
+end
 end
 
 macro generate_test(expr)
