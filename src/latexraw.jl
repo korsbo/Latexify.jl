@@ -114,7 +114,8 @@ _latexraw(i::Nothing; kwargs...) = ""
 _latexraw(i::SubString; parse=true, kwargs...) = latexraw(parse ? Meta.parse(i) : i; kwargs...)
 _latexraw(i::SubString{LaTeXStrings.LaTeXString}; kwargs...) = i
 _latexraw(i::Rational; kwargs...) = i.den == 1 ? latexraw(i.num; kwargs...) : latexraw(:($(i.num)/$(i.den)); kwargs...)
-_latexraw(i::QuoteNode; kwargs...) = _latexraw(i.value)
+_latexraw(i::QuoteNode; kwargs...) = _latexraw(i.value; kwargs...)
+_latexraw(i::Function; kwargs...) = _latexraw(Symbol(i); kwargs...)
 
 function _latexraw(z::Complex; kwargs...)
     if iszero(z.re)
@@ -138,7 +139,7 @@ function _latexraw(i::Char; convert_unicode=true, kwargs...)
 end
 
 function _latexraw(i::Symbol; convert_unicode=true, snakecase=false, safescripts=false, kwargs...)
-    str = string(i == :Inf ? :∞ : i)
+    str = get(special_symbols, i, string(i))
     str = convert_subscript(str; snakecase=snakecase)
     convert_unicode && (str = unicode2latex(str; safescripts=safescripts))
     return LaTeXString(str)

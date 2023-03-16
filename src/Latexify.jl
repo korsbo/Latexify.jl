@@ -37,7 +37,7 @@ end
 const DEFAULT_DPI = Ref(300)
 
 include("unicode2latex.jl")
-include("function2latex.jl")
+include("symbol_translations.jl")
 include("latexraw.jl")
 include("latexoperation.jl")
 include("latexarray.jl")

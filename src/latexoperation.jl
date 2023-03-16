@@ -29,6 +29,11 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
         end
     end
 
+    if ex.head == :call && op isa Function
+        # Convert Expr(:call, sin, 3) to Expr(:call, :sin, 3)
+        op = Symbol(op)
+    end
+
     if op in [:/, :./, ://, :.//]
         return "\\frac{$(args[2])}{$(args[3])}"
 
@@ -72,7 +77,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
     elseif op in [:^, :.^]
         #isa(args[2], String) && (args[2]="($(args[2]))")
         if prevOp[2] in trigonometric_functions
-            str = get(function2latex, prevOp[2], "\\$(prevOp[2])")
+            str = get(functions, prevOp[2], "\\$(prevOp[2])")
             return replace(args[2], str => "$(str)^{$(args[3])}")
         end
         if (prevOp[2] != :none) || (ex.args[2] isa Real && sign(ex.args[2]) == -1) || (ex.args[2] isa Complex && !iszero(ex.args[2].re)) || (ex.args[2] isa Rational)
@@ -92,22 +97,6 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
 
     string(op)[1] == '.' && (op = Symbol(string(op)[2:end]))
 
-    # infix_operators = [:<, :>, Symbol("=="), :<=, :>=, :!=]
-    comparison_operators = Dict(
-        :< => "<",
-        :.< => "<",
-        :> => ">",
-        :.> => ">",
-        Symbol("==") => "=",
-        Symbol(".==") => "=",
-        :<= => "\\leq",
-        :.<= => "\\leq",
-        :>= => "\\geq",
-        :.>= => "\\geq",
-        :!= => "\\neq",
-        :.!= => "\\neq",
-        )
-
     if op in keys(comparison_operators) && length(args) == 3
         str = "$(args[2]) $(comparison_operators[op]) $(args[3])"
         str = "\\left( $str \\right)"
@@ -115,14 +104,14 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
     end
 
     ### Check for chained comparison operators
-    if ex.head == :comparison && Symbol.(args[2:2:end]) ⊆ keys(comparison_operators)
-        str = join([isodd(i) ? "$var" : comparison_operators[var] for (i, var) in enumerate(Symbol.(args))], " ")
+    if ex.head == :comparison && args[2:2:end] ⊆ values(comparison_operators)
+        str = join(args, " ")
         str = "\\left( $str \\right)"
         return str
     end
 
-    if op in keys(function2latex)
-        return "$(function2latex[op])\\left( $(join(args[2:end], ", ")) \\right)"
+    if op in keys(functions)
+        return "$(functions[op])\\left( $(join(args[2:end], ", ")) \\right)"
     end
 
     op == :abs && return "\\left|$(args[2])\\right|"
