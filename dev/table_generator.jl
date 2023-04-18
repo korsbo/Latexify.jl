@@ -45,6 +45,7 @@ keyword_arguments = [
     KeywordArgument(:index, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Symb`", "`:bracket`", "Represent index specification with `:bracket` (`u[1]`) or `:subscript` (`u_1`). ", [:Any]),
     KeyWordArgument(:snakecase, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Bool`", "`false`", "Treat underscores as literal underscores (if not, treat first underscore as subscript).", [:Any]),
     KeyWordArgument(:safescripts, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Bool`", "`false`", "Put scripts inside brackets (`a{_b}`), sometimes making them uglier, but making alternating scripts possible.", [:Any]),
+    KeyWordArgument(:arraystyle, [:array], "`Symbol`, `String`, `NTuple{3, String}`", "`:square`", "How to style (brackets around) arrays. `Symbol`s correspond to predefined styles: `:square`, `:round`, `:curly`, `:bmatrix`, `:pmatrix`. A string will be used as an environment, with no further brackets (e.g. `\"vmatrix\"`). Tuples should be `(<starting bracket>, <ending bracket>, <environment>)`, for instance `:square` corresponds to `(\"\\n\\\\left[\", \"\\\\right]\\n\", \"array\")`.", [:Any]),
 #     KeywordArgument(:template, [:array], "`Bool`", "`false`", "description", [:Any]),
     ]
 
