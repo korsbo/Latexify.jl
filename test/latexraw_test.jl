@@ -304,6 +304,9 @@ raw"\begin{equation}
 \end{equation}
 ", "\r\n"=>"\n")
 
+## Test Expr containing function (note function vs symbol)
+@test latexraw(Expr(:call, sin, 3)) == latexraw(Expr(:call, :sin, 3)) == raw"\sin\left( 3 \right)"
+@test latexraw(cos) == latexraw(:cos) == raw"\cos"
 
 ## Test logical operators
 @test latexraw(:(x && y)) == "x \\wedge y"
