@@ -14,8 +14,10 @@ latexarray(arr)
 """
 latexarray(args...; kwargs...) = process_latexify(args...;kwargs...,env=:array)
 
-function _latexarray(arr::AbstractArray; adjustment=:c, transpose=false, double_linebreak=false,
-    starred=false, kwargs...)
+function _latexarray(
+        arr::AbstractArray; adjustment=:c, transpose=false,
+        double_linebreak=false, starred=false, arraystyle=:square, kwargs...
+    )
     transpose && (arr = permutedims(arr))
     rows, columns = axes(arr, 1), axes(arr, 2)
 
@@ -27,8 +29,20 @@ function _latexarray(arr::AbstractArray; adjustment=:c, transpose=false, double_
         adjustmentstring = string(adjustment)^length(columns)
     end
 
-    str = "\\left[\n"
-    str *= "\\begin{array}{$adjustmentstring}\n"
+    if arraystyle isa String
+        arraystyle = ("", "", arraystyle)
+    elseif arraystyle isa Symbol
+        arraystyle = ARRAYSTYLES[arraystyle]
+    end
+
+    str = string(
+                 arraystyle[1],
+                 "\\begin{",
+                 arraystyle[3],
+                 "}{",
+                 adjustmentstring,
+                 "}\n"
+                )
 
     arr = latexraw.(arr; kwargs...)
     for i in rows, j in columns
@@ -36,8 +50,7 @@ function _latexarray(arr::AbstractArray; adjustment=:c, transpose=false, double_
         j == last(columns) ? (str *= eol) : (str *= " & ")
     end
 
-    str *= "\\end{array}\n"
-    str *= "\\right]"
+    str *= string("\\end{", arraystyle[3], '}', arraystyle[2])
     latexstr = LaTeXString(str)
     # COPY_TO_CLIPBOARD && clipboard(latexstr)
     return latexstr
@@ -54,3 +67,11 @@ function _latexarray(arg::Tuple; kwargs...)
     end
     return _latexarray(collect(arg); kwargs...)
 end
+
+const ARRAYSTYLES = Dict{Symbol, NTuple{3, String}}(
+                                        :square=>("\\left[\n", "\n\\right]", "array"),
+                                        :round=>("\\left(\n", "\n\\right)", "array"),
+                                        :curly=>("\\left\\{\n", "\n\\right\\}", "array"),
+                                        :pmatrix=>("","","pmatrix"),
+                                        :bmatrix=>("","","bmatrix"),
+                                       )
