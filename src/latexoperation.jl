@@ -206,6 +206,9 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
     ex.head == :(&&) && length(args) == 2 && return "$(args[1]) \\wedge $(args[2])"
     ex.head == :(||) && length(args) == 2 && return "$(args[1]) \\vee $(args[2])"
 
+    ## Anonymous function definition
+    ex.head == :(->) && length(args) == 2 && return "$(args[1]) \\mapsto $(args[2])"
+
 
 
     ## if we have reached this far without a return, then error.
