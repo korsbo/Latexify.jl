@@ -313,6 +313,9 @@ raw"\begin{equation}
 @test latexraw(:(x || y)) == "x \\vee y"
 @test latexraw(:(x || !y)) == "x \\vee \\neg y"
 
+## Test anonymous function
+@test latexraw(:(x -> x^2)) == "x \\mapsto x^{2}"
+@test latexraw(:(f(p) = x -> p*x)) == "f\\left( p \\right) = x \\mapsto p \\cdot x"
 
 ## Test {cases} enviroment
 @test latexraw(:(R(p,e,d) = e ? 0 : log(p) - d)) == replace(
