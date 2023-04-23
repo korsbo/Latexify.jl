@@ -14,6 +14,18 @@ OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 Requires = "ae029012-a4dd-5104-9daa-d747884805df"
 
+[weakdeps]
+DiffEqBase = "2b5f629d-d688-5b77-993f-72d75c75574e"
+DiffEqBiological = "eb300fae-53e8-50a0-950c-e21f52c2b7e0"
+SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+
+[extensions]
+DataFramesExt = "DataFrames"
+DiffEqBiologicalExt = "DiffEqBiological"
+ParameterizedFunctionsExt = "DiffEqBase"
+SymEngineExt = "SymEngine"
+
 [compat]
 Formatting = "0.4"
 LaTeXStrings = "0.3, 1"
