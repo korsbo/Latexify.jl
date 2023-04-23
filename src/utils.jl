@@ -30,6 +30,27 @@ function _writetex(s::LaTeXString;
     texfile
 end
 
+function _compile(s::LaTeXString, cmd::Cmd, ext::String;
+        debug=false,
+        name=tempname(),
+        open=true,
+        kw...
+    )
+    mktempdir() do source_dir
+        cd(source_dir) do
+            _writetex(s; name="main", kw...)
+            debug || (cmd = pipeline(cmd, devnull))
+            run(cmd)
+        end
+        mv("$source_dir/main.$ext", "$name.$ext"; force=true)
+    end
+    if open
+        _openfile(name; ext=ext)
+    end
+    return nothing
+end
+
+
 
 function _openfile(name; ext="pdf")
     if Sys.iswindows()
@@ -94,62 +115,23 @@ end
 # render(s::LaTeXString, mime::MIME"juliavscode/html"; kwargs...) = render(stdout, mime; kwargs...)
 render(s::LaTeXString, mime::MIME"juliavscode/html"; kwargs...) = display(mime, html_wrap(s; kwargs...))
 
-function render(s::LaTeXString, ::MIME"application/pdf";
-        debug=false,
-        name=tempname(),
-        open=true,
-        kw...
-    )
-    _writetex(s; name=name, kw...)
+# `display(MIME("application/pdf")` is generally not defined even though
+# `displayable(MIME("application/pdf")` returns `true`.
+#
+# if callshow && displayable(MIME("application/pdf"))
+#     display(MIME("application/pdf"), read("$name.pdf"))
+# end
+render(s::LaTeXString, ::MIME"application/pdf"; kw...) = _compile(s, `lualatex --interaction=batchmode main.tex`, "pdf"; kw...)
 
-    cd(dirname(name)) do
-        cmd = `lualatex --interaction=batchmode $name.tex`
-        debug || (cmd = pipeline(cmd, devnull))
-        run(cmd)
-    end
+# `display(MIME("application/x-dvi")` is generally not defined even though
+# `displayable(MIME("application/x-dvi")` returns `true`.
+#
+# if callshow && displayable(MIME("application/x-dvi"))
+#     display(MIME("application/x-dvi"), read("$name.dvi"))
+# end
+render(s::LaTeXString, ::MIME"application/x-dvi"; kw...) = _compile(s,  `dvilualatex --interaction=batchmode main.tex`, "dvi"; kw...)
 
-    # `display(MIME("application/pdf")` is generally not defined even though
-    # `displayable(MIME("application/pdf")` returns `true`.
-    #
-    # if callshow && displayable(MIME("application/pdf"))
-    #     display(MIME("application/pdf"), read("$name.pdf"))
-    # end
-    if open
-        _openfile(name; ext="pdf")
-    end
-
-    return nothing
-end
-
-
-function render(s::LaTeXString, ::MIME"application/x-dvi";
-        debug=false,
-        name=tempname(),
-        open=true,
-        kw...
-    )
-    _writetex(s; name=name, kw...)
-
-    cd(dirname(name)) do
-        cmd = `dvilualatex --interaction=batchmode $name.tex`
-        debug || (cmd = pipeline(cmd, devnull))
-        run(cmd)
-    end
-
-    # `display(MIME("application/x-dvi")` is generally not defined even though
-    # `displayable(MIME("application/x-dvi")` returns `true`.
-    #
-    # if callshow && displayable(MIME("application/x-dvi"))
-    #     display(MIME("application/x-dvi"), read("$name.dvi"))
-    # end
-    if open
-        _openfile(name; ext="dvi")
-    end
-
-    return nothing
-end
-
-function render(s::LaTeXString, ::MIME"image/png";
+function render(s::LaTeXString, mime::MIME"image/png";
         debug=false,
         convert = :gs,
         name=tempname(),
@@ -158,34 +140,37 @@ function render(s::LaTeXString, ::MIME"image/png";
         dpi=DEFAULT_DPI[],
         kw...
     )
-    
-    # tex -> dvi -> png is notoriously bad for fonts (not OTF support), see e.g. tex.stackexchange.com/q/537281
-    # prefer tex -> pdf -> png instead
-    if convert === :gs
-        mime = MIME("application/pdf")
-        cmd = `gs -sDEVICE=pngalpha -dTextAlphaBits=4 -r$dpi -o $name.png $name.pdf`
-    elseif convert === :dvipng
-        mime = MIME("application/x-dvi")
-        deb = debug ? [] : ["-q"]
-        cmd = `dvipng $(deb...) -bg Transparent -D $dpi -T tight $name.dvi -o $name.png`
-    else
-        error("$convert program not understood")
-    end
-    render(s, mime; debug=debug, name=name, open=false, kw...)
-    debug || (cmd = pipeline(cmd, devnull))
-    run(cmd)
+    ext = "png"
 
-    if callshow && displayable(MIME("image/png"))
-        display(MIME("image/png"), read("$name.png"))
+    mktemp() do aux_name, _
+        # tex -> dvi -> png is notoriously bad for fonts (not OTF support), see e.g. tex.stackexchange.com/q/537281
+        # prefer tex -> pdf -> png instead
+        if convert === :gs
+            aux_mime = MIME("application/pdf")
+            cmd = `gs -sDEVICE=pngalpha -dTextAlphaBits=4 -r$dpi -o $name.$ext $aux_name.pdf`
+        elseif convert === :dvipng
+            aux_mime = MIME("application/x-dvi")
+            deb = debug ? [] : ["-q"]
+            cmd = `dvipng $(deb...) -bg Transparent -D $dpi -T tight $aux_name.dvi -o $name.$ext`
+        else
+            error("$convert program not understood")
+        end
+        render(s, aux_mime; debug=debug, name=aux_name, open=false, kw...)
+        debug || (cmd = pipeline(cmd, devnull))
+        run(cmd)
+    end
+
+    if callshow && displayable(mime)
+        display(mime, read("$name.$ext"))
     elseif open
-        _openfile(name; ext="png")
+        _openfile(name; ext=ext)
     end
 
     return nothing
 end
 
 
-function render(s::LaTeXString, ::MIME"image/svg";
+function render(s::LaTeXString, mime::MIME"image/svg";
         debug=false,
         convert = :dvisvgm,
         name=tempname(),
@@ -193,25 +178,29 @@ function render(s::LaTeXString, ::MIME"image/svg";
         open=true,
         kw...
     )
-    if convert === :dvisvgm
-        verb = debug ? 7 : 0
-        cmd = `dvisvgm --no-fonts --pdf -v $verb $name.pdf -o $name.svg`
-    elseif convert === :pdf2svg
-        cmd = `pdf2svg $name.pdf $name.svg`
-    else
-        error("$convert program not understood")
+    ext="svg"
+    mktemp() do aux_name, _
+        aux_mime = MIME("application/pdf")
+        if convert === :dvisvgm
+            verb = debug ? 7 : 0
+            cmd = `dvisvgm --no-fonts --pdf -v $verb $aux_name.pdf -o $name.$ext`
+        elseif convert === :pdf2svg
+            cmd = `pdf2svg $aux_name.pdf $name.$ext`
+        else
+            error("$convert program not understood")
+        end
+        render(s, aux_mime; debug=debug, name=aux_name, open=false, kw...)
+        debug || (cmd = pipeline(cmd, devnull))
+        run(cmd)
     end
-    render(s, MIME("application/pdf"); debug=debug, name=name, open=false, kw...)
-    debug || (cmd = pipeline(cmd, devnull))
-    run(cmd)
 
     # `displayable(MIME("image/svg"))` returns `true` even in a textual
     # context (e.g., in the REPL), but `display(MIME("image/svg+xml"), ...)`
     # is the one normally defined.
-    if callshow && displayable(MIME("image/svg"))
-        display(MIME("image/svg+xml"), read("$name.svg"))
+    if callshow && displayable(mime)
+        display(MIME("image/svg+xml"), read("$name.$ext"))
     elseif open
-        _openfile(name; ext="svg")
+        _openfile(name; ext=ext)
     end
 
     return nothing
