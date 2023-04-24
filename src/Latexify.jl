@@ -7,7 +7,6 @@ if isdefined(Base, :Experimental) && isdefined(Base.Experimental, Symbol("@max_m
     @eval Base.Experimental.@max_methods 1
 end
 
-using Requires
 using LaTeXStrings
 using InteractiveUtils
 using Markdown
@@ -64,6 +63,9 @@ include("latexify_function.jl")
 ### Requires on <1.9 and weakdeps/extensions on >=1.9
 if !isdefined(Base, :get_extension)
 using Requires
+end
+
+@static if !isdefined(Base, :get_extension)
 function __init__()
     @require SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8" begin
         include("../ext/SymEngineExt.jl")
