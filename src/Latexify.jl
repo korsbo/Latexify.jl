@@ -65,12 +65,6 @@ include("latexify_function.jl")
 if !isdefined(Base, :get_extension)
 using Requires
 function __init__()
-    @require DiffEqBase = "2b5f629d-d688-5b77-993f-72d75c75574e" begin
-        include("../ext/ParameterizedFunctionsExt.jl")
-    end
-    @require DiffEqBiological = "eb300fae-53e8-50a0-950c-e21f52c2b7e0" begin
-        include("../ext/DiffEqBiologicalExt.jl")
-    end
     @require SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8" begin
         include("../ext/SymEngineExt.jl")
     end
