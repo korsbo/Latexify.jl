@@ -1,7 +1,7 @@
 module ParameterizedFunctionsExt
 
 using Latexify
-isdefined(Base, :get_extension) ? (using ParameterizedFunctions) : (using ..ParameterizedFunctions)
+isdefined(Base, :get_extension) ? (using DiffEqBase) : (using ..DiffEqBase)
 
 
 ##################################################

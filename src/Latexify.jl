@@ -65,7 +65,7 @@ include("latexify_function.jl")
 if !isdefined(Base, :get_extension)
 using Requires
 function __init__()
-    @require ParameterizedFunctions = "65888b18-ceab-5e60-b2b9-181511a3b968" begin
+    @require DiffEqBase = "2b5f629d-d688-5b77-993f-72d75c75574e" begin
         include("../ext/ParameterizedFunctionsExt.jl")
     end
     @require DiffEqBiological = "eb300fae-53e8-50a0-950c-e21f52c2b7e0" begin
