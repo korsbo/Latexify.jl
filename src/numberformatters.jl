@@ -8,17 +8,17 @@ struct PlainNumberFormatter <: AbstractNumberFormatter end
 
 
 struct PrintfNumberFormatter <: AbstractNumberFormatter
-    fmt::String
+    fmt::AbstractString
     f::Function
 end
-PrintfNumberFormatter(fmt::String) = PrintfNumberFormatter(fmt, Formatting.generate_formatter(fmt))
+PrintfNumberFormatter(fmt::AbstractString) = PrintfNumberFormatter(fmt, Formatting.generate_formatter(fmt))
 (f::PrintfNumberFormatter)(x) = f.f(x)
 
 
 struct StyledNumberFormatter <: AbstractNumberFormatter
-    fmt::String
+    fmt::AbstractString
 
-    StyledNumberFormatter(fmt::String="%.4g") = new(fmt)
+    StyledNumberFormatter(fmt::AbstractString="%.4g") = new(fmt)
 
 end
 
@@ -36,16 +36,16 @@ end
 
 
 struct FancyNumberFormatter <: AbstractNumberFormatter
-    fmt::String
+    fmt::AbstractString
     exponent_format::SubstitutionString
 
-    function FancyNumberFormatter(fmt::String="%.4g",
+    function FancyNumberFormatter(fmt::AbstractString="%.4g",
                                   exponent_format::SubstitutionString=s"\g<mantissa> \\cdot 10^{\g<sign_exp>\g<mag_exp>}")
         return new(fmt, exponent_format)
     end
 end
 
-function FancyNumberFormatter(fmt::String, mult_symbol)
+function FancyNumberFormatter(fmt::AbstractString, mult_symbol)
     return FancyNumberFormatter(fmt, SubstitutionString("\\g<mantissa> $(escape_string(mult_symbol)) 10^{\\g<sign_exp>\\g<mag_exp>}"))
 end
 function FancyNumberFormatter(significant_digits, mult_symbol="\\cdot")

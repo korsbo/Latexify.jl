@@ -145,12 +145,12 @@ function _latexraw(i::Symbol; convert_unicode=true, snakecase=false, safescripts
     return LaTeXString(str)
 end
 
-_latexraw(i::String; parse=true, kwargs...) = _latexraw(Val(parse), i; kwargs...)
+_latexraw(i::AbstractString; parse=true, kwargs...) = _latexraw(Val(parse), i; kwargs...)
 
-_latexraw(::Val{false}, i::String; convert_unicode=true, kwargs...) =
+_latexraw(::Val{false}, i::AbstractString; convert_unicode=true, kwargs...) =
     LaTeXString(convert_unicode ? unicode2latex(i) : i)
 
-function _latexraw(::Val{true}, i::String; kwargs...)
+function _latexraw(::Val{true}, i::AbstractString; kwargs...)
     try
         ex = Meta.parse(i)
         return latexraw(ex; kwargs...)

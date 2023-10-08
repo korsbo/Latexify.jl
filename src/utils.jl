@@ -30,7 +30,7 @@ function _writetex(s::LaTeXString;
     texfile
 end
 
-function _compile(s::LaTeXString, cmd::Cmd, ext::String;
+function _compile(s::LaTeXString, cmd::Cmd, ext::AbstractString;
         debug=false,
         name=tempname(),
         open=true,

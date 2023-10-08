@@ -6,7 +6,7 @@ This uses the information about the previous operations to decide if
 a parenthesis is needed.
 
 """
-function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
+function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::AbstractString
     # If we used `cdot` and `index` as keyword arguments before `kwargs...`
     # and they are indeed contained in `kwargs`, they would get lost when
     # passing `kwargs...` to `latexraw`below. Thus, we need to set default
@@ -188,13 +188,13 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
 
     ## Case enviroment for if statements and ternary ifs.
     if ex.head in (:if, :elseif)
-        textif::String = "\\text{if }"
-        begincases::String = ex.head == :if ? "\\begin{cases}\n" : ""
-        endcases::String = ex.head == :if ? "\n\\end{cases}" : ""
+        textif::AbstractString = "\\text{if }"
+        begincases::AbstractString = ex.head == :if ? "\\begin{cases}\n" : ""
+        endcases::AbstractString = ex.head == :if ? "\n\\end{cases}" : ""
         if length(args) == 3
             # Check if already parsed elseif as args[3]
             haselseif::Bool = occursin(Regex("\\$textif"), args[3])
-            otherwise::String = haselseif ? "" : " & \\text{otherwise}"
+            otherwise::AbstractString = haselseif ? "" : " & \\text{otherwise}"
             return """$begincases$(args[2]) & $textif $(args[1])\\\\
                       $(args[3])$otherwise$endcases"""
         elseif length(args) == 2
@@ -230,7 +230,7 @@ function convert_subscript!(ex::Expr, kwargs...)
     return nothing
 end
 
-function convert_subscript(str::String; snakecase=false, function_name=false, kwargs...)
+function convert_subscript(str::AbstractString; snakecase=false, function_name=false, kwargs...)
     subscript_list = split(str, "_")
     if snakecase
         return join(subscript_list, "\\_")

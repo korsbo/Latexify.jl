@@ -13,9 +13,9 @@ using Latexify
 struct KeywordArgument
     kw::Symbol
     env::Array{Symbol}
-    values::String
-    default::String
-    description::String
+    values::AbstractString
+    default::AbstractString
+    description::AbstractString
     types::Array{Symbol}
 end
 

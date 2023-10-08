@@ -1753,7 +1753,7 @@ const unicodedict = OrderedDict{Union{Char,String}, String}(
 )
 
 unicode2latex(c::Char) = unicode2latex(string(c))
-function unicode2latex(str::String; safescripts=false)
+function unicode2latex(str::AbstractString; safescripts=false)
     isascii(str) && return str
 
     c_or_s = sizehint!(Union{Char,String}[], length(str))
