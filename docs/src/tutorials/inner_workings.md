@@ -9,7 +9,7 @@ and
 
 - `latexoperation(ex::Expr, prevOp::AbstractArray)`
 
-These two methods are involved with all conversions to ``\LaTeX`` equations. 
+These two methods are involved with all conversions to ``\LaTeX`` equations.
 
 `latexraw(ex::Expr)` utilises Julias homoiconicity to infer the correct latexification of an expression by recursing through the expression tree. Whenever it hits the end of a recursion it passes the last expression to `latexoperation()`.
 By the nature of this recursion, this expression is one which only contains symbols or strings.
@@ -26,8 +26,8 @@ This expression has a field which contains the first operation which must be don
 julia> ex.args
 
 3-element Array{Any,1}:
- :+      
- :x      
+ :+
+ :x
  :(y / z)
 ```
 
@@ -72,8 +72,8 @@ The recursive `latexraw()` pulls this value back to the original expression `ex`
 julia> ex.args
 
 3-element Array{Any,1}:
- :+      
- :x      
+ :+
+ :x
  :"\\frac{y}{z}"
 ```
 
@@ -110,7 +110,7 @@ Luckily, since Julia needs to convert your code to expressions before it can be 
 
 There are already some methods for converting other types to expressions and passing them to the core method, for example:
 ```julia
-latexraw(str::String) = latexraw(parse(str))
+latexraw(str::AbstractString) = latexraw(parse(str))
 ```
 but if you find yourself wanting to parse some other type, it is often easy to overload the `latexraw` function.
 
@@ -123,7 +123,7 @@ Also, if you pass an array to `latexraw`, it will recursively try to convert the
 julia> arr = [:(x-y/(k_10+z)), "x*y*z/3"]
 julia> latexraw(arr)
 2-element Array{String,1}:
- "x - \\frac{y}{k_{10} + z}"     
+ "x - \\frac{y}{k_{10} + z}"
  "\\frac{x \\cdot y \\cdot z}{3}"
 
 julia> println.(latexraw(arr))
