@@ -35,8 +35,7 @@ latexify(rn; form=:sde)
 \end{align}
 ```
 
-!!! note
-  On the current version of Latexify, generation of SDEs from reaction networks is broken.
+Note: On the current version of Latexify, generation of SDEs from reaction networks is broken.
 
 
 ## Chemical arrow notation
