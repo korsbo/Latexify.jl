@@ -18,8 +18,7 @@ makedocs(
         # ],
         "tutorials/recipes.md",
         "Use with other packages" => [
-            "tutorials/parameterizedfunctions.md",
-            "tutorials/Catalyst.md"
+            "tutorials/parameterizedfunctions.md"
         ],
         "tutorials/notebooks.md",
         "arguments.md",
