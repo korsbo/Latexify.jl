@@ -12,6 +12,7 @@ x = -23.4728979e7
 @test FancyNumberFormatter()(x) == "-2.347 \\cdot 10^{8}"
 @test FancyNumberFormatter("%.5E", s"\g<mantissa>,\g<before_dp>,\g<sign>,\g<before_dp_nosign>,\g<after_dp>,\g<e_or_E>,\g<raw_exp>,\g<sign_exp>,\g<mag_exp>")(x) == "-2.34729,-2,-,2,34729,E,+08,,8"
 
+@test StyledNumberFormatter(4) == StyledNumberFormatter()
 
 xne = -23.4728979e-7
 

@@ -108,7 +108,7 @@ latexify([12893.1 1.328e2; "x/y" 7832//2378]; fmt=FancyNumberFormatter(3))
 ```
 
 ```@example main
-using Formatting
+using Format
 latexify([12893.1 1.328e2]; fmt=x->format(round(x, sigdigits=2), autoscale=:metric))
 ```
 
