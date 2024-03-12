@@ -1,5 +1,5 @@
 # Generate the assets (pngs for README)
-using Latexify, LaTeXStrings, ParameterizedFunctions, DiffEqBiological
+using Latexify, LaTeXStrings, ParameterizedFunctions, Catalyst
 
 struct Ket{T}
     x::T
@@ -20,12 +20,12 @@ things = [
                                (r_bind, r_unbind), A + B ↔ C
                                Hill(C, v, k, n), 0 --> X
                                d_x, X --> 0
-                           end r_bind r_unbind v k n d_x),
+                           end; form=:ode),
           "demo_rn_arrow" => latexify(@reaction_network demoNetwork begin
                                      (r_bind, r_unbind), A + B ↔ C
                                      Hill(C, v, k, n), 0 --> X
                                      d_x, X --> 0
-                                 end r_bind r_unbind v k n d_x; env=:arrow),
+                                 end),
          ]
 
 cd("$(pkgdir(Latexify))/assets") do

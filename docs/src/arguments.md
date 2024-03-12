@@ -43,7 +43,7 @@ latexify(args, env=:mdtable)
 ```
 
 ## Chemical arrow notation
-Available with `ReactionNetwork`s from `DiffEqBiological`.
+Available with `ReactionNetwork`s from `Catalyst`.
 ```@eval
 Base.include(@__MODULE__, "src/table_generator.jl")
 args = [arg for arg in keyword_arguments if :arrow in arg.env]

@@ -39,7 +39,7 @@ keyword_arguments = [
     KeywordArgument(:convert_unicode, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Bool`", "`true`", "Convert unicode characters to latex commands, for example `α` to `\\alpha`", [:Any]),
     KeywordArgument(:cdot, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Bool`", "`true`", "Toggle between using `\\cdot` or just a space to represent multiplication.", [:Any]),
     KeywordArgument(:symbolic, [:align], "`Bool`", "`false`", "Use symbolic calculations to clean up the expression.", [:ReactionNetwork]),
-    KeywordArgument(:clean, [:align], "`Bool`", "`false`", "Clean out `1*` terms. Only useful for DiffEqBiological versions 3.4 or below.", [:ReactionNetwork]),
+    KeywordArgument(:clean, [:align], "`Bool`", "`false`", "Clean out `1*` terms. Only useful for Catalyst (then named DiffEqBiological) versions 3.4 or below.", [:ReactionNetwork]),
     KeywordArgument(:rows, [:align], "Iterable or symol", ":all", "Which rows to include in the output.", [:Any]),
     KeywordArgument(:booktabs, [:tabular], "`Bool`", "`false`", "Add top, mid and bottom booktabs rule", [:Any]),
     KeywordArgument(:index, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Symb`", "`:bracket`", "Represent index specification with `:bracket` (`u[1]`) or `:subscript` (`u_1`). ", [:Any]),
