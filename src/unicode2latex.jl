@@ -1773,14 +1773,12 @@ function unicode2latex(str::String; safescripts=false)
     str_array = map(k -> get(unicodedict, k, k), c_or_s)
 
     it = Iterators.Stateful(str_array)
-    original_length = length(it.itr)
-    while !isempty(it)
-        if (x = popfirst!(it)) isa String
-            if (next = peek(it)) !== nothing && length(next) == 1
-                c = next isa Char ? next : first(next)
-                if isletter(c) || isdigit(c)
-                    str_array[original_length - length(it.itr)] = "{$x}"
-                end
+    for (n, x) ∈ enumerate(it)
+        x isa String || continue
+        if (next = peek(it)) !== nothing && length(next) == 1
+            c = next isa Char ? next : first(next)
+            if isletter(c) || isdigit(c)
+                str_array[n] = "{$x}"
             end
         end
     end
