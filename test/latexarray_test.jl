@@ -223,4 +223,6 @@ raw"$x = \left[
 \end{array}
 \right]$", "\r\n"=>"\n")
 
+tensor = [1;2;3;;4;5;6;;;7;8;9;;10;11;12]
+@test_throws "Cannot latexify n-dimensional tensors with n>2" latexify(tensor)
 
