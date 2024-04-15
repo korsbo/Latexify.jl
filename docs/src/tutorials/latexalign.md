@@ -1,5 +1,5 @@
 
-# `latexalign`
+# [`latexalign`](@id latexalign_tutorial)
 
 This function converts its input to ``\LaTeX`` align environments.
 One way of using the function is to pass it two vectors, one which holds the left-hand-side of the equations and the other which holds the right. For example:
