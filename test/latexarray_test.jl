@@ -223,4 +223,6 @@ raw"$x = \left[
 \end{array}
 \right]$", "\r\n"=>"\n")
 
+tensor = rand(3,3,3)
+@test_throws ErrorException("Cannot latexify n-dimensional tensors with n>2") latexify(tensor)
 
