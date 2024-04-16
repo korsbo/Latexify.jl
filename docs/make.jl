@@ -26,6 +26,8 @@ makedocs(
         "tutorials/inner_workings.md",
     ],
     doctest = false,
+    checkdocs = :exports,
+    warnonly = :missing_docs
 )
 
 deploydocs(

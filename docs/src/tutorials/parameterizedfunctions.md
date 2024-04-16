@@ -1,6 +1,6 @@
 # Use with ParameterizedFunctions
 
-In the [latexalign tutorial](tutorials/latexalign) I mentioned that one can use `latexalign` directly on a [ParameterizedFunction](http://docs.juliadiffeq.org/stable/analysis/parameterized_functions.html#Function-Definition-Macros-1).
+In the [latexalign tutorial](@ref latexalign_tutorial) I mentioned that one can use `latexalign` directly on a [ParameterizedFunction](http://docs.juliadiffeq.org/stable/analysis/parameterized_functions.html#Function-Definition-Macros-1).
 Here, I make a somewhat more convoluted and hard-to-read example (you'll soon se why):
 
 ```julia

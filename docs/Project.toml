@@ -3,3 +3,9 @@ Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 Format = "1fa38f19-a742-5d3f-a2b9-30dd87b9d5f8"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
 Latexify = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
+
+[compat]
+Documenter = "1"
+Format = "1"
+LaTeXStrings = "1"
+Latexify = "0.16"
