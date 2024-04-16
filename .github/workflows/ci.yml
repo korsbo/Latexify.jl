@@ -7,9 +7,15 @@ on:
     branches:
       - master
     tags: '*'
+
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   test:
     name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+    continue-on-error: ${{ matrix.experimental }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -17,15 +23,26 @@ jobs:
         version:
           - '1.6'  # lowest julia declared compat in `Project.toml`
           - '1'
-          - 'nightly'
+        experimental:
+          - false
         os: [ubuntu-latest]
         arch: [x64]
         include:  # spare windows/macos CI credits
           - os: windows-latest
+            experimental: false
             version: '1'
             arch: x64
           - os: macOS-latest
+            experimental: false
             version: '1'
+            arch: x64
+          - os: ubuntu-latest
+            experimental: true
+            version: '~1.11.0-0'
+            arch: x64
+          - os: ubuntu-latest
+            experimental: true
+            version: 'nightly'
             arch: x64
     steps:
       - uses: actions/checkout@v3
@@ -46,6 +63,7 @@ jobs:
       - uses: codecov/codecov-action@v3
         with:
           file: lcov.info
+
   docs:
     name: Documentation
     runs-on: ubuntu-latest
