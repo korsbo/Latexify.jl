@@ -224,5 +224,7 @@ raw"$x = \left[
 \right]$", "\r\n"=>"\n")
 
 tensor = rand(3,3,3)
-@test_throws ErrorException("Cannot latexify n-dimensional tensors with n>2") latexify(tensor)
+@test_throws ErrorException("Cannot latexify n-dimensional tensors with n≠1,2") latexify(tensor)
 
+tensor = fill(42)
+@test_throws ErrorException("Cannot latexify n-dimensional tensors with n≠1,2") latexify(tensor)
