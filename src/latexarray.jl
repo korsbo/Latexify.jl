@@ -18,7 +18,7 @@ function _latexarray(
         arr::AbstractArray; adjustment=:c, transpose=false,
         double_linebreak=false, starred=false, arraystyle=:square, kwargs...
     )
-    ndims(arr) > 2 && error("Cannot latexify n-dimensional tensors with n>2")
+    0 < ndims(arr) < 3 || error("Cannot latexify n-dimensional tensors with n≠1,2")
     transpose && (arr = permutedims(arr))
     rows, columns = axes(arr, 1), axes(arr, 2)
 
