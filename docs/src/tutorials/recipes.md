@@ -79,3 +79,31 @@ The use of `@latexrecipe` to redefine how an already supported type should be in
 
 
 If a recipe is defined within a module, everything should just work without the need to export anything. 
+
+The special keyword argument `operation` lets you specify that a type corresponds to a specific arithmetic operation.
+For instance, if we define a type 
+```julia
+struct MyDifference
+x
+y
+end
+```
+that is meant to represent the operation `x - y`, we might want to create the recipe
+
+```julia
+@latexrecipe function f(m::MyDifference)
+    return :($(m.y) - $(m.x))
+end
+```
+so that the result of `latexify(MyDifference(2,3))` is ``3 - 2``.
+But right now, `latexify` does not know that this represents an operation, so for instance
+`@latexify $(MyDifference(2,3))*4` gives ``3 - 2 \cdot 4``, which is incorrect.
+The way around this is to edit the recipe:
+```julia
+@latexrecipe function f(m::MyDifference)
+    operation := :-
+    return :($(m.y) - $(m.x))
+end
+```
+Now `latexify` knows that `MyDifference` represents a subtraction, and parenthesis rules kick in:
+`@latexify $(MyDifference(2,3))*4` gives ``\left( 3 - 2 \right) \cdot 4``.
