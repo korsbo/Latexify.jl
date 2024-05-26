@@ -1,4 +1,4 @@
-# Much of this is copied/adapted from RecipesBase.jl. Cred to everyone who has 
+# Much of this is copied/adapted from RecipesBase.jl. Cred to everyone who has
 # worked on that package!
 
 const _debug_recipes = Bool[false]
@@ -75,6 +75,7 @@ end
 # and we push this block onto the series_blocks list.
 # then at the end we push the main body onto the series list
 function process_recipe_body!(expr::Expr)
+    operation = QuoteNode(:none)
     for (i,e) in enumerate(expr.args)
         if isa(e,Expr)
 
@@ -100,6 +101,11 @@ function process_recipe_body!(expr::Expr)
             if e.head == :(-->)
                 k, v = e.args
                 if isa(k, Symbol)
+                    if k == :operation
+                        operation = v
+                        expr.args[i] = nothing
+                        continue
+                    end
                     k = QuoteNode(k)
                 end
 
@@ -110,14 +116,14 @@ function process_recipe_body!(expr::Expr)
                 end
 
                 quiet = false
-                expr.args[i] = set_expr 
+                expr.args[i] = set_expr
 
             elseif e.head != :call
                 # we want to recursively replace the arrows, but not inside function calls
                 # as this might include things like Dict(1=>2)
                 process_recipe_body!(e)
             end
-            
+
             if  e.head == :return
                 if e.args[1] isa Expr
                     if e.args[1] isa Tuple
@@ -131,6 +137,7 @@ function process_recipe_body!(expr::Expr)
             end
         end
     end
+    return operation
 end
 
 macro latexrecipe(funcexpr)
@@ -150,8 +157,7 @@ macro latexrecipe(funcexpr)
 
     args, kw_body, kw_dict = create_kw_body(func_signature)
     func = get_function_def(func_signature, args)
-    process_recipe_body!(func_body)
-
+    operation = process_recipe_body!(func_body)
 
     # now build a function definition for apply_recipe
     funcdef = Expr(:function, func, esc(quote
@@ -164,6 +170,14 @@ macro latexrecipe(funcexpr)
         $func_body
     end))
 
-    return funcdef
+    getopdef = Expr(:(=), copy(func), esc(operation))
+    signature = getopdef.args[1]
+    while Meta.isexpr(signature, :where)
+        # Get through any layers of `where`
+        signature = signature.args[1]
+    end
+    signature.args[1] = :(Latexify._getoperation)
+
+    return Expr(:block, funcdef, getopdef)
 end
 
