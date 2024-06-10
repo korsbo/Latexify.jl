@@ -88,8 +88,8 @@ function _latexraw(inputex::Expr; convert_unicode=true, kwargs...)
             end
         else
             for i in 1:length(ex.args)
+                prevOp[i] = _getoperation(ex.args[i])
                 if isa(ex.args[i], Expr)
-                    length(ex.args[i].args) > 1 && ex.args[i].args[1] isa Symbol && (prevOp[i] = ex.args[i].args[1])
                     ex.args[i] = recurseexp!(ex.args[i])
                 elseif ex.args[i] isa AbstractArray
                     ex.args[i] = latexraw(ex.args[i]; kwargs...)
@@ -175,3 +175,16 @@ environment that is capable of displaying not-maths objects. Try for example
 end
 
 _latexraw(i::Missing; kwargs...) = "\\textrm{NA}"
+
+"""
+    _getoperation(x)
+
+Check if `x` represents something that could affect the vector of previous operations.
+`:none` by default, recipes can use `operation-->:something` to hack this.
+"""
+function _getoperation(ex::Expr)
+    length(ex.args) > 1 && ex.args[1] isa Symbol && return ex.args[1]
+    return :none
+end
+_getoperation(x) = :none
+

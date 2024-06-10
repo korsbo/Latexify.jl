@@ -69,6 +69,15 @@ end
     return [myfloat.x for myfloat in vec.vec1], [myfloat.x for myfloat in vec.vec2]
 end
 
+struct MySum
+    x
+    y
+end
+@latexrecipe function f(s::MySum)
+    operation --> :+
+    return :($(s.x) + $(s.y))
+end
+
 end
 
 using .MyModule
@@ -202,4 +211,7 @@ raw"\begin{equation}
 \end{equation}
 ", "\r\n"=>"\n")
 
+sum1 = MyModule.MySum(3, 4)
+@test latexify(:(2 + $(sum1)^2)) == raw"$2 + \left( 3 + 4 \right)^{2}$"
+@test latexify(:(2 - $(sum1))) == raw"$2 - \left( 3 + 4 \right)$"
 
