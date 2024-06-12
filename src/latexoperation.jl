@@ -80,7 +80,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
             str = get(functions, prevOp[2], "\\$(prevOp[2])")
             return replace(args[2], str => "$(str)^{$(args[3])}")
         end
-        if (prevOp[2] != :none) || (ex.args[2] isa Real && sign(ex.args[2]) == -1) || (ex.args[2] isa Complex && !iszero(ex.args[2].re)) || (ex.args[2] isa Rational)
+        if (prevOp[2] != :none) || (ex.args[2] isa Real && sign(ex.args[2]) == -1) || (ex.args[2] isa Complex && !iszero(ex.args[2].re)) || (ex.args[2] isa Rational) || !(ex.args[2] isa Real || ex.args[2] isa Symbol)
             args[2]="\\left( $(args[2]) \\right)"
         end
         return "$(args[2])^{$(args[3])}"
