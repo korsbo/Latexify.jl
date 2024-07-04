@@ -183,6 +183,10 @@ Check if `x` represents something that could affect the vector of previous opera
 `:none` by default, recipes can use `operation-->:something` to hack this.
 """
 function _getoperation(ex::Expr)
+    ex.head == :comparison && return :comparison
+    if ex.head != :call
+        return :none
+    end
     if length(ex.args) > 1 && ex.args[1] isa Symbol
         op = ex.args[1]
         if op == :- && length(ex.args) == 2

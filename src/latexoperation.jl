@@ -115,9 +115,13 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
     end
 
     ### Check for chained comparison operators
-    if ex.head == :comparison && args[2:2:end] ⊆ values(comparison_operators)
+    if ex.head == :comparison
+        for argind in 2:2:length(args)
+            arg = args[argind]
+            string(arg)[1] == '.' && (arg = Symbol(string(arg)[2:end]))
+            args[argind] = get(comparison_operators, arg, string(arg))
+        end
         str = join(args, " ")
-        str = "\\left( $str \\right)"
         return str
     end
 
@@ -271,7 +275,7 @@ function precedence(op::Symbol)
     op in [:*, :.*, :/, :./] && return 4
     op in [:-, :±, :.-, :.±] && return 3
     op in [:+, :.+] && return 2
-    op in keys(comparison_operators) && return 1 # (x > 2) + 1 is not the same as x > 2 + 1
+    (op in keys(comparison_operators) || op == :comparison) && return 1 # (x > 2) + 1 is not the same as x > 2 + 1
 
     return 100 # When in doubt, don't parenthesize
 end

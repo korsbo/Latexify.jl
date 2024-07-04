@@ -174,6 +174,13 @@ raw"$\left( \frac{3}{2} \right)^{2}$", "\r\n"=>"\n")
 
 # @test_throws ErrorException latexify("x/y"; env=:raw, bad_kwarg="should error")
 
+
+@test latexraw(:(a .< b .<= c < d <= e > f <= g .<= h .< i == j .== k != l .!= m)) ==
+raw"a < b \leq c < d \leq e > f \leq g \leq h < i = j = k \neq l \neq m"
+@test latexraw(:(3 * (a .< b .<= c < d <= e > f <= g .<= h .< i == j .== k != l .!= m))) ==
+raw"3 \cdot \left( a < b \leq c < d \leq e > f \leq g \leq h < i = j = k \neq l \neq m \right)"
+
+
 #### Test the imaginary_unit keyword option
 @test latexraw(5im; imaginary_unit="\\textit{i}") == raw"5\textit{i}"
 
