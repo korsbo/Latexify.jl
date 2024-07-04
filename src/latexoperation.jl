@@ -41,33 +41,46 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
         str=""
         for i in 2:length(args)
             arg = args[i]
-            (prevOp[i] in [:+, :-, :±, :.+, :.-, :.±] || (ex.args[i] isa Complex && !iszero(ex.args[i].re))) && (arg = "\\left( $arg \\right)")
+            (precedence(prevOp[i]) < precedence(:*) || (ex.args[i] isa Complex && !iszero(ex.args[i].re))) && (arg = "\\left( $arg \\right)")
             str = string(str, arg)
-            i != length(args) && (str *= cdot ? " \\cdot " : " ")
+            i == length(args) || (str *= cdot ? " \\cdot " : " ")
         end
         return str
 
     elseif op in [:+, :.+]
-        str = join(args[2:end], " + ")
+        str = ""
+        for i in 2:length(args)
+            arg = args[i]
+            precedence(prevOp[i]) < precedence(:+) && (arg = "\\left( $arg \\right)")
+            str = string(str, arg)
+            i == length(args) || (str *= " + ")
+        end
         str = replace(str, "+  -"=>"-")
         str = replace(str, "+ -"=>"-")
         return str
 
     elseif op in [:±, :.±]
-        return "$(args[2]) \\pm $(args[3])"
-
+        str = ""
+        for i in 2:length(args)
+            arg = args[i]
+            precedence(prevOp[i]) < precedence(:±) && (arg = "\\left( $arg \\right)")
+            str = string(str, arg)
+            i == length(args) || (str *=" \\pm ")
+        end
+        return str
     elseif op in [:-, :.-]
         if length(args) == 2
             if prevOp[2] == :none && string(args[2])[1] == '-'
                 return " + " * string(args[2])[2:end]
             elseif prevOp[2] == :none && string(args[2])[1] == '+'
                 return " - " * string(args[2])[2:end]
-            elseif prevOp[2] in [:+, :-, :±, :.+, :.-, :.±] || (ex.args[2] isa Complex && !iszero(ex.args[2].re))
+            elseif precedence(prevOp[2]) ≤ precedence(:-) || (ex.args[2] isa Complex && !iszero(ex.args[2].re))
                 return " - \\left( $(args[2]) \\right)"
             end
             return " - $(args[2])"
         end
-        (prevOp[3] in [:+, :-, :±, :.+, :.-, :.±] || (ex.args[3] isa Complex && !iszero(ex.args[3].re))) && (args[3] = "\\left( $(args[3]) \\right)")
+        (precedence(prevOp[3]) ≤ precedence(:-) || (ex.args[3] isa Complex && !iszero(ex.args[3].re))) && (args[3] = "\\left( $(args[3]) \\right)")
+        precedence(prevOp[2]) < precedence(:-) && (args[2] = "\\left( $(args[2]) \\right)")
 
         if prevOp[3] == :none && string(args[3])[1] == '-'
             return "$(args[2]) + " * string(args[3])[2:end]
@@ -75,7 +88,6 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
         return "$(args[2]) - $(args[3])"
 
     elseif op in [:^, :.^]
-        #isa(args[2], String) && (args[2]="($(args[2]))")
         if prevOp[2] in trigonometric_functions
             str = get(functions, prevOp[2], "\\$(prevOp[2])")
             return replace(args[2], str => "$(str)^{$(args[3])}")
@@ -99,7 +111,6 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
 
     if op in keys(comparison_operators) && length(args) == 3
         str = "$(args[2]) $(comparison_operators[op]) $(args[3])"
-        str = "\\left( $str \\right)"
         return str
     end
 
@@ -219,7 +230,6 @@ end
 
 latexoperation(sym::Symbol, prevOp::AbstractArray; kwargs...) = "$sym"
 
-
 function convert_subscript!(ex::Expr, kwargs...)
     for i in 1:length(ex.args)
         arg = ex.args[i]
@@ -246,3 +256,22 @@ function convert_subscript(str::String; snakecase=false, function_name=false, kw
 end
 
 convert_subscript(sym::Symbol, kwargs...) = convert_subscript(string(sym), kwargs...)
+
+"""
+    precedence(op)
+
+The operator precedence of `op` strictly with regards to parenthesization.
+If `f(a, g(b, c))` must be written `a f (b g c)` then precedence(:f) > precedence(:g)
+"""
+function precedence(op::Symbol)
+    op in [:none] && return 100
+
+    op in [:^,:.^] && return 6
+    op in [:negative] && return 5
+    op in [:*, :.*, :/, :./] && return 4
+    op in [:-, :±, :.-, :.±] && return 3
+    op in [:+, :.+] && return 2
+    op in keys(comparison_operators) && return 1 # (x > 2) + 1 is not the same as x > 2 + 1
+
+    return 100 # When in doubt, don't parenthesize
+end

@@ -183,7 +183,14 @@ Check if `x` represents something that could affect the vector of previous opera
 `:none` by default, recipes can use `operation-->:something` to hack this.
 """
 function _getoperation(ex::Expr)
-    length(ex.args) > 1 && ex.args[1] isa Symbol && return ex.args[1]
+    if length(ex.args) > 1 && ex.args[1] isa Symbol
+        op = ex.args[1]
+        if op == :- && length(ex.args) == 2
+            # This is a unary minus, not a subtraction
+            op = :negative
+        end
+        return op
+    end
     return :none
 end
 _getoperation(x) = :none
