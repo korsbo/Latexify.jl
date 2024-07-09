@@ -49,30 +49,7 @@ keyword_arguments = [
 #     KeywordArgument(:template, [:array], "`Bool`", "`false`", "description", [:Any]),
     ]
 
-#= @latexrecipe function f(list::Array{KeywordArgument}; types=true) =#
-#=     isempty(list) && return nothing =#
-#=     sort!(list, by=x->x.kw) =#
-#=     keys = ["`:$(x.kw)`" for x in list] =#
-#=     # values = [join(["$i" for i in x.values], ", ") for x in list] =#
-#=     applicable_types = [join(["`$i`" for i in x.types], ", ") for x in list] =#
-#=     values = [x.values for x in list] =#
-#=     defaults = [x.default for x in list] =#
-#=     descriptions = [x.description for x in list] =#
-
-#=     latex --> false =#
-#=     env := :mdtable =#
-
-#=     if any(x->x.types != [:Any], list) && types =#
-#=         head --> ["Keyword", "Values", "Default", "Applicable types", "Description"] =#
-#=         return hcat(keys, values, defaults, applicable_types, descriptions) =#
-#=     else =#
-#=         head --> ["Keyword", "Values", "Default", "Description"] =#
-#=         return hcat(keys, values, defaults, descriptions) =#
-#=     end =#
-#= end =#
-
-import Latexify: mdtable
-function mdtable(list::Array{KeywordArgument}; types=true, kwargs...)
+@latexrecipe function f(list::Array{KeywordArgument}; types=true)
     isempty(list) && return nothing
     sort!(list, by=x->x.kw)
     keys = ["`:$(x.kw)`" for x in list]
@@ -81,9 +58,15 @@ function mdtable(list::Array{KeywordArgument}; types=true, kwargs...)
     values = [x.values for x in list]
     defaults = [x.default for x in list]
     descriptions = [x.description for x in list]
+
+    latex --> false
+    env := :mdtable
+
     if any(x->x.types != [:Any], list) && types
-        mdtable(hcat(keys, values, defaults, applicable_types, descriptions), head=["Keyword", "Values", "Default", "Applicable types", "Description"], latex=false)
+        head --> ["Keyword", "Values", "Default", "Applicable types", "Description"]
+        return hcat(keys, values, defaults, applicable_types, descriptions)
     else
-        mdtable(hcat(keys, values, defaults, descriptions), head=["Keyword", "Values", "Default", "Description"], latex=false)
+        head --> ["Keyword", "Values", "Default", "Description"]
+        return hcat(keys, values, defaults, descriptions)
     end
 end
