@@ -53,9 +53,9 @@ julia> mdtable(M; head=latexinline(head))
 | $\frac{x}{y}$ | $\frac{1}{2}$ |
 |       $p_{m}$ |       $e^{2}$ |
 """
-function mdtable end
+mdtable(args...; kwargs...) = latexify(args...; kwargs..., env=:mdtable)
 
-function mdtable(M::AbstractMatrix; latex::Bool=true, escape_underscores=false, head=[], side=[], transpose=false, adjustment=nothing, kwargs...)
+function _mdtable(M::AbstractMatrix; latex::Bool=true, escape_underscores=false, head=[], side=[], transpose=false, adjustment=nothing, kwargs...)
     transpose && (M = permutedims(M, [2,1]))
     if latex
         M = _latexinline.(M; kwargs...)
@@ -92,10 +92,10 @@ function mdtable(M::AbstractMatrix; latex::Bool=true, escape_underscores=false, 
     return t
 end
 
-mdtable(v::AbstractArray; kwargs...) = mdtable(reshape(v, (length(v), 1)); kwargs...)
-mdtable(v::AbstractArray...; kwargs...) = mdtable(safereduce(hcat, v); kwargs...)
-mdtable(d::AbstractDict; kwargs...) = mdtable(collect(keys(d)), collect(values(d)); kwargs...)
-mdtable(arg::Tuple; kwargs...) = mdtable(safereduce(hcat, [collect(i) for i in arg]); kwargs...)
+_mdtable(v::AbstractArray; kwargs...) = _mdtable(reshape(v, (length(v), 1)); kwargs...)
+_mdtable(v::AbstractArray...; kwargs...) = _mdtable(safereduce(hcat, v); kwargs...)
+_mdtable(d::AbstractDict; kwargs...) = _mdtable(collect(keys(d)), collect(values(d)); kwargs...)
+_mdtable(arg::Tuple; kwargs...) = _mdtable(safereduce(hcat, [collect(i) for i in arg]); kwargs...)
 
 get_header_rule(::Nothing) = "-------"
 function get_header_rule(adjustment::Symbol)
