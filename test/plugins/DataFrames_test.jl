@@ -4,6 +4,13 @@ using LaTeXStrings
 
 df = DataFrame(A = 'x':'z', B = ["α/β", 1//2, 8])
 
+@test mdtable(df) ==
+Markdown.md"|   A |                      B |
+| ---:| ----------------------:|
+| $x$ | $\frac{\alpha}{\beta}$ |
+| $y$ |          $\frac{1}{2}$ |
+| $z$ |                    $8$ |
+"
 
 @test latexify(df, latex=true) ==
 Markdown.md"|   A |                      B |

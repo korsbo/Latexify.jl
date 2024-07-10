@@ -64,8 +64,8 @@ const OUTPUTFUNCTIONS = Dict(
                              :eq        => _latexequation,
                              :equation  => _latexequation,
                              :bracket   => _latexbracket,
-                             :mdtable   => mdtable,
-                             :mdtext    => mdtext,
+                             :mdtable   => _mdtable,
+                             :mdtext    => _mdtext,
                             )
 function infer_output(env, args...)
     env === :auto && return get_latex_function(args...)
