@@ -122,6 +122,8 @@ const comparison_operators = Dict(
                             :⊊ => "\\subsetneq",
                             :⊃ => "\\supset",
                             :⊅ => "\\not\\supset",
+                            :(=>) => "\\Rightarrow",
+                            :∀ => "\\forall",
                            )
 
 const special_symbols = Dict(
