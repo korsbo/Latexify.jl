@@ -122,12 +122,51 @@ const comparison_operators = Dict(
                             :⊊ => "\\subsetneq",
                             :⊃ => "\\supset",
                             :⊅ => "\\not\\supset",
-                            :(=>) => "\\Rightarrow",
+                           )
+const bitwise_operators = Dict(
                             :∀ => "\\forall",
+                            :& => "\\wedge",
+                            :| => "\\vee",
+                            :⊻ => "\\veebar",
+                            :⊼ => "\\bar{\\wedge}", # Not very good looking, but there is no builtin LaTeX symbol
+                            :>>> => "\\ggg",
+                            :>> => "\\gg",
+                            :<< => "\\ll",
+                           )
+const arithmetic_operators = Dict(
+                            :^ => "^",
+                            :* => "*",
+                            :/ => "/",
+                            :% => "\\%",
+                            :\ => "\\backslash",
+                            :÷ => "\\div",
+                            :+ => "+",
+                            :- => "-",
+                            :± => "\\pm",
+                            :∓ => "\\mp",
+                           )
+const binary_operators = Dict(
+                            comparison_operators...,
+                            bitwise_operators...,
+                            arithmetic_operators...,
+                            :(=>) => "\\Rightarrow",
+                            :⟹ => "\\Longrightarrow",
                            )
 
+const unary_operators = Dict(
+                            :unaryminus => "-",
+                            :unaryplus => "+",
+                            :unaryplusminus => "\\pm",
+                            :unaryminusplus => "\\mp"
+                            )
+const unary_opposites = Dict(
+                             :unaryminus => "+",
+                             :unaryplus => "-",
+                             :unaryplusminus => "\\mp",
+                             :unaryminusplus => "\\pm"
+                            )
 const special_symbols = Dict(
                              functions...,
-                             comparison_operators...,
+                             binary_operators...,
                              :Inf => raw"\infty",
                             )

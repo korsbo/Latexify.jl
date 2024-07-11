@@ -187,11 +187,13 @@ function _getoperation(ex::Expr)
     if ex.head != :call
         return :none
     end
-    if length(ex.args) > 1 && ex.args[1] isa Symbol
-        op = ex.args[1]
-        if op == :- && length(ex.args) == 2
-            # This is a unary minus, not a subtraction
-            op = :negative
+    if length(ex.args) > 1 && (op = ex.args[1]) isa Symbol
+        if length(ex.args) == 2
+            # These are unary operators
+            op == :- && return :unaryminus
+            op == :+ && return :unaryplus
+            op == :± && return :unaryplusminus
+            op == :∓ && return :unaryminusplus
         end
         return op
     end
