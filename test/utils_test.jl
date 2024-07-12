@@ -74,3 +74,5 @@ tex = read(filename, String)
 
 @test occursin("MathJax", Latexify.html_wrap(latexify(:(sin(α)))))
 @test Latexify.best_displayable() isa MIME
+
+@test_throws Latexify.LatexifyRenderError render(L"x^2^3")

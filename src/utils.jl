@@ -36,11 +36,18 @@ function _compile(s::LaTeXString, cmd::Cmd, ext::String;
         open=true,
         kw...
     )
+    name = abspath(name)
     mktempdir() do source_dir
         cd(source_dir) do
             _writetex(s; name="main", kw...)
             debug || (cmd = pipeline(cmd, devnull))
-            run(cmd)
+            try
+                run(cmd)
+            catch err
+                isa(err, ProcessFailedException) || rethrow(err)
+                mv("$source_dir/main.log", "$name.log"; force=true)
+                rethrow(LatexifyRenderError("$name.log"))
+            end
         end
         mv("$source_dir/main.$ext", "$name.$ext"; force=true)
     end
@@ -226,3 +233,23 @@ end
 
 _packagename(x::AbstractString) = "{$x}"
 _packagename(x::Tuple) = "[$(join(x[2:end], ", "))]{$(first(x))}"
+
+struct LatexifyRenderError <: Exception
+    logfilename::String
+end
+function Base.showerror(io::IO, e::LatexifyRenderError)
+    isfile(e.logfilename) || return println(io, "an error occured while rendering LaTeX, no log file available.")
+    println(io, "an error occured while rendering LaTeX: ")
+    secondline = false
+    for l = eachline(e.logfilename)
+        if secondline
+            println(io, "\t", l)
+            break;
+        end
+        m = match(r"^! (.*)$", l)
+        isnothing(m) && continue
+        println(io, "\t", m[1])
+        secondline = true
+    end
+    println(io, "Check the log file at ", e.logfilename, " for more information")
+end
