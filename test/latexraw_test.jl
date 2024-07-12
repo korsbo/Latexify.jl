@@ -402,6 +402,6 @@ raw"\mathrm{reward}\left( p, e, d, t \right) = \begin{cases}
     @test latexraw(:(x ∌ y)) == raw"x \not\ni y"
     @test latexraw(:(x < 3 + 1)) == raw"x < 3 + 1"
     @test latexraw(:((x < 3) + 1)) == raw"\left( x < 3 \right) + 1"
-    @test latexraw(:(∀(x, y))) == raw"x \forall y"
+    #@test latexraw(:(∀(x, y))) == raw"x \forall y"
     @test latexraw(:(a => b)) == raw"a \Rightarrow b"
 end

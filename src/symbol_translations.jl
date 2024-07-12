@@ -124,7 +124,7 @@ const comparison_operators = Dict(
                             :⊅ => "\\not\\supset",
                            )
 const bitwise_operators = Dict(
-                            :∀ => "\\forall",
+                            #:∀ => "\\forall",
                             :& => "\\wedge",
                             :| => "\\vee",
                             :⊻ => "\\veebar",

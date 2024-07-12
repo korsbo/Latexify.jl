@@ -119,7 +119,6 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
         str = ""
         if (precedence(prevOp[2]) < precedence(op)) ||
             (precedence(prevOp[2]) == precedence(op) && associativity(op) != :left)
-            println(op)
             str = str*"\\left( $(args[2]) \\right)"
         else
             str = str*args[2]
@@ -290,7 +289,7 @@ If `f(a, g(b, c))` must be written `a f (b g c)` then precedence(:f) > precedenc
 function precedence(op::Symbol)
     startswith(string(op), "unary") && return Base.prec_power # Putting unary on par with :^, because there are no integers between 14 and 15. Should consider putting it with :<< instead
     op ∈ [:comparison, :issubset] && return Base.prec_comparison
-    op == :∀ && return Base.prec_control_flow
+    #op == :∀ && return Base.prec_control_flow
     prec = Base.operator_precedence(op)
     prec == 0 && return 100 # Base treats unknown as parenthesizable, we want no parenthesis if uncertain
     return prec
