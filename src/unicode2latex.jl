@@ -162,28 +162,29 @@ const emphases = (
     - 'á' => "\\'{a}"  # acute
     - 'ä' => "\\"{a}"  # umlaut (trema, dieresis)
     - 'a̋' => "\\H{a}"  # hungarian umlaut (double acute)
-    - 'ã' => "\\~{a}"  # tilde
-    - 'â' => "\\^{a}"  # circumflex
     - 'a̧' => "\\c{a}"  # cedilla
     - 'ą' => "\\k{a}"  # ogonek
-    - 'ā' => "\\={a}"  # macron (bar above)
     - 'a̱' => "\\b{a}"  # bar under
-    - 'ȧ' => "\\.{a}"  # dot above
     - 'ạ' => "\\d{a}"  # dot under
     - 'å' => "\\r{a}"  # ring
     - 'ă' => "\\u{a}"  # breve
     - 'ǎ' => "\\v{a}"  # caron (háček)
+    - Some more diacritics are ignored, and rather treated like math modifiers:
+        - 'â' => "\\hat{a}" # rather than "\\^{a}", circumflex
+        - 'ã' => "\\tilde{a}" # rather than "\\~{a}", tilde
+        - 'ā' => "\\bar{a}" # rather than "\\={a}", macron (bar above)
+        - 'ȧ' => "\\dot{a}" # rather than "\\.{a}", dot above
 """
 function latex_diacritics(chars::AbstractVector)
     out = []
     for c ∈ chars, (mod, mark) ∈ (
         '`' => Char(0x300),  # latex sequence \`{c} maps to 'c' * Char(0x300) := "c̀"
         "'" => Char(0x301),
-        '^' => Char(0x302),
-        '~' => Char(0x303),
-        '=' => Char(0x304),
+        #'^' => Char(0x302),
+        #'~' => Char(0x303),
+        #'=' => Char(0x304),
         'u' => Char(0x306),
-        '.' => Char(0x307),
+        #'.' => Char(0x307),
         '"' => Char(0x308),
         'r' => Char(0x30a),
         'H' => Char(0x30b),
@@ -1756,6 +1757,7 @@ unicode2latex(c::Char) = unicode2latex(string(c))
 function unicode2latex(str::String; safescripts=false)
     isascii(str) && return str
 
+    str = Unicode.normalize(str; decompose=true) # Get rid of pre-composed characters
     c_or_s = sizehint!(Union{Char,String}[], length(str))
 
     it = Iterators.Stateful(str)
@@ -1775,6 +1777,20 @@ function unicode2latex(str::String; safescripts=false)
     it = Iterators.Stateful(str_array)
     for (n, x) ∈ enumerate(it)
         x isa String || continue
+        # Deal with math mode modifiers (\hat, \tilde, \bar, \dot)
+        if endswith(x, Char(0x302))
+            x = "\\hat{$(unicode2latex(x[begin:prevind(x, end)]))}"
+            str_array[n] = x
+        elseif endswith(x, Char(0x303))
+            x = "\\tilde{$(unicode2latex(x[begin:prevind(x, end)]))}"
+            str_array[n] = x
+        elseif endswith(x, Char(0x304))
+            x = "\\bar{$(unicode2latex(x[begin:prevind(x, end)]))}"
+            str_array[n] = x
+        elseif endswith(x, Char(0x307))
+            x = "\\dot{$(unicode2latex(x[begin:prevind(x, end)]))}"
+            str_array[n] = x
+        end
         if (next = peek(it)) !== nothing && length(next) == 1
             c = next isa Char ? next : first(next)
             if isletter(c) || isdigit(c)
