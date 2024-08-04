@@ -125,6 +125,8 @@ array_test = [ex, str]
 @test latexraw(:(1*(1 .- 1))) == raw"1 \cdot \left( 1 - 1 \right)"
 @test latexraw(:(1-(1 .+ 1))) == raw"1 - \left( 1 + 1 \right)"
 @test latexraw(:(1-(1 .- 1))) == raw"1 - \left( 1 - 1 \right)"
+@test latexraw(:(-1*1)) == raw"-1 \cdot 1"
+@test latexraw(:(-x*y)) == raw" - x \cdot y"
 
 @test latexraw(:(sum(x_n))) == raw"\sum x_{n}"
 @test latexraw(:(sum(x_n for n in _))) == raw"\sum_{n} x_{n}"
@@ -173,6 +175,8 @@ raw"$\left( \frac{3}{2} \right)^{2}$", "\r\n"=>"\n")
 # @test_throws ErrorException latexify("x/y"; env=:raw, bad_kwarg="should error")
 
 
+@test latexraw(:(a .< b .<= c < d <= e > f <= g .<= h .< i == j .== k != l .!= m)) ==
+raw"a < b \leq c < d \leq e > f \leq g \leq h < i = j = k \neq l \neq m"
 @test latexraw(:(3 * (a .< b .<= c < d <= e > f <= g .<= h .< i == j .== k != l .!= m))) ==
 raw"3 \cdot \left( a < b \leq c < d \leq e > f \leq g \leq h < i = j = k \neq l \neq m \right)"
 
@@ -351,3 +355,53 @@ raw"\mathrm{reward}\left( p, e, d, t \right) = \begin{cases}
 -3 \cdot d & \text{if } 3 \cdot t \wedge e\\
 \log\left( p \right) & \text{otherwise}
 \end{cases}", "\r\n"=>"\n")
+
+# Test infix comparison operators
+@testset "Infix" begin
+    @test latexraw(:(x ⊊ y)) == raw"x \subsetneq y"
+    @test latexraw(:(x .⊆ y)) == raw"x \subseteq y"
+    @test latexraw(:(x .∌ y)) == raw"x \not\ni y"
+    @test latexraw(:(x .>= y)) == raw"x \geq y"
+    @test latexraw(:(x .== y)) == raw"x = y"
+    @test latexraw(:(issubset(x, y))) == raw"x \subseteq y"
+    @test latexraw(:(x .∉ y)) == raw"x \notin y"
+    @test latexraw(:(x < y)) == raw"x < y"
+    @test latexraw(:(x !== y)) == raw"x \not\equiv y"
+    @test latexraw(:(x ≈ y)) == raw"x \approx y"
+    @test latexraw(:(x .⊅ y)) == raw"x \not\supset y"
+    @test latexraw(:(x ≥ y)) == raw"x \geq y"
+    @test latexraw(:(x >= y)) == raw"x \geq y"
+    @test latexraw(:(x .∈ y)) == raw"x \in y"
+    @test latexraw(:(x > y)) == raw"x > y"
+    @test latexraw(:(x <= y)) == raw"x \leq y"
+    @test latexraw(:(x .⊊ y)) == raw"x \subsetneq y"
+    @test latexraw(:(x .<= y)) == raw"x \leq y"
+    @test latexraw(:(x .≤ y)) == raw"x \leq y"
+    @test latexraw(:(x ⊃ y)) == raw"x \supset y"
+    @test latexraw(:(x == y)) == raw"x = y"
+    @test latexraw(:(x in y)) == raw"x \in y"
+    @test latexraw(:(x ≠ y)) == raw"x \neq y"
+    @test latexraw(:(x ⊆ y)) == raw"x \subseteq y"
+    @test latexraw(:(x .≥ y)) == raw"x \geq y"
+    @test latexraw(:(x .< y)) == raw"x < y"
+    @test latexraw(:(x != y)) == raw"x \neq y"
+    @test latexraw(:(x .!== y)) == raw"x \not\equiv y"
+    @test latexraw(:(x === y)) == raw"x \equiv y"
+    @test latexraw(:(x ⊅ y)) == raw"x \not\supset y"
+    @test latexraw(:(x .∋ y)) == raw"x \ni y"
+    @test latexraw(:(x ∉ y)) == raw"x \notin y"
+    @test latexraw(:(x .≠ y)) == raw"x \neq y"
+    @test latexraw(:(x .!= y)) == raw"x \neq y"
+    @test latexraw(:(x ∈ y)) == raw"x \in y"
+    @test latexraw(:(x .⊃ y)) == raw"x \supset y"
+    @test latexraw(:(x .≈ y)) == raw"x \approx y"
+    @test latexraw(:(x ∋ y)) == raw"x \ni y"
+    @test latexraw(:(x .> y)) == raw"x > y"
+    @test latexraw(:(x .=== y)) == raw"x \equiv y"
+    @test latexraw(:(x ≤ y)) == raw"x \leq y"
+    @test latexraw(:(x ∌ y)) == raw"x \not\ni y"
+    @test latexraw(:(x < 3 + 1)) == raw"x < 3 + 1"
+    @test latexraw(:((x < 3) + 1)) == raw"\left( x < 3 \right) + 1"
+    #@test latexraw(:(∀(x, y))) == raw"x \forall y"
+    @test latexraw(:(a => b)) == raw"a \Rightarrow b"
+end

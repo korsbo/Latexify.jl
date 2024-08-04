@@ -101,21 +101,72 @@ const trigonometric_functions = [
 
 const comparison_operators = Dict(
                             :< => "<",
-                            :.< => "<",
                             :> => ">",
-                            :.> => ">",
                             :(==) => "=",
-                            :.== => "=",
+                            :≈ => "\\approx",
+                            :(===) => "\\equiv",
                             :<= => "\\leq",
-                            :.<= => "\\leq",
+                            :≤ => "\\leq",
                             :>= => "\\geq",
-                            :.>= => "\\geq",
+                            :≥ => "\\geq",
                             :!= => "\\neq",
-                            :.!= => "\\neq",
+                            :≠ => "\\neq",
+                            :!== => "\\not\\equiv",
+                            :in => "\\in",
+                            :∈ => "\\in",
+                            :∉ => "\\notin",
+                            :∋ => "\\ni",
+                            :∌ => "\\not\\ni",
+                            :issubset => "\\subseteq",
+                            :⊆ => "\\subseteq",
+                            :⊊ => "\\subsetneq",
+                            :⊃ => "\\supset",
+                            :⊅ => "\\not\\supset",
+                           )
+const bitwise_operators = Dict(
+                            #:∀ => "\\forall",
+                            :& => "\\wedge",
+                            :| => "\\vee",
+                            :⊻ => "\\veebar",
+                            :⊼ => "\\bar{\\wedge}", # Not very good looking, but there is no builtin LaTeX symbol
+                            :>>> => "\\ggg",
+                            :>> => "\\gg",
+                            :<< => "\\ll",
+                           )
+const arithmetic_operators = Dict(
+                            :^ => "^",
+                            :* => "*",
+                            :/ => "/",
+                            :% => "\\%",
+                            :\ => "\\backslash",
+                            :÷ => "\\div",
+                            :+ => "+",
+                            :- => "-",
+                            :± => "\\pm",
+                            :∓ => "\\mp",
+                           )
+const binary_operators = Dict(
+                            comparison_operators...,
+                            bitwise_operators...,
+                            arithmetic_operators...,
+                            :(=>) => "\\Rightarrow",
+                            :⟹ => "\\Longrightarrow",
                            )
 
+const unary_operators = Dict(
+                            :unaryminus => "-",
+                            :unaryplus => "+",
+                            :unaryplusminus => "\\pm",
+                            :unaryminusplus => "\\mp"
+                            )
+const unary_opposites = Dict(
+                             :unaryminus => "+",
+                             :unaryplus => "-",
+                             :unaryplusminus => "\\mp",
+                             :unaryminusplus => "\\pm"
+                            )
 const special_symbols = Dict(
                              functions...,
-                             comparison_operators...,
+                             binary_operators...,
                              :Inf => raw"\infty",
                             )

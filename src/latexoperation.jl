@@ -15,6 +15,8 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
     index = get(kwargs, :index, :bracket)
 
     op = ex.args[1]
+    string(op)[1] == '.' && (op = Symbol(string(op)[2:end]))
+
     filter!(x -> !(x isa LineNumberNode), ex.args)
     args = map(i -> typeof(i) ∉ (String, LineNumberNode) ? latexraw(i; kwargs...) : i, ex.args)
 
@@ -34,48 +36,66 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
         op = Symbol(op)
     end
 
-    if op in [:/, :./, ://, :.//]
+    if op in [:/, ://]
         return "\\frac{$(args[2])}{$(args[3])}"
 
-    elseif op in [:*, :.*]
+    elseif op in [:*]
         str=""
-        for i in 2:length(args)
+        for i ∈ eachindex(args)[2:end]
             arg = args[i]
-            (prevOp[i] in [:+, :-, :±, :.+, :.-, :.±] || (ex.args[i] isa Complex && !iszero(ex.args[i].re))) && (arg = "\\left( $arg \\right)")
+            (precedence(prevOp[i]) < precedence(op) || (ex.args[i] isa Complex && !iszero(ex.args[i].re))) && (arg = "\\left( $arg \\right)")
             str = string(str, arg)
-            i != length(args) && (str *= cdot ? " \\cdot " : " ")
+            i == length(args) || (str *= cdot ? " \\cdot " : " ")
         end
         return str
 
-    elseif op in [:+, :.+]
-        str = join(args[2:end], " + ")
-        str = replace(str, "+  -"=>"-")
-        str = replace(str, "+ -"=>"-")
+    elseif op in [:+]
+        str = ""
+        for i ∈ eachindex(args)[2:end]
+            arg = args[i]
+            precedence(prevOp[i]) < precedence(op) && (arg = "\\left( $arg \\right)")
+            str = string(str, arg)
+            i == length(args) || (str *= " + ")
+        end
+        str = replace(str, r"\+ *([\-±∓])"=>s"\1")
         return str
 
-    elseif op in [:±, :.±]
-        return "$(args[2]) \\pm $(args[3])"
-
-    elseif op in [:-, :.-]
+    elseif op in [:±, :∓]
+        str = ""
+        if length(args) == 2
+            # unary
+            precedence(prevOp[2]) <= precedence(op) && return "$(arithmetic_operators[op])\\left( $(args[2]) \\right)"
+            return "$(arithmetic_operators[op]) $(args[2])"
+        end
+        for i ∈ eachindex(args)[2:end]
+            arg = args[i]
+            precedence(prevOp[i]) < precedence(op) && (arg = "\\left( $arg \\right)")
+            str = string(str, arg)
+            i == length(args) || (str *=" $(arithmetic_operators[op]) ")
+        end
+        return str
+    elseif op in [:-]
         if length(args) == 2
             if prevOp[2] == :none && string(args[2])[1] == '-'
                 return " + " * string(args[2])[2:end]
             elseif prevOp[2] == :none && string(args[2])[1] == '+'
                 return " - " * string(args[2])[2:end]
-            elseif prevOp[2] in [:+, :-, :±, :.+, :.-, :.±] || (ex.args[2] isa Complex && !iszero(ex.args[2].re))
+            elseif precedence(prevOp[2]) ≤ precedence(:-) || (ex.args[2] isa Complex && !iszero(ex.args[2].re))
                 return " - \\left( $(args[2]) \\right)"
             end
             return " - $(args[2])"
         end
-        (prevOp[3] in [:+, :-, :±, :.+, :.-, :.±] || (ex.args[3] isa Complex && !iszero(ex.args[3].re))) && (args[3] = "\\left( $(args[3]) \\right)")
-
-        if prevOp[3] == :none && string(args[3])[1] == '-'
-            return "$(args[2]) + " * string(args[3])[2:end]
+        if precedence(prevOp[3]) <= precedence(:-) ||
+            (ex.args[3] isa Complex && !iszero(ex.args[3].re))
+            args[3] = "\\left( $(args[3]) \\right)"
         end
-        return "$(args[2]) - $(args[3])"
+        precedence(prevOp[2]) < precedence(:-) && (args[2] = "\\left( $(args[2]) \\right)")
 
-    elseif op in [:^, :.^]
-        #isa(args[2], String) && (args[2]="($(args[2]))")
+        if prevOp[3] ∈ keys(unary_operators)
+            return "$(args[2]) $(replace(args[3], unary_operators[prevOp[3]] => unary_opposites[prevOp[3]]; count=1))"
+        end
+        return replace("$(args[2]) - $(args[3])", r"- *-"=>"+ ")
+    elseif op in [:^]
         if prevOp[2] in trigonometric_functions
             str = get(functions, prevOp[2], "\\$(prevOp[2])")
             return replace(args[2], str => "$(str)^{$(args[3])}")
@@ -95,18 +115,32 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
         # op = string(op, ".") ## Signifies broadcasting.
     end
 
-    string(op)[1] == '.' && (op = Symbol(string(op)[2:end]))
-
-    if op in keys(comparison_operators) && length(args) == 3
-        str = "$(args[2]) $(comparison_operators[op]) $(args[3])"
-        str = "\\left( $str \\right)"
+    if op in keys(binary_operators) && length(args) == 3
+        str = ""
+        if (precedence(prevOp[2]) < precedence(op)) ||
+            (precedence(prevOp[2]) == precedence(op) && associativity(op) != :left)
+            str = str*"\\left( $(args[2]) \\right)"
+        else
+            str = str*args[2]
+        end
+        str = str*" $(binary_operators[op]) "
+        if (precedence(prevOp[3]) < precedence(op)) ||
+            (precedence(prevOp[3]) == precedence(op) && associativity(op) != :right)
+            str = str*"\\left( $(args[3]) \\right)"
+        else
+            str = str*args[3]
+        end
         return str
     end
 
     ### Check for chained comparison operators
-    if ex.head == :comparison && args[2:2:end] ⊆ values(comparison_operators)
+    if ex.head == :comparison
+        for argind in 2:2:length(args)
+            arg = args[argind]
+            string(arg)[1] == '.' && (arg = Symbol(string(arg)[2:end]))
+            args[argind] = get(comparison_operators, arg, string(arg))
+        end
         str = join(args, " ")
-        str = "\\left( $str \\right)"
         return str
     end
 
@@ -219,7 +253,6 @@ end
 
 latexoperation(sym::Symbol, prevOp::AbstractArray; kwargs...) = "$sym"
 
-
 function convert_subscript!(ex::Expr, kwargs...)
     for i in 1:length(ex.args)
         arg = ex.args[i]
@@ -246,3 +279,24 @@ function convert_subscript(str::String; snakecase=false, function_name=false, kw
 end
 
 convert_subscript(sym::Symbol, kwargs...) = convert_subscript(string(sym), kwargs...)
+
+"""
+    precedence(op)
+
+The operator precedence of `op` strictly with regards to parenthesization.
+If `f(a, g(b, c))` must be written `a f (b g c)` then precedence(:f) > precedence(:g)
+"""
+function precedence(op::Symbol)
+    startswith(string(op), "unary") && return Base.prec_power # Putting unary on par with :^, because there are no integers between 14 and 15. Should consider putting it with :<< instead
+    op ∈ [:comparison, :issubset] && return Base.prec_comparison
+    #op == :∀ && return Base.prec_control_flow
+    prec = Base.operator_precedence(op)
+    prec == 0 && return 100 # Base treats unknown as parenthesizable, we want no parenthesis if uncertain
+    return prec
+end
+function associativity(op::Symbol)
+    startswith(string(op), "unary") && return :right
+    op == :comparison && return :none
+    op == :issubset && return :none
+    return Base.operator_associativity(op)
+end
