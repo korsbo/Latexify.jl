@@ -14,8 +14,8 @@ outputs:
 
 ```maths
 \begin{align}
-\frac{dx}{dt} =& y^{2} - x \\
-\frac{dy}{dt} =& \frac{x}{y} - y \\
+\frac{dx}{dt} &= y^{2} - x \\
+\frac{dy}{dt} &= \frac{x}{y} - y \\
 \end{align}
 ```
 
@@ -25,8 +25,8 @@ display( latexalign(lhs, rhs))
 ```
 
 \begin{align\*}
-\frac{dx}{dt} =& y^{2} - x \\\\
-\frac{dy}{dt} =& \frac{x}{y} - y \\\\
+\frac{dx}{dt} &= y^{2} - x \\\\
+\frac{dy}{dt} &= \frac{x}{y} - y \\\\
 \end{align\*}
 
 
@@ -48,6 +48,6 @@ latexalign(ode)
 ```
 
 \begin{align}
-\frac{dx}{dt} =& \frac{y}{k_{y} + y} - x \\\\
-\frac{dy}{dt} =& \frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y \\\\
+\frac{dx}{dt} &= \frac{y}{k_{y} + y} - x \\\\
+\frac{dy}{dt} &= \frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y \\\\
 \end{align}

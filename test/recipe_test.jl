@@ -117,25 +117,25 @@ raw"\begin{equation}
 
 @test latexify(t2, fmt="%.8f") == replace(
 raw"\begin{align}
-X =& 1.23 \\
-Y =& 232423.42 \\
-\frac{x}{y} =& \frac{4.00}{11.00}
+X &= 1.23 \\
+Y &= 232423.42 \\
+\frac{x}{y} &= \frac{4.00}{11.00}
 \end{align}
 ", "\r\n"=>"\n")
 
 @test latexify(t) == replace(
 raw"\begin{align}
-A =& 1.00 \\
-B =& 2.00 \\
-3.00 =& 3.00
+A &= 1.00 \\
+B &= 2.00 \\
+3.00 &= 3.00
 \end{align}
 ", "\r\n"=>"\n")
 
 @test latexify(t; reverse=true) == replace(
 raw"\begin{align}
-1.00 =& A \\
-2.00 =& B \\
-3.00 =& 3.00
+1.00 &= A \\
+2.00 &= B \\
+3.00 &= 3.00
 \end{align}
 ", "\r\n"=>"\n")
 
