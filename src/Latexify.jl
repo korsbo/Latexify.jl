@@ -58,7 +58,6 @@ include("utils.jl")
 include("numberformatters.jl")
 
 include("latexify_function.jl")
-include("type_recipes.jl")
 
 ### Add support for additional packages without adding them as dependencies.
 ### Requires on <1.9 and weakdeps/extensions on >=1.9
@@ -73,6 +72,9 @@ function __init__()
     end
     @require DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0" begin
         include("../ext/DataFramesExt.jl")
+    end
+    @require SparseArrays =  "2f01184e-e22b-5df5-ae63-d93ebab69eaf" begin
+        include("../ext/SparseArraysExt.jl")
     end
 end
 end

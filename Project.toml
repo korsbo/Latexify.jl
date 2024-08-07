@@ -12,15 +12,16 @@ MacroTools = "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
 Markdown = "d6f4376e-aef5-505a-96c1-9c027394607a"
 OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 Requires = "ae029012-a4dd-5104-9daa-d747884805df"
-SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [weakdeps]
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8"
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
 [extensions]
 DataFramesExt = "DataFrames"
 SymEngineExt = "SymEngine"
+SparseArraysExt = "SparseArrays"
 
 [compat]
 DataFrames = "1"
@@ -31,6 +32,7 @@ OrderedCollections = "1"
 Requires = "0.5, 1"
 SymEngine = "0.11, 0.12"
 julia = "1.6"
+SparseArrays="1.10"
 
 [extras]
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
@@ -39,4 +41,4 @@ SymEngine = "123dc426-2d89-5057-bbad-38513e3affd8"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["DataFrames", "OffsetArrays", "SymEngine", "Test"]
+test = ["DataFrames", "OffsetArrays", "SymEngine", "SparseArrays", "Test"]
