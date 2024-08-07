@@ -215,3 +215,16 @@ sum1 = MyModule.MySum(3, 4)
 @test latexify(:(2 + $(sum1)^2)) == raw"$2 + \left( 3 + 4 \right)^{2}$"
 @test latexify(:(2 - $(sum1))) == raw"$2 - \left( 3 + 4 \right)$"
 
+struct NothingThing end
+@latexrecipe function f(::NothingThing; keyword=nothing)
+    if isnothing(keyword)
+        return L"a"
+    elseif keyword == :nothing
+        return L"b"
+    end
+end
+@test latexify(NothingThing()) == raw"$a$"
+@test latexify(NothingThing(); keyword=nothing) == raw"$a$"
+@test latexify(NothingThing(); keyword=:nothing) == raw"$b$"
+
+
