@@ -74,3 +74,29 @@ tex = read(filename, String)
 
 @test occursin("MathJax", Latexify.html_wrap(latexify(:(sin(α)))))
 @test Latexify.best_displayable() isa MIME
+
+#@test_throws Latexify.LatexifyRenderError render(L"x^2^3") # Does not run on Windows and Mac CI
+logfile = tempname()
+open(logfile, "w") do io
+    println(io, raw"""
+            This is LuaHBTeX, Version 1.18.0 (TeX Live 2024/Arch Linux)  (format=lualatex 2024.4.3)  7 AUG 2024 14:19
+            restricted system commands enabled.
+            ** Skipping many files **
+            LaTeX Font Info:    Trying to load font information for U+msb on input line 5.
+            (/usr/share/texmf-dist/tex/latex/amsfonts/umsb.fd
+            File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+            )
+            ! Double superscript.
+            l.8     $x^2^
+            3$
+            I treat `x^1^2' essentially like `x^1{}^2'.
+            ** More lines skipped **
+            """)
+end
+e = Latexify.LatexifyRenderError(logfile)
+@test sprint(showerror, e) == """
+an error occured while rendering LaTeX: \n\tDouble superscript.
+\tl.8     \$x^2^
+Check the log file at $logfile for more information
+"""
+
