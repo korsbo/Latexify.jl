@@ -187,8 +187,8 @@ raw"3 \cdot \left( a < b \leq c < d \leq e > f \leq g \leq h < i = j = k \neq l 
 #### Test the fmt keyword option
 @test latexify([32894823 1.232212 :P_1; :(x / y) 1.0e10 1289.1]; env=:align, fmt="%.2e") == replace(
 raw"\begin{align}
-3.29e+07 =& 1.23e+00 =& P_{1} \\
-\frac{x}{y} =& 1.00e+10 =& 1.29e+03
+3.29e+07 &= 1.23e+00 &= P_{1} \\
+\frac{x}{y} &= 1.00e+10 &= 1.29e+03
 \end{align}
 ", "\r\n"=>"\n")
 

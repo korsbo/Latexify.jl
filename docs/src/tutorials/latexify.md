@@ -50,8 +50,8 @@ If you give two vectors as an argument, they will be displayed as the left-hand-
 latexify(["x/y", :z], Any[2.3, 1//2])
 ```
 \begin{align}
-\frac{x}{y} =& 2.3 \\\\
-z =& \frac{1}{2} \\\\
+\frac{x}{y} &= 2.3 \\\\
+z &= \frac{1}{2} \\\\
 \end{align}
 
 

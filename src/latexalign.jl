@@ -14,9 +14,9 @@ latexalign(lhs, rhs)
 
 ```LaTeX
 \begin{align}
-\frac{dx}{dt} =& y - x \\\\
-\frac{dy}{dt} =& x \cdot z - y \\\\
-\frac{dz}{dt} =& - z \\\\
+\frac{dx}{dt} &= y - x \\\\
+\frac{dy}{dt} &= x \cdot z - y \\\\
+\frac{dz}{dt} &= - z \\\\
 \end{align}
 ```
 
@@ -33,15 +33,15 @@ julia> latexalign(ode)
 ```
 ```LaTeX
 \begin{align}
-\frac{dm}{dt} =& r_{m} \cdot \left( i - m \right) \\\\
-\frac{dy}{dt} =& r_{y} \cdot \left( \frac{p_{y} \cdot i}{m} - y \right) \\\\
+\frac{dm}{dt} &= r_{m} \cdot \left( i - m \right) \\\\
+\frac{dy}{dt} &= r_{y} \cdot \left( \frac{p_{y} \cdot i}{m} - y \right) \\\\
 \end{align}
 ```
 
 """
 latexalign(args...; kwargs...) = process_latexify(args...; kwargs..., env=:align)
 
-function _latexalign(arr::AbstractMatrix; separator=" =& ", double_linebreak=false, starred=false, rows=:all, aligned=false, kwargs...)
+function _latexalign(arr::AbstractMatrix; separator=" &= ", double_linebreak=false, starred=false, rows=:all, aligned=false, kwargs...)
     eol = double_linebreak ? " \\\\\\\\\n" : " \\\\\n"
     arr = latexraw.(arr; kwargs...)
     separator isa String && (separator = fill(separator, size(arr)[1]))

@@ -22,7 +22,7 @@ end
 #     KeywordArgument(:template, [:array], "`Bool`", "`false`", "description", [:Any]),
 keyword_arguments = [
     KeywordArgument(:starred, [:align, :array, :arrow, :equation], "`Bool`", "`false`", "Star the environment to prevent equation numbering.", [:Any]),
-    KeywordArgument(:separator, [:align], "`String`", "`\" =& \"`", "Specify how to separate the left hand side and the right.", [:Any]),
+    KeywordArgument(:separator, [:align], "`String`", "`\" &= \"`", "Specify how to separate the left hand side and the right.", [:Any]),
     KeywordArgument(:transpose, [:array, :tabular, :mdtable], "`Bool`", "`true`", "Flip rows for columns.", [:Any]),
     KeywordArgument(:double_linebreak, [:array, :align, :arrow], "`Bool`", "`false`", "Add an extra `\\\\` to the end of the line.", [:Any]),
     KeywordArgument(:bracket, [:align], "`Bool`", "`false`", "Surround variables with square brackets.", [:ParameterizedFunction, :ReactionNetwork]),

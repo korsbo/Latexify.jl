@@ -19,8 +19,8 @@ latexify(rn; form=:ode)
 ```
 ```math
 \begin{align}
-\frac{dx}{dt} =& \frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}} - d_{x} \cdot x - r_{b} \cdot x + r_{u} \cdot y \\
-\frac{dy}{dt} =& p_{y} - d_{y} \cdot y + r_{b} \cdot x - r_{u} \cdot y \\
+\frac{dx}{dt} &= \frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}} - d_{x} \cdot x - r_{b} \cdot x + r_{u} \cdot y \\
+\frac{dy}{dt} &= p_{y} - d_{y} \cdot y + r_{b} \cdot x - r_{u} \cdot y \\
 \end{align}
 ```
 
@@ -30,8 +30,8 @@ latexify(rn; form=:sde)
 ```
 ```math
 \begin{align}
-\frac{dx}{dt} =& \sqrt{\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}} - \sqrt{d_{x} \cdot x} - \sqrt{r_{b} \cdot x} + \sqrt{r_{u} \cdot y} \\
-\frac{dy}{dt} =& \sqrt{p_{y}} - \sqrt{d_{y} \cdot y} + \sqrt{r_{b} \cdot x} - \sqrt{r_{u} \cdot y} \\
+\frac{dx}{dt} &= \sqrt{\frac{v_{x} \cdot y^{2}}{k_{x}^{2} + y^{2}}} - \sqrt{d_{x} \cdot x} - \sqrt{r_{b} \cdot x} + \sqrt{r_{u} \cdot y} \\
+\frac{dy}{dt} &= \sqrt{p_{y}} - \sqrt{d_{y} \cdot y} + \sqrt{r_{b} \cdot x} - \sqrt{r_{u} \cdot y} \\
 \end{align}
 ```
 

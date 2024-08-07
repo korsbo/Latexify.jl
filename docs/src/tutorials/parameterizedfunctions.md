@@ -18,8 +18,8 @@ latexify(ode)
 
 ```math
 \begin{align}
-\frac{dx}{dt} =& \frac{y \cdot y \cdot y}{k_{y\_x} + y} - x - x \\
-\frac{dy}{dt} =& \frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y \\
+\frac{dx}{dt} &= \frac{y \cdot y \cdot y}{k_{y\_x} + y} - x - x \\
+\frac{dy}{dt} &= \frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} - y \\
 \end{align}
 ```
 
@@ -31,8 +31,8 @@ latexify(ode, field=:symfuncs)
 ```
 ```math
 \begin{align}
-\frac{dx}{dt} =& -2 \cdot x + \frac{y^{3}}{k_{y\_x} + y} \\
-\frac{dy}{dt} =&  - y + \frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} \\
+\frac{dx}{dt} &= -2 \cdot x + \frac{y^{3}}{k_{y\_x} + y} \\
+\frac{dy}{dt} &=  - y + \frac{x^{n_{x}}}{k_{x}^{n_{x}} + x^{n_{x}}} \\
 \end{align}
 ```
 
@@ -65,9 +65,9 @@ latexify(ode.params, param)
 ```
 ```math
 \begin{align}
-k_{y} =& 3.4 \\
-k_{x} =& 5.2 \\
-n_{x} =& 0.01 \\
+k_{y} &= 3.4 \\
+k_{x} &= 5.2 \\
+n_{x} &= 0.01 \\
 \end{align}
 ```
 
