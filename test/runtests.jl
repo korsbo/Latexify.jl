@@ -6,7 +6,7 @@ using LaTeXStrings
 using Test
 
 # Run tests
-if Sys.MACHINE == "x86_64-linux-gnu"
+if Sys.islinux()
     @testset "visual regression tests" begin include("visualregression_tests.jl") end
 end
 @testset "macro test" begin include("macros.jl") end
