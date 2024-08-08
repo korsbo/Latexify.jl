@@ -73,6 +73,9 @@ function __init__()
     @require DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0" begin
         include("../ext/DataFramesExt.jl")
     end
+    @require SparseArrays =  "2f01184e-e22b-5df5-ae63-d93ebab69eaf" begin
+        include("../ext/SparseArraysExt.jl")
+    end
 end
 end
 

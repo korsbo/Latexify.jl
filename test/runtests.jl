@@ -18,8 +18,9 @@ using Test
 @testset "latexinline tests" begin include("latexinline_test.jl") end
 @testset "latextabular tests" begin include("latextabular_test.jl") end
 @testset "mdtable tests" begin include("mdtable_test.jl") end
-@testset "DataFrame Plugin" begin include("plugins/DataFrames_test.jl") end
+@testset "DataFrames Plugin" begin include("plugins/DataFrames_test.jl") end
 @testset "SymEngine Plugin" begin include("plugins/SymEngine_test.jl") end
+@testset "SparseArrays Plugin" begin include("plugins/SparseArrays_test.jl") end
 @testset "unicode2latex" begin include("unicode2latex.jl") end
 @testset "cdot test" begin include("cdot_test.jl") end
 @testset "numberformatters" begin include("numberformatters_test.jl") end
