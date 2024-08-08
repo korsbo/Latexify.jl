@@ -39,7 +39,11 @@ function create_kw_body(func_signature::Expr)
                 @warn("Type annotations on keyword arguments not currently supported in recipes. Type information has been discarded")
             end
             push!(kw_body.args, :($k = kwargs[$(Meta.quot(k))]))
-            kw_dict[k] = v isa QuoteNode ? v.value : v
+            if v == :nothing
+                kw_dict[k] = nothing
+            else
+                kw_dict[k] = v isa QuoteNode ? v.value : v
+            end
         end
         args = args[2:end]
     end
