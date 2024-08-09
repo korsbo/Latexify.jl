@@ -5,8 +5,12 @@ using Latexify
 using LaTeXStrings
 using Test
 
+is_ci() = parse(Bool, get(ENV, "CI", "false"))
+
 # Run tests
-if Sys.islinux()
+
+if ~is_ci() || Sys.islinux()
+    # Tests that for some reason don't run on Mac or Windows CI go here
     @testset "visual regression tests" begin include("visualregression_tests.jl") end
 end
 @testset "macro test" begin include("macros.jl") end

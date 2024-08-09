@@ -1,5 +1,4 @@
 using Latexify, VisualRegressionTests
-is_ci() = parse(Bool, get(ENV, "CI", "false"))
 if ~is_ci()
     using Gtk
 end
