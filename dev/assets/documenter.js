@@ -35,7 +35,8 @@ window.MathJax = {
     "packages": [
       "base",
       "ams",
-      "autoload"
+      "autoload",
+      "mhchem"
     ],
     "inlineMath": [
       [
@@ -58,7 +59,7 @@ window.MathJax = {
 
 (function () {
     var script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js';
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg-full.js';
     script.async = true;
     document.head.appendChild(script);
 })();
@@ -77,30 +78,35 @@ require(['jquery'], function($) {
 let timer = 0;
 var isExpanded = true;
 
-$(document).on("click", ".docstring header", function () {
-  let articleToggleTitle = "Expand docstring";
+$(document).on(
+  "click",
+  ".docstring .docstring-article-toggle-button",
+  function () {
+    let articleToggleTitle = "Expand docstring";
+    const parent = $(this).parent();
 
-  debounce(() => {
-    if ($(this).siblings("section").is(":visible")) {
-      $(this)
-        .find(".docstring-article-toggle-button")
-        .removeClass("fa-chevron-down")
-        .addClass("fa-chevron-right");
-    } else {
-      $(this)
-        .find(".docstring-article-toggle-button")
-        .removeClass("fa-chevron-right")
-        .addClass("fa-chevron-down");
+    debounce(() => {
+      if (parent.siblings("section").is(":visible")) {
+        parent
+          .find("a.docstring-article-toggle-button")
+          .removeClass("fa-chevron-down")
+          .addClass("fa-chevron-right");
+      } else {
+        parent
+          .find("a.docstring-article-toggle-button")
+          .removeClass("fa-chevron-right")
+          .addClass("fa-chevron-down");
 
-      articleToggleTitle = "Collapse docstring";
-    }
+        articleToggleTitle = "Collapse docstring";
+      }
 
-    $(this)
-      .find(".docstring-article-toggle-button")
-      .prop("title", articleToggleTitle);
-    $(this).siblings("section").slideToggle();
-  });
-});
+      parent
+        .children(".docstring-article-toggle-button")
+        .prop("title", articleToggleTitle);
+      parent.siblings("section").slideToggle();
+    });
+  }
+);
 
 $(document).on("click", ".docs-article-toggle-button", function (event) {
   let articleToggleTitle = "Expand docstring";
@@ -110,7 +116,7 @@ $(document).on("click", ".docs-article-toggle-button", function (event) {
   debounce(() => {
     if (isExpanded) {
       $(this).removeClass("fa-chevron-up").addClass("fa-chevron-down");
-      $(".docstring-article-toggle-button")
+      $("a.docstring-article-toggle-button")
         .removeClass("fa-chevron-down")
         .addClass("fa-chevron-right");
 
@@ -119,7 +125,7 @@ $(document).on("click", ".docs-article-toggle-button", function (event) {
       $(".docstring section").slideUp(animationSpeed);
     } else {
       $(this).removeClass("fa-chevron-down").addClass("fa-chevron-up");
-      $(".docstring-article-toggle-button")
+      $("a.docstring-article-toggle-button")
         .removeClass("fa-chevron-right")
         .addClass("fa-chevron-down");
 
