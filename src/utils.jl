@@ -145,6 +145,7 @@ function render(s::LaTeXString, mime::MIME"image/png";
         callshow=true,
         open=true,
         dpi=DEFAULT_DPI[],
+        transparent=true,
         kw...
     )
     ext = "png"
@@ -154,11 +155,13 @@ function render(s::LaTeXString, mime::MIME"image/png";
         # prefer tex -> pdf -> png instead
         if convert === :gs
             aux_mime = MIME("application/pdf")
-            cmd = `gs -sDEVICE=pngalpha -dTextAlphaBits=4 -r$dpi -o $name.$ext $aux_name.pdf`
+            device = transparent ? "pngalpha" : "png16m"
+            cmd = `gs -sDEVICE=$device -dTextAlphaBits=4 -r$dpi -o $name.$ext $aux_name.pdf`
         elseif convert === :dvipng
             aux_mime = MIME("application/x-dvi")
+            background = transparent ? "Transparent" : "white"
             deb = debug ? [] : ["-q"]
-            cmd = `dvipng $(deb...) -bg Transparent -D $dpi -T tight $aux_name.dvi -o $name.$ext`
+            cmd = `dvipng $(deb...) -bg $background -D $dpi -T tight $aux_name.dvi -o $name.$ext`
         else
             error("$convert program not understood")
         end
