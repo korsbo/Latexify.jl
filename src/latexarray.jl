@@ -49,9 +49,12 @@ function _latexarray(
                  "}\n"
                 )
 
-    arr = latexraw.(arr; kwargs...)
     for i in rows, j in columns
-        str *= arr[i,j]
+        if isassigned(arr, i, j)
+            str *= latexraw(arr[i,j]; kwargs...)
+        else
+            str *= raw"\cdot"
+        end
         j == last(columns) ? (str *= eol) : (str *= " & ")
     end
 

@@ -228,3 +228,26 @@ tensor = rand(3,3,3)
 
 tensor = fill(42)
 @test_throws Latexify.UnrepresentableException("n-dimensional tensors with n≠1,2") latexify(tensor)
+
+undefarr = Array{Any,2}(undef, 2, 2)
+@test latexify(undefarr) == replace(
+raw"\begin{equation}
+\left[
+\begin{array}{cc}
+\cdot & \cdot \\
+\cdot & \cdot \\
+\end{array}
+\right]
+\end{equation}
+", "\r\n"=>"\n")
+undefarr[1,1] = "x"
+@test latexify(undefarr) == replace(
+raw"\begin{equation}
+\left[
+\begin{array}{cc}
+x & \cdot \\
+\cdot & \cdot \\
+\end{array}
+\right]
+\end{equation}
+", "\r\n"=>"\n")
