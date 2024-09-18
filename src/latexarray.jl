@@ -18,7 +18,11 @@ function _latexarray(
         arr::AbstractArray; adjustment=:c, transpose=false,
         double_linebreak=false, starred=false, arraystyle=:square, kwargs...
     )
-    0 < ndims(arr) < 3 || error("Cannot latexify n-dimensional tensors with n≠1,2")
+    if !(0 < ndims(arr) < 3)
+        sentinel = get(kwargs, :sentinel, nothing)
+        isnothing(sentinel) && throw(UnrepresentableException("n-dimensional tensors with n≠1,2"))
+        return sentinel
+    end
     transpose && (arr = permutedims(arr))
     rows, columns = axes(arr, 1), axes(arr, 2)
 
