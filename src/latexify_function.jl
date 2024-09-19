@@ -37,9 +37,17 @@ function latexify(args...; kwargs...)
     return result
 end
 
+function process_multiline(args...)
+    ## Test if argument contains LineNumberNode, and if true return as array of expressions with LineNumberNodes stripped
+    map(x -> x isa Expr && LineNumberNode in typeof.(x.args) ? filter(y -> !(y isa LineNumberNode), x.args) : x, args)
+end
+
 function process_latexify(args...; kwargs...)
     ## Let potential recipes transform the arguments.
     args, kwargs = apply_recipe(args...; kwargs...)
+
+    ## Split multiline quotes before processing
+    args = process_multiline(args...)
 
     ## If the environment is unspecified, use auto inference.
     env = get(kwargs, :env, :auto)
