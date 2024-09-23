@@ -211,7 +211,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
 
     ## Use the last expression in a block.
     ## This is somewhat shady but it helps with latexifying functions.
-    ex.head == :block && return args
+    ex.head == :block && return args[end]
 
     ## Sort out type annotations. Mainly for function arguments.
     ex.head == :(::) && length(args) == 1 && return "::$(args[1])"
