@@ -66,8 +66,7 @@ function _latexraw(inputex::Expr; convert_unicode=true, kwargs...)
 
     recurseexp!(lstr::LaTeXString) = lstr.s
     function recurseexp!(ex)
-        prevOp = Vector{Symbol}(undef, length(ex.args))
-        fill!(prevOp, :none)
+        prevOp = fill(:none, length(ex.args))
         if Meta.isexpr(ex, :call) && ex.args[1] in (:sum, :prod) && Meta.isexpr(ex.args[2], :generator)
             op = ex.args[1]
             term = latexraw(ex.args[2].args[1])
@@ -184,9 +183,8 @@ Check if `x` represents something that could affect the vector of previous opera
 """
 function _getoperation(ex::Expr)
     ex.head == :comparison && return :comparison
-    if ex.head != :call
-        return :none
-    end
+    ex.head == :ref && return :ref
+    ex.head == :call || return :none
     if length(ex.args) > 1 && (op = ex.args[1]) isa Symbol
         if length(ex.args) == 2
             # These are unary operators
