@@ -171,9 +171,15 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
 
     if ex.head == :ref
         if index == :subscript
-            return "$(args[1])_{$(join(args[2:end], ","))}"
+            if prevOp[1] == :ref
+                container = "\\left( $(op) \\right)"
+            else
+                container = opname
+            end
+            return "$(container)_{$(join(args[2:end], ","))}"
         elseif index == :bracket
             argstring = join(args[2:end], ", ")
+            prevOp[1] == :ref && return "$op\\left[$argstring\\right]"
             return "$opname\\left[$argstring\\right]"
         else
             throw(ArgumentError("Incorrect `index` keyword argument to latexify. Valid values are :subscript and :bracket"))
@@ -262,7 +268,7 @@ function convert_subscript!(ex::Expr, kwargs...)
 end
 
 function convert_subscript(str::String; snakecase=false, function_name=false, kwargs...)
-    subscript_list = split(str, "_")
+    subscript_list = split(str, r"\\?_")
     if snakecase
         return join(subscript_list, "\\_")
     else
