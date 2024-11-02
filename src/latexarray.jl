@@ -34,20 +34,23 @@ function _latexarray(
         adjustmentstring = string(adjustment)^length(columns)
     end
 
+    need_adjustmentstring = true
+    if arraystyle in AMSMATH_MATRICES ||
+        arraystyle isa NTuple{3,String} && arraystyle[3] == "matrix"
+        need_adjustmentstring = false
+    end
     if arraystyle isa String
         arraystyle = ("", "", arraystyle)
     elseif arraystyle isa Symbol
         arraystyle = ARRAYSTYLES[arraystyle]
     end
 
-    str = string(
-                 arraystyle[1],
-                 "\\begin{",
-                 arraystyle[3],
-                 "}{",
-                 adjustmentstring,
-                 "}\n"
-                )
+    str = string(arraystyle[1], "\\begin{", arraystyle[3], "}")
+    if need_adjustmentstring
+        str = str * string("{", adjustmentstring, "}\n")
+    else
+        str = str * "\n"
+    end
 
     for i in rows, j in columns
         if isassigned(arr, i, j)
@@ -77,9 +80,15 @@ function _latexarray(arg::Tuple; kwargs...)
 end
 
 const ARRAYSTYLES = Dict{Symbol, NTuple{3, String}}(
+                                                                         :array=>("", "", "array"),
                                         :square=>("\\left[\n", "\n\\right]", "array"),
                                         :round=>("\\left(\n", "\n\\right)", "array"),
                                         :curly=>("\\left\\{\n", "\n\\right\\}", "array"),
+                                        :matrix=>("","","matrix"),
                                         :pmatrix=>("","","pmatrix"),
                                         :bmatrix=>("","","bmatrix"),
+                                        :Bmatrix=>("","","Bmatrix"),
+                                        :vmatrix=>("","","vmatrix"),
+                                        :Vmatrix=>("","","Vmatrix"),
                                        )
+const AMSMATH_MATRICES = [:matrix, :pmatrix, :bmatrix, :Bmatrix, :vmatrix, :Vmatrix]
