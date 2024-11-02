@@ -87,6 +87,15 @@ raw"\begin{equation}
 using OffsetArrays
 @test latexify(OffsetArray(arr, -1:0, 3:4)) == latexify(arr)
 
+@test latexify(arr; arraystyle = :array) == replace(
+raw"\begin{equation}
+\begin{array}{cc}
+1 & 2 \\
+3 & 4 \\
+\end{array}
+\end{equation}
+", "\r\n"=>"\n")
+
 @test latexify(arr; arraystyle = :square) == replace(
 raw"\begin{equation}
 \left[
@@ -120,9 +129,18 @@ raw"\begin{equation}
 \end{equation}
 ", "\r\n"=>"\n")
 
+@test latexify(arr; arraystyle = :matrix) == replace(
+raw"\begin{equation}
+\begin{matrix}
+1 & 2 \\
+3 & 4 \\
+\end{matrix}
+\end{equation}
+", "\r\n"=>"\n")
+
 @test latexify(arr; arraystyle = :pmatrix) == replace(
 raw"\begin{equation}
-\begin{pmatrix}{cc}
+\begin{pmatrix}
 1 & 2 \\
 3 & 4 \\
 \end{pmatrix}
@@ -131,10 +149,37 @@ raw"\begin{equation}
 
 @test latexify(arr; arraystyle = :bmatrix) == replace(
 raw"\begin{equation}
-\begin{bmatrix}{cc}
+\begin{bmatrix}
 1 & 2 \\
 3 & 4 \\
 \end{bmatrix}
+\end{equation}
+", "\r\n"=>"\n")
+
+@test latexify(arr; arraystyle = :Bmatrix) == replace(
+raw"\begin{equation}
+\begin{Bmatrix}
+1 & 2 \\
+3 & 4 \\
+\end{Bmatrix}
+\end{equation}
+", "\r\n"=>"\n")
+
+@test latexify(arr; arraystyle = :vmatrix) == replace(
+raw"\begin{equation}
+\begin{vmatrix}
+1 & 2 \\
+3 & 4 \\
+\end{vmatrix}
+\end{equation}
+", "\r\n"=>"\n")
+
+@test latexify(arr; arraystyle = :Vmatrix) == replace(
+raw"\begin{equation}
+\begin{Vmatrix}
+1 & 2 \\
+3 & 4 \\
+\end{Vmatrix}
 \end{equation}
 ", "\r\n"=>"\n")
 
