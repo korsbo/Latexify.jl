@@ -14,7 +14,7 @@ raw"$x \cdot y$"
 set_default(cdot = false)
 
 @test latexify("x * y") == 
-raw"$x y$"
+raw"$x \, y$"
 
 @test get_default() == Dict{Symbol,Any}(:cdot => false)
 

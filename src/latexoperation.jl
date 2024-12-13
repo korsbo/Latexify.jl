@@ -45,7 +45,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
             arg = args[i]
             (precedence(prevOp[i]) < precedence(op) || (ex.args[i] isa Complex && !iszero(ex.args[i].re))) && (arg = "\\left( $arg \\right)")
             str = string(str, arg)
-            i == length(args) || (str *= cdot ? " \\cdot " : " ")
+            i == length(args) || (str *= cdot ? " \\cdot " : " \\, ")
         end
         return str
 
