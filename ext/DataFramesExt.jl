@@ -5,7 +5,7 @@ isdefined(Base, :get_extension) ? (using DataFrames) : (using ..DataFrames)
 
 @latexrecipe function f(d::DataFrame)
     env --> :mdtable
-    head := propertynames(d)
+    head --> propertynames(d)
     if kwargs[:env] == :array
         return vcat(permutedims(propertynames(d)), Matrix(d))
     end
