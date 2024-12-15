@@ -54,3 +54,11 @@ y & 1//2\\
 z & 8\\
 \end{tabular}
 ", "\r\n"=>"\n")
+
+@test latexify(df; head=["x", "y"]) ==
+Markdown.md"|   x |                      y |
+| ---:| ----------------------:|
+| $x$ | $\frac{\alpha}{\beta}$ |
+| $y$ |          $\frac{1}{2}$ |
+| $z$ |                    $8$ |
+"
