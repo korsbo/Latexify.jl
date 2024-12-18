@@ -10,7 +10,7 @@ you call it multiple times, defaults will be added or replaced, but not reset.
 
 Example: 
 ```julia
-set_default(cdot = false, transpose = true)
+set_default(mult_symbol = "", transpose = true)
 ```
 
 To reset the defaults that you have set, use `reset_default`.

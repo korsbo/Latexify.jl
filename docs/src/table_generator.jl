@@ -37,7 +37,7 @@ keyword_arguments = [
     KeywordArgument(:imaginary_unit, [:mdtable, :tabular, :align, :array, :raw, :inline], "`String`", "`\"\\\\mathit{i}\"`", "The symbol to use to represent the imaginary unit", [:Any]),
     KeywordArgument(:escape_underscores, [:mdtable, :mdtext], "`Bool`", "`false`", "Prevent underscores from being interpreted as formatting.", [:Any]),
     KeywordArgument(:convert_unicode, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Bool`", "`true`", "Convert unicode characters to latex commands, for example `α` to `\\alpha`", [:Any]),
-    KeywordArgument(:cdot, [:mdtable, :tabular, :align, :array, :raw, :inline], "`Bool`", "`true`", "Toggle between using `\\cdot` or just a space to represent multiplication.", [:Any]),
+    KeywordArgument(:mult_symbol, [:mdtable, :tabular, :align, :array, :raw, :inline], "`String`", "`\"\\\\cdot\"`", "Specify the symbol to use for the multiplication operator (`\"\"` for juxtaposition).", [:Any]),
     KeywordArgument(:symbolic, [:align], "`Bool`", "`false`", "Use symbolic calculations to clean up the expression.", [:ReactionNetwork]),
     KeywordArgument(:clean, [:align], "`Bool`", "`false`", "Clean out `1*` terms. Only useful for Catalyst (then named DiffEqBiological) versions 3.4 or below.", [:ReactionNetwork]),
     KeywordArgument(:rows, [:align], "Iterable or symol", ":all", "Which rows to include in the output.", [:Any]),

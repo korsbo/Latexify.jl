@@ -7,12 +7,18 @@ a parenthesis is needed.
 
 """
 function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
-    # If we used `cdot` and `index` as keyword arguments before `kwargs...`
+    # If we used `mult_symbol` and `index` as keyword arguments before `kwargs...`
     # and they are indeed contained in `kwargs`, they would get lost when
     # passing `kwargs...` to `latexraw`below. Thus, we need to set default
     # values as follows.
-    cdot = get(kwargs, :cdot, true)
+    mult_symbol = get(kwargs, :mult_symbol, "\\cdot")
     index = get(kwargs, :index, :bracket)
+
+    if haskey(kwargs, :cdot)
+        cdot = kwargs[:cdot]
+        mult_symbol = cdot ? "\\cdot" : ""
+        Base.depwarn("Latexify received the deprecated keyword argument cdot = $cdot and converted it to mult_symbol = \"$mult_symbol\". Pass the latter directly to remove this warning.", :latexoperation)
+    end
 
     op = ex.args[1]
     string(op)[1] == '.' && (op = Symbol(string(op)[2:end]))
@@ -45,7 +51,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
             arg = args[i]
             (precedence(prevOp[i]) < precedence(op) || (ex.args[i] isa Complex && !iszero(ex.args[i].re))) && (arg = "\\left( $arg \\right)")
             str = string(str, arg)
-            i == length(args) || (str *= cdot ? " \\cdot " : " ")
+            i == length(args) || (str *= mult_symbol == "" ? " " : " $mult_symbol ")
         end
         return str
 
