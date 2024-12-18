@@ -156,7 +156,7 @@ Note that this changes Latexify.jl from within and should therefore only be used
 
 The calls are additive so that a new call with 
 ```julia
-set_default(cdot = false)
+set_default(mult_symbol = "")
 ```
 will not cancel out the changes we just made to `fmt` and `convert_unicode`. 
 
