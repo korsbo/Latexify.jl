@@ -7,11 +7,11 @@ a parenthesis is needed.
 
 """
 function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
-    # If we used `cdot` and `index` as keyword arguments before `kwargs...`
+    # If we used `mult_symbol` and `index` as keyword arguments before `kwargs...`
     # and they are indeed contained in `kwargs`, they would get lost when
     # passing `kwargs...` to `latexraw`below. Thus, we need to set default
     # values as follows.
-    cdot = get(kwargs, :cdot, true)
+    mult_symbol = get(kwargs, :mult_symbol, "\\cdot")
     index = get(kwargs, :index, :bracket)
 
     op = ex.args[1]
@@ -45,7 +45,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
             arg = args[i]
             (precedence(prevOp[i]) < precedence(op) || (ex.args[i] isa Complex && !iszero(ex.args[i].re))) && (arg = "\\left( $arg \\right)")
             str = string(str, arg)
-            i == length(args) || (str *= cdot ? " \\cdot " : " ")
+            i == length(args) || (str *= mult_symbol == "" ? " " : " $mult_symbol ")
         end
         return str
 
