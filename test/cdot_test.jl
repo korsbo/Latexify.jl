@@ -73,3 +73,9 @@ Markdown.md"| $x \cdot \left( y - 1 \right)$ |
 
 
 
+# Deprecation of cdot = ... in favor of mult_symbol = ...
+# (cdot takes precedence over mult_symbol)
+@test_deprecated latexify(:(x * y); cdot=false)
+@test_deprecated latexify(:(x * y); cdot=true)
+@test latexify(:(x * y); mult_symbol="garbage", cdot=false) == latexify(:(x * y); mult_symbol="")
+@test latexify(:(x * y); mult_symbol="garbage", cdot=true) == latexify(:(x * y); mult_symbol="\\cdot")
