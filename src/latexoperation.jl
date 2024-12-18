@@ -14,6 +14,12 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
     mult_symbol = get(kwargs, :mult_symbol, "\\cdot")
     index = get(kwargs, :index, :bracket)
 
+    if haskey(kwargs, :cdot)
+        cdot = kwargs[:cdot]
+        mult_symbol = cdot ? "\\cdot" : ""
+        Base.depwarn("Latexify received the deprecated keyword argument cdot = $cdot and converted it to mult_symbol = \"$mult_symbol\". Pass the latter directly to remove this warning.", :latexoperation)
+    end
+
     op = ex.args[1]
     string(op)[1] == '.' && (op = Symbol(string(op)[2:end]))
 
