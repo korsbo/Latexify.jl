@@ -24,6 +24,11 @@ raw"\begin{equation}
 
 @test latexify("ẙĞž"; parse=false).s == raw"$\textnormal{\r{y}}\textnormal{\u{G}}\textnormal{\v{z}}$"
 
+@test latexify("τ̇"; parse=false).s == raw"$\dot{\tau}$"
+@test latexify("τ̈"; parse=false).s == raw"$\ddot{\tau}$"
+@test latexify("τ⃛"; parse=false).s == raw"$\dddot{\tau}$"
+@test latexify("τ⃜"; parse=false).s == raw"$\ddddot{\tau}$"
+
 s = 'y' * Char(0x30a) * 'x' * Char(0x302) * 'a' * Char(0x331)
 @test latexify(s; parse=false).s == raw"$\textnormal{\r{y}}\hat{x}\textnormal{\b{a}}$"
 
