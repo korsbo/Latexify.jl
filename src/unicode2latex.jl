@@ -1777,7 +1777,7 @@ function unicode2latex(str::String; safescripts=false)
     it = Iterators.Stateful(str_array)
     for (n, x) ∈ enumerate(it)
         x isa String || continue
-        # Deal with math mode modifiers (\hat, \tilde, \bar, \dot)
+        # Deal with math mode modifiers (\hat, \tilde, \bar, \dot, ..., \ddddot)
         if endswith(x, Char(0x302))
             x = "\\hat{$(unicode2latex(x[begin:prevind(x, end)]))}"
             str_array[n] = x
@@ -1789,6 +1789,15 @@ function unicode2latex(str::String; safescripts=false)
             str_array[n] = x
         elseif endswith(x, Char(0x307))
             x = "\\dot{$(unicode2latex(x[begin:prevind(x, end)]))}"
+            str_array[n] = x
+        elseif endswith(x, Char(0x308))
+            x = "\\ddot{$(unicode2latex(x[begin:prevind(x, end)]))}"
+            str_array[n] = x
+        elseif endswith(x, Char(0x20DB))
+            x = "\\dddot{$(unicode2latex(x[begin:prevind(x, end)]))}"
+            str_array[n] = x
+        elseif endswith(x, Char(0x20DC))
+            x = "\\ddddot{$(unicode2latex(x[begin:prevind(x, end)]))}"
             str_array[n] = x
         end
         if (next = peek(it)) !== nothing && length(next) == 1
