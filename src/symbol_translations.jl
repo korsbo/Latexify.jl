@@ -66,6 +66,7 @@ const functions = Dict{Symbol, String}(
                                             :log => "\\log",
                                             :log10 => "\\log_{10}",
                                             :log2 => "\\log_{2}",
+                                            :slog => "\\log",
                                             :gamma => "\\Gamma", # The Gamma function
                                            )
 
