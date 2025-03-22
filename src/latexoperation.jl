@@ -164,8 +164,8 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
         return "\\left\\|$(args[2])\\right\\|_{$(args[3])}"
     end
     op == :exp && return "e^{$(args[2])}"
-    op in (:sqrt, :√) && return "\\sqrt{$(args[2])}"
-    op in (:cbrt, :∛) && return "\\sqrt[3]{$(args[2])}"
+    op in (:sqrt, :√, :ssqrt) && return "\\sqrt{$(args[2])}"
+    op in (:cbrt, :∛, :scbrt) && return "\\sqrt[3]{$(args[2])}"
     op in (:fourthroot, :∜) && return "\\sqrt[4]{$(args[2])}"
     op in (:sum, :prod) && return "\\$(op) $(args[2])"
     op == :binomial && return "\\binom{$(args[2])}{$(args[3])}"
