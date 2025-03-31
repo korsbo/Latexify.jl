@@ -117,8 +117,17 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
     end
 
     if ex.head == :.
-        ex.head = :call
-        # op = string(op, ".") ## Signifies broadcasting.
+        if length(ex.args) >= 2 && (
+                                    ex.args[2] isa Expr && ex.args[2].head == :tuple
+                                   ||
+                                   ex.args[2] isa String
+                                  )
+            # broadcasted function call `f.(x)`
+            ex.head = :call
+        else
+            # property or field `f.x`
+            return "$(ex.args[1]).$(ex.args[2] isa QuoteNode ? ex.args[2].value : ex.args[2])"
+        end
     end
 
     if op in keys(binary_operators) && length(args) == 3
@@ -173,7 +182,7 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
     ## Leave math italics for single-character operator names (e.g., f(x)).
     # convert subscript symbols to \_ if necessary, and make long function names
     # upright
-    opname = convert_subscript(string(op); function_name=true, kwargs...)
+    opname = operator_name(op; kwargs...);
 
     if ex.head == :ref
         if index == :subscript
@@ -288,7 +297,18 @@ function convert_subscript(str::String; snakecase=false, function_name=false, kw
     end
 end
 
-convert_subscript(sym::Symbol, kwargs...) = convert_subscript(string(sym), kwargs...)
+convert_subscript(sym::Symbol; kwargs...) = convert_subscript(string(sym); kwargs...)
+convert_subscript(n::Number; kwargs...) = convert_subscript(string(n); kwargs...)
+
+operator_name(sym; kwargs...) = convert_subscript(sym; kwargs..., function_name=true)
+operator_name(lnn::LineNumberNode;kwargs...) = ""
+function operator_name(ex::Expr; kwargs...)
+    if ex.head == :. && ex.args[2] isa QuoteNode
+        return convert_subscript(ex.args[1]; function_name=true, kwargs...) * "." * convert_subscript(ex.args[2].value; function_name=true, kwargs...)
+    else
+        error("I don't know what this is")
+    end
+end
 
 """
     precedence(op)
