@@ -160,7 +160,7 @@ function render(s::LaTeXString, mime::MIME"image/png";
             deb = debug ? [] : ["-q"]
             cmd = `dvipng $(deb...) -bg Transparent -D $dpi -T tight $aux_name.dvi -o $name.$ext`
         else
-            error("$convert program not understood")
+            throw(ArgumentError("$convert program not understood"))
         end
         render(s, aux_mime; debug=debug, name=aux_name, open=false, kw...)
         debug || (cmd = pipeline(cmd, devnull))
@@ -194,7 +194,7 @@ function render(s::LaTeXString, mime::MIME"image/svg";
         elseif convert === :pdf2svg
             cmd = `pdf2svg $aux_name.pdf $name.$ext`
         else
-            error("$convert program not understood")
+            throw(ArgumentError("$convert program not understood"))
         end
         render(s, aux_mime; debug=debug, name=aux_name, open=false, kw...)
         debug || (cmd = pipeline(cmd, devnull))
@@ -233,23 +233,3 @@ end
 
 _packagename(x::AbstractString) = "{$x}"
 _packagename(x::Tuple) = "[$(join(x[2:end], ", "))]{$(first(x))}"
-
-struct LatexifyRenderError <: Exception
-    logfilename::String
-end
-function Base.showerror(io::IO, e::LatexifyRenderError)
-    isfile(e.logfilename) || return println(io, "an error occured while rendering LaTeX, no log file available.")
-    println(io, "an error occured while rendering LaTeX: ")
-    secondline = false
-    for l = eachline(e.logfilename)
-        if secondline
-            println(io, "\t", l)
-            break;
-        end
-        m = match(r"^! (.*)$", l)
-        isnothing(m) && continue
-        println(io, "\t", m[1])
-        secondline = true
-    end
-    println(io, "Check the log file at ", e.logfilename, " for more information")
-end

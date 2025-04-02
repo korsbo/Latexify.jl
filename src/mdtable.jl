@@ -102,6 +102,6 @@ function get_header_rule(adjustment::Symbol)
     adjustment === :c && return ":----:"
     adjustment === :l && return ":-----"
     adjustment === :r && return "-----:"
-    error("Unknown `adjustment` argument \"$adjustment\"")
+    throw(ArgumentError("Unknown `adjustment` argument \"$adjustment\""))
 end
 

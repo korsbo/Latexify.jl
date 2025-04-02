@@ -269,10 +269,14 @@ raw"$x = \left[
 \right]$", "\r\n"=>"\n")
 
 tensor = rand(3,3,3)
-@test_throws ErrorException("Cannot latexify n-dimensional tensors with n≠1,2") latexify(tensor)
+@test_throws Latexify.UnrepresentableException("n-dimensional tensors with n≠1,2") latexify(tensor)
+@test latexify(tensor; sentinel="\\mathrm{NA}") == replace(raw"\begin{equation}
+\mathrm{NA}
+\end{equation}
+", "\r\n"=>"\n")
 
 tensor = fill(42)
-@test_throws ErrorException("Cannot latexify n-dimensional tensors with n≠1,2") latexify(tensor)
+@test_throws Latexify.UnrepresentableException("n-dimensional tensors with n≠1,2") latexify(tensor)
 
 undefarr = Array{Any,2}(undef, 2, 2)
 @test latexify(undefarr) == replace(

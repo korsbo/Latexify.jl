@@ -264,12 +264,10 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
     ## Anonymous function definition
     ex.head == :(->) && length(args) == 2 && return "$(args[1]) \\mapsto $(args[2])"
 
-
-
     ## if we have reached this far without a return, then error.
-    error("Latexify.jl's latexoperation does not know what to do with one of the
-          expressions provided ($ex).")
-    return ""
+    sentinel = get(kwargs, :sentinel, nothing)
+    isnothing(sentinel) && throw(UnrecognizedExpressionException(ex))
+    return sentinel
 end
 
 latexoperation(sym::Symbol, prevOp::AbstractArray; kwargs...) = "$sym"

@@ -103,8 +103,8 @@ function _latexalign(vec::AbstractVector; kwargs...)
     lvec = _latexraw.(vec; kwargs...)
     ## turn the array into a matrix
     lmat = safereduce(hcat, split.(lvec, " = "))
-    ## turn the matrix ito arrays of left-hand-side, right-hand-side.
+    ## turn the matrix into arrays of left-hand-side, right-hand-side.
     larr = [lmat[i,:] for i in 1:size(lmat, 1)]
-    length(larr) < 2 && error("Invalid intput to _latexalign().")
+    length(larr) < 2 && throw(ArgumentError("Invalid input to _latexalign()."))
     return latexalign( safereduce(hcat, larr) ; kwargs...)
 end
