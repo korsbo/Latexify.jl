@@ -216,6 +216,8 @@ sum1 = MyModule.MySum(3, 4)
 @test latexify(:(2 - $(sum1))) == raw"$2 - \left( 3 + 4 \right)$"
 
 struct NothingThing end
+@test_throws Latexify.NoRecipeException(NothingThing) latexify(NothingThing())
+@test latexify(NothingThing(); sentinel="this") == raw"$this$"
 @latexrecipe function f(::NothingThing; keyword=nothing)
     if isnothing(keyword)
         return L"a"

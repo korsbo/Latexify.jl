@@ -105,8 +105,10 @@ end
 
 
 function _latexraw(args...; kwargs...)
-    @assert length(args) > 1 "latexify does not support objects of type $(typeof(args[1]))."
-    _latexraw(args; kwargs...)
+    length(args) > 1 && return _latexraw(args; kwargs...)
+    sentinel = get(kwargs, :sentinel, nothing)
+    isnothing(sentinel) && throw(NoRecipeException(typeof(args[1])))
+    return sentinel
 end
 _latexraw(arr::Union{AbstractArray, Tuple}; kwargs...) = _latexarray(arr; kwargs...)
 _latexraw(i::Nothing; kwargs...) = ""
@@ -153,23 +155,9 @@ function _latexraw(::Val{true}, i::String; kwargs...)
     try
         ex = Meta.parse(i)
         return latexraw(ex; kwargs...)
-    catch ParseError
-        error("""
-in Latexify.jl:
-You are trying to create latex-maths from a `String` that cannot be parsed as
-an expression: `$i`.
-
-`latexify` will, by default, try to parse any string inputs into expressions
-and this parsing has just failed.
-
-If you are passing strings that you want returned verbatim as part of your input,
-try making them `LaTeXString`s first.
-
-If you are trying to make a table with plain text, try passing the keyword
-argument `latex=false`. You should also ensure that you have chosen an output
-environment that is capable of displaying not-maths objects. Try for example
-`env=:table` for a latex table or `env=:mdtable` for a markdown table.
-""")
+    catch err
+        err isa Meta.ParseError && rethrow(MathParseError(i))
+        rethrow(err)
     end
 end
 

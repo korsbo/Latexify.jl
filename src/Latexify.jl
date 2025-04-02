@@ -54,6 +54,7 @@ include("mdtext.jl")
 include("md.jl")
 
 include("utils.jl")
+include("error.jl")
 
 include("numberformatters.jl")
 
