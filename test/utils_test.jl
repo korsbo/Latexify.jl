@@ -97,6 +97,5 @@ e = Latexify.LatexifyRenderError(logfile)
 @test sprint(showerror, e) == """
 an error occured while rendering LaTeX: \n\tDouble superscript.
 \tl.8     \$x^2^
-Check the log file at $logfile for more information
-"""
+Check the log file at $logfile for more information"""
 
