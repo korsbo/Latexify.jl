@@ -164,7 +164,12 @@ raw"$\left( \frac{3}{2} \right)^{2}$", "\r\n"=>"\n")
 ### Test broadcasting
 @test latexraw(:(fun.((a, b)))) == raw"\mathrm{fun}\left( a, b \right)"
 
+### Test field/property extraction
+@test latexraw(:(Foo.foo)) == raw"Foo.foo"
+@test latexraw(:(Foo.fun(a, b))) == raw"\mathrm{Foo.fun}\left( a, b \right)"
 
+### Test combined broadcasting and field extraction
+@test latexraw(:(Foo.fun.((a, b)))) == raw"\mathrm{Foo.fun}\left( a, b \right)"
 
 
 ### Test for correct signs in nested sums/differences.
