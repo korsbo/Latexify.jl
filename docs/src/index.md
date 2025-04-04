@@ -114,7 +114,7 @@ latexify([12893.1 1.328e2]; fmt=x->format(round(x, sigdigits=2), autoscale=:metr
 
 ```@example main
 str = latexify(12345.678; fmt=SiunitxNumberFormatter(format_options="round-mode=places,round-precision=1", version=3))
-render(str, MIME"image/png"(); name="siunitx", open=false) # hide
+#render(str, MIME"image/png"(); name="siunitx", open=false) # hide
 replace(string(str), "\$"=>"`") # hide
 ```
 ![SI unit example](siunitx.png)
