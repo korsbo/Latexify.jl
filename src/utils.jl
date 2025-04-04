@@ -3,7 +3,11 @@ add_brackets(ex::Expr, vars) = postwalk(x -> x in vars ? "\\left[ $(convert_subs
 add_brackets(arr::AbstractArray, vars) = [add_brackets(element, vars) for element in arr]
 add_brackets(s::Any, vars) = s
 
-default_packages(s) = vcat(["amssymb", "amsmath", "unicode-math"], occursin("\\ce{", s) ? ["mhchem"] : [])
+default_packages(s) = vcat(
+                           ["amssymb", "amsmath", "unicode-math"],
+                           occursin("\\ce{", s) ? ["mhchem"] : [],
+                           any(occursin.(["\\si", "\\SI", "\\num", "\\qty"], s)) ? ["siunitx"] : [],
+                          )
 
 function _writetex(s::LaTeXString;
         name=tempname(),

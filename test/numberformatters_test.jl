@@ -21,3 +21,8 @@ xne = -23.4728979e-7
 y = 0xf43
 
 @test StyledNumberFormatter()(y) == FancyNumberFormatter()(y) == "\\mathtt{0x0f43}"
+
+@test SiunitxNumberFormatter()(x) == "\\num{-2.34728979e8}"
+@test SiunitxNumberFormatter(version=2)(x) == "\\si{-2.34728979e8}"
+@test SiunitxNumberFormatter(format_options="something")(x) == "\\num[something]{-2.34728979e8}"
+@test SiunitxNumberFormatter(format_options="[something]")(x) == "\\num[something]{-2.34728979e8}"

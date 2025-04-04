@@ -21,7 +21,7 @@ export latexify, md, copy_to_clipboard, auto_display, set_default, get_default,
 ## Allow some backwards compatibility until its time to deprecate.
 export latexequation, latexarray, latexalign, latexraw, latexinline, latextabular, mdtable
 
-export StyledNumberFormatter, FancyNumberFormatter
+export StyledNumberFormatter, FancyNumberFormatter, SiunitxNumberFormatter
 
 COPY_TO_CLIPBOARD = false
 function copy_to_clipboard(x::Bool)

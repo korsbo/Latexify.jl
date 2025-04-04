@@ -28,3 +28,7 @@ $\frac{x}{y}$ & $1.0$\\
 $y^{n}$ & $\alpha\left( x \right)$\\
 \end{tabular}
 ```
+
+The adjustments can be set per column by providing a vector like `[:c, :l, :r]`.
+If you want to use the `S` column type from `siunitx`, set `latex=false, adjustment=:S`.
+Some post-adjustment may be necessary.
