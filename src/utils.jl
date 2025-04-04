@@ -6,7 +6,7 @@ add_brackets(s::Any, vars) = s
 default_packages(s) = vcat(
                            ["amssymb", "amsmath", "unicode-math"],
                            occursin("\\ce{", s) ? ["mhchem"] : [],
-                           any(occursin.(["\\si", "\\SI", "\\num", "\\qty"], s)) ? ["siunitx"] : [],
+                           any(x->occursin(prod(x), s), Iterators.product(["\\si", "\\SI", "\\num", "\\qty"], ["{", "range{", "list{", "product{"])) ? ["siunitx"] : [],
                           )
 
 function _writetex(s::LaTeXString;
