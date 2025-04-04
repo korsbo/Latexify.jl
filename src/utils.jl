@@ -154,7 +154,8 @@ function render(s::LaTeXString, mime::MIME"image/png";
         # prefer tex -> pdf -> png instead
         if convert === :gs
             aux_mime = MIME("application/pdf")
-            cmd = `gs -sDEVICE=pngalpha -dTextAlphaBits=4 -r$dpi -o $name.$ext $aux_name.pdf`
+            ghostscript_command = get(ENV, "GHOSTSCRIPT", "gs")
+            cmd = `$ghostscript_command -sDEVICE=pngalpha -dTextAlphaBits=4 -r$dpi -o $name.$ext $aux_name.pdf`
         elseif convert === :dvipng
             aux_mime = MIME("application/x-dvi")
             deb = debug ? [] : ["-q"]
