@@ -15,21 +15,28 @@ function _latextabular(arr::AbstractMatrix; latex::Bool=true, booktabs::Bool=fal
 
     (rows, columns) = size(arr)
 
-    if adjustment isa AbstractArray
-        adjustmentstring = join(adjustment)
-    else
-        adjustmentstring = string(adjustment)^columns
+    if ~isa(adjustment, AbstractArray)
+        adjustment = fill(adjustment, columns)
     end
+    adjustmentstring = join(adjustment)
     str = "\\begin{tabular}{$adjustmentstring}\n"
 
     if booktabs
         str *= "\\toprule\n"
     end
 
+    formatter = get(kwargs, :fmt, nothing)
+    if formatter isa String
+        formatter = PrintfNumberFormatter(formatter)
+    end
+    if formatter isa SiunitxNumberFormatter && any(==(:S), adjustment)
+        # Do not format cell contents, "S" column type handles it
+        formatter = string
+    end
+
     if latex
         arr = latexinline.(arr; kwargs...)
-    elseif haskey(kwargs, :fmt)
-        formatter = kwargs[:fmt] isa String ? PrintfNumberFormatter(kwargs[:fmt]) : kwargs[:fmt]
+    elseif ~isnothing(formatter)
         arr = map(x -> x isa Number ? formatter(x) : x, arr)
     end
 

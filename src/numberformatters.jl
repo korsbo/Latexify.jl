@@ -38,7 +38,7 @@ struct FancyNumberFormatter <: AbstractNumberFormatter
                          exponent_format::SubstitutionString=s"\g<mantissa> \\cdot 10^{\g<sign_exp>\g<mag_exp>}") = new(fmt, Format.generate_formatter(fmt), exponent_format)
 end
 
-FancyNumberFormatter(fmt::String, mult_symbol) = 
+FancyNumberFormatter(fmt::String, mult_symbol) =
     FancyNumberFormatter(fmt, SubstitutionString("\\g<mantissa> $(escape_string(mult_symbol)) 10^{\\g<sign_exp>\\g<mag_exp>}"))
 FancyNumberFormatter(significant_digits, mult_symbol="\\cdot") =
     FancyNumberFormatter("%.$(significant_digits)g", mult_symbol)
@@ -46,3 +46,46 @@ FancyNumberFormatter(significant_digits, mult_symbol="\\cdot") =
 
 (f::FancyNumberFormatter)(x::AbstractFloat) = replace(f.f(x), float_regex => f.exponent_format)
 (f::FancyNumberFormatter)(x::Unsigned) = "\\mathtt{0x$(string(x; base=16, pad=2sizeof(x)))}"
+
+struct SiunitxNumberFormatter <: AbstractNumberFormatter
+    format_options::String
+    version::Int
+end
+function SiunitxNumberFormatter(;format_options="", version=3)
+    if ~isempty(format_options) && (~startswith(format_options, '[') || ~endswith(format_options, ']'))
+        format_options = "[$format_options]"
+    end
+    SiunitxNumberFormatter(format_options, version)
+end
+
+function (f::SiunitxNumberFormatter)(x::Number)
+    return "\\$(siunitxcommand(:number, f.version))$(f.format_options){$x}"
+end
+function (f::SiunitxNumberFormatter)(x::Vector{<:Number})
+    return "\\$(siunitxcommand(:numberlist, f.version))$(f.format_options){$(join(x,';'))}"
+end
+function (f::SiunitxNumberFormatter)(x::AbstractRange{<:Number})
+    return "\\$(siunitxcommand(:numberrange, f.version))$(f.format_options){$(x.start)}{$(x.stop)}"
+end
+
+function siunitxcommand(purpose, version)
+    if version <= 2
+        purpose === :number && return "si"
+        purpose === :quantity && return "SI"
+        purpose === :numberrange && return "sirange"
+        purpose === :quantityrange && return "SIrange"
+        purpose === :numberlist && return "silist"
+        purpose === :quantitylist && return "SIlist"
+        purpose === :numberproduct && return "siproduct"
+        purpose === :quantityproduct && return "SIproduct"
+    end
+    purpose === :number && return "num"
+    purpose === :quantity && return "qty"
+    purpose === :numberrange && return "numrange"
+    purpose === :quantityrange && return "qtyrange"
+    purpose === :numberlist && return "numlist"
+    purpose === :quantitylist && return "qtylist"
+    purpose === :numberproduct && return "numproduct"
+    purpose === :quantityproduct && return "qtyproduct"
+    throw(ArgumentError("Purpose $purpose not implemented"))
+end

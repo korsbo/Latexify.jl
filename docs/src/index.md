@@ -84,6 +84,7 @@ You can control the formatting of numbers by passing any of the following to the
 - a formatter supplied by Latexify.jl, for example `fmt = FancyNumberFormatter(2)` (thanks to @simeonschaub). You can pass any of these formatters an integer argument which specifies how many significant digits you want.
   - `FancyNumberFormatter()` replaces the exponent notation, from `1.2e+3` to `1.2 \cdot 10^3`. 
   - `StyledNumberFormatter()` replaces the exponent notation, from `1.2e+3` to `1.2 \mathrm{e} 3`.
+  - `SiunitxNumberFormatter()` uses the `siunitx` package's `\num`, so all the formatting is offloaded on the `\LaTeX` engine. Formatting arguments can be supplied as a string to the keyword argument `format_options`. If your `siunitx` installation is version 2 or older, use the keyword argument `version=2` to replace `\num` by `\si`.
 
 
 
@@ -91,7 +92,6 @@ Examples:
 ```@example main
 latexify(12345.678; fmt="%.1e")
 ```
-$1.2e+04$
 
 ```@example main
 latexify([12893.1 1.328e2; "x/y" 7832//2378]; fmt=FancyNumberFormatter(3))
@@ -112,6 +112,10 @@ using Format
 latexify([12893.1 1.328e2]; fmt=x->format(round(x, sigdigits=2), autoscale=:metric))
 ```
 
+```@example main
+str = latexify(12345.678; fmt=SiunitxNumberFormatter(format_options="round-mode=places,round-precision=1", version=3))
+replace(string(str), "\$"=>"`") # hide
+```
 
 ## Automatic copying to clipboard
 The strings that you would see when using print on any of the above functions can be automatically copied to the clipboard if you so specify.

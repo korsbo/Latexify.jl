@@ -109,3 +109,21 @@ $a$ & $\frac{x}{k + x}$\\
 $b$ & $x - y$\\
 \end{tabular}
 ", "\r\n"=>"\n")
+
+@test latexify(d; env=:tabular, latex=false, fmt=SiunitxNumberFormatter()) == replace(
+raw"\begin{tabular}{cc}
+A & B\\
+\num{11} & X\\
+\num{12} & Y\\
+\num{13} & Z\\
+\end{tabular}
+", "\r\n"=>"\n")
+
+@test latexify(d; env=:tabular, latex=false, fmt=SiunitxNumberFormatter(), adjustment=:S) == replace(
+raw"\begin{tabular}{SS}
+A & B\\
+11 & X\\
+12 & Y\\
+13 & Z\\
+\end{tabular}
+", "\r\n"=>"\n")

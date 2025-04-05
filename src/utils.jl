@@ -3,7 +3,11 @@ add_brackets(ex::Expr, vars) = postwalk(x -> x in vars ? "\\left[ $(convert_subs
 add_brackets(arr::AbstractArray, vars) = [add_brackets(element, vars) for element in arr]
 add_brackets(s::Any, vars) = s
 
-default_packages(s) = vcat(["amssymb", "amsmath", "unicode-math"], occursin("\\ce{", s) ? ["mhchem"] : [])
+default_packages(s) = vcat(
+                           ["amssymb", "amsmath", "unicode-math"],
+                           occursin("\\ce{", s) ? ["mhchem"] : [],
+                           any(x->occursin(prod(x), s), Iterators.product(["\\si", "\\SI", "\\num", "\\qty"], ["{", "range{", "list{", "product{"])) ? ["siunitx"] : [],
+                          )
 
 function _writetex(s::LaTeXString;
         name=tempname(),
@@ -154,7 +158,8 @@ function render(s::LaTeXString, mime::MIME"image/png";
         # prefer tex -> pdf -> png instead
         if convert === :gs
             aux_mime = MIME("application/pdf")
-            cmd = `gs -sDEVICE=pngalpha -dTextAlphaBits=4 -r$dpi -o $name.$ext $aux_name.pdf`
+            ghostscript_command = get(ENV, "GHOSTSCRIPT", "gs")
+            cmd = `$ghostscript_command -sDEVICE=pngalpha -dTextAlphaBits=4 -r$dpi -o $name.$ext $aux_name.pdf`
         elseif convert === :dvipng
             aux_mime = MIME("application/x-dvi")
             deb = debug ? [] : ["-q"]
