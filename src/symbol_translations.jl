@@ -152,6 +152,7 @@ const binary_operators = Dict(
                             arithmetic_operators...,
                             :(=>) => "\\Rightarrow",
                             :⟹ => "\\Longrightarrow",
+                            :(:) => "\\mathrel{\\ldotp\\mkern-2.5mu\\ldotp}"
                            )
 
 const unary_operators = Dict(
