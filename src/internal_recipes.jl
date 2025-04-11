@@ -9,7 +9,7 @@ end
     return :($(x.start) : $(step(x)) : $(x.stop))
 end
 
-@latexrecipe function f(x::StepRangeLen{T, R, S, L}; expand_ranges=false, expand_step_ranges=true) where {T, R, S, L}
+@latexrecipe function f(x::StepRangeLen{T, <:Any, <:Any}; expand_ranges=false, expand_step_ranges=true) where {T}
     (expand_ranges || expand_step_ranges) && return collect(x)
     return :($(T(x.ref + (x.offset-1)*step(x))) : $(T(x.step)) : $(T(x.ref + (x.len-1)*x.step)))
 end
