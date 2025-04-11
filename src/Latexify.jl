@@ -59,6 +59,7 @@ include("error.jl")
 include("numberformatters.jl")
 
 include("latexify_function.jl")
+include("internal_recipes.jl")
 
 ### Add support for additional packages without adding them as dependencies.
 ### Requires on <1.9 and weakdeps/extensions on >=1.9

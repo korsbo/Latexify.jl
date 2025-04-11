@@ -194,6 +194,8 @@ raw"a < b \leq c < d \leq e > f \leq g \leq h < i = j = k \neq l \neq m"
 @test latexraw(:(3 * (a .< b .<= c < d <= e > f <= g .<= h .< i == j .== k != l .!= m))) ==
 raw"3 \cdot \left( a < b \leq c < d \leq e > f \leq g \leq h < i = j = k \neq l \neq m \right)"
 
+@test latexraw(:(2+3 : b)) == raw"2 + 3 \mathrel{\ldotp\mkern-2.5mu\ldotp} b"
+@test latexraw(:(a:3*4)) == raw"a \mathrel{\ldotp\mkern-2.5mu\ldotp} 3 \cdot 4"
 
 #### Test the imaginary_unit keyword option
 @test latexraw(5im; imaginary_unit="\\textit{i}") == raw"5\textit{i}"
