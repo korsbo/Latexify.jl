@@ -99,3 +99,8 @@ an error occured while rendering LaTeX: \n\tDouble superscript.
 \tl.8     \$x^2^
 Check the log file at $logfile for more information"""
 
+@test_throws ArgumentError render(L"x^2"; use_tectonic=true)
+using tectonic_jll
+pdf_file = render(L"x^2"; open=false) # should now not throw
+@test isfile(pdf_file)
+@test_throws Latexify.LatexifyRenderError render(L"x^2^3"; open=false)
