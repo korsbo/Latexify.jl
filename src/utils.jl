@@ -38,8 +38,10 @@ function _compile(s::LaTeXString, cmd::Cmd, ext::String;
         debug=false,
         name=tempname(),
         open=true,
+        use_tectonic=false,
         kw...
     )
+    use_tectonic && throw(ArgumentError("`use_tectonic` requires the `tectonic_jll` package"))
     name = abspath(name)
     mktempdir() do source_dir
         cd(source_dir) do
@@ -49,6 +51,7 @@ function _compile(s::LaTeXString, cmd::Cmd, ext::String;
                 run(cmd)
             catch err
                 isa(err, ProcessFailedException) || rethrow(err)
+                isfile("$source_dir/main.log") || rethrow(LatexifyRenderError(""))
                 mv("$source_dir/main.log", "$name.log"; force=true)
                 rethrow(LatexifyRenderError("$name.log"))
             end
@@ -58,7 +61,7 @@ function _compile(s::LaTeXString, cmd::Cmd, ext::String;
     if open
         _openfile(name; ext=ext)
     end
-    return nothing
+    return "$name.$ext"
 end
 
 

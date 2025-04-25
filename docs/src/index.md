@@ -262,6 +262,12 @@ using ImageInTerminal, Latexify
 latexify(:(iħ * (∂Ψ(𝐫, t) / ∂t) = -ħ^2 / 2m * ΔΨ(𝐫, t) + V * Ψ(𝐫, t))) |> s -> render(s, dpi=200)
 ```
 
+### Tectonic
+
+The `tectonic_jll` package can be used as a lightweight compiler for CI and similar setups.
+An extension to `Latexify` makes `render` (to pdf) automatically use `tectonic_jll` if both packages are loaded.
+To still render using the default compiler, use `render(...; use_tectonic=false)`.
+
 ## Legacy support
 
 Latexify.jl has stopped supporting Julia versions older than 0.7. This does not mean that you cannot use Latexify with earlier versions, just that these will not get new features. Latexify.jl's release v0.4.1 was the last which supported Julia 0.6. Choose that release in the dropdown menu if you want to see that documentation.
