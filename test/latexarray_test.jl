@@ -300,3 +300,38 @@ x & \cdot \\
 \right]
 \end{equation}
 ", "\r\n"=>"\n")
+
+@test latexify(:((1:3) .+ (1:2:5) .+ 3*(1:3))) == raw"$\left( 1 \mathrel{\ldotp\mkern-2.5mu\ldotp} 3 \right) + \left( 1 \underset{2}{\mathrel{\ldotp\mkern-2.5mu\ldotp}} 5 \right) + 3 \cdot \left( 1 \mathrel{\ldotp\mkern-2.5mu\ldotp} 3 \right)$"
+@test latexify(:($(1:3) .+ $(1:2:5) .+ $(3*(1:3)))) == replace(raw"$1 \mathrel{\ldotp\mkern-2.5mu\ldotp} 3 + \left[
+\begin{array}{c}
+1 \\
+3 \\
+5 \\
+\end{array}
+\right] + \left[
+\begin{array}{c}
+3 \\
+6 \\
+9 \\
+\end{array}
+\right]$", "\r\n"=>"\n")
+@test latexify(:($(1:3) .+ $(1:2:5) .+ $(3*(1:3))), expand_step_ranges=false) == raw"$1 \mathrel{\ldotp\mkern-2.5mu\ldotp} 3 + 1 \underset{2}{\mathrel{\ldotp\mkern-2.5mu\ldotp}} 5 + 3 \underset{3}{\mathrel{\ldotp\mkern-2.5mu\ldotp}} 9$"
+@test latexify(:($(1:3) .+ $(1:2:5) .+ $(3*(1:3))), expand_ranges=true) == latexify(:($(1:3) .+ $(1:2:5) .+ $(3*(1:3))), expand_ranges=true, expand_step_ranges=false) == replace(raw"$\left[
+\begin{array}{c}
+1 \\
+2 \\
+3 \\
+\end{array}
+\right] + \left[
+\begin{array}{c}
+1 \\
+3 \\
+5 \\
+\end{array}
+\right] + \left[
+\begin{array}{c}
+3 \\
+6 \\
+9 \\
+\end{array}
+\right]$", "\r\n"=>"\n")

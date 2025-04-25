@@ -114,6 +114,8 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
         return "$(args[1]) = $(args[2])"
     elseif op == :(!)
         return "\\neg $(args[2])"
+    elseif op == :(:) && length(args) == 4
+        return "$(args[2]) \\underset{$(args[3])}{$(binary_operators[:(:)])} $(args[4])"
     end
 
     if ex.head == :.
@@ -320,6 +322,7 @@ function precedence(op::Symbol)
     startswith(string(op), "unary") && return Base.prec_power # Putting unary on par with :^, because there are no integers between 14 and 15. Should consider putting it with :<< instead
     op ∈ [:comparison, :issubset] && return Base.prec_comparison
     #op == :∀ && return Base.prec_control_flow
+    op == :(:) && return 10
     prec = Base.operator_precedence(op)
     prec == 0 && return 100 # Base treats unknown as parenthesizable, we want no parenthesis if uncertain
     return prec
@@ -328,5 +331,6 @@ function associativity(op::Symbol)
     startswith(string(op), "unary") && return :right
     op == :comparison && return :none
     op == :issubset && return :none
+
     return Base.operator_associativity(op)
 end
