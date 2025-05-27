@@ -78,6 +78,9 @@ function __init__()
     @require SparseArrays =  "2f01184e-e22b-5df5-ae63-d93ebab69eaf" begin
         include("../ext/SparseArraysExt.jl")
     end
+    @require tectonic_jll =  "d7dd28d6-a5e6-559c-9131-7eb760cdacc5" begin
+        include("../ext/TectonicExt.jl")
+    end
 end
 end
 
