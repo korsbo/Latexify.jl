@@ -50,42 +50,21 @@ FancyNumberFormatter(significant_digits, mult_symbol="\\cdot") =
 struct SiunitxNumberFormatter <: AbstractNumberFormatter
     format_options::String
     version::Int
+    simple::Bool
 end
-function SiunitxNumberFormatter(;format_options="", version=3)
+function SiunitxNumberFormatter(;format_options="", version=3, simple=false)
     if ~isempty(format_options) && (~startswith(format_options, '[') || ~endswith(format_options, ']'))
         format_options = "[$format_options]"
     end
-    SiunitxNumberFormatter(format_options, version)
+    SiunitxNumberFormatter(format_options, version, simple)
 end
 
 function (f::SiunitxNumberFormatter)(x::Number)
-    return "\\$(siunitxcommand(:number, f.version))$(f.format_options){$x}"
+    return "\\num$(f.format_options){$x}"
 end
 function (f::SiunitxNumberFormatter)(x::Vector{<:Number})
-    return "\\$(siunitxcommand(:numberlist, f.version))$(f.format_options){$(join(x,';'))}"
+    return "\\numlist$(f.format_options){$(join(x,';'))}"
 end
 function (f::SiunitxNumberFormatter)(x::AbstractRange{<:Number})
-    return "\\$(siunitxcommand(:numberrange, f.version))$(f.format_options){$(x.start)}{$(x.stop)}"
-end
-
-function siunitxcommand(purpose, version)
-    if version <= 2
-        purpose === :number && return "si"
-        purpose === :quantity && return "SI"
-        purpose === :numberrange && return "sirange"
-        purpose === :quantityrange && return "SIrange"
-        purpose === :numberlist && return "silist"
-        purpose === :quantitylist && return "SIlist"
-        purpose === :numberproduct && return "siproduct"
-        purpose === :quantityproduct && return "SIproduct"
-    end
-    purpose === :number && return "num"
-    purpose === :quantity && return "qty"
-    purpose === :numberrange && return "numrange"
-    purpose === :quantityrange && return "qtyrange"
-    purpose === :numberlist && return "numlist"
-    purpose === :quantitylist && return "qtylist"
-    purpose === :numberproduct && return "numproduct"
-    purpose === :quantityproduct && return "qtyproduct"
-    throw(ArgumentError("Purpose $purpose not implemented"))
+    return "\\numrange$(f.format_options){$(x.start)}{$(x.stop)}"
 end

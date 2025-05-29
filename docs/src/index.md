@@ -84,7 +84,7 @@ You can control the formatting of numbers by passing any of the following to the
 - a formatter supplied by Latexify.jl, for example `fmt = FancyNumberFormatter(2)` (thanks to @simeonschaub). You can pass any of these formatters an integer argument which specifies how many significant digits you want.
   - `FancyNumberFormatter()` replaces the exponent notation, from `1.2e+3` to `1.2 \cdot 10^3`. 
   - `StyledNumberFormatter()` replaces the exponent notation, from `1.2e+3` to `1.2 \mathrm{e} 3`.
-  - `SiunitxNumberFormatter()` uses the `siunitx` package's `\num`, so all the formatting is offloaded on the `\LaTeX` engine. Formatting arguments can be supplied as a string to the keyword argument `format_options`. If your `siunitx` installation is version 2 or older, use the keyword argument `version=2` to replace `\num` by `\si`.
+  - `SiunitxNumberFormatter()` uses the `siunitx` package's `\num`, so all the formatting is offloaded on the `\LaTeX` engine. Formatting arguments can be supplied as a string to the keyword argument `format_options`. If your `siunitx` installation is version 2 or older, use the keyword argument `version=2` to replace `\num` by `\si`. A boolean argument `simple` can be used to control syntax for units. These two latter options do not change output for unitless numbers.
 
 
 

@@ -2,7 +2,7 @@ name = "Latexify"
 uuid = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
 authors = ["Niklas Korsbo <niklas.korsbo@gmail.com>"]
 repo = "https://github.com/korsbo/Latexify.jl.git"
-version = "0.16.7"
+version = "0.16.8"
 
 [deps]
 Format = "1fa38f19-a742-5d3f-a2b9-30dd87b9d5f8"
