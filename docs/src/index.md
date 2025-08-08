@@ -268,6 +268,19 @@ The `tectonic_jll` package can be used as a lightweight compiler for CI and simi
 An extension to `Latexify` makes `render` (to pdf) automatically use `tectonic_jll` if both packages are loaded.
 To still render using the default compiler, use `render(...; use_tectonic=false)`.
 
+### Render command-line args
+
+For fine-tuning or setting other command-line arguments to a render pipeline, you can pass any of the following keyword arguments to `render`, some of which have default values. 
+Since these are [interpolated into shell commands](https://julialang.org/blog/2017/10/command-interpolation-for-dummies/), note that you should surround with back-ticks `\`` rather than quotes.
+- ```lualatex_flags=`` ``` (for default compilation to PDF)
+- ```tectonic_flags=`` ``` (for tectonic_jll compilation to PDF)
+- ```dvilualatex_flags=`` ``` (for compilation to DVI)
+- ```ghostscript_flags=`-sDEVICE=pngalpha -dTextAlphaBits=4 -r$dpi` ``` (for generating PNG from PDF)
+- ```dvipng_flags=`-bg Transparent -D $dpi -T tight` ``` (for dvipng, for generating PNG from DVI)
+- ```pdf2svg_flags=`` ``` (for generating SVG from PDF)
+- ```dvisvgm_flags=`` ``` (for generating SVG from DVI)
+- ```dvilualatex_flags=`` ``` (for generating DVI)
+
 ## Legacy support
 
 Latexify.jl has stopped supporting Julia versions older than 0.7. This does not mean that you cannot use Latexify with earlier versions, just that these will not get new features. Latexify.jl's release v0.4.1 was the last which supported Julia 0.6. Choose that release in the dropdown menu if you want to see that documentation.
