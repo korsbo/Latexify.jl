@@ -194,6 +194,7 @@ function render(s::LaTeXString, mime::MIME"image/svg";
         callshow=true,
         open=true,
         dvisvgm_flags=``,
+        pdf2svg_flags=``,
         kw...
     )
     ext="svg"
@@ -203,7 +204,7 @@ function render(s::LaTeXString, mime::MIME"image/svg";
             verb = debug ? 7 : 0
             cmd = `dvisvgm --no-fonts --pdf -v $verb $dvisvgm_flags $aux_name.pdf -o $name.$ext`
         elseif convert === :pdf2svg
-            cmd = `pdf2svg $aux_name.pdf $name.$ext`
+            cmd = `pdf2svg $pdf2svg_flags $aux_name.pdf $name.$ext`
         else
             throw(ArgumentError("$convert program not understood"))
         end
