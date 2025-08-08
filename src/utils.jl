@@ -201,7 +201,7 @@ function render(s::LaTeXString, mime::MIME"image/svg";
         aux_mime = MIME("application/pdf")
         if convert === :dvisvgm
             verb = debug ? 7 : 0
-            cmd = `dvisvgm --no-fonts --pdf -v $dvisvgm_flags $aux_name.pdf -o $name.$ext`
+            cmd = `dvisvgm --no-fonts --pdf -v $verb $dvisvgm_flags $aux_name.pdf -o $name.$ext`
         elseif convert === :pdf2svg
             cmd = `pdf2svg $aux_name.pdf $name.$ext`
         else
