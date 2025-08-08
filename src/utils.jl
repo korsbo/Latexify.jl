@@ -135,7 +135,7 @@ render(s::LaTeXString, mime::MIME"juliavscode/html"; kwargs...) = display(mime, 
 # if callshow && displayable(MIME("application/pdf"))
 #     display(MIME("application/pdf"), read("$name.pdf"))
 # end
-render(s::LaTeXString, ::MIME"application/pdf"; kw...) = _compile(s, `lualatex --interaction=batchmode main.tex`, "pdf"; kw...)
+render(s::LaTeXString, ::MIME"application/pdf"; lualatex_flags="", kw...) = _compile(s, `lualatex --interaction=nonstopmode $lualatex_flags main.tex`, "pdf"; kw...)
 
 # `display(MIME("application/x-dvi")` is generally not defined even though
 # `displayable(MIME("application/x-dvi")` returns `true`.
@@ -143,7 +143,7 @@ render(s::LaTeXString, ::MIME"application/pdf"; kw...) = _compile(s, `lualatex -
 # if callshow && displayable(MIME("application/x-dvi"))
 #     display(MIME("application/x-dvi"), read("$name.dvi"))
 # end
-render(s::LaTeXString, ::MIME"application/x-dvi"; kw...) = _compile(s,  `dvilualatex --interaction=batchmode main.tex`, "dvi"; kw...)
+render(s::LaTeXString, ::MIME"application/x-dvi"; dvilualatex_flags="", kw...) = _compile(s,  `dvilualatex --interaction=batchmode $dvilualatex_flags main.tex`, "dvi"; kw...)
 
 function render(s::LaTeXString, mime::MIME"image/png";
         debug=false,
@@ -152,6 +152,8 @@ function render(s::LaTeXString, mime::MIME"image/png";
         callshow=true,
         open=true,
         dpi=DEFAULT_DPI[],
+        ghostscript_flags="-sDEVICE=pngalpha -dTextAlphaBits=4 -r$dpi",
+        dvipng_flags="-bg Transparent -D $dpi -T tight",
         kw...
     )
     ext = "png"
@@ -162,11 +164,11 @@ function render(s::LaTeXString, mime::MIME"image/png";
         if convert === :gs
             aux_mime = MIME("application/pdf")
             ghostscript_command = get(ENV, "GHOSTSCRIPT", "gs")
-            cmd = `$ghostscript_command -sDEVICE=pngalpha -dTextAlphaBits=4 -r$dpi -o $name.$ext $aux_name.pdf`
+            cmd = `$ghostscript_command $ghostscript_flags  -o $name.$ext $aux_name.pdf`
         elseif convert === :dvipng
             aux_mime = MIME("application/x-dvi")
             deb = debug ? [] : ["-q"]
-            cmd = `dvipng $(deb...) -bg Transparent -D $dpi -T tight $aux_name.dvi -o $name.$ext`
+            cmd = `dvipng $(deb...) $dvipng_flags $aux_name.dvi -o $name.$ext`
         else
             throw(ArgumentError("$convert program not understood"))
         end
@@ -191,6 +193,7 @@ function render(s::LaTeXString, mime::MIME"image/svg";
         name=tempname(),
         callshow=true,
         open=true,
+        dvisvgm_flags="",
         kw...
     )
     ext="svg"
@@ -198,7 +201,7 @@ function render(s::LaTeXString, mime::MIME"image/svg";
         aux_mime = MIME("application/pdf")
         if convert === :dvisvgm
             verb = debug ? 7 : 0
-            cmd = `dvisvgm --no-fonts --pdf -v $verb $aux_name.pdf -o $name.$ext`
+            cmd = `dvisvgm --no-fonts --pdf -v $dvisvgm_flags $aux_name.pdf -o $name.$ext`
         elseif convert === :pdf2svg
             cmd = `pdf2svg $aux_name.pdf $name.$ext`
         else
