@@ -24,6 +24,7 @@ L"\begin{equation}
 """
 function latexify(args...; kwargs...)
     kwargs = merge(default_kwargs, kwargs)
+    args = process_multiline(args...)
     result = process_latexify(args...; kwargs...)
 
     should_render = get(kwargs, :render, false)
@@ -36,6 +37,8 @@ function latexify(args...; kwargs...)
     AUTO_DISPLAY && display(result)
     return result
 end
+
+process_multiline(args...) = map(x -> x isa Expr && x.head == :block ? filter(y -> !(y isa LineNumberNode), x.args) : x, args)
 
 function process_latexify(args...; kwargs...)
     ## Let potential recipes transform the arguments.
