@@ -241,7 +241,9 @@ Alternatively, `render(str, mime)` can also be used to generate and display DVI,
 latexify(:(x/y)) |> s -> render(s, MIME("image/png"))
 ```
 
-PNG output relies on [ghostscript](https://www.ghostscript.com) or alternatively on [dvipng](http://www.nongnu.org/dvipng): if `render` is called with the keyword `convert = :gs`, ghostcript will be used to convert the `pdf` output to `png` format.
+PNG output defaults to using [ghostscript](https://www.ghostscript.com), which is available by default thanks to `Ghostscript_jll`. 
+
+[dvipng](http://www.nongnu.org/dvipng) can also be used by passing the keyword `convert = :dvipng` to `render`. However, this requires a working installation of dvipng. 
 
 SVG output relies on [dvisvgm](https://dvisvgm.de) or alternatively on [pdf2svg](https://github.com/dawbarton/pdf2svg).
 

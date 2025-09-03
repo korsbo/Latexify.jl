@@ -14,6 +14,7 @@ using MacroTools: postwalk
 import MacroTools
 using Format
 import Base.showerror
+import Ghostscript_jll
 
 export latexify, md, copy_to_clipboard, auto_display, set_default, get_default,
     reset_default, @latexrecipe, render, @latexify, @latexrun, @latexdefine

@@ -163,7 +163,7 @@ function render(s::LaTeXString, mime::MIME"image/png";
         # prefer tex -> pdf -> png instead
         if convert === :gs
             aux_mime = MIME("application/pdf")
-            ghostscript_command = get(ENV, "GHOSTSCRIPT", Sys.iswindows() ? "gswin64c" : "gs")
+            ghostscript_command = Ghostscript_jll.gs()
             cmd = `$ghostscript_command $ghostscript_flags  -o $name.$ext $aux_name.pdf`
         elseif convert === :dvipng
             aux_mime = MIME("application/x-dvi")
