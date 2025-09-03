@@ -145,9 +145,6 @@ render(s::LaTeXString, ::MIME"application/pdf"; lualatex_flags=``, kw...) = _com
 # end
 render(s::LaTeXString, ::MIME"application/x-dvi"; dvilualatex_flags=``, kw...) = _compile(s,  `dvilualatex --interaction=batchmode $dvilualatex_flags main.tex`, "dvi"; kw...)
 
-# Gets a more specific method in GhostscriptExt, which will use Ghostscript_jll
-# rather than assume Ghostscript is installed on the system.
-
 function render(s::LaTeXString, mime::MIME"image/png";
         debug=false,
         convert = :gs,
