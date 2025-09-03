@@ -55,7 +55,7 @@ jobs:
         if: startsWith(matrix.os,'ubuntu')
         run: |
           sudo apt-get -y update
-          sudo apt-get -y install latexmk ghostscript texlive-{luatex,latex-extra}
+          sudo apt-get -y install latexmk texlive-{luatex,latex-extra}
           sudo fc-cache -vr
       - uses: julia-actions/julia-buildpkg@latest
       - uses: julia-actions/julia-runtest@latest
