@@ -148,7 +148,7 @@ render(s::LaTeXString, ::MIME"application/x-dvi"; dvilualatex_flags=``, kw...) =
 # Gets a more specific method in GhostscriptExt, which will use Ghostscript_jll
 # rather than assume Ghostscript is installed on the system.
 function _gs_cmd(use_jll) 
-    @warn "Using system Ghostscript command; for better reproducibility, consider installing the `Ghostscript_jll` package to trigger the `GhostscriptExt` extension"
+    @warn "Using system Ghostscript command; for better reproducibility, consider installing the `Ghostscript_jll` package and importing it to use the `GhostscriptExt` extension"
     ghostscript_command = get(ENV, "GHOSTSCRIPT", Sys.iswindows() ? "gswin64c" : "gs")
 end
 

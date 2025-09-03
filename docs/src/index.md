@@ -241,7 +241,8 @@ Alternatively, `render(str, mime)` can also be used to generate and display DVI,
 latexify(:(x/y)) |> s -> render(s, MIME("image/png"))
 ```
 
-PNG output relies on [ghostscript](https://www.ghostscript.com) or alternatively on [dvipng](http://www.nongnu.org/dvipng): if `render` is called with the keyword `convert = :gs`, ghostcript will be used to convert the `pdf` output to `png` format.
+PNG output relies on [ghostscript](https://www.ghostscript.com) or alternatively on [dvipng](http://www.nongnu.org/dvipng): if `render` is called with the keyword `convert = :gs`, ghostcript will be used to convert the `pdf` output to `png` format. 
+To ease dependency management, there is an extension for `Ghostscript_jll` (which can be installed by Julia across platforms--simply install and import `Ghostscript_jll)` alongside Latexify and the extension will load. 
 
 SVG output relies on [dvisvgm](https://dvisvgm.de) or alternatively on [pdf2svg](https://github.com/dawbarton/pdf2svg).
 
