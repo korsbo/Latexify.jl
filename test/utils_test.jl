@@ -104,3 +104,7 @@ using tectonic_jll
 pdf_file = render(L"x^2"; open=false) # should now not throw
 @test isfile(pdf_file)
 @test_throws Latexify.LatexifyRenderError render(L"x^2^3"; open=false)
+
+# Check that Ghostscript render works
+png_file = render(L"x^2", MIME("image/png"); open=false)
+@test isfile(png_file)
