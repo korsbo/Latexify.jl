@@ -120,7 +120,7 @@ function html_wrap(s::LaTeXString; scale=1.1, kwargs...)
             };
         </script>
         <script src="/js/mathjax/tex-chtml.js" id="MathJax-script" async></script>
-        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
         <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         """
     return import_str * s.s
