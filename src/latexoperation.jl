@@ -54,7 +54,15 @@ function latexoperation(ex::Expr, prevOp::AbstractArray; kwargs...)::String
             i == length(args) || (str *= mult_symbol == "" ? " " : " $mult_symbol ")
         end
         return str
-
+    elseif op in [:⋅]
+        str=""
+        for i ∈ eachindex(args)[2:end]
+            arg = args[i]
+            (precedence(prevOp[i]) < precedence(op) || (ex.args[i] isa Complex && !iszero(ex.args[i].re))) && (arg = "\\left( $arg \\right)")
+            str = string(str, arg)
+            i == length(args) || (" \\cdot ")
+        end
+        return str
     elseif op in [:+]
         str = ""
         for i ∈ eachindex(args)[2:end]
